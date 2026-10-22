@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 )
 
 func flat(id, rateID, name, price string) method {
@@ -148,5 +150,34 @@ func TestDuplicates(t *testing.T) {
 	d := duplicates(bad)
 	if len(d) != 2 {
 		t.Errorf("got %v", d)
+	}
+}
+
+func TestMethodFromAPI(t *testing.T) {
+	rate := &client.DeliveryMethodFieldsRateProviderDeliveryRateDefinition{Id: "r1"}
+	rate.Price.Amount, rate.Price.CurrencyCode = "3.0", client.CurrencyCodeEur
+	money := func(a string) client.DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria {
+		return &client.DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2{Amount: a}
+	}
+	md := client.DeliveryMethodFields{Id: "m1", Name: "Range", Active: true, RateProvider: rate}
+
+	if _, ok, err := methodFromAPI(client.DeliveryMethodFields{Name: "Carrier", RateProvider: &client.DeliveryMethodFieldsRateProviderDeliveryParticipant{}}); ok || err != nil {
+		t.Errorf("carrier rate: ok=%v err=%v, want skipped", ok, err)
+	}
+
+	md.MethodConditions = []client.DeliveryMethodFieldsMethodConditionsDeliveryCondition{
+		{Id: "c?operator=greater_than_or_equal_to", Field: "TOTAL_PRICE", Operator: "GREATER_THAN_OR_EQUAL_TO", ConditionCriteria: money("10.0")},
+	}
+	m, ok, err := methodFromAPI(md)
+	if !ok || err != nil || m.Cond == nil || m.Cond.Value != "10.0" || m.Price != "3.0" {
+		t.Errorf("one condition: %+v ok=%v err=%v", m, ok, err)
+	}
+
+	// Shopify returns a min+max range as two conditions; keeping one would drop the other bound.
+	md.MethodConditions = append(md.MethodConditions, client.DeliveryMethodFieldsMethodConditionsDeliveryCondition{
+		Id: "c?operator=less_than_or_equal_to", Field: "TOTAL_PRICE", Operator: "LESS_THAN_OR_EQUAL_TO", ConditionCriteria: money("50.0"),
+	})
+	if _, _, err := methodFromAPI(md); err == nil || !strings.Contains(err.Error(), "minimum and a maximum") {
+		t.Errorf("two conditions: err=%v", err)
 	}
 }

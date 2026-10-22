@@ -356,7 +356,12 @@ func (r *Resource) fetch(ctx context.Context, id string, diags *diag.Diagnostics
 				truncated("rates in zone " + z.Name)
 			}
 			for _, md := range lz.MethodDefinitions.Nodes {
-				if m, ok := methodFromAPI(md.DeliveryMethodFields); ok {
+				m, ok, err := methodFromAPI(md.DeliveryMethodFields)
+				if err != nil {
+					diags.AddError("Unsupported rate in "+what, fmt.Sprintf("Zone %q: %s", z.Name, err))
+					continue
+				}
+				if ok {
 					z.Methods = append(z.Methods, m)
 				}
 			}
@@ -368,10 +373,14 @@ func (r *Resource) fetch(ctx context.Context, id string, diags *diag.Diagnostics
 }
 
 // methodFromAPI skips carrier-calculated rates, which this resource doesn't manage.
-func methodFromAPI(md client.DeliveryMethodFields) (method, bool) {
+// A rate with a min and a max comes back as two conditions; those fail rather than lose a bound on the next change.
+func methodFromAPI(md client.DeliveryMethodFields) (method, bool, error) {
 	rate, ok := md.RateProvider.(*client.DeliveryMethodFieldsRateProviderDeliveryRateDefinition)
 	if !ok {
-		return method{}, false
+		return method{}, false, nil
+	}
+	if len(md.MethodConditions) > 1 {
+		return method{}, false, fmt.Errorf("rate %q has both a minimum and a maximum condition, which is not supported yet", md.Name)
 	}
 	m := method{
 		ID: md.Id, RateID: rate.Id, Name: md.Name, Active: md.Active,
@@ -389,9 +398,9 @@ func methodFromAPI(md client.DeliveryMethodFields) (method, bool) {
 			mc.Value = strconv.FormatFloat(crit.Value, 'f', -1, 64)
 			mc.Unit = string(crit.Unit)
 		}
-		m.Cond = mc // shortcut: one condition per rate, as the admin UI creates them; extend if multi-condition rates show up.
+		m.Cond = mc
 	}
-	return m, true
+	return m, true, nil
 }
 
 // toTree converts the model; ok is false while any value is unknown.
