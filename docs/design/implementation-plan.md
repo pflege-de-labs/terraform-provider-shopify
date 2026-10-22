@@ -1,6 +1,6 @@
 # Terraform Provider for Shopify: Implementation Plan
 
-**Status:** Draft, one open point · **Owner:** Jens Hausherr · **Last updated:** 2026-10-22
+**Status:** Draft, no open points · **Owner:** Jens Hausherr · **Last updated:** 2026-10-22
 **Related:** [[shopify-infra-automation-approach]], [[terraform-provider-resource-model]]
 
 This plan follows the implementation order in section 12 of the resource model, with a Step 0 added for template cleanup.
@@ -13,7 +13,7 @@ This plan follows the implementation order in section 12 of the resource model, 
 
 ## Step 0: Rename and clean up the template
 
-- Rename the module path in `go.mod` and all imports to `github.com/pflege-de-labs/shopify`.
+- Rename the module path in `go.mod` and all imports to `github.com/pflege-de-labs/terraform-provider-shopify`.
 - Rename the provider address in `main.go` (currently `registry.terraform.io/hashicorp/scaffolding`) to `registry.terraform.io/pflege-de-labs/shopify`, and `-provider-name scaffolding` in `tools/tools.go` to `shopify`.
 - Delete `.copywrite.hcl` and the copywrite `go:generate` line. As configured, `make generate` would add HashiCorp/IBM headers to every new file.
 - Remove the example action, ephemeral resource and function now. They are out of scope and nothing replaces them.
@@ -63,7 +63,7 @@ This plan follows the implementation order in section 12 of the resource model, 
 ## Step 6: `shopify_delivery_profile` (general profile only)
 
 - Write unit tests first for the diff: the create, update and delete lists at each level, matched by zone name and method name. Add validators that require those names to be unique.
-- Pattern A: adopts the general profile. Delete only removes it from state.
+- Pattern A, implicit (no flag): always adopts the general profile. Delete only removes it from state.
 
 ## Dependencies needing approval
 
@@ -79,12 +79,6 @@ This plan follows the implementation order in section 12 of the resource model, 
    - Location has no `handle`. Names are reportedly unique per shop, including deactivated locations (third-party sources; `locationAdd` has a `TAKEN` error code). ⚠ Confirm on the dev store.
    - Names are portable across stores; numeric IDs are not, so they are the fallback only (e.g. for duplicate or unknown names).
 3. **Market links:** `web_presence_ids` and `catalog_ids` take plain IDs. `shopify_market_web_presence` is deferred.
-4. **Provider address:** `registry.terraform.io/pflege-de-labs/shopify`, Go module `github.com/pflege-de-labs/shopify`.
-5. **Schema source and dev store:** deferred until implementation. Step 1 needs a disposable dev store and token, which will be set up then.
-
-## Open points
-
-1. **Adopt flag name.** The delivery profile uses `adopt_default`; the convention is `adopt_existing`. The two flags do different things:
-   - `adopt_existing` (§2, menus): Create looks up the object by its natural key and takes it over instead of failing. It does not choose *which* object.
-   - `adopt_default` (§8): selects the store's general profile, which has no user-chosen key (import key `default`), and makes Delete state-only. It chooses *which* object.
-   - Since phase 1 supports only the general profile, the flag could also be dropped and the behaviour made implicit.
+4. **Provider address:** `registry.terraform.io/pflege-de-labs/shopify`, Go module `github.com/pflege-de-labs/terraform-provider-shopify`.
+5. **No `adopt_default` flag:** phase 1 supports only the general delivery profile, so adopting it is implicit. `adopt_existing` (natural-key takeover) is a different concern and stays. Revisit when custom profiles are added.
+6. **Schema source and dev store:** deferred until implementation. Step 1 needs a disposable dev store and token, which will be set up then.

@@ -260,7 +260,7 @@ This is the most complex resource in scope: profiles → location groups → zon
 
 ```hcl
 resource "shopify_delivery_profile" "general" {
-  adopt_default = true # Pattern A: the store's general profile
+  # Pattern A, implicit: always the store's general profile (no flag in phase 1)
 
   location_group {
     location_ids = [shopify_location.warehouse_hamburg.id]
@@ -291,7 +291,7 @@ resource "shopify_delivery_profile" "general" {
 ```
 
 Recommendation: **phase 2.**
-- Start with the general profile only (`adopt_default = true`), with flat rates and price- or weight-based conditions.
+- Start with the general profile only (adopted implicitly, no flag), with flat rates and price- or weight-based conditions.
 - Product-to-profile assignment is catalog work and stays out of scope; the general profile covers everything by default.
 - Update is complicated: the update input uses separate lists for create, update and delete at each level ⚠. Matching is by zone name and method name. Write good unit tests for the diff logic before shipping.
 
