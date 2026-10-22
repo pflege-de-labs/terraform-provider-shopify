@@ -78,3 +78,18 @@ func WarnOnDataDeletingReplace(ctx context.Context, req resource.ModifyPlanReque
 	}
 	resp.Diagnostics.AddWarning(fmt.Sprintf("This change replaces the %s", what), detail)
 }
+
+// ConfiguredString and ConfiguredBool return nil for unset config values: unset means unmanaged, so nothing is sent.
+func ConfiguredString(v types.String) *string {
+	if v.IsNull() || v.IsUnknown() {
+		return nil
+	}
+	return v.ValueStringPointer()
+}
+
+func ConfiguredBool(v types.Bool) *bool {
+	if v.IsNull() || v.IsUnknown() {
+		return nil
+	}
+	return v.ValueBoolPointer()
+}

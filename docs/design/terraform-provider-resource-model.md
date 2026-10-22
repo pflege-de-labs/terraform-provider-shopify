@@ -184,15 +184,18 @@ resource "shopify_metaobject_definition" "faq" {
 | `type` | string | Required, RequiresReplace, import key |
 | `name`, `description`, `display_name_key` | string | Updatable |
 | `access` | object | `admin`, `storefront` |
-| `capabilities` | object | `publishable`, `translatable`, `renderable`, `online_store` ⚠ |
-| `field` | ordered list of blocks | `key`, `name`, `type`, `description`, `required`, `validations` |
-| `allow_data_deletion` | bool | Pattern B. Deleting the definition removes all its entries ⚠ |
+| `capabilities` | object | `publishable`, `translatable`, `renderable` (bools). `online_store` needs a `urlHandle` and is deferred |
+| `field` | ordered list of blocks | `key`, `name`, `type`, `description`, `required`, `validations`. Fully managed: the list in config is the field list |
+| `allow_data_deletion` | bool | Pattern B. Confirmed: `metaobjectDefinitionDelete` removes the definition at once and its entries, metafield definitions and metafields asynchronously. For field removal or type change, the planned value counts (it's an update) |
 
-**Field diffing.** Update translates the block list into the update mutation's per-field `create` / `update` / `delete` operations ⚠, matched by `key`:
+**Field diffing.** Update translates the block list into the update mutation's per-field `create` / `update` / `delete` operations (`MetaobjectFieldDefinitionOperationInput`, confirmed), matched by `key`:
 - A new key → `create`.
 - A changed name, description, required flag or validations → `update`.
 - A removed key, or a changed field `type` (delete + create) → **destroys the data in that field**. Blocked unless `allow_data_deletion = true`, with a plan-time warning.
-- A changed order → reorder (field order matters in the admin UI).
+- A changed order → reorder (field order matters in the admin UI). Every kept field is sent as an update in config order with `resetFieldOrder: true`.
+- Shopify rejects a delete and a create of the same key in one call ("duplicates other inputs"), so deletes are sent in a first call, the rest in a second. Not atomic: if the second call fails, the next apply recreates the missing fields.
+
+**Read** uses `metaobjectDefinition(id:)`, falling back to `metaobjectDefinitionByType`.
 
 Entries (metaobjects) are content and stay **out of scope**.
 

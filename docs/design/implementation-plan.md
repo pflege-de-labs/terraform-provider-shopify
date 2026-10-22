@@ -39,7 +39,7 @@ This plan follows the implementation order in section 12 of the resource model, 
 - Write unit tests first for the field diff. It turns the field list into create, update and delete operations plus reorders, matched by `key`. A changed field `type` becomes delete + create.
 - Add a validator that requires field `key`s to be unique.
 - Removing a field or changing its type is blocked unless `allow_data_deletion = true`, and shows a plan-time warning.
-- ⚠ to check: the capabilities set, whether delete is async, and the shape of the field update operations.
+- ⚠ items resolved in resource model §5.
 
 ## Step 4: `shopify_menu` and `shopify_location`
 

@@ -21,6 +21,7 @@ import (
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/shop"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/metafielddefinition"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/metaobjectdefinition"
 )
 
 // Ensure ShopifyProvider satisfies various provider interfaces.
@@ -153,6 +154,7 @@ func clientConfig(data ShopifyProviderModel, getenv func(string) string) (client
 func (p *ShopifyProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		metafielddefinition.NewResource,
+		metaobjectdefinition.NewResource,
 	}
 }
 

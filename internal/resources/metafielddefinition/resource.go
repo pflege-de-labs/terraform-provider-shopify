@@ -208,8 +208,8 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		Key:         plan.Key.ValueString(),
 		Type:        plan.Type.ValueString(),
 		Name:        plan.Name.ValueString(),
-		Description: knownString(cfg.Description),
-		Pin:         knownBool(cfg.Pin),
+		Description: patterns.ConfiguredString(cfg.Description),
+		Pin:         patterns.ConfiguredBool(cfg.Pin),
 	}
 	var diags diag.Diagnostics
 	in.Validations, diags = validationsInput(ctx, cfg.Validations)
@@ -222,7 +222,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	if access != nil {
 		in.Access = &client.MetafieldAccessInput{Admin: access.admin, Storefront: access.storefront, CustomerAccount: access.customerAccount}
 	}
-	if b := knownBool(cfg.UseAsCollectionCondition); b != nil {
+	if b := patterns.ConfiguredBool(cfg.UseAsCollectionCondition); b != nil {
 		in.Capabilities = &client.MetafieldCapabilityCreateInput{SmartCollectionCondition: &client.MetafieldCapabilitySmartCollectionConditionInput{Enabled: *b}}
 	}
 
@@ -281,8 +281,8 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 		Namespace:   plan.Namespace.ValueStringPointer(),
 		Key:         plan.Key.ValueString(),
 		Name:        plan.Name.ValueStringPointer(),
-		Description: knownString(cfg.Description),
-		Pin:         knownBool(cfg.Pin),
+		Description: patterns.ConfiguredString(cfg.Description),
+		Pin:         patterns.ConfiguredBool(cfg.Pin),
 	}
 	var diags diag.Diagnostics
 	// Sent in full from the plan, which holds the state value when unmanaged, so an empty map can clear it.
@@ -296,7 +296,7 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 	if access != nil {
 		in.Access = &client.MetafieldAccessUpdateInput{Admin: access.admin, Storefront: access.storefront, CustomerAccount: access.customerAccount}
 	}
-	if b := knownBool(cfg.UseAsCollectionCondition); b != nil {
+	if b := patterns.ConfiguredBool(cfg.UseAsCollectionCondition); b != nil {
 		in.Capabilities = &client.MetafieldCapabilityUpdateInput{SmartCollectionCondition: &client.MetafieldCapabilitySmartCollectionConditionInput{Enabled: *b}}
 	}
 
@@ -404,32 +404,17 @@ func accessFromConfig(ctx context.Context, o types.Object) (*accessInput, diag.D
 	var a accessModel
 	diags := o.As(ctx, &a, basetypes.ObjectAsOptions{})
 	in := &accessInput{}
-	if s := knownString(a.Admin); s != nil {
+	if s := patterns.ConfiguredString(a.Admin); s != nil {
 		v := client.MetafieldAdminAccessInput(*s)
 		in.admin = &v
 	}
-	if s := knownString(a.Storefront); s != nil {
+	if s := patterns.ConfiguredString(a.Storefront); s != nil {
 		v := client.MetafieldStorefrontAccessInput(*s)
 		in.storefront = &v
 	}
-	if s := knownString(a.CustomerAccount); s != nil {
+	if s := patterns.ConfiguredString(a.CustomerAccount); s != nil {
 		v := client.MetafieldCustomerAccountAccessInput(*s)
 		in.customerAccount = &v
 	}
 	return in, diags
-}
-
-// knownString and knownBool read config values: unset means unmanaged, so a server value is never sent back.
-func knownString(v types.String) *string {
-	if v.IsNull() || v.IsUnknown() {
-		return nil
-	}
-	return v.ValueStringPointer()
-}
-
-func knownBool(v types.Bool) *bool {
-	if v.IsNull() || v.IsUnknown() {
-		return nil
-	}
-	return v.ValueBoolPointer()
 }

@@ -205,6 +205,178 @@ func (v *CreateMetafieldDefinitionResponse) GetMetafieldDefinitionCreate() *Crea
 	return v.MetafieldDefinitionCreate
 }
 
+// CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayload includes the requested fields of the GraphQL type MetaobjectDefinitionCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `metaobjectDefinitionCreate` mutation.
+type CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayload struct {
+	// The created metaobject definition.
+	MetaobjectDefinition *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition `json:"metaobjectDefinition"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadUserErrorsMetaobjectUserError `json:"userErrors"`
+}
+
+// GetMetaobjectDefinition returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayload.MetaobjectDefinition, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayload) GetMetaobjectDefinition() *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition {
+	return v.MetaobjectDefinition
+}
+
+// GetUserErrors returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayload) GetUserErrors() []CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadUserErrorsMetaobjectUserError {
+	return v.UserErrors
+}
+
+// CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition includes the requested fields of the GraphQL type MetaobjectDefinition.
+// The GraphQL type's documentation follows.
+//
+// Defines the structure and configuration for a custom data type in Shopify. Each definition specifies the fields, validation rules, and capabilities that apply to all [`Metaobject`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metaobject) entries created from it.
+//
+// The definition includes field definitions that determine what data to store, access controls for [the Shopify admin](https://shopify.dev/docs/apps/build/custom-data/permissions#admin-permissions) and [Storefront](https://shopify.dev/docs/apps/build/custom-data/permissions#storefront-permissions) APIs, and capabilities such as publishability and translatability. You can track which [`App`](https://shopify.dev/docs/api/admin-graphql/latest/objects/App) or [`StaffMember`](https://shopify.dev/docs/api/admin-graphql/latest/objects/StaffMember) created the definition and optionally base it on a [`StandardMetaobjectDefinitionTemplate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/StandardMetaobjectDefinitionTemplate).
+type CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition struct {
+	MetaobjectDefinitionFields `json:"-"`
+}
+
+// GetId returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition.Id, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) GetId() string {
+	return v.MetaobjectDefinitionFields.Id
+}
+
+// GetType returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition.Type, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) GetType() string {
+	return v.MetaobjectDefinitionFields.Type
+}
+
+// GetName returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition.Name, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) GetName() string {
+	return v.MetaobjectDefinitionFields.Name
+}
+
+// GetDescription returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition.Description, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) GetDescription() *string {
+	return v.MetaobjectDefinitionFields.Description
+}
+
+// GetDisplayNameKey returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition.DisplayNameKey, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) GetDisplayNameKey() *string {
+	return v.MetaobjectDefinitionFields.DisplayNameKey
+}
+
+// GetAccess returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition.Access, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) GetAccess() MetaobjectDefinitionFieldsAccessMetaobjectAccess {
+	return v.MetaobjectDefinitionFields.Access
+}
+
+// GetCapabilities returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition.Capabilities, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) GetCapabilities() MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities {
+	return v.MetaobjectDefinitionFields.Capabilities
+}
+
+// GetFieldDefinitions returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition.FieldDefinitions, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) GetFieldDefinitions() []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition {
+	return v.MetaobjectDefinitionFields.FieldDefinitions
+}
+
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MetaobjectDefinitionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition struct {
+	Id string `json:"id"`
+
+	Type string `json:"type"`
+
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	DisplayNameKey *string `json:"displayNameKey"`
+
+	Access MetaobjectDefinitionFieldsAccessMetaobjectAccess `json:"access"`
+
+	Capabilities MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities `json:"capabilities"`
+
+	FieldDefinitions []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition `json:"fieldDefinitions"`
+}
+
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) __premarshalJSON() (*__premarshalCreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition, error) {
+	var retval __premarshalCreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition
+
+	retval.Id = v.MetaobjectDefinitionFields.Id
+	retval.Type = v.MetaobjectDefinitionFields.Type
+	retval.Name = v.MetaobjectDefinitionFields.Name
+	retval.Description = v.MetaobjectDefinitionFields.Description
+	retval.DisplayNameKey = v.MetaobjectDefinitionFields.DisplayNameKey
+	retval.Access = v.MetaobjectDefinitionFields.Access
+	retval.Capabilities = v.MetaobjectDefinitionFields.Capabilities
+	retval.FieldDefinitions = v.MetaobjectDefinitionFields.FieldDefinitions
+	return &retval, nil
+}
+
+// CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadUserErrorsMetaobjectUserError includes the requested fields of the GraphQL type MetaobjectUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors encountered while managing metaobject resources.
+type CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadUserErrorsMetaobjectUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadUserErrorsMetaobjectUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadUserErrorsMetaobjectUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadUserErrorsMetaobjectUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadUserErrorsMetaobjectUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreateMetaobjectDefinitionResponse is returned by CreateMetaobjectDefinition on success.
+type CreateMetaobjectDefinitionResponse struct {
+	// Creates a metaobject definition that establishes the structure for custom data objects in your store. The definition specifies the fields, data types, and access permissions that all [`Metaobject`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metaobject) entries of this type share.
+	//
+	// Use the `type` field to create a unique namespace for your metaobjects. Prefix the type with `$app:` to reserve the definition for your app's exclusive use. The definition can include capabilities like publishable status or translation eligibility, to extend how metaobjects integrate with Shopify's features.
+	//
+	// Learn more about [managing metaobjects](https://shopify.dev/docs/apps/build/custom-data/metaobjects/manage-metaobjects).
+	MetaobjectDefinitionCreate *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayload `json:"metaobjectDefinitionCreate"`
+}
+
+// GetMetaobjectDefinitionCreate returns CreateMetaobjectDefinitionResponse.MetaobjectDefinitionCreate, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionResponse) GetMetaobjectDefinitionCreate() *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayload {
+	return v.MetaobjectDefinitionCreate
+}
+
 // The currency codes that represent the world currencies throughout the Admin API. Currency codes include
 // [standard ISO 4217 codes](https://en.wikipedia.org/wiki/ISO_4217), legacy codes, non-standard codes,
 // digital currency codes.
@@ -762,6 +934,60 @@ func (v *DeleteMetafieldDefinitionResponse) GetMetafieldDefinitionDelete() *Dele
 	return v.MetafieldDefinitionDelete
 }
 
+// DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload includes the requested fields of the GraphQL type MetaobjectDefinitionDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `metaobjectDefinitionDelete` mutation.
+type DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload struct {
+	// The ID of the deleted metaobjects definition.
+	DeletedId *string `json:"deletedId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayloadUserErrorsMetaobjectUserError `json:"userErrors"`
+}
+
+// GetDeletedId returns DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload.DeletedId, and is useful for accessing the field via an interface.
+func (v *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload) GetDeletedId() *string {
+	return v.DeletedId
+}
+
+// GetUserErrors returns DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload) GetUserErrors() []DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayloadUserErrorsMetaobjectUserError {
+	return v.UserErrors
+}
+
+// DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayloadUserErrorsMetaobjectUserError includes the requested fields of the GraphQL type MetaobjectUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors encountered while managing metaobject resources.
+type DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayloadUserErrorsMetaobjectUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayloadUserErrorsMetaobjectUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayloadUserErrorsMetaobjectUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayloadUserErrorsMetaobjectUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayloadUserErrorsMetaobjectUserError) GetMessage() string {
+	return v.Message
+}
+
+// DeleteMetaobjectDefinitionResponse is returned by DeleteMetaobjectDefinition on success.
+type DeleteMetaobjectDefinitionResponse struct {
+	// Deletes the specified metaobject definition.
+	// Also deletes all related metafield definitions, metaobjects, and metafields asynchronously.
+	MetaobjectDefinitionDelete *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload `json:"metaobjectDefinitionDelete"`
+}
+
+// GetMetaobjectDefinitionDelete returns DeleteMetaobjectDefinitionResponse.MetaobjectDefinitionDelete, and is useful for accessing the field via an interface.
+func (v *DeleteMetaobjectDefinitionResponse) GetMetaobjectDefinitionDelete() *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload {
+	return v.MetaobjectDefinitionDelete
+}
+
 // GetMetafieldDefinitionMetafieldDefinition includes the requested fields of the GraphQL type MetafieldDefinition.
 // The GraphQL type's documentation follows.
 //
@@ -912,6 +1138,260 @@ type GetMetafieldDefinitionResponse struct {
 // GetMetafieldDefinition returns GetMetafieldDefinitionResponse.MetafieldDefinition, and is useful for accessing the field via an interface.
 func (v *GetMetafieldDefinitionResponse) GetMetafieldDefinition() *GetMetafieldDefinitionMetafieldDefinition {
 	return v.MetafieldDefinition
+}
+
+// GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition includes the requested fields of the GraphQL type MetaobjectDefinition.
+// The GraphQL type's documentation follows.
+//
+// Defines the structure and configuration for a custom data type in Shopify. Each definition specifies the fields, validation rules, and capabilities that apply to all [`Metaobject`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metaobject) entries created from it.
+//
+// The definition includes field definitions that determine what data to store, access controls for [the Shopify admin](https://shopify.dev/docs/apps/build/custom-data/permissions#admin-permissions) and [Storefront](https://shopify.dev/docs/apps/build/custom-data/permissions#storefront-permissions) APIs, and capabilities such as publishability and translatability. You can track which [`App`](https://shopify.dev/docs/api/admin-graphql/latest/objects/App) or [`StaffMember`](https://shopify.dev/docs/api/admin-graphql/latest/objects/StaffMember) created the definition and optionally base it on a [`StandardMetaobjectDefinitionTemplate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/StandardMetaobjectDefinitionTemplate).
+type GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition struct {
+	MetaobjectDefinitionFields `json:"-"`
+}
+
+// GetId returns GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition.Id, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) GetId() string {
+	return v.MetaobjectDefinitionFields.Id
+}
+
+// GetType returns GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition.Type, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) GetType() string {
+	return v.MetaobjectDefinitionFields.Type
+}
+
+// GetName returns GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition.Name, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) GetName() string {
+	return v.MetaobjectDefinitionFields.Name
+}
+
+// GetDescription returns GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition.Description, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) GetDescription() *string {
+	return v.MetaobjectDefinitionFields.Description
+}
+
+// GetDisplayNameKey returns GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition.DisplayNameKey, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) GetDisplayNameKey() *string {
+	return v.MetaobjectDefinitionFields.DisplayNameKey
+}
+
+// GetAccess returns GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition.Access, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) GetAccess() MetaobjectDefinitionFieldsAccessMetaobjectAccess {
+	return v.MetaobjectDefinitionFields.Access
+}
+
+// GetCapabilities returns GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition.Capabilities, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) GetCapabilities() MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities {
+	return v.MetaobjectDefinitionFields.Capabilities
+}
+
+// GetFieldDefinitions returns GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition.FieldDefinitions, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) GetFieldDefinitions() []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition {
+	return v.MetaobjectDefinitionFields.FieldDefinitions
+}
+
+func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MetaobjectDefinitionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition struct {
+	Id string `json:"id"`
+
+	Type string `json:"type"`
+
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	DisplayNameKey *string `json:"displayNameKey"`
+
+	Access MetaobjectDefinitionFieldsAccessMetaobjectAccess `json:"access"`
+
+	Capabilities MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities `json:"capabilities"`
+
+	FieldDefinitions []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition `json:"fieldDefinitions"`
+}
+
+func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) __premarshalJSON() (*__premarshalGetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition, error) {
+	var retval __premarshalGetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition
+
+	retval.Id = v.MetaobjectDefinitionFields.Id
+	retval.Type = v.MetaobjectDefinitionFields.Type
+	retval.Name = v.MetaobjectDefinitionFields.Name
+	retval.Description = v.MetaobjectDefinitionFields.Description
+	retval.DisplayNameKey = v.MetaobjectDefinitionFields.DisplayNameKey
+	retval.Access = v.MetaobjectDefinitionFields.Access
+	retval.Capabilities = v.MetaobjectDefinitionFields.Capabilities
+	retval.FieldDefinitions = v.MetaobjectDefinitionFields.FieldDefinitions
+	return &retval, nil
+}
+
+// GetMetaobjectDefinitionByTypeResponse is returned by GetMetaobjectDefinitionByType on success.
+type GetMetaobjectDefinitionByTypeResponse struct {
+	// Retrieves a [`MetaobjectDefinition`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectDefinition) by its type. The type serves as a unique identifier that distinguishes one metaobject definition from another.
+	MetaobjectDefinitionByType *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition `json:"metaobjectDefinitionByType"`
+}
+
+// GetMetaobjectDefinitionByType returns GetMetaobjectDefinitionByTypeResponse.MetaobjectDefinitionByType, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionByTypeResponse) GetMetaobjectDefinitionByType() *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition {
+	return v.MetaobjectDefinitionByType
+}
+
+// GetMetaobjectDefinitionMetaobjectDefinition includes the requested fields of the GraphQL type MetaobjectDefinition.
+// The GraphQL type's documentation follows.
+//
+// Defines the structure and configuration for a custom data type in Shopify. Each definition specifies the fields, validation rules, and capabilities that apply to all [`Metaobject`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metaobject) entries created from it.
+//
+// The definition includes field definitions that determine what data to store, access controls for [the Shopify admin](https://shopify.dev/docs/apps/build/custom-data/permissions#admin-permissions) and [Storefront](https://shopify.dev/docs/apps/build/custom-data/permissions#storefront-permissions) APIs, and capabilities such as publishability and translatability. You can track which [`App`](https://shopify.dev/docs/api/admin-graphql/latest/objects/App) or [`StaffMember`](https://shopify.dev/docs/api/admin-graphql/latest/objects/StaffMember) created the definition and optionally base it on a [`StandardMetaobjectDefinitionTemplate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/StandardMetaobjectDefinitionTemplate).
+type GetMetaobjectDefinitionMetaobjectDefinition struct {
+	MetaobjectDefinitionFields `json:"-"`
+}
+
+// GetId returns GetMetaobjectDefinitionMetaobjectDefinition.Id, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionMetaobjectDefinition) GetId() string {
+	return v.MetaobjectDefinitionFields.Id
+}
+
+// GetType returns GetMetaobjectDefinitionMetaobjectDefinition.Type, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionMetaobjectDefinition) GetType() string {
+	return v.MetaobjectDefinitionFields.Type
+}
+
+// GetName returns GetMetaobjectDefinitionMetaobjectDefinition.Name, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionMetaobjectDefinition) GetName() string {
+	return v.MetaobjectDefinitionFields.Name
+}
+
+// GetDescription returns GetMetaobjectDefinitionMetaobjectDefinition.Description, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionMetaobjectDefinition) GetDescription() *string {
+	return v.MetaobjectDefinitionFields.Description
+}
+
+// GetDisplayNameKey returns GetMetaobjectDefinitionMetaobjectDefinition.DisplayNameKey, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionMetaobjectDefinition) GetDisplayNameKey() *string {
+	return v.MetaobjectDefinitionFields.DisplayNameKey
+}
+
+// GetAccess returns GetMetaobjectDefinitionMetaobjectDefinition.Access, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionMetaobjectDefinition) GetAccess() MetaobjectDefinitionFieldsAccessMetaobjectAccess {
+	return v.MetaobjectDefinitionFields.Access
+}
+
+// GetCapabilities returns GetMetaobjectDefinitionMetaobjectDefinition.Capabilities, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionMetaobjectDefinition) GetCapabilities() MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities {
+	return v.MetaobjectDefinitionFields.Capabilities
+}
+
+// GetFieldDefinitions returns GetMetaobjectDefinitionMetaobjectDefinition.FieldDefinitions, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionMetaobjectDefinition) GetFieldDefinitions() []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition {
+	return v.MetaobjectDefinitionFields.FieldDefinitions
+}
+
+func (v *GetMetaobjectDefinitionMetaobjectDefinition) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetMetaobjectDefinitionMetaobjectDefinition
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetMetaobjectDefinitionMetaobjectDefinition = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MetaobjectDefinitionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetMetaobjectDefinitionMetaobjectDefinition struct {
+	Id string `json:"id"`
+
+	Type string `json:"type"`
+
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	DisplayNameKey *string `json:"displayNameKey"`
+
+	Access MetaobjectDefinitionFieldsAccessMetaobjectAccess `json:"access"`
+
+	Capabilities MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities `json:"capabilities"`
+
+	FieldDefinitions []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition `json:"fieldDefinitions"`
+}
+
+func (v *GetMetaobjectDefinitionMetaobjectDefinition) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetMetaobjectDefinitionMetaobjectDefinition) __premarshalJSON() (*__premarshalGetMetaobjectDefinitionMetaobjectDefinition, error) {
+	var retval __premarshalGetMetaobjectDefinitionMetaobjectDefinition
+
+	retval.Id = v.MetaobjectDefinitionFields.Id
+	retval.Type = v.MetaobjectDefinitionFields.Type
+	retval.Name = v.MetaobjectDefinitionFields.Name
+	retval.Description = v.MetaobjectDefinitionFields.Description
+	retval.DisplayNameKey = v.MetaobjectDefinitionFields.DisplayNameKey
+	retval.Access = v.MetaobjectDefinitionFields.Access
+	retval.Capabilities = v.MetaobjectDefinitionFields.Capabilities
+	retval.FieldDefinitions = v.MetaobjectDefinitionFields.FieldDefinitions
+	return &retval, nil
+}
+
+// GetMetaobjectDefinitionResponse is returned by GetMetaobjectDefinition on success.
+type GetMetaobjectDefinitionResponse struct {
+	// Retrieves a [`MetaobjectDefinition`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectDefinition) by its global ID. Metaobject definitions provide the structure and fields for metaobjects.
+	//
+	// The definition includes field configurations, access settings, display preferences, and capabilities that determine how [metaobjects](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metaobject) of this type behave across the Shopify platform.
+	MetaobjectDefinition *GetMetaobjectDefinitionMetaobjectDefinition `json:"metaobjectDefinition"`
+}
+
+// GetMetaobjectDefinition returns GetMetaobjectDefinitionResponse.MetaobjectDefinition, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionResponse) GetMetaobjectDefinition() *GetMetaobjectDefinitionMetaobjectDefinition {
+	return v.MetaobjectDefinition
 }
 
 // GetShopResponse is returned by GetShop on success.
@@ -1764,6 +2244,720 @@ var AllMetafieldStorefrontAccessInput = []MetafieldStorefrontAccessInput{
 	MetafieldStorefrontAccessInputNone,
 }
 
+// The input fields that set access permissions for the definition's metaobjects.
+type MetaobjectAccessInput struct {
+	// The access permitted on the Admin API.
+	Admin *MetaobjectAdminAccessInput `json:"admin,omitempty"`
+	// The access permitted on the Storefront API.
+	Storefront *MetaobjectStorefrontAccess `json:"storefront,omitempty"`
+	// The access permitted on the Customer Account API.
+	CustomerAccount *MetaobjectCustomerAccountAccess `json:"customerAccount,omitempty"`
+}
+
+// GetAdmin returns MetaobjectAccessInput.Admin, and is useful for accessing the field via an interface.
+func (v *MetaobjectAccessInput) GetAdmin() *MetaobjectAdminAccessInput { return v.Admin }
+
+// GetStorefront returns MetaobjectAccessInput.Storefront, and is useful for accessing the field via an interface.
+func (v *MetaobjectAccessInput) GetStorefront() *MetaobjectStorefrontAccess { return v.Storefront }
+
+// GetCustomerAccount returns MetaobjectAccessInput.CustomerAccount, and is useful for accessing the field via an interface.
+func (v *MetaobjectAccessInput) GetCustomerAccount() *MetaobjectCustomerAccountAccess {
+	return v.CustomerAccount
+}
+
+// Metaobject access permissions for the Admin API. When the metaobject is app-owned, the owning app always has
+// full access.
+type MetaobjectAdminAccess string
+
+const (
+	// The merchant and other apps have no access.
+	MetaobjectAdminAccessPrivate MetaobjectAdminAccess = "PRIVATE"
+	// The merchant has read-only access. No other apps have access.
+	MetaobjectAdminAccessMerchantRead MetaobjectAdminAccess = "MERCHANT_READ"
+	// The merchant has read and write access. No other apps have access.
+	MetaobjectAdminAccessMerchantReadWrite MetaobjectAdminAccess = "MERCHANT_READ_WRITE"
+	// The merchant and other apps have read-only access.
+	MetaobjectAdminAccessPublicRead MetaobjectAdminAccess = "PUBLIC_READ"
+	// The merchant and other apps have read and write access.
+	MetaobjectAdminAccessPublicReadWrite MetaobjectAdminAccess = "PUBLIC_READ_WRITE"
+)
+
+var AllMetaobjectAdminAccess = []MetaobjectAdminAccess{
+	MetaobjectAdminAccessPrivate,
+	MetaobjectAdminAccessMerchantRead,
+	MetaobjectAdminAccessMerchantReadWrite,
+	MetaobjectAdminAccessPublicRead,
+	MetaobjectAdminAccessPublicReadWrite,
+}
+
+// Metaobject access permissions for the Admin API. When the metaobject is app-owned, the owning app always has
+// full access.
+type MetaobjectAdminAccessInput string
+
+const (
+	// The merchant has read-only access. No other apps have access.
+	MetaobjectAdminAccessInputMerchantRead MetaobjectAdminAccessInput = "MERCHANT_READ"
+	// The merchant has read and write access. No other apps have access.
+	MetaobjectAdminAccessInputMerchantReadWrite MetaobjectAdminAccessInput = "MERCHANT_READ_WRITE"
+)
+
+var AllMetaobjectAdminAccessInput = []MetaobjectAdminAccessInput{
+	MetaobjectAdminAccessInputMerchantRead,
+	MetaobjectAdminAccessInputMerchantReadWrite,
+}
+
+// The input fields for creating a metaobject capability.
+type MetaobjectCapabilityCreateInput struct {
+	// The input for enabling the publishable capability.
+	Publishable *MetaobjectCapabilityPublishableInput `json:"publishable,omitempty"`
+	// The input for enabling the translatable capability.
+	Translatable *MetaobjectCapabilityTranslatableInput `json:"translatable,omitempty"`
+	// The input for enabling the renderable capability.
+	Renderable *MetaobjectCapabilityRenderableInput `json:"renderable,omitempty"`
+	// The input for enabling the Online Store capability.
+	OnlineStore *MetaobjectCapabilityOnlineStoreInput `json:"onlineStore,omitempty"`
+}
+
+// GetPublishable returns MetaobjectCapabilityCreateInput.Publishable, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityCreateInput) GetPublishable() *MetaobjectCapabilityPublishableInput {
+	return v.Publishable
+}
+
+// GetTranslatable returns MetaobjectCapabilityCreateInput.Translatable, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityCreateInput) GetTranslatable() *MetaobjectCapabilityTranslatableInput {
+	return v.Translatable
+}
+
+// GetRenderable returns MetaobjectCapabilityCreateInput.Renderable, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityCreateInput) GetRenderable() *MetaobjectCapabilityRenderableInput {
+	return v.Renderable
+}
+
+// GetOnlineStore returns MetaobjectCapabilityCreateInput.OnlineStore, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityCreateInput) GetOnlineStore() *MetaobjectCapabilityOnlineStoreInput {
+	return v.OnlineStore
+}
+
+// The input fields of the Online Store capability.
+type MetaobjectCapabilityDefinitionDataOnlineStoreInput struct {
+	// The URL handle for accessing pages of this metaobject type in the Online Store.
+	UrlHandle string `json:"urlHandle"`
+	// Whether to redirect published metaobjects automatically when the URL handle changes.
+	CreateRedirects *bool `json:"createRedirects"`
+}
+
+// GetUrlHandle returns MetaobjectCapabilityDefinitionDataOnlineStoreInput.UrlHandle, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityDefinitionDataOnlineStoreInput) GetUrlHandle() string {
+	return v.UrlHandle
+}
+
+// GetCreateRedirects returns MetaobjectCapabilityDefinitionDataOnlineStoreInput.CreateRedirects, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityDefinitionDataOnlineStoreInput) GetCreateRedirects() *bool {
+	return v.CreateRedirects
+}
+
+// The input fields of the renderable capability for SEO aliases.
+type MetaobjectCapabilityDefinitionDataRenderableInput struct {
+	// The metaobject field used as an alias for the SEO page title.
+	MetaTitleKey *string `json:"metaTitleKey"`
+	// The metaobject field used as an alias for the SEO page description.
+	MetaDescriptionKey *string `json:"metaDescriptionKey"`
+}
+
+// GetMetaTitleKey returns MetaobjectCapabilityDefinitionDataRenderableInput.MetaTitleKey, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityDefinitionDataRenderableInput) GetMetaTitleKey() *string {
+	return v.MetaTitleKey
+}
+
+// GetMetaDescriptionKey returns MetaobjectCapabilityDefinitionDataRenderableInput.MetaDescriptionKey, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityDefinitionDataRenderableInput) GetMetaDescriptionKey() *string {
+	return v.MetaDescriptionKey
+}
+
+// The input fields for enabling and disabling the Online Store capability.
+type MetaobjectCapabilityOnlineStoreInput struct {
+	// Indicates whether the capability should be enabled or disabled.
+	Enabled bool `json:"enabled"`
+	// The data associated with the Online Store capability.
+	Data *MetaobjectCapabilityDefinitionDataOnlineStoreInput `json:"data"`
+}
+
+// GetEnabled returns MetaobjectCapabilityOnlineStoreInput.Enabled, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityOnlineStoreInput) GetEnabled() bool { return v.Enabled }
+
+// GetData returns MetaobjectCapabilityOnlineStoreInput.Data, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityOnlineStoreInput) GetData() *MetaobjectCapabilityDefinitionDataOnlineStoreInput {
+	return v.Data
+}
+
+// The input fields for enabling and disabling the publishable capability.
+type MetaobjectCapabilityPublishableInput struct {
+	// Indicates whether the capability should be enabled or disabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns MetaobjectCapabilityPublishableInput.Enabled, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityPublishableInput) GetEnabled() bool { return v.Enabled }
+
+// The input fields for enabling and disabling the renderable capability.
+type MetaobjectCapabilityRenderableInput struct {
+	// Indicates whether the capability should be enabled or disabled.
+	Enabled bool `json:"enabled"`
+	// The data associated with the renderable capability.
+	Data *MetaobjectCapabilityDefinitionDataRenderableInput `json:"data"`
+}
+
+// GetEnabled returns MetaobjectCapabilityRenderableInput.Enabled, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityRenderableInput) GetEnabled() bool { return v.Enabled }
+
+// GetData returns MetaobjectCapabilityRenderableInput.Data, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityRenderableInput) GetData() *MetaobjectCapabilityDefinitionDataRenderableInput {
+	return v.Data
+}
+
+// The input fields for enabling and disabling the translatable capability.
+type MetaobjectCapabilityTranslatableInput struct {
+	// Indicates whether the capability should be enabled or disabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns MetaobjectCapabilityTranslatableInput.Enabled, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityTranslatableInput) GetEnabled() bool { return v.Enabled }
+
+// The input fields for updating a metaobject capability.
+type MetaobjectCapabilityUpdateInput struct {
+	// The input for updating the publishable capability.
+	Publishable *MetaobjectCapabilityPublishableInput `json:"publishable,omitempty"`
+	// The input for updating the translatable capability.
+	Translatable *MetaobjectCapabilityTranslatableInput `json:"translatable,omitempty"`
+	// The input for enabling the renderable capability.
+	Renderable *MetaobjectCapabilityRenderableInput `json:"renderable,omitempty"`
+	// The input for enabling the Online Store capability.
+	OnlineStore *MetaobjectCapabilityOnlineStoreInput `json:"onlineStore,omitempty"`
+}
+
+// GetPublishable returns MetaobjectCapabilityUpdateInput.Publishable, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityUpdateInput) GetPublishable() *MetaobjectCapabilityPublishableInput {
+	return v.Publishable
+}
+
+// GetTranslatable returns MetaobjectCapabilityUpdateInput.Translatable, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityUpdateInput) GetTranslatable() *MetaobjectCapabilityTranslatableInput {
+	return v.Translatable
+}
+
+// GetRenderable returns MetaobjectCapabilityUpdateInput.Renderable, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityUpdateInput) GetRenderable() *MetaobjectCapabilityRenderableInput {
+	return v.Renderable
+}
+
+// GetOnlineStore returns MetaobjectCapabilityUpdateInput.OnlineStore, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityUpdateInput) GetOnlineStore() *MetaobjectCapabilityOnlineStoreInput {
+	return v.OnlineStore
+}
+
+// Metaobject access permissions for the Customer Account API.
+type MetaobjectCustomerAccountAccess string
+
+const (
+	// No access.
+	MetaobjectCustomerAccountAccessNone MetaobjectCustomerAccountAccess = "NONE"
+	// Read-only access.
+	MetaobjectCustomerAccountAccessRead MetaobjectCustomerAccountAccess = "READ"
+)
+
+var AllMetaobjectCustomerAccountAccess = []MetaobjectCustomerAccountAccess{
+	MetaobjectCustomerAccountAccessNone,
+	MetaobjectCustomerAccountAccessRead,
+}
+
+// The input fields for creating a metaobject definition.
+type MetaobjectDefinitionCreateInput struct {
+	// A human-readable name for the definition. This can be changed at any time.
+	Name *string `json:"name,omitempty"`
+	// An administrative description of the definition.
+	Description *string `json:"description,omitempty"`
+	// The type of the metaobject definition. This can't be changed.
+	//
+	// Must be 3-255 characters long and only contain alphanumeric, hyphen, and underscore characters.
+	Type string `json:"type"`
+	// A set of field definitions to create on this metaobject definition.
+	FieldDefinitions []MetaobjectFieldDefinitionCreateInput `json:"fieldDefinitions,omitempty"`
+	// Access configuration for the metaobjects created with this definition.
+	Access *MetaobjectAccessInput `json:"access,omitempty"`
+	// The key of a field to reference as the display name for metaobjects of this type.
+	DisplayNameKey *string `json:"displayNameKey,omitempty"`
+	// The capabilities of the metaobject definition.
+	Capabilities *MetaobjectCapabilityCreateInput `json:"capabilities,omitempty"`
+}
+
+// GetName returns MetaobjectDefinitionCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionCreateInput) GetName() *string { return v.Name }
+
+// GetDescription returns MetaobjectDefinitionCreateInput.Description, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionCreateInput) GetDescription() *string { return v.Description }
+
+// GetType returns MetaobjectDefinitionCreateInput.Type, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionCreateInput) GetType() string { return v.Type }
+
+// GetFieldDefinitions returns MetaobjectDefinitionCreateInput.FieldDefinitions, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionCreateInput) GetFieldDefinitions() []MetaobjectFieldDefinitionCreateInput {
+	return v.FieldDefinitions
+}
+
+// GetAccess returns MetaobjectDefinitionCreateInput.Access, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionCreateInput) GetAccess() *MetaobjectAccessInput { return v.Access }
+
+// GetDisplayNameKey returns MetaobjectDefinitionCreateInput.DisplayNameKey, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionCreateInput) GetDisplayNameKey() *string { return v.DisplayNameKey }
+
+// GetCapabilities returns MetaobjectDefinitionCreateInput.Capabilities, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionCreateInput) GetCapabilities() *MetaobjectCapabilityCreateInput {
+	return v.Capabilities
+}
+
+// MetaobjectDefinitionFields includes the GraphQL fields of MetaobjectDefinition requested by the fragment MetaobjectDefinitionFields.
+// The GraphQL type's documentation follows.
+//
+// Defines the structure and configuration for a custom data type in Shopify. Each definition specifies the fields, validation rules, and capabilities that apply to all [`Metaobject`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metaobject) entries created from it.
+//
+// The definition includes field definitions that determine what data to store, access controls for [the Shopify admin](https://shopify.dev/docs/apps/build/custom-data/permissions#admin-permissions) and [Storefront](https://shopify.dev/docs/apps/build/custom-data/permissions#storefront-permissions) APIs, and capabilities such as publishability and translatability. You can track which [`App`](https://shopify.dev/docs/api/admin-graphql/latest/objects/App) or [`StaffMember`](https://shopify.dev/docs/api/admin-graphql/latest/objects/StaffMember) created the definition and optionally base it on a [`StandardMetaobjectDefinitionTemplate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/StandardMetaobjectDefinitionTemplate).
+type MetaobjectDefinitionFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The type of the object definition. Defines the namespace of associated metafields.
+	Type string `json:"type"`
+	// The human-readable name.
+	Name string `json:"name"`
+	// The administrative description.
+	Description *string `json:"description"`
+	// The key of a field to reference as the display name for each object.
+	DisplayNameKey *string `json:"displayNameKey"`
+	// Access configuration for the metaobject definition.
+	Access MetaobjectDefinitionFieldsAccessMetaobjectAccess `json:"access"`
+	// The capabilities of the metaobject definition.
+	Capabilities MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities `json:"capabilities"`
+	// The fields defined for this object type.
+	FieldDefinitions []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition `json:"fieldDefinitions"`
+}
+
+// GetId returns MetaobjectDefinitionFields.Id, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFields) GetId() string { return v.Id }
+
+// GetType returns MetaobjectDefinitionFields.Type, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFields) GetType() string { return v.Type }
+
+// GetName returns MetaobjectDefinitionFields.Name, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFields) GetName() string { return v.Name }
+
+// GetDescription returns MetaobjectDefinitionFields.Description, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFields) GetDescription() *string { return v.Description }
+
+// GetDisplayNameKey returns MetaobjectDefinitionFields.DisplayNameKey, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFields) GetDisplayNameKey() *string { return v.DisplayNameKey }
+
+// GetAccess returns MetaobjectDefinitionFields.Access, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFields) GetAccess() MetaobjectDefinitionFieldsAccessMetaobjectAccess {
+	return v.Access
+}
+
+// GetCapabilities returns MetaobjectDefinitionFields.Capabilities, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFields) GetCapabilities() MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities {
+	return v.Capabilities
+}
+
+// GetFieldDefinitions returns MetaobjectDefinitionFields.FieldDefinitions, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFields) GetFieldDefinitions() []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition {
+	return v.FieldDefinitions
+}
+
+// MetaobjectDefinitionFieldsAccessMetaobjectAccess includes the requested fields of the GraphQL type MetaobjectAccess.
+// The GraphQL type's documentation follows.
+//
+// Access permissions for the definition's metaobjects.
+type MetaobjectDefinitionFieldsAccessMetaobjectAccess struct {
+	// The access permitted on the Admin API.
+	Admin MetaobjectAdminAccess `json:"admin"`
+	// The access permitted on the Storefront API.
+	Storefront MetaobjectStorefrontAccess `json:"storefront"`
+	// The access permitted on the Customer Account API.
+	CustomerAccount MetaobjectCustomerAccountAccess `json:"customerAccount"`
+}
+
+// GetAdmin returns MetaobjectDefinitionFieldsAccessMetaobjectAccess.Admin, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsAccessMetaobjectAccess) GetAdmin() MetaobjectAdminAccess {
+	return v.Admin
+}
+
+// GetStorefront returns MetaobjectDefinitionFieldsAccessMetaobjectAccess.Storefront, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsAccessMetaobjectAccess) GetStorefront() MetaobjectStorefrontAccess {
+	return v.Storefront
+}
+
+// GetCustomerAccount returns MetaobjectDefinitionFieldsAccessMetaobjectAccess.CustomerAccount, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsAccessMetaobjectAccess) GetCustomerAccount() MetaobjectCustomerAccountAccess {
+	return v.CustomerAccount
+}
+
+// MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities includes the requested fields of the GraphQL type MetaobjectCapabilities.
+// The GraphQL type's documentation follows.
+//
+// Provides the capabilities of a metaobject definition.
+type MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities struct {
+	// Indicate whether a metaobject definition is publishable.
+	Publishable MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesPublishable `json:"publishable"`
+	// Indicate whether a metaobject definition is translatable.
+	Translatable MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesTranslatable `json:"translatable"`
+	// Indicate whether a metaobject definition is renderable and exposes SEO data.
+	Renderable *MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesRenderable `json:"renderable"`
+}
+
+// GetPublishable returns MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities.Publishable, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities) GetPublishable() MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesPublishable {
+	return v.Publishable
+}
+
+// GetTranslatable returns MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities.Translatable, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities) GetTranslatable() MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesTranslatable {
+	return v.Translatable
+}
+
+// GetRenderable returns MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities.Renderable, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities) GetRenderable() *MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesRenderable {
+	return v.Renderable
+}
+
+// MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesPublishable includes the requested fields of the GraphQL type MetaobjectCapabilitiesPublishable.
+// The GraphQL type's documentation follows.
+//
+// The publishable capability of a metaobject definition.
+type MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesPublishable struct {
+	// Indicates if the capability is enabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesPublishable.Enabled, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesPublishable) GetEnabled() bool {
+	return v.Enabled
+}
+
+// MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesRenderable includes the requested fields of the GraphQL type MetaobjectCapabilitiesRenderable.
+// The GraphQL type's documentation follows.
+//
+// The renderable capability of a metaobject definition.
+type MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesRenderable struct {
+	// Indicates if the capability is enabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesRenderable.Enabled, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesRenderable) GetEnabled() bool {
+	return v.Enabled
+}
+
+// MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesTranslatable includes the requested fields of the GraphQL type MetaobjectCapabilitiesTranslatable.
+// The GraphQL type's documentation follows.
+//
+// The translatable capability of a metaobject definition.
+type MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesTranslatable struct {
+	// Indicates if the capability is enabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesTranslatable.Enabled, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilitiesTranslatable) GetEnabled() bool {
+	return v.Enabled
+}
+
+// MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition includes the requested fields of the GraphQL type MetaobjectFieldDefinition.
+// The GraphQL type's documentation follows.
+//
+// Defines a field for a MetaobjectDefinition with properties
+// such as the field's data type and validations.
+type MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition struct {
+	// A key name used to identify the field within the metaobject composition.
+	Key string `json:"key"`
+	// The human-readable name.
+	Name string `json:"name"`
+	// The administrative description.
+	Description *string `json:"description"`
+	// Required status of the field within the metaobject composition.
+	Required bool `json:"required"`
+	// The type of data that the field stores.
+	Type MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionTypeMetafieldDefinitionType `json:"type"`
+	// A list of [validation options](https://shopify.dev/apps/metafields/definitions/validation) for
+	// the field. For example, a field with the type `date` can set a minimum date requirement.
+	Validations []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionValidationsMetafieldDefinitionValidation `json:"validations"`
+}
+
+// GetKey returns MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition.Key, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition) GetKey() string {
+	return v.Key
+}
+
+// GetName returns MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition.Name, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition) GetName() string {
+	return v.Name
+}
+
+// GetDescription returns MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition.Description, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition) GetDescription() *string {
+	return v.Description
+}
+
+// GetRequired returns MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition.Required, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition) GetRequired() bool {
+	return v.Required
+}
+
+// GetType returns MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition.Type, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition) GetType() MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionTypeMetafieldDefinitionType {
+	return v.Type
+}
+
+// GetValidations returns MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition.Validations, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition) GetValidations() []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionValidationsMetafieldDefinitionValidation {
+	return v.Validations
+}
+
+// MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionTypeMetafieldDefinitionType includes the requested fields of the GraphQL type MetafieldDefinitionType.
+// The GraphQL type's documentation follows.
+//
+// A metafield definition type provides basic foundation and validation for a metafield.
+type MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionTypeMetafieldDefinitionType struct {
+	// The name of the type for the metafield definition.
+	// See the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Name string `json:"name"`
+}
+
+// GetName returns MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionTypeMetafieldDefinitionType.Name, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionTypeMetafieldDefinitionType) GetName() string {
+	return v.Name
+}
+
+// MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionValidationsMetafieldDefinitionValidation includes the requested fields of the GraphQL type MetafieldDefinitionValidation.
+// The GraphQL type's documentation follows.
+//
+// A configured metafield definition validation.
+//
+// For example, for a metafield definition of `number_integer` type, you can set a validation with the name `max`
+// and a value of `15`. This validation will ensure that the value of the metafield is a number less than or equal to 15.
+//
+// Refer to the [list of supported validations](https://shopify.dev/docs/apps/build/metafields/list-of-validation-options).
+type MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionValidationsMetafieldDefinitionValidation struct {
+	// The validation name.
+	Name string `json:"name"`
+	// The validation value.
+	Value *string `json:"value"`
+}
+
+// GetName returns MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionValidationsMetafieldDefinitionValidation.Name, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionValidationsMetafieldDefinitionValidation) GetName() string {
+	return v.Name
+}
+
+// GetValue returns MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionValidationsMetafieldDefinitionValidation.Value, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionValidationsMetafieldDefinitionValidation) GetValue() *string {
+	return v.Value
+}
+
+// The input fields for updating a metaobject definition.
+type MetaobjectDefinitionUpdateInput struct {
+	// A human-readable name for the definition.
+	Name *string `json:"name,omitempty"`
+	// An administrative description of the definition.
+	Description *string `json:"description,omitempty"`
+	// A set of operations for modifying field definitions.
+	FieldDefinitions []MetaobjectFieldDefinitionOperationInput `json:"fieldDefinitions,omitempty"`
+	// Access configuration for the metaobjects created with this definition.
+	Access *MetaobjectAccessInput `json:"access,omitempty"`
+	// The key of a metafield to reference as the display name for objects of this type.
+	DisplayNameKey *string `json:"displayNameKey,omitempty"`
+	// Whether the field order should be reset while updating.
+	// If `true`, then the order is assigned based on submitted fields followed by alphabetized field omissions.
+	// If `false`, then no changes are made to the existing field order and new fields are appended at the end.
+	ResetFieldOrder *bool `json:"resetFieldOrder,omitempty"`
+	// The capabilities of the metaobject definition.
+	Capabilities *MetaobjectCapabilityUpdateInput `json:"capabilities,omitempty"`
+}
+
+// GetName returns MetaobjectDefinitionUpdateInput.Name, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionUpdateInput) GetName() *string { return v.Name }
+
+// GetDescription returns MetaobjectDefinitionUpdateInput.Description, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionUpdateInput) GetDescription() *string { return v.Description }
+
+// GetFieldDefinitions returns MetaobjectDefinitionUpdateInput.FieldDefinitions, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionUpdateInput) GetFieldDefinitions() []MetaobjectFieldDefinitionOperationInput {
+	return v.FieldDefinitions
+}
+
+// GetAccess returns MetaobjectDefinitionUpdateInput.Access, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionUpdateInput) GetAccess() *MetaobjectAccessInput { return v.Access }
+
+// GetDisplayNameKey returns MetaobjectDefinitionUpdateInput.DisplayNameKey, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionUpdateInput) GetDisplayNameKey() *string { return v.DisplayNameKey }
+
+// GetResetFieldOrder returns MetaobjectDefinitionUpdateInput.ResetFieldOrder, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionUpdateInput) GetResetFieldOrder() *bool { return v.ResetFieldOrder }
+
+// GetCapabilities returns MetaobjectDefinitionUpdateInput.Capabilities, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionUpdateInput) GetCapabilities() *MetaobjectCapabilityUpdateInput {
+	return v.Capabilities
+}
+
+// The input fields for enabling and disabling the admin filterable capability.
+type MetaobjectFieldCapabilityAdminFilterableInput struct {
+	// Indicates whether the capability should be enabled or disabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns MetaobjectFieldCapabilityAdminFilterableInput.Enabled, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldCapabilityAdminFilterableInput) GetEnabled() bool { return v.Enabled }
+
+// The input fields for creating capabilities on a metaobject field definition.
+type MetaobjectFieldDefinitionCapabilityCreateInput struct {
+	// The input for configuring the admin filterable capability.
+	AdminFilterable *MetaobjectFieldCapabilityAdminFilterableInput `json:"adminFilterable"`
+}
+
+// GetAdminFilterable returns MetaobjectFieldDefinitionCapabilityCreateInput.AdminFilterable, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionCapabilityCreateInput) GetAdminFilterable() *MetaobjectFieldCapabilityAdminFilterableInput {
+	return v.AdminFilterable
+}
+
+// The input fields for creating a metaobject field definition.
+type MetaobjectFieldDefinitionCreateInput struct {
+	// The key of the new field definition. This can't be changed.
+	//
+	// Must be 2-64 characters long and only contain alphanumeric, hyphen, and underscore characters.
+	Key string `json:"key"`
+	// The metafield type applied to values of the field.
+	Type string `json:"type"`
+	// A human-readable name for the field. This can be changed at any time.
+	Name *string `json:"name,omitempty"`
+	// An administrative description of the field.
+	Description *string `json:"description,omitempty"`
+	// Whether metaobjects require a saved value for the field.
+	Required *bool `json:"required,omitempty"`
+	// Custom validations that apply to values assigned to the field.
+	Validations []MetafieldDefinitionValidationInput `json:"validations,omitempty"`
+	// Capabilities configuration for this field.
+	Capabilities *MetaobjectFieldDefinitionCapabilityCreateInput `json:"capabilities,omitempty"`
+}
+
+// GetKey returns MetaobjectFieldDefinitionCreateInput.Key, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionCreateInput) GetKey() string { return v.Key }
+
+// GetType returns MetaobjectFieldDefinitionCreateInput.Type, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionCreateInput) GetType() string { return v.Type }
+
+// GetName returns MetaobjectFieldDefinitionCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionCreateInput) GetName() *string { return v.Name }
+
+// GetDescription returns MetaobjectFieldDefinitionCreateInput.Description, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionCreateInput) GetDescription() *string { return v.Description }
+
+// GetRequired returns MetaobjectFieldDefinitionCreateInput.Required, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionCreateInput) GetRequired() *bool { return v.Required }
+
+// GetValidations returns MetaobjectFieldDefinitionCreateInput.Validations, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionCreateInput) GetValidations() []MetafieldDefinitionValidationInput {
+	return v.Validations
+}
+
+// GetCapabilities returns MetaobjectFieldDefinitionCreateInput.Capabilities, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionCreateInput) GetCapabilities() *MetaobjectFieldDefinitionCapabilityCreateInput {
+	return v.Capabilities
+}
+
+// The input fields for deleting a metaobject field definition.
+type MetaobjectFieldDefinitionDeleteInput struct {
+	// The key of the field definition to delete.
+	Key string `json:"key"`
+}
+
+// GetKey returns MetaobjectFieldDefinitionDeleteInput.Key, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionDeleteInput) GetKey() string { return v.Key }
+
+// The input fields for possible operations for modifying field definitions. Exactly one option is required.
+type MetaobjectFieldDefinitionOperationInput struct {
+	// The input fields for creating a metaobject field definition.
+	Create *MetaobjectFieldDefinitionCreateInput `json:"create,omitempty"`
+	// The input fields for updating a metaobject field definition.
+	Update *MetaobjectFieldDefinitionUpdateInput `json:"update,omitempty"`
+	// The input fields for deleting a metaobject field definition.
+	Delete *MetaobjectFieldDefinitionDeleteInput `json:"delete,omitempty"`
+}
+
+// GetCreate returns MetaobjectFieldDefinitionOperationInput.Create, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionOperationInput) GetCreate() *MetaobjectFieldDefinitionCreateInput {
+	return v.Create
+}
+
+// GetUpdate returns MetaobjectFieldDefinitionOperationInput.Update, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionOperationInput) GetUpdate() *MetaobjectFieldDefinitionUpdateInput {
+	return v.Update
+}
+
+// GetDelete returns MetaobjectFieldDefinitionOperationInput.Delete, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionOperationInput) GetDelete() *MetaobjectFieldDefinitionDeleteInput {
+	return v.Delete
+}
+
+// The input fields for updating a metaobject field definition.
+type MetaobjectFieldDefinitionUpdateInput struct {
+	// The key of the field definition to update.
+	Key string `json:"key"`
+	// A human-readable name for the field.
+	Name *string `json:"name,omitempty"`
+	// An administrative description of the field.
+	Description *string `json:"description,omitempty"`
+	// Whether metaobjects require a saved value for the field.
+	Required *bool `json:"required,omitempty"`
+	// Custom validations that apply to values assigned to the field.
+	Validations []MetafieldDefinitionValidationInput `json:"validations"`
+	// Capabilities configuration for this field.
+	Capabilities *MetaobjectFieldDefinitionCapabilityCreateInput `json:"capabilities,omitempty"`
+}
+
+// GetKey returns MetaobjectFieldDefinitionUpdateInput.Key, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionUpdateInput) GetKey() string { return v.Key }
+
+// GetName returns MetaobjectFieldDefinitionUpdateInput.Name, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionUpdateInput) GetName() *string { return v.Name }
+
+// GetDescription returns MetaobjectFieldDefinitionUpdateInput.Description, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionUpdateInput) GetDescription() *string { return v.Description }
+
+// GetRequired returns MetaobjectFieldDefinitionUpdateInput.Required, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionUpdateInput) GetRequired() *bool { return v.Required }
+
+// GetValidations returns MetaobjectFieldDefinitionUpdateInput.Validations, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionUpdateInput) GetValidations() []MetafieldDefinitionValidationInput {
+	return v.Validations
+}
+
+// GetCapabilities returns MetaobjectFieldDefinitionUpdateInput.Capabilities, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldDefinitionUpdateInput) GetCapabilities() *MetaobjectFieldDefinitionCapabilityCreateInput {
+	return v.Capabilities
+}
+
+// Metaobject access permissions for the Storefront API.
+type MetaobjectStorefrontAccess string
+
+const (
+	// No access.
+	MetaobjectStorefrontAccessNone MetaobjectStorefrontAccess = "NONE"
+	// Read-only access.
+	MetaobjectStorefrontAccessPublicRead MetaobjectStorefrontAccess = "PUBLIC_READ"
+)
+
+var AllMetaobjectStorefrontAccess = []MetaobjectStorefrontAccess{
+	MetaobjectStorefrontAccessNone,
+	MetaobjectStorefrontAccessPublicRead,
+}
+
 // UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayload includes the requested fields of the GraphQL type MetafieldDefinitionUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -1962,6 +3156,178 @@ func (v *UpdateMetafieldDefinitionResponse) GetMetafieldDefinitionUpdate() *Upda
 	return v.MetafieldDefinitionUpdate
 }
 
+// UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayload includes the requested fields of the GraphQL type MetaobjectDefinitionUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `metaobjectDefinitionUpdate` mutation.
+type UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayload struct {
+	// The updated metaobject definition.
+	MetaobjectDefinition *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition `json:"metaobjectDefinition"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadUserErrorsMetaobjectUserError `json:"userErrors"`
+}
+
+// GetMetaobjectDefinition returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayload.MetaobjectDefinition, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayload) GetMetaobjectDefinition() *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition {
+	return v.MetaobjectDefinition
+}
+
+// GetUserErrors returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayload) GetUserErrors() []UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadUserErrorsMetaobjectUserError {
+	return v.UserErrors
+}
+
+// UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition includes the requested fields of the GraphQL type MetaobjectDefinition.
+// The GraphQL type's documentation follows.
+//
+// Defines the structure and configuration for a custom data type in Shopify. Each definition specifies the fields, validation rules, and capabilities that apply to all [`Metaobject`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metaobject) entries created from it.
+//
+// The definition includes field definitions that determine what data to store, access controls for [the Shopify admin](https://shopify.dev/docs/apps/build/custom-data/permissions#admin-permissions) and [Storefront](https://shopify.dev/docs/apps/build/custom-data/permissions#storefront-permissions) APIs, and capabilities such as publishability and translatability. You can track which [`App`](https://shopify.dev/docs/api/admin-graphql/latest/objects/App) or [`StaffMember`](https://shopify.dev/docs/api/admin-graphql/latest/objects/StaffMember) created the definition and optionally base it on a [`StandardMetaobjectDefinitionTemplate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/StandardMetaobjectDefinitionTemplate).
+type UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition struct {
+	MetaobjectDefinitionFields `json:"-"`
+}
+
+// GetId returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition.Id, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) GetId() string {
+	return v.MetaobjectDefinitionFields.Id
+}
+
+// GetType returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition.Type, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) GetType() string {
+	return v.MetaobjectDefinitionFields.Type
+}
+
+// GetName returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition.Name, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) GetName() string {
+	return v.MetaobjectDefinitionFields.Name
+}
+
+// GetDescription returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition.Description, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) GetDescription() *string {
+	return v.MetaobjectDefinitionFields.Description
+}
+
+// GetDisplayNameKey returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition.DisplayNameKey, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) GetDisplayNameKey() *string {
+	return v.MetaobjectDefinitionFields.DisplayNameKey
+}
+
+// GetAccess returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition.Access, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) GetAccess() MetaobjectDefinitionFieldsAccessMetaobjectAccess {
+	return v.MetaobjectDefinitionFields.Access
+}
+
+// GetCapabilities returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition.Capabilities, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) GetCapabilities() MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities {
+	return v.MetaobjectDefinitionFields.Capabilities
+}
+
+// GetFieldDefinitions returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition.FieldDefinitions, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) GetFieldDefinitions() []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition {
+	return v.MetaobjectDefinitionFields.FieldDefinitions
+}
+
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MetaobjectDefinitionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition struct {
+	Id string `json:"id"`
+
+	Type string `json:"type"`
+
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	DisplayNameKey *string `json:"displayNameKey"`
+
+	Access MetaobjectDefinitionFieldsAccessMetaobjectAccess `json:"access"`
+
+	Capabilities MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities `json:"capabilities"`
+
+	FieldDefinitions []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition `json:"fieldDefinitions"`
+}
+
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) __premarshalJSON() (*__premarshalUpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition, error) {
+	var retval __premarshalUpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition
+
+	retval.Id = v.MetaobjectDefinitionFields.Id
+	retval.Type = v.MetaobjectDefinitionFields.Type
+	retval.Name = v.MetaobjectDefinitionFields.Name
+	retval.Description = v.MetaobjectDefinitionFields.Description
+	retval.DisplayNameKey = v.MetaobjectDefinitionFields.DisplayNameKey
+	retval.Access = v.MetaobjectDefinitionFields.Access
+	retval.Capabilities = v.MetaobjectDefinitionFields.Capabilities
+	retval.FieldDefinitions = v.MetaobjectDefinitionFields.FieldDefinitions
+	return &retval, nil
+}
+
+// UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadUserErrorsMetaobjectUserError includes the requested fields of the GraphQL type MetaobjectUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors encountered while managing metaobject resources.
+type UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadUserErrorsMetaobjectUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadUserErrorsMetaobjectUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadUserErrorsMetaobjectUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadUserErrorsMetaobjectUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadUserErrorsMetaobjectUserError) GetMessage() string {
+	return v.Message
+}
+
+// UpdateMetaobjectDefinitionResponse is returned by UpdateMetaobjectDefinition on success.
+type UpdateMetaobjectDefinitionResponse struct {
+	// Updates a [`MetaobjectDefinition`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectDefinition)'s configuration and field structure. You can modify the definition's name, description, display name key, access controls, and capabilities, as well as those of all its fields.
+	//
+	// The mutation supports reordering fields when `resetFieldOrder` is `true`, which arranges submitted fields first followed by alphabetized omitted fields.
+	//
+	// Learn more about [managing metaobjects](https://shopify.dev/docs/apps/build/custom-data/metaobjects/manage-metaobjects).
+	MetaobjectDefinitionUpdate *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayload `json:"metaobjectDefinitionUpdate"`
+}
+
+// GetMetaobjectDefinitionUpdate returns UpdateMetaobjectDefinitionResponse.MetaobjectDefinitionUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionResponse) GetMetaobjectDefinitionUpdate() *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayload {
+	return v.MetaobjectDefinitionUpdate
+}
+
 // __CreateMetafieldDefinitionInput is used internally by genqlient
 type __CreateMetafieldDefinitionInput struct {
 	Definition MetafieldDefinitionInput `json:"definition"`
@@ -1969,6 +3335,16 @@ type __CreateMetafieldDefinitionInput struct {
 
 // GetDefinition returns __CreateMetafieldDefinitionInput.Definition, and is useful for accessing the field via an interface.
 func (v *__CreateMetafieldDefinitionInput) GetDefinition() MetafieldDefinitionInput {
+	return v.Definition
+}
+
+// __CreateMetaobjectDefinitionInput is used internally by genqlient
+type __CreateMetaobjectDefinitionInput struct {
+	Definition MetaobjectDefinitionCreateInput `json:"definition"`
+}
+
+// GetDefinition returns __CreateMetaobjectDefinitionInput.Definition, and is useful for accessing the field via an interface.
+func (v *__CreateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinitionCreateInput {
 	return v.Definition
 }
 
@@ -1986,6 +3362,14 @@ func (v *__DeleteMetafieldDefinitionInput) GetDeleteAllAssociatedMetafields() bo
 	return v.DeleteAllAssociatedMetafields
 }
 
+// __DeleteMetaobjectDefinitionInput is used internally by genqlient
+type __DeleteMetaobjectDefinitionInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteMetaobjectDefinitionInput) GetId() string { return v.Id }
+
 // __GetMetafieldDefinitionInput is used internally by genqlient
 type __GetMetafieldDefinitionInput struct {
 	Identifier MetafieldDefinitionIdentifierInput `json:"identifier"`
@@ -1996,6 +3380,22 @@ func (v *__GetMetafieldDefinitionInput) GetIdentifier() MetafieldDefinitionIdent
 	return v.Identifier
 }
 
+// __GetMetaobjectDefinitionByTypeInput is used internally by genqlient
+type __GetMetaobjectDefinitionByTypeInput struct {
+	DefinitionType string `json:"definitionType"`
+}
+
+// GetDefinitionType returns __GetMetaobjectDefinitionByTypeInput.DefinitionType, and is useful for accessing the field via an interface.
+func (v *__GetMetaobjectDefinitionByTypeInput) GetDefinitionType() string { return v.DefinitionType }
+
+// __GetMetaobjectDefinitionInput is used internally by genqlient
+type __GetMetaobjectDefinitionInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetMetaobjectDefinitionInput) GetId() string { return v.Id }
+
 // __UpdateMetafieldDefinitionInput is used internally by genqlient
 type __UpdateMetafieldDefinitionInput struct {
 	Definition MetafieldDefinitionUpdateInput `json:"definition"`
@@ -2003,6 +3403,20 @@ type __UpdateMetafieldDefinitionInput struct {
 
 // GetDefinition returns __UpdateMetafieldDefinitionInput.Definition, and is useful for accessing the field via an interface.
 func (v *__UpdateMetafieldDefinitionInput) GetDefinition() MetafieldDefinitionUpdateInput {
+	return v.Definition
+}
+
+// __UpdateMetaobjectDefinitionInput is used internally by genqlient
+type __UpdateMetaobjectDefinitionInput struct {
+	Id         string                          `json:"id"`
+	Definition MetaobjectDefinitionUpdateInput `json:"definition"`
+}
+
+// GetId returns __UpdateMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateMetaobjectDefinitionInput) GetId() string { return v.Id }
+
+// GetDefinition returns __UpdateMetaobjectDefinitionInput.Definition, and is useful for accessing the field via an interface.
+func (v *__UpdateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinitionUpdateInput {
 	return v.Definition
 }
 
@@ -2073,6 +3487,83 @@ func CreateMetafieldDefinition(
 	return data_, err_
 }
 
+// The mutation executed by CreateMetaobjectDefinition.
+const CreateMetaobjectDefinition_Operation = `
+mutation CreateMetaobjectDefinition ($definition: MetaobjectDefinitionCreateInput!) {
+	metaobjectDefinitionCreate(definition: $definition) {
+		metaobjectDefinition {
+			... MetaobjectDefinitionFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment MetaobjectDefinitionFields on MetaobjectDefinition {
+	id
+	type
+	name
+	description
+	displayNameKey
+	access {
+		admin
+		storefront
+		customerAccount
+	}
+	capabilities {
+		publishable {
+			enabled
+		}
+		translatable {
+			enabled
+		}
+		renderable {
+			enabled
+		}
+	}
+	fieldDefinitions {
+		key
+		name
+		description
+		required
+		type {
+			name
+		}
+		validations {
+			name
+			value
+		}
+	}
+}
+`
+
+// Unset optional inputs must be omitted, not sent as null, so admin edits to unmanaged attributes survive.
+func CreateMetaobjectDefinition(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	definition MetaobjectDefinitionCreateInput,
+) (data_ *CreateMetaobjectDefinitionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateMetaobjectDefinition",
+		Query:  CreateMetaobjectDefinition_Operation,
+		Variables: &__CreateMetaobjectDefinitionInput{
+			Definition: definition,
+		},
+	}
+
+	data_ = &CreateMetaobjectDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by DeleteMetafieldDefinition.
 const DeleteMetafieldDefinition_Operation = `
 mutation DeleteMetafieldDefinition ($id: ID!, $deleteAllAssociatedMetafields: Boolean!) {
@@ -2102,6 +3593,44 @@ func DeleteMetafieldDefinition(
 	}
 
 	data_ = &DeleteMetafieldDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteMetaobjectDefinition.
+const DeleteMetaobjectDefinition_Operation = `
+mutation DeleteMetaobjectDefinition ($id: ID!) {
+	metaobjectDefinitionDelete(id: $id) {
+		deletedId
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DeleteMetaobjectDefinition(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteMetaobjectDefinitionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteMetaobjectDefinition",
+		Query:  DeleteMetaobjectDefinition_Operation,
+		Variables: &__DeleteMetaobjectDefinitionInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteMetaobjectDefinitionResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -2162,6 +3691,146 @@ func GetMetafieldDefinition(
 	}
 
 	data_ = &GetMetafieldDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetMetaobjectDefinition.
+const GetMetaobjectDefinition_Operation = `
+query GetMetaobjectDefinition ($id: ID!) {
+	metaobjectDefinition(id: $id) {
+		... MetaobjectDefinitionFields
+	}
+}
+fragment MetaobjectDefinitionFields on MetaobjectDefinition {
+	id
+	type
+	name
+	description
+	displayNameKey
+	access {
+		admin
+		storefront
+		customerAccount
+	}
+	capabilities {
+		publishable {
+			enabled
+		}
+		translatable {
+			enabled
+		}
+		renderable {
+			enabled
+		}
+	}
+	fieldDefinitions {
+		key
+		name
+		description
+		required
+		type {
+			name
+		}
+		validations {
+			name
+			value
+		}
+	}
+}
+`
+
+func GetMetaobjectDefinition(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetMetaobjectDefinitionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetMetaobjectDefinition",
+		Query:  GetMetaobjectDefinition_Operation,
+		Variables: &__GetMetaobjectDefinitionInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetMetaobjectDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetMetaobjectDefinitionByType.
+const GetMetaobjectDefinitionByType_Operation = `
+query GetMetaobjectDefinitionByType ($definitionType: String!) {
+	metaobjectDefinitionByType(type: $definitionType) {
+		... MetaobjectDefinitionFields
+	}
+}
+fragment MetaobjectDefinitionFields on MetaobjectDefinition {
+	id
+	type
+	name
+	description
+	displayNameKey
+	access {
+		admin
+		storefront
+		customerAccount
+	}
+	capabilities {
+		publishable {
+			enabled
+		}
+		translatable {
+			enabled
+		}
+		renderable {
+			enabled
+		}
+	}
+	fieldDefinitions {
+		key
+		name
+		description
+		required
+		type {
+			name
+		}
+		validations {
+			name
+			value
+		}
+	}
+}
+`
+
+func GetMetaobjectDefinitionByType(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	definitionType string,
+) (data_ *GetMetaobjectDefinitionByTypeResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetMetaobjectDefinitionByType",
+		Query:  GetMetaobjectDefinitionByType_Operation,
+		Variables: &__GetMetaobjectDefinitionByTypeInput{
+			DefinitionType: definitionType,
+		},
+	}
+
+	data_ = &GetMetaobjectDefinitionByTypeResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -2270,6 +3939,85 @@ func UpdateMetafieldDefinition(
 	}
 
 	data_ = &UpdateMetafieldDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateMetaobjectDefinition.
+const UpdateMetaobjectDefinition_Operation = `
+mutation UpdateMetaobjectDefinition ($id: ID!, $definition: MetaobjectDefinitionUpdateInput!) {
+	metaobjectDefinitionUpdate(id: $id, definition: $definition) {
+		metaobjectDefinition {
+			... MetaobjectDefinitionFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment MetaobjectDefinitionFields on MetaobjectDefinition {
+	id
+	type
+	name
+	description
+	displayNameKey
+	access {
+		admin
+		storefront
+		customerAccount
+	}
+	capabilities {
+		publishable {
+			enabled
+		}
+		translatable {
+			enabled
+		}
+		renderable {
+			enabled
+		}
+	}
+	fieldDefinitions {
+		key
+		name
+		description
+		required
+		type {
+			name
+		}
+		validations {
+			name
+			value
+		}
+	}
+}
+`
+
+// Field validations are always sent as a list on update, so an empty one clears them.
+func UpdateMetaobjectDefinition(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	definition MetaobjectDefinitionUpdateInput,
+) (data_ *UpdateMetaobjectDefinitionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateMetaobjectDefinition",
+		Query:  UpdateMetaobjectDefinition_Operation,
+		Variables: &__UpdateMetaobjectDefinitionInput{
+			Id:         id,
+			Definition: definition,
+		},
+	}
+
+	data_ = &UpdateMetaobjectDefinitionResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
