@@ -9,6 +9,1065 @@ import (
 	"github.com/Khan/genqlient/graphql"
 )
 
+// ActivateLocationLocationActivateLocationActivatePayload includes the requested fields of the GraphQL type LocationActivatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `locationActivate` mutation.
+type ActivateLocationLocationActivateLocationActivatePayload struct {
+	// The location that was activated.
+	Location *ActivateLocationLocationActivateLocationActivatePayloadLocation `json:"location"`
+	// The list of errors that occurred from executing the mutation.
+	LocationActivateUserErrors []ActivateLocationLocationActivateLocationActivatePayloadLocationActivateUserErrorsLocationActivateUserError `json:"locationActivateUserErrors"`
+}
+
+// GetLocation returns ActivateLocationLocationActivateLocationActivatePayload.Location, and is useful for accessing the field via an interface.
+func (v *ActivateLocationLocationActivateLocationActivatePayload) GetLocation() *ActivateLocationLocationActivateLocationActivatePayloadLocation {
+	return v.Location
+}
+
+// GetLocationActivateUserErrors returns ActivateLocationLocationActivateLocationActivatePayload.LocationActivateUserErrors, and is useful for accessing the field via an interface.
+func (v *ActivateLocationLocationActivateLocationActivatePayload) GetLocationActivateUserErrors() []ActivateLocationLocationActivateLocationActivatePayloadLocationActivateUserErrorsLocationActivateUserError {
+	return v.LocationActivateUserErrors
+}
+
+// ActivateLocationLocationActivateLocationActivatePayloadLocation includes the requested fields of the GraphQL type Location.
+// The GraphQL type's documentation follows.
+//
+// A physical location where merchants store and fulfill inventory. Locations include retail stores, warehouses, popups, dropshippers, or other places where inventory is managed or stocked.
+//
+// Active locations can fulfill online orders when configured with shipping rates, local pickup, or local delivery options. Locations track inventory quantities for [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and process [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order) fulfillment. Third-party apps using [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) can create and manage their own locations.
+type ActivateLocationLocationActivateLocationActivatePayloadLocation struct {
+	LocationFields `json:"-"`
+}
+
+// GetId returns ActivateLocationLocationActivateLocationActivatePayloadLocation.Id, and is useful for accessing the field via an interface.
+func (v *ActivateLocationLocationActivateLocationActivatePayloadLocation) GetId() string {
+	return v.LocationFields.Id
+}
+
+// GetLegacyResourceId returns ActivateLocationLocationActivateLocationActivatePayloadLocation.LegacyResourceId, and is useful for accessing the field via an interface.
+func (v *ActivateLocationLocationActivateLocationActivatePayloadLocation) GetLegacyResourceId() string {
+	return v.LocationFields.LegacyResourceId
+}
+
+// GetName returns ActivateLocationLocationActivateLocationActivatePayloadLocation.Name, and is useful for accessing the field via an interface.
+func (v *ActivateLocationLocationActivateLocationActivatePayloadLocation) GetName() string {
+	return v.LocationFields.Name
+}
+
+// GetIsActive returns ActivateLocationLocationActivateLocationActivatePayloadLocation.IsActive, and is useful for accessing the field via an interface.
+func (v *ActivateLocationLocationActivateLocationActivatePayloadLocation) GetIsActive() bool {
+	return v.LocationFields.IsActive
+}
+
+// GetFulfillsOnlineOrders returns ActivateLocationLocationActivateLocationActivatePayloadLocation.FulfillsOnlineOrders, and is useful for accessing the field via an interface.
+func (v *ActivateLocationLocationActivateLocationActivatePayloadLocation) GetFulfillsOnlineOrders() bool {
+	return v.LocationFields.FulfillsOnlineOrders
+}
+
+// GetAddress returns ActivateLocationLocationActivateLocationActivatePayloadLocation.Address, and is useful for accessing the field via an interface.
+func (v *ActivateLocationLocationActivateLocationActivatePayloadLocation) GetAddress() LocationFieldsAddressLocationAddress {
+	return v.LocationFields.Address
+}
+
+func (v *ActivateLocationLocationActivateLocationActivatePayloadLocation) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ActivateLocationLocationActivateLocationActivatePayloadLocation
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ActivateLocationLocationActivateLocationActivatePayloadLocation = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.LocationFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalActivateLocationLocationActivateLocationActivatePayloadLocation struct {
+	Id string `json:"id"`
+
+	LegacyResourceId string `json:"legacyResourceId"`
+
+	Name string `json:"name"`
+
+	IsActive bool `json:"isActive"`
+
+	FulfillsOnlineOrders bool `json:"fulfillsOnlineOrders"`
+
+	Address LocationFieldsAddressLocationAddress `json:"address"`
+}
+
+func (v *ActivateLocationLocationActivateLocationActivatePayloadLocation) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ActivateLocationLocationActivateLocationActivatePayloadLocation) __premarshalJSON() (*__premarshalActivateLocationLocationActivateLocationActivatePayloadLocation, error) {
+	var retval __premarshalActivateLocationLocationActivateLocationActivatePayloadLocation
+
+	retval.Id = v.LocationFields.Id
+	retval.LegacyResourceId = v.LocationFields.LegacyResourceId
+	retval.Name = v.LocationFields.Name
+	retval.IsActive = v.LocationFields.IsActive
+	retval.FulfillsOnlineOrders = v.LocationFields.FulfillsOnlineOrders
+	retval.Address = v.LocationFields.Address
+	return &retval, nil
+}
+
+// ActivateLocationLocationActivateLocationActivatePayloadLocationActivateUserErrorsLocationActivateUserError includes the requested fields of the GraphQL type LocationActivateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs while activating a location.
+type ActivateLocationLocationActivateLocationActivatePayloadLocationActivateUserErrorsLocationActivateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns ActivateLocationLocationActivateLocationActivatePayloadLocationActivateUserErrorsLocationActivateUserError.Field, and is useful for accessing the field via an interface.
+func (v *ActivateLocationLocationActivateLocationActivatePayloadLocationActivateUserErrorsLocationActivateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns ActivateLocationLocationActivateLocationActivatePayloadLocationActivateUserErrorsLocationActivateUserError.Message, and is useful for accessing the field via an interface.
+func (v *ActivateLocationLocationActivateLocationActivatePayloadLocationActivateUserErrorsLocationActivateUserError) GetMessage() string {
+	return v.Message
+}
+
+// ActivateLocationResponse is returned by ActivateLocation on success.
+type ActivateLocationResponse struct {
+	// Activates a location so that you can stock inventory at the location. Refer to the
+	// [`isActive`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Location#field-isactive) and
+	// [`activatable`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Location#field-activatable)
+	// fields on the `Location` object.
+	//
+	// > Caution:
+	// > As of 2026-01, this mutation supports an optional idempotency key using the `@idempotent` directive.
+	// As of 2026-04, the idempotency key is required and must be provided using the `@idempotent` directive.
+	// For more information, see the [idempotency documentation](https://shopify.dev/docs/api/usage/idempotent-requests).
+	LocationActivate *ActivateLocationLocationActivateLocationActivatePayload `json:"locationActivate"`
+}
+
+// GetLocationActivate returns ActivateLocationResponse.LocationActivate, and is useful for accessing the field via an interface.
+func (v *ActivateLocationResponse) GetLocationActivate() *ActivateLocationLocationActivateLocationActivatePayload {
+	return v.LocationActivate
+}
+
+// AddLocationLocationAddLocationAddPayload includes the requested fields of the GraphQL type LocationAddPayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `locationAdd` mutation.
+type AddLocationLocationAddLocationAddPayload struct {
+	// The location that was added.
+	Location *AddLocationLocationAddLocationAddPayloadLocation `json:"location"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []AddLocationLocationAddLocationAddPayloadUserErrorsLocationAddUserError `json:"userErrors"`
+}
+
+// GetLocation returns AddLocationLocationAddLocationAddPayload.Location, and is useful for accessing the field via an interface.
+func (v *AddLocationLocationAddLocationAddPayload) GetLocation() *AddLocationLocationAddLocationAddPayloadLocation {
+	return v.Location
+}
+
+// GetUserErrors returns AddLocationLocationAddLocationAddPayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *AddLocationLocationAddLocationAddPayload) GetUserErrors() []AddLocationLocationAddLocationAddPayloadUserErrorsLocationAddUserError {
+	return v.UserErrors
+}
+
+// AddLocationLocationAddLocationAddPayloadLocation includes the requested fields of the GraphQL type Location.
+// The GraphQL type's documentation follows.
+//
+// A physical location where merchants store and fulfill inventory. Locations include retail stores, warehouses, popups, dropshippers, or other places where inventory is managed or stocked.
+//
+// Active locations can fulfill online orders when configured with shipping rates, local pickup, or local delivery options. Locations track inventory quantities for [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and process [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order) fulfillment. Third-party apps using [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) can create and manage their own locations.
+type AddLocationLocationAddLocationAddPayloadLocation struct {
+	LocationFields `json:"-"`
+}
+
+// GetId returns AddLocationLocationAddLocationAddPayloadLocation.Id, and is useful for accessing the field via an interface.
+func (v *AddLocationLocationAddLocationAddPayloadLocation) GetId() string { return v.LocationFields.Id }
+
+// GetLegacyResourceId returns AddLocationLocationAddLocationAddPayloadLocation.LegacyResourceId, and is useful for accessing the field via an interface.
+func (v *AddLocationLocationAddLocationAddPayloadLocation) GetLegacyResourceId() string {
+	return v.LocationFields.LegacyResourceId
+}
+
+// GetName returns AddLocationLocationAddLocationAddPayloadLocation.Name, and is useful for accessing the field via an interface.
+func (v *AddLocationLocationAddLocationAddPayloadLocation) GetName() string {
+	return v.LocationFields.Name
+}
+
+// GetIsActive returns AddLocationLocationAddLocationAddPayloadLocation.IsActive, and is useful for accessing the field via an interface.
+func (v *AddLocationLocationAddLocationAddPayloadLocation) GetIsActive() bool {
+	return v.LocationFields.IsActive
+}
+
+// GetFulfillsOnlineOrders returns AddLocationLocationAddLocationAddPayloadLocation.FulfillsOnlineOrders, and is useful for accessing the field via an interface.
+func (v *AddLocationLocationAddLocationAddPayloadLocation) GetFulfillsOnlineOrders() bool {
+	return v.LocationFields.FulfillsOnlineOrders
+}
+
+// GetAddress returns AddLocationLocationAddLocationAddPayloadLocation.Address, and is useful for accessing the field via an interface.
+func (v *AddLocationLocationAddLocationAddPayloadLocation) GetAddress() LocationFieldsAddressLocationAddress {
+	return v.LocationFields.Address
+}
+
+func (v *AddLocationLocationAddLocationAddPayloadLocation) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*AddLocationLocationAddLocationAddPayloadLocation
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.AddLocationLocationAddLocationAddPayloadLocation = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.LocationFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalAddLocationLocationAddLocationAddPayloadLocation struct {
+	Id string `json:"id"`
+
+	LegacyResourceId string `json:"legacyResourceId"`
+
+	Name string `json:"name"`
+
+	IsActive bool `json:"isActive"`
+
+	FulfillsOnlineOrders bool `json:"fulfillsOnlineOrders"`
+
+	Address LocationFieldsAddressLocationAddress `json:"address"`
+}
+
+func (v *AddLocationLocationAddLocationAddPayloadLocation) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *AddLocationLocationAddLocationAddPayloadLocation) __premarshalJSON() (*__premarshalAddLocationLocationAddLocationAddPayloadLocation, error) {
+	var retval __premarshalAddLocationLocationAddLocationAddPayloadLocation
+
+	retval.Id = v.LocationFields.Id
+	retval.LegacyResourceId = v.LocationFields.LegacyResourceId
+	retval.Name = v.LocationFields.Name
+	retval.IsActive = v.LocationFields.IsActive
+	retval.FulfillsOnlineOrders = v.LocationFields.FulfillsOnlineOrders
+	retval.Address = v.LocationFields.Address
+	return &retval, nil
+}
+
+// AddLocationLocationAddLocationAddPayloadUserErrorsLocationAddUserError includes the requested fields of the GraphQL type LocationAddUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs while adding a location.
+type AddLocationLocationAddLocationAddPayloadUserErrorsLocationAddUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns AddLocationLocationAddLocationAddPayloadUserErrorsLocationAddUserError.Field, and is useful for accessing the field via an interface.
+func (v *AddLocationLocationAddLocationAddPayloadUserErrorsLocationAddUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns AddLocationLocationAddLocationAddPayloadUserErrorsLocationAddUserError.Message, and is useful for accessing the field via an interface.
+func (v *AddLocationLocationAddLocationAddPayloadUserErrorsLocationAddUserError) GetMessage() string {
+	return v.Message
+}
+
+// AddLocationResponse is returned by AddLocation on success.
+type AddLocationResponse struct {
+	// Adds a new [`Location`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Location) where you can stock inventory and fulfill orders. Locations represent physical places like warehouses, retail stores, or fulfillment centers.
+	//
+	// The location requires a name and address with at least a country code. You can specify whether the location fulfills online orders, which determines if its inventory is available for online sales. You can also attach custom [metafields](https://shopify.dev/docs/apps/build/custom-data) to store additional information about the location.
+	LocationAdd *AddLocationLocationAddLocationAddPayload `json:"locationAdd"`
+}
+
+// GetLocationAdd returns AddLocationResponse.LocationAdd, and is useful for accessing the field via an interface.
+func (v *AddLocationResponse) GetLocationAdd() *AddLocationLocationAddLocationAddPayload {
+	return v.LocationAdd
+}
+
+// The code designating a country/region, which generally follows ISO 3166-1 alpha-2 guidelines.
+// If a territory doesn't have a country code value in the `CountryCode` enum, then it might be considered a subdivision
+// of another country. For example, the territories associated with Spain are represented by the country code `ES`,
+// and the territories associated with the United States of America are represented by the country code `US`.
+type CountryCode string
+
+const (
+	// Afghanistan.
+	CountryCodeAf CountryCode = "AF"
+	// Åland Islands.
+	CountryCodeAx CountryCode = "AX"
+	// Albania.
+	CountryCodeAl CountryCode = "AL"
+	// Algeria.
+	CountryCodeDz CountryCode = "DZ"
+	// Andorra.
+	CountryCodeAd CountryCode = "AD"
+	// Angola.
+	CountryCodeAo CountryCode = "AO"
+	// Anguilla.
+	CountryCodeAi CountryCode = "AI"
+	// Antigua & Barbuda.
+	CountryCodeAg CountryCode = "AG"
+	// Argentina.
+	CountryCodeAr CountryCode = "AR"
+	// Armenia.
+	CountryCodeAm CountryCode = "AM"
+	// Aruba.
+	CountryCodeAw CountryCode = "AW"
+	// Ascension Island.
+	CountryCodeAc CountryCode = "AC"
+	// Australia.
+	CountryCodeAu CountryCode = "AU"
+	// Austria.
+	CountryCodeAt CountryCode = "AT"
+	// Azerbaijan.
+	CountryCodeAz CountryCode = "AZ"
+	// Bahamas.
+	CountryCodeBs CountryCode = "BS"
+	// Bahrain.
+	CountryCodeBh CountryCode = "BH"
+	// Bangladesh.
+	CountryCodeBd CountryCode = "BD"
+	// Barbados.
+	CountryCodeBb CountryCode = "BB"
+	// Belarus.
+	CountryCodeBy CountryCode = "BY"
+	// Belgium.
+	CountryCodeBe CountryCode = "BE"
+	// Belize.
+	CountryCodeBz CountryCode = "BZ"
+	// Benin.
+	CountryCodeBj CountryCode = "BJ"
+	// Bermuda.
+	CountryCodeBm CountryCode = "BM"
+	// Bhutan.
+	CountryCodeBt CountryCode = "BT"
+	// Bolivia.
+	CountryCodeBo CountryCode = "BO"
+	// Bosnia & Herzegovina.
+	CountryCodeBa CountryCode = "BA"
+	// Botswana.
+	CountryCodeBw CountryCode = "BW"
+	// Bouvet Island.
+	CountryCodeBv CountryCode = "BV"
+	// Brazil.
+	CountryCodeBr CountryCode = "BR"
+	// British Indian Ocean Territory.
+	CountryCodeIo CountryCode = "IO"
+	// Brunei.
+	CountryCodeBn CountryCode = "BN"
+	// Bulgaria.
+	CountryCodeBg CountryCode = "BG"
+	// Burkina Faso.
+	CountryCodeBf CountryCode = "BF"
+	// Burundi.
+	CountryCodeBi CountryCode = "BI"
+	// Cambodia.
+	CountryCodeKh CountryCode = "KH"
+	// Canada.
+	CountryCodeCa CountryCode = "CA"
+	// Cape Verde.
+	CountryCodeCv CountryCode = "CV"
+	// Caribbean Netherlands.
+	CountryCodeBq CountryCode = "BQ"
+	// Cayman Islands.
+	CountryCodeKy CountryCode = "KY"
+	// Central African Republic.
+	CountryCodeCf CountryCode = "CF"
+	// Chad.
+	CountryCodeTd CountryCode = "TD"
+	// Chile.
+	CountryCodeCl CountryCode = "CL"
+	// China.
+	CountryCodeCn CountryCode = "CN"
+	// Christmas Island.
+	CountryCodeCx CountryCode = "CX"
+	// Cocos (Keeling) Islands.
+	CountryCodeCc CountryCode = "CC"
+	// Colombia.
+	CountryCodeCo CountryCode = "CO"
+	// Comoros.
+	CountryCodeKm CountryCode = "KM"
+	// Congo - Brazzaville.
+	CountryCodeCg CountryCode = "CG"
+	// Congo - Kinshasa.
+	CountryCodeCd CountryCode = "CD"
+	// Cook Islands.
+	CountryCodeCk CountryCode = "CK"
+	// Costa Rica.
+	CountryCodeCr CountryCode = "CR"
+	// Croatia.
+	CountryCodeHr CountryCode = "HR"
+	// Cuba.
+	CountryCodeCu CountryCode = "CU"
+	// Curaçao.
+	CountryCodeCw CountryCode = "CW"
+	// Cyprus.
+	CountryCodeCy CountryCode = "CY"
+	// Czechia.
+	CountryCodeCz CountryCode = "CZ"
+	// Côte d’Ivoire.
+	CountryCodeCi CountryCode = "CI"
+	// Denmark.
+	CountryCodeDk CountryCode = "DK"
+	// Djibouti.
+	CountryCodeDj CountryCode = "DJ"
+	// Dominica.
+	CountryCodeDm CountryCode = "DM"
+	// Dominican Republic.
+	CountryCodeDo CountryCode = "DO"
+	// Ecuador.
+	CountryCodeEc CountryCode = "EC"
+	// Egypt.
+	CountryCodeEg CountryCode = "EG"
+	// El Salvador.
+	CountryCodeSv CountryCode = "SV"
+	// Equatorial Guinea.
+	CountryCodeGq CountryCode = "GQ"
+	// Eritrea.
+	CountryCodeEr CountryCode = "ER"
+	// Estonia.
+	CountryCodeEe CountryCode = "EE"
+	// Eswatini.
+	CountryCodeSz CountryCode = "SZ"
+	// Ethiopia.
+	CountryCodeEt CountryCode = "ET"
+	// Falkland Islands.
+	CountryCodeFk CountryCode = "FK"
+	// Faroe Islands.
+	CountryCodeFo CountryCode = "FO"
+	// Fiji.
+	CountryCodeFj CountryCode = "FJ"
+	// Finland.
+	CountryCodeFi CountryCode = "FI"
+	// France.
+	CountryCodeFr CountryCode = "FR"
+	// French Guiana.
+	CountryCodeGf CountryCode = "GF"
+	// French Polynesia.
+	CountryCodePf CountryCode = "PF"
+	// French Southern Territories.
+	CountryCodeTf CountryCode = "TF"
+	// Gabon.
+	CountryCodeGa CountryCode = "GA"
+	// Gambia.
+	CountryCodeGm CountryCode = "GM"
+	// Georgia.
+	CountryCodeGe CountryCode = "GE"
+	// Germany.
+	CountryCodeDe CountryCode = "DE"
+	// Ghana.
+	CountryCodeGh CountryCode = "GH"
+	// Gibraltar.
+	CountryCodeGi CountryCode = "GI"
+	// Greece.
+	CountryCodeGr CountryCode = "GR"
+	// Greenland.
+	CountryCodeGl CountryCode = "GL"
+	// Grenada.
+	CountryCodeGd CountryCode = "GD"
+	// Guadeloupe.
+	CountryCodeGp CountryCode = "GP"
+	// Guatemala.
+	CountryCodeGt CountryCode = "GT"
+	// Guernsey.
+	CountryCodeGg CountryCode = "GG"
+	// Guinea.
+	CountryCodeGn CountryCode = "GN"
+	// Guinea-Bissau.
+	CountryCodeGw CountryCode = "GW"
+	// Guyana.
+	CountryCodeGy CountryCode = "GY"
+	// Haiti.
+	CountryCodeHt CountryCode = "HT"
+	// Heard & McDonald Islands.
+	CountryCodeHm CountryCode = "HM"
+	// Vatican City.
+	CountryCodeVa CountryCode = "VA"
+	// Honduras.
+	CountryCodeHn CountryCode = "HN"
+	// Hong Kong SAR.
+	CountryCodeHk CountryCode = "HK"
+	// Hungary.
+	CountryCodeHu CountryCode = "HU"
+	// Iceland.
+	CountryCodeIs CountryCode = "IS"
+	// India.
+	CountryCodeIn CountryCode = "IN"
+	// Indonesia.
+	CountryCodeId CountryCode = "ID"
+	// Iran.
+	CountryCodeIr CountryCode = "IR"
+	// Iraq.
+	CountryCodeIq CountryCode = "IQ"
+	// Ireland.
+	CountryCodeIe CountryCode = "IE"
+	// Isle of Man.
+	CountryCodeIm CountryCode = "IM"
+	// Israel.
+	CountryCodeIl CountryCode = "IL"
+	// Italy.
+	CountryCodeIt CountryCode = "IT"
+	// Jamaica.
+	CountryCodeJm CountryCode = "JM"
+	// Japan.
+	CountryCodeJp CountryCode = "JP"
+	// Jersey.
+	CountryCodeJe CountryCode = "JE"
+	// Jordan.
+	CountryCodeJo CountryCode = "JO"
+	// Kazakhstan.
+	CountryCodeKz CountryCode = "KZ"
+	// Kenya.
+	CountryCodeKe CountryCode = "KE"
+	// Kiribati.
+	CountryCodeKi CountryCode = "KI"
+	// North Korea.
+	CountryCodeKp CountryCode = "KP"
+	// Kosovo.
+	CountryCodeXk CountryCode = "XK"
+	// Kuwait.
+	CountryCodeKw CountryCode = "KW"
+	// Kyrgyzstan.
+	CountryCodeKg CountryCode = "KG"
+	// Laos.
+	CountryCodeLa CountryCode = "LA"
+	// Latvia.
+	CountryCodeLv CountryCode = "LV"
+	// Lebanon.
+	CountryCodeLb CountryCode = "LB"
+	// Lesotho.
+	CountryCodeLs CountryCode = "LS"
+	// Liberia.
+	CountryCodeLr CountryCode = "LR"
+	// Libya.
+	CountryCodeLy CountryCode = "LY"
+	// Liechtenstein.
+	CountryCodeLi CountryCode = "LI"
+	// Lithuania.
+	CountryCodeLt CountryCode = "LT"
+	// Luxembourg.
+	CountryCodeLu CountryCode = "LU"
+	// Macao SAR.
+	CountryCodeMo CountryCode = "MO"
+	// Madagascar.
+	CountryCodeMg CountryCode = "MG"
+	// Malawi.
+	CountryCodeMw CountryCode = "MW"
+	// Malaysia.
+	CountryCodeMy CountryCode = "MY"
+	// Maldives.
+	CountryCodeMv CountryCode = "MV"
+	// Mali.
+	CountryCodeMl CountryCode = "ML"
+	// Malta.
+	CountryCodeMt CountryCode = "MT"
+	// Martinique.
+	CountryCodeMq CountryCode = "MQ"
+	// Mauritania.
+	CountryCodeMr CountryCode = "MR"
+	// Mauritius.
+	CountryCodeMu CountryCode = "MU"
+	// Mayotte.
+	CountryCodeYt CountryCode = "YT"
+	// Mexico.
+	CountryCodeMx CountryCode = "MX"
+	// Moldova.
+	CountryCodeMd CountryCode = "MD"
+	// Monaco.
+	CountryCodeMc CountryCode = "MC"
+	// Mongolia.
+	CountryCodeMn CountryCode = "MN"
+	// Montenegro.
+	CountryCodeMe CountryCode = "ME"
+	// Montserrat.
+	CountryCodeMs CountryCode = "MS"
+	// Morocco.
+	CountryCodeMa CountryCode = "MA"
+	// Mozambique.
+	CountryCodeMz CountryCode = "MZ"
+	// Myanmar (Burma).
+	CountryCodeMm CountryCode = "MM"
+	// Namibia.
+	CountryCodeNa CountryCode = "NA"
+	// Nauru.
+	CountryCodeNr CountryCode = "NR"
+	// Nepal.
+	CountryCodeNp CountryCode = "NP"
+	// Netherlands.
+	CountryCodeNl CountryCode = "NL"
+	// Netherlands Antilles.
+	CountryCodeAn CountryCode = "AN"
+	// New Caledonia.
+	CountryCodeNc CountryCode = "NC"
+	// New Zealand.
+	CountryCodeNz CountryCode = "NZ"
+	// Nicaragua.
+	CountryCodeNi CountryCode = "NI"
+	// Niger.
+	CountryCodeNe CountryCode = "NE"
+	// Nigeria.
+	CountryCodeNg CountryCode = "NG"
+	// Niue.
+	CountryCodeNu CountryCode = "NU"
+	// Norfolk Island.
+	CountryCodeNf CountryCode = "NF"
+	// North Macedonia.
+	CountryCodeMk CountryCode = "MK"
+	// Norway.
+	CountryCodeNo CountryCode = "NO"
+	// Oman.
+	CountryCodeOm CountryCode = "OM"
+	// Pakistan.
+	CountryCodePk CountryCode = "PK"
+	// Palestinian Territories.
+	CountryCodePs CountryCode = "PS"
+	// Panama.
+	CountryCodePa CountryCode = "PA"
+	// Papua New Guinea.
+	CountryCodePg CountryCode = "PG"
+	// Paraguay.
+	CountryCodePy CountryCode = "PY"
+	// Peru.
+	CountryCodePe CountryCode = "PE"
+	// Philippines.
+	CountryCodePh CountryCode = "PH"
+	// Pitcairn Islands.
+	CountryCodePn CountryCode = "PN"
+	// Poland.
+	CountryCodePl CountryCode = "PL"
+	// Portugal.
+	CountryCodePt CountryCode = "PT"
+	// Qatar.
+	CountryCodeQa CountryCode = "QA"
+	// Cameroon.
+	CountryCodeCm CountryCode = "CM"
+	// Réunion.
+	CountryCodeRe CountryCode = "RE"
+	// Romania.
+	CountryCodeRo CountryCode = "RO"
+	// Russia.
+	CountryCodeRu CountryCode = "RU"
+	// Rwanda.
+	CountryCodeRw CountryCode = "RW"
+	// St. Barthélemy.
+	CountryCodeBl CountryCode = "BL"
+	// St. Helena.
+	CountryCodeSh CountryCode = "SH"
+	// St. Kitts & Nevis.
+	CountryCodeKn CountryCode = "KN"
+	// St. Lucia.
+	CountryCodeLc CountryCode = "LC"
+	// St. Martin.
+	CountryCodeMf CountryCode = "MF"
+	// St. Pierre & Miquelon.
+	CountryCodePm CountryCode = "PM"
+	// Samoa.
+	CountryCodeWs CountryCode = "WS"
+	// San Marino.
+	CountryCodeSm CountryCode = "SM"
+	// São Tomé & Príncipe.
+	CountryCodeSt CountryCode = "ST"
+	// Saudi Arabia.
+	CountryCodeSa CountryCode = "SA"
+	// Senegal.
+	CountryCodeSn CountryCode = "SN"
+	// Serbia.
+	CountryCodeRs CountryCode = "RS"
+	// Seychelles.
+	CountryCodeSc CountryCode = "SC"
+	// Sierra Leone.
+	CountryCodeSl CountryCode = "SL"
+	// Singapore.
+	CountryCodeSg CountryCode = "SG"
+	// Sint Maarten.
+	CountryCodeSx CountryCode = "SX"
+	// Slovakia.
+	CountryCodeSk CountryCode = "SK"
+	// Slovenia.
+	CountryCodeSi CountryCode = "SI"
+	// Solomon Islands.
+	CountryCodeSb CountryCode = "SB"
+	// Somalia.
+	CountryCodeSo CountryCode = "SO"
+	// South Africa.
+	CountryCodeZa CountryCode = "ZA"
+	// South Georgia & South Sandwich Islands.
+	CountryCodeGs CountryCode = "GS"
+	// South Korea.
+	CountryCodeKr CountryCode = "KR"
+	// South Sudan.
+	CountryCodeSs CountryCode = "SS"
+	// Spain.
+	CountryCodeEs CountryCode = "ES"
+	// Sri Lanka.
+	CountryCodeLk CountryCode = "LK"
+	// St. Vincent & Grenadines.
+	CountryCodeVc CountryCode = "VC"
+	// Sudan.
+	CountryCodeSd CountryCode = "SD"
+	// Suriname.
+	CountryCodeSr CountryCode = "SR"
+	// Svalbard & Jan Mayen.
+	CountryCodeSj CountryCode = "SJ"
+	// Sweden.
+	CountryCodeSe CountryCode = "SE"
+	// Switzerland.
+	CountryCodeCh CountryCode = "CH"
+	// Syria.
+	CountryCodeSy CountryCode = "SY"
+	// Taiwan.
+	CountryCodeTw CountryCode = "TW"
+	// Tajikistan.
+	CountryCodeTj CountryCode = "TJ"
+	// Tanzania.
+	CountryCodeTz CountryCode = "TZ"
+	// Thailand.
+	CountryCodeTh CountryCode = "TH"
+	// Timor-Leste.
+	CountryCodeTl CountryCode = "TL"
+	// Togo.
+	CountryCodeTg CountryCode = "TG"
+	// Tokelau.
+	CountryCodeTk CountryCode = "TK"
+	// Tonga.
+	CountryCodeTo CountryCode = "TO"
+	// Trinidad & Tobago.
+	CountryCodeTt CountryCode = "TT"
+	// Tristan da Cunha.
+	CountryCodeTa CountryCode = "TA"
+	// Tunisia.
+	CountryCodeTn CountryCode = "TN"
+	// Türkiye.
+	CountryCodeTr CountryCode = "TR"
+	// Turkmenistan.
+	CountryCodeTm CountryCode = "TM"
+	// Turks & Caicos Islands.
+	CountryCodeTc CountryCode = "TC"
+	// Tuvalu.
+	CountryCodeTv CountryCode = "TV"
+	// Uganda.
+	CountryCodeUg CountryCode = "UG"
+	// Ukraine.
+	CountryCodeUa CountryCode = "UA"
+	// United Arab Emirates.
+	CountryCodeAe CountryCode = "AE"
+	// United Kingdom.
+	CountryCodeGb CountryCode = "GB"
+	// United States.
+	CountryCodeUs CountryCode = "US"
+	// U.S. Outlying Islands.
+	CountryCodeUm CountryCode = "UM"
+	// Uruguay.
+	CountryCodeUy CountryCode = "UY"
+	// Uzbekistan.
+	CountryCodeUz CountryCode = "UZ"
+	// Vanuatu.
+	CountryCodeVu CountryCode = "VU"
+	// Venezuela.
+	CountryCodeVe CountryCode = "VE"
+	// Vietnam.
+	CountryCodeVn CountryCode = "VN"
+	// British Virgin Islands.
+	CountryCodeVg CountryCode = "VG"
+	// Wallis & Futuna.
+	CountryCodeWf CountryCode = "WF"
+	// Western Sahara.
+	CountryCodeEh CountryCode = "EH"
+	// Yemen.
+	CountryCodeYe CountryCode = "YE"
+	// Zambia.
+	CountryCodeZm CountryCode = "ZM"
+	// Zimbabwe.
+	CountryCodeZw CountryCode = "ZW"
+	// Unknown Region.
+	CountryCodeZz CountryCode = "ZZ"
+)
+
+var AllCountryCode = []CountryCode{
+	CountryCodeAf,
+	CountryCodeAx,
+	CountryCodeAl,
+	CountryCodeDz,
+	CountryCodeAd,
+	CountryCodeAo,
+	CountryCodeAi,
+	CountryCodeAg,
+	CountryCodeAr,
+	CountryCodeAm,
+	CountryCodeAw,
+	CountryCodeAc,
+	CountryCodeAu,
+	CountryCodeAt,
+	CountryCodeAz,
+	CountryCodeBs,
+	CountryCodeBh,
+	CountryCodeBd,
+	CountryCodeBb,
+	CountryCodeBy,
+	CountryCodeBe,
+	CountryCodeBz,
+	CountryCodeBj,
+	CountryCodeBm,
+	CountryCodeBt,
+	CountryCodeBo,
+	CountryCodeBa,
+	CountryCodeBw,
+	CountryCodeBv,
+	CountryCodeBr,
+	CountryCodeIo,
+	CountryCodeBn,
+	CountryCodeBg,
+	CountryCodeBf,
+	CountryCodeBi,
+	CountryCodeKh,
+	CountryCodeCa,
+	CountryCodeCv,
+	CountryCodeBq,
+	CountryCodeKy,
+	CountryCodeCf,
+	CountryCodeTd,
+	CountryCodeCl,
+	CountryCodeCn,
+	CountryCodeCx,
+	CountryCodeCc,
+	CountryCodeCo,
+	CountryCodeKm,
+	CountryCodeCg,
+	CountryCodeCd,
+	CountryCodeCk,
+	CountryCodeCr,
+	CountryCodeHr,
+	CountryCodeCu,
+	CountryCodeCw,
+	CountryCodeCy,
+	CountryCodeCz,
+	CountryCodeCi,
+	CountryCodeDk,
+	CountryCodeDj,
+	CountryCodeDm,
+	CountryCodeDo,
+	CountryCodeEc,
+	CountryCodeEg,
+	CountryCodeSv,
+	CountryCodeGq,
+	CountryCodeEr,
+	CountryCodeEe,
+	CountryCodeSz,
+	CountryCodeEt,
+	CountryCodeFk,
+	CountryCodeFo,
+	CountryCodeFj,
+	CountryCodeFi,
+	CountryCodeFr,
+	CountryCodeGf,
+	CountryCodePf,
+	CountryCodeTf,
+	CountryCodeGa,
+	CountryCodeGm,
+	CountryCodeGe,
+	CountryCodeDe,
+	CountryCodeGh,
+	CountryCodeGi,
+	CountryCodeGr,
+	CountryCodeGl,
+	CountryCodeGd,
+	CountryCodeGp,
+	CountryCodeGt,
+	CountryCodeGg,
+	CountryCodeGn,
+	CountryCodeGw,
+	CountryCodeGy,
+	CountryCodeHt,
+	CountryCodeHm,
+	CountryCodeVa,
+	CountryCodeHn,
+	CountryCodeHk,
+	CountryCodeHu,
+	CountryCodeIs,
+	CountryCodeIn,
+	CountryCodeId,
+	CountryCodeIr,
+	CountryCodeIq,
+	CountryCodeIe,
+	CountryCodeIm,
+	CountryCodeIl,
+	CountryCodeIt,
+	CountryCodeJm,
+	CountryCodeJp,
+	CountryCodeJe,
+	CountryCodeJo,
+	CountryCodeKz,
+	CountryCodeKe,
+	CountryCodeKi,
+	CountryCodeKp,
+	CountryCodeXk,
+	CountryCodeKw,
+	CountryCodeKg,
+	CountryCodeLa,
+	CountryCodeLv,
+	CountryCodeLb,
+	CountryCodeLs,
+	CountryCodeLr,
+	CountryCodeLy,
+	CountryCodeLi,
+	CountryCodeLt,
+	CountryCodeLu,
+	CountryCodeMo,
+	CountryCodeMg,
+	CountryCodeMw,
+	CountryCodeMy,
+	CountryCodeMv,
+	CountryCodeMl,
+	CountryCodeMt,
+	CountryCodeMq,
+	CountryCodeMr,
+	CountryCodeMu,
+	CountryCodeYt,
+	CountryCodeMx,
+	CountryCodeMd,
+	CountryCodeMc,
+	CountryCodeMn,
+	CountryCodeMe,
+	CountryCodeMs,
+	CountryCodeMa,
+	CountryCodeMz,
+	CountryCodeMm,
+	CountryCodeNa,
+	CountryCodeNr,
+	CountryCodeNp,
+	CountryCodeNl,
+	CountryCodeAn,
+	CountryCodeNc,
+	CountryCodeNz,
+	CountryCodeNi,
+	CountryCodeNe,
+	CountryCodeNg,
+	CountryCodeNu,
+	CountryCodeNf,
+	CountryCodeMk,
+	CountryCodeNo,
+	CountryCodeOm,
+	CountryCodePk,
+	CountryCodePs,
+	CountryCodePa,
+	CountryCodePg,
+	CountryCodePy,
+	CountryCodePe,
+	CountryCodePh,
+	CountryCodePn,
+	CountryCodePl,
+	CountryCodePt,
+	CountryCodeQa,
+	CountryCodeCm,
+	CountryCodeRe,
+	CountryCodeRo,
+	CountryCodeRu,
+	CountryCodeRw,
+	CountryCodeBl,
+	CountryCodeSh,
+	CountryCodeKn,
+	CountryCodeLc,
+	CountryCodeMf,
+	CountryCodePm,
+	CountryCodeWs,
+	CountryCodeSm,
+	CountryCodeSt,
+	CountryCodeSa,
+	CountryCodeSn,
+	CountryCodeRs,
+	CountryCodeSc,
+	CountryCodeSl,
+	CountryCodeSg,
+	CountryCodeSx,
+	CountryCodeSk,
+	CountryCodeSi,
+	CountryCodeSb,
+	CountryCodeSo,
+	CountryCodeZa,
+	CountryCodeGs,
+	CountryCodeKr,
+	CountryCodeSs,
+	CountryCodeEs,
+	CountryCodeLk,
+	CountryCodeVc,
+	CountryCodeSd,
+	CountryCodeSr,
+	CountryCodeSj,
+	CountryCodeSe,
+	CountryCodeCh,
+	CountryCodeSy,
+	CountryCodeTw,
+	CountryCodeTj,
+	CountryCodeTz,
+	CountryCodeTh,
+	CountryCodeTl,
+	CountryCodeTg,
+	CountryCodeTk,
+	CountryCodeTo,
+	CountryCodeTt,
+	CountryCodeTa,
+	CountryCodeTn,
+	CountryCodeTr,
+	CountryCodeTm,
+	CountryCodeTc,
+	CountryCodeTv,
+	CountryCodeUg,
+	CountryCodeUa,
+	CountryCodeAe,
+	CountryCodeGb,
+	CountryCodeUs,
+	CountryCodeUm,
+	CountryCodeUy,
+	CountryCodeUz,
+	CountryCodeVu,
+	CountryCodeVe,
+	CountryCodeVn,
+	CountryCodeVg,
+	CountryCodeWf,
+	CountryCodeEh,
+	CountryCodeYe,
+	CountryCodeZm,
+	CountryCodeZw,
+	CountryCodeZz,
+}
+
 // CreateMenuMenuCreateMenuCreatePayload includes the requested fields of the GraphQL type MenuCreatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -1027,6 +2086,216 @@ var AllCurrencyCode = []CurrencyCode{
 	CurrencyCodeXxx,
 }
 
+// DeactivateLocationLocationDeactivateLocationDeactivatePayload includes the requested fields of the GraphQL type LocationDeactivatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `locationDeactivate` mutation.
+type DeactivateLocationLocationDeactivateLocationDeactivatePayload struct {
+	// The location that was deactivated.
+	Location *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation `json:"location"`
+	// The list of errors that occurred from executing the mutation.
+	LocationDeactivateUserErrors []DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocationDeactivateUserErrorsLocationDeactivateUserError `json:"locationDeactivateUserErrors"`
+}
+
+// GetLocation returns DeactivateLocationLocationDeactivateLocationDeactivatePayload.Location, and is useful for accessing the field via an interface.
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayload) GetLocation() *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation {
+	return v.Location
+}
+
+// GetLocationDeactivateUserErrors returns DeactivateLocationLocationDeactivateLocationDeactivatePayload.LocationDeactivateUserErrors, and is useful for accessing the field via an interface.
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayload) GetLocationDeactivateUserErrors() []DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocationDeactivateUserErrorsLocationDeactivateUserError {
+	return v.LocationDeactivateUserErrors
+}
+
+// DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation includes the requested fields of the GraphQL type Location.
+// The GraphQL type's documentation follows.
+//
+// A physical location where merchants store and fulfill inventory. Locations include retail stores, warehouses, popups, dropshippers, or other places where inventory is managed or stocked.
+//
+// Active locations can fulfill online orders when configured with shipping rates, local pickup, or local delivery options. Locations track inventory quantities for [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and process [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order) fulfillment. Third-party apps using [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) can create and manage their own locations.
+type DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation struct {
+	LocationFields `json:"-"`
+}
+
+// GetId returns DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation.Id, and is useful for accessing the field via an interface.
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation) GetId() string {
+	return v.LocationFields.Id
+}
+
+// GetLegacyResourceId returns DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation.LegacyResourceId, and is useful for accessing the field via an interface.
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation) GetLegacyResourceId() string {
+	return v.LocationFields.LegacyResourceId
+}
+
+// GetName returns DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation.Name, and is useful for accessing the field via an interface.
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation) GetName() string {
+	return v.LocationFields.Name
+}
+
+// GetIsActive returns DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation.IsActive, and is useful for accessing the field via an interface.
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation) GetIsActive() bool {
+	return v.LocationFields.IsActive
+}
+
+// GetFulfillsOnlineOrders returns DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation.FulfillsOnlineOrders, and is useful for accessing the field via an interface.
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation) GetFulfillsOnlineOrders() bool {
+	return v.LocationFields.FulfillsOnlineOrders
+}
+
+// GetAddress returns DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation.Address, and is useful for accessing the field via an interface.
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation) GetAddress() LocationFieldsAddressLocationAddress {
+	return v.LocationFields.Address
+}
+
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.LocationFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalDeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation struct {
+	Id string `json:"id"`
+
+	LegacyResourceId string `json:"legacyResourceId"`
+
+	Name string `json:"name"`
+
+	IsActive bool `json:"isActive"`
+
+	FulfillsOnlineOrders bool `json:"fulfillsOnlineOrders"`
+
+	Address LocationFieldsAddressLocationAddress `json:"address"`
+}
+
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation) __premarshalJSON() (*__premarshalDeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation, error) {
+	var retval __premarshalDeactivateLocationLocationDeactivateLocationDeactivatePayloadLocation
+
+	retval.Id = v.LocationFields.Id
+	retval.LegacyResourceId = v.LocationFields.LegacyResourceId
+	retval.Name = v.LocationFields.Name
+	retval.IsActive = v.LocationFields.IsActive
+	retval.FulfillsOnlineOrders = v.LocationFields.FulfillsOnlineOrders
+	retval.Address = v.LocationFields.Address
+	return &retval, nil
+}
+
+// DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocationDeactivateUserErrorsLocationDeactivateUserError includes the requested fields of the GraphQL type LocationDeactivateUserError.
+// The GraphQL type's documentation follows.
+//
+// The possible errors that can be returned when executing the `locationDeactivate` mutation.
+type DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocationDeactivateUserErrorsLocationDeactivateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocationDeactivateUserErrorsLocationDeactivateUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocationDeactivateUserErrorsLocationDeactivateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocationDeactivateUserErrorsLocationDeactivateUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeactivateLocationLocationDeactivateLocationDeactivatePayloadLocationDeactivateUserErrorsLocationDeactivateUserError) GetMessage() string {
+	return v.Message
+}
+
+// DeactivateLocationResponse is returned by DeactivateLocation on success.
+type DeactivateLocationResponse struct {
+	// Deactivates a location and moves inventory, pending orders, and moving transfers " "to a destination location.
+	//
+	// > Caution:
+	// > As of 2026-01, this mutation supports an optional idempotency key using the `@idempotent` directive.
+	// As of 2026-04, the idempotency key is required and must be provided using the `@idempotent` directive.
+	// For more information, see the [idempotency documentation](https://shopify.dev/docs/api/usage/idempotent-requests).
+	LocationDeactivate *DeactivateLocationLocationDeactivateLocationDeactivatePayload `json:"locationDeactivate"`
+}
+
+// GetLocationDeactivate returns DeactivateLocationResponse.LocationDeactivate, and is useful for accessing the field via an interface.
+func (v *DeactivateLocationResponse) GetLocationDeactivate() *DeactivateLocationLocationDeactivateLocationDeactivatePayload {
+	return v.LocationDeactivate
+}
+
+// DeleteLocationLocationDeleteLocationDeletePayload includes the requested fields of the GraphQL type LocationDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `locationDelete` mutation.
+type DeleteLocationLocationDeleteLocationDeletePayload struct {
+	// The ID of the location that was deleted.
+	DeletedLocationId *string `json:"deletedLocationId"`
+	// The list of errors that occurred from executing the mutation.
+	LocationDeleteUserErrors []DeleteLocationLocationDeleteLocationDeletePayloadLocationDeleteUserErrorsLocationDeleteUserError `json:"locationDeleteUserErrors"`
+}
+
+// GetDeletedLocationId returns DeleteLocationLocationDeleteLocationDeletePayload.DeletedLocationId, and is useful for accessing the field via an interface.
+func (v *DeleteLocationLocationDeleteLocationDeletePayload) GetDeletedLocationId() *string {
+	return v.DeletedLocationId
+}
+
+// GetLocationDeleteUserErrors returns DeleteLocationLocationDeleteLocationDeletePayload.LocationDeleteUserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteLocationLocationDeleteLocationDeletePayload) GetLocationDeleteUserErrors() []DeleteLocationLocationDeleteLocationDeletePayloadLocationDeleteUserErrorsLocationDeleteUserError {
+	return v.LocationDeleteUserErrors
+}
+
+// DeleteLocationLocationDeleteLocationDeletePayloadLocationDeleteUserErrorsLocationDeleteUserError includes the requested fields of the GraphQL type LocationDeleteUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs while deleting a location.
+type DeleteLocationLocationDeleteLocationDeletePayloadLocationDeleteUserErrorsLocationDeleteUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeleteLocationLocationDeleteLocationDeletePayloadLocationDeleteUserErrorsLocationDeleteUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteLocationLocationDeleteLocationDeletePayloadLocationDeleteUserErrorsLocationDeleteUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteLocationLocationDeleteLocationDeletePayloadLocationDeleteUserErrorsLocationDeleteUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteLocationLocationDeleteLocationDeletePayloadLocationDeleteUserErrorsLocationDeleteUserError) GetMessage() string {
+	return v.Message
+}
+
+// DeleteLocationResponse is returned by DeleteLocation on success.
+type DeleteLocationResponse struct {
+	// Deletes a location.
+	LocationDelete *DeleteLocationLocationDeleteLocationDeletePayload `json:"locationDelete"`
+}
+
+// GetLocationDelete returns DeleteLocationResponse.LocationDelete, and is useful for accessing the field via an interface.
+func (v *DeleteLocationResponse) GetLocationDelete() *DeleteLocationLocationDeleteLocationDeletePayload {
+	return v.LocationDelete
+}
+
 // DeleteMenuMenuDeleteMenuDeletePayload includes the requested fields of the GraphQL type MenuDeletePayload.
 // The GraphQL type's documentation follows.
 //
@@ -1188,6 +2457,393 @@ type DeleteMetaobjectDefinitionResponse struct {
 func (v *DeleteMetaobjectDefinitionResponse) GetMetaobjectDefinitionDelete() *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload {
 	return v.MetaobjectDefinitionDelete
 }
+
+// EditLocationLocationEditLocationEditPayload includes the requested fields of the GraphQL type LocationEditPayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `locationEdit` mutation.
+type EditLocationLocationEditLocationEditPayload struct {
+	// The location that was edited.
+	Location *EditLocationLocationEditLocationEditPayloadLocation `json:"location"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []EditLocationLocationEditLocationEditPayloadUserErrorsLocationEditUserError `json:"userErrors"`
+}
+
+// GetLocation returns EditLocationLocationEditLocationEditPayload.Location, and is useful for accessing the field via an interface.
+func (v *EditLocationLocationEditLocationEditPayload) GetLocation() *EditLocationLocationEditLocationEditPayloadLocation {
+	return v.Location
+}
+
+// GetUserErrors returns EditLocationLocationEditLocationEditPayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *EditLocationLocationEditLocationEditPayload) GetUserErrors() []EditLocationLocationEditLocationEditPayloadUserErrorsLocationEditUserError {
+	return v.UserErrors
+}
+
+// EditLocationLocationEditLocationEditPayloadLocation includes the requested fields of the GraphQL type Location.
+// The GraphQL type's documentation follows.
+//
+// A physical location where merchants store and fulfill inventory. Locations include retail stores, warehouses, popups, dropshippers, or other places where inventory is managed or stocked.
+//
+// Active locations can fulfill online orders when configured with shipping rates, local pickup, or local delivery options. Locations track inventory quantities for [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and process [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order) fulfillment. Third-party apps using [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) can create and manage their own locations.
+type EditLocationLocationEditLocationEditPayloadLocation struct {
+	LocationFields `json:"-"`
+}
+
+// GetId returns EditLocationLocationEditLocationEditPayloadLocation.Id, and is useful for accessing the field via an interface.
+func (v *EditLocationLocationEditLocationEditPayloadLocation) GetId() string {
+	return v.LocationFields.Id
+}
+
+// GetLegacyResourceId returns EditLocationLocationEditLocationEditPayloadLocation.LegacyResourceId, and is useful for accessing the field via an interface.
+func (v *EditLocationLocationEditLocationEditPayloadLocation) GetLegacyResourceId() string {
+	return v.LocationFields.LegacyResourceId
+}
+
+// GetName returns EditLocationLocationEditLocationEditPayloadLocation.Name, and is useful for accessing the field via an interface.
+func (v *EditLocationLocationEditLocationEditPayloadLocation) GetName() string {
+	return v.LocationFields.Name
+}
+
+// GetIsActive returns EditLocationLocationEditLocationEditPayloadLocation.IsActive, and is useful for accessing the field via an interface.
+func (v *EditLocationLocationEditLocationEditPayloadLocation) GetIsActive() bool {
+	return v.LocationFields.IsActive
+}
+
+// GetFulfillsOnlineOrders returns EditLocationLocationEditLocationEditPayloadLocation.FulfillsOnlineOrders, and is useful for accessing the field via an interface.
+func (v *EditLocationLocationEditLocationEditPayloadLocation) GetFulfillsOnlineOrders() bool {
+	return v.LocationFields.FulfillsOnlineOrders
+}
+
+// GetAddress returns EditLocationLocationEditLocationEditPayloadLocation.Address, and is useful for accessing the field via an interface.
+func (v *EditLocationLocationEditLocationEditPayloadLocation) GetAddress() LocationFieldsAddressLocationAddress {
+	return v.LocationFields.Address
+}
+
+func (v *EditLocationLocationEditLocationEditPayloadLocation) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*EditLocationLocationEditLocationEditPayloadLocation
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.EditLocationLocationEditLocationEditPayloadLocation = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.LocationFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalEditLocationLocationEditLocationEditPayloadLocation struct {
+	Id string `json:"id"`
+
+	LegacyResourceId string `json:"legacyResourceId"`
+
+	Name string `json:"name"`
+
+	IsActive bool `json:"isActive"`
+
+	FulfillsOnlineOrders bool `json:"fulfillsOnlineOrders"`
+
+	Address LocationFieldsAddressLocationAddress `json:"address"`
+}
+
+func (v *EditLocationLocationEditLocationEditPayloadLocation) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *EditLocationLocationEditLocationEditPayloadLocation) __premarshalJSON() (*__premarshalEditLocationLocationEditLocationEditPayloadLocation, error) {
+	var retval __premarshalEditLocationLocationEditLocationEditPayloadLocation
+
+	retval.Id = v.LocationFields.Id
+	retval.LegacyResourceId = v.LocationFields.LegacyResourceId
+	retval.Name = v.LocationFields.Name
+	retval.IsActive = v.LocationFields.IsActive
+	retval.FulfillsOnlineOrders = v.LocationFields.FulfillsOnlineOrders
+	retval.Address = v.LocationFields.Address
+	return &retval, nil
+}
+
+// EditLocationLocationEditLocationEditPayloadUserErrorsLocationEditUserError includes the requested fields of the GraphQL type LocationEditUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs while editing a location.
+type EditLocationLocationEditLocationEditPayloadUserErrorsLocationEditUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns EditLocationLocationEditLocationEditPayloadUserErrorsLocationEditUserError.Field, and is useful for accessing the field via an interface.
+func (v *EditLocationLocationEditLocationEditPayloadUserErrorsLocationEditUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns EditLocationLocationEditLocationEditPayloadUserErrorsLocationEditUserError.Message, and is useful for accessing the field via an interface.
+func (v *EditLocationLocationEditLocationEditPayloadUserErrorsLocationEditUserError) GetMessage() string {
+	return v.Message
+}
+
+// EditLocationResponse is returned by EditLocation on success.
+type EditLocationResponse struct {
+	// Updates the properties of an existing [`Location`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Location). You can modify the location's name, address, whether it fulfills online orders, and custom [`metafields`](https://shopify.dev/docs/apps/build/custom-data).
+	//
+	// Apps that created a [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) can edit the associated location to ensure accurate representation of their fulfillment network.
+	//
+	// > Note:
+	// > You can't disable the [`fulfillsOnlineOrders`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/locationEdit#arguments-input.fields.fulfillsOnlineOrders) setting for fulfillment service locations.
+	//
+	// Learn more about [editing locations for fulfillment services](https://shopify.dev/docs/apps/build/orders-fulfillment/fulfillment-service-apps/build-for-fulfillment-services#step-2-edit-locations).
+	LocationEdit *EditLocationLocationEditLocationEditPayload `json:"locationEdit"`
+}
+
+// GetLocationEdit returns EditLocationResponse.LocationEdit, and is useful for accessing the field via an interface.
+func (v *EditLocationResponse) GetLocationEdit() *EditLocationLocationEditLocationEditPayload {
+	return v.LocationEdit
+}
+
+// FindLocationsLocationsLocationConnection includes the requested fields of the GraphQL type LocationConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Locations.
+type FindLocationsLocationsLocationConnection struct {
+	// A list of nodes that are contained in LocationEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []FindLocationsLocationsLocationConnectionNodesLocation `json:"nodes"`
+}
+
+// GetNodes returns FindLocationsLocationsLocationConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *FindLocationsLocationsLocationConnection) GetNodes() []FindLocationsLocationsLocationConnectionNodesLocation {
+	return v.Nodes
+}
+
+// FindLocationsLocationsLocationConnectionNodesLocation includes the requested fields of the GraphQL type Location.
+// The GraphQL type's documentation follows.
+//
+// A physical location where merchants store and fulfill inventory. Locations include retail stores, warehouses, popups, dropshippers, or other places where inventory is managed or stocked.
+//
+// Active locations can fulfill online orders when configured with shipping rates, local pickup, or local delivery options. Locations track inventory quantities for [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and process [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order) fulfillment. Third-party apps using [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) can create and manage their own locations.
+type FindLocationsLocationsLocationConnectionNodesLocation struct {
+	LocationFields `json:"-"`
+}
+
+// GetId returns FindLocationsLocationsLocationConnectionNodesLocation.Id, and is useful for accessing the field via an interface.
+func (v *FindLocationsLocationsLocationConnectionNodesLocation) GetId() string {
+	return v.LocationFields.Id
+}
+
+// GetLegacyResourceId returns FindLocationsLocationsLocationConnectionNodesLocation.LegacyResourceId, and is useful for accessing the field via an interface.
+func (v *FindLocationsLocationsLocationConnectionNodesLocation) GetLegacyResourceId() string {
+	return v.LocationFields.LegacyResourceId
+}
+
+// GetName returns FindLocationsLocationsLocationConnectionNodesLocation.Name, and is useful for accessing the field via an interface.
+func (v *FindLocationsLocationsLocationConnectionNodesLocation) GetName() string {
+	return v.LocationFields.Name
+}
+
+// GetIsActive returns FindLocationsLocationsLocationConnectionNodesLocation.IsActive, and is useful for accessing the field via an interface.
+func (v *FindLocationsLocationsLocationConnectionNodesLocation) GetIsActive() bool {
+	return v.LocationFields.IsActive
+}
+
+// GetFulfillsOnlineOrders returns FindLocationsLocationsLocationConnectionNodesLocation.FulfillsOnlineOrders, and is useful for accessing the field via an interface.
+func (v *FindLocationsLocationsLocationConnectionNodesLocation) GetFulfillsOnlineOrders() bool {
+	return v.LocationFields.FulfillsOnlineOrders
+}
+
+// GetAddress returns FindLocationsLocationsLocationConnectionNodesLocation.Address, and is useful for accessing the field via an interface.
+func (v *FindLocationsLocationsLocationConnectionNodesLocation) GetAddress() LocationFieldsAddressLocationAddress {
+	return v.LocationFields.Address
+}
+
+func (v *FindLocationsLocationsLocationConnectionNodesLocation) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*FindLocationsLocationsLocationConnectionNodesLocation
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.FindLocationsLocationsLocationConnectionNodesLocation = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.LocationFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalFindLocationsLocationsLocationConnectionNodesLocation struct {
+	Id string `json:"id"`
+
+	LegacyResourceId string `json:"legacyResourceId"`
+
+	Name string `json:"name"`
+
+	IsActive bool `json:"isActive"`
+
+	FulfillsOnlineOrders bool `json:"fulfillsOnlineOrders"`
+
+	Address LocationFieldsAddressLocationAddress `json:"address"`
+}
+
+func (v *FindLocationsLocationsLocationConnectionNodesLocation) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *FindLocationsLocationsLocationConnectionNodesLocation) __premarshalJSON() (*__premarshalFindLocationsLocationsLocationConnectionNodesLocation, error) {
+	var retval __premarshalFindLocationsLocationsLocationConnectionNodesLocation
+
+	retval.Id = v.LocationFields.Id
+	retval.LegacyResourceId = v.LocationFields.LegacyResourceId
+	retval.Name = v.LocationFields.Name
+	retval.IsActive = v.LocationFields.IsActive
+	retval.FulfillsOnlineOrders = v.LocationFields.FulfillsOnlineOrders
+	retval.Address = v.LocationFields.Address
+	return &retval, nil
+}
+
+// FindLocationsResponse is returned by FindLocations on success.
+type FindLocationsResponse struct {
+	// A paginated list of inventory locations where merchants can stock [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) items and fulfill [`Order`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order) items.
+	//
+	// Returns only active locations by default. Use the [`includeInactive`](https://shopify.dev/docs/api/admin-graphql/latest/queries/locations#arguments-includeInactive) argument to retrieve deactivated locations that can no longer stock inventory or fulfill orders. Use the [`includeLegacy`](https://shopify.dev/docs/api/admin-graphql/latest/queries/locations#arguments-includeLegacy) argument to include locations that [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) apps manage. Use the [`query`](https://shopify.dev/docs/api/admin-graphql/latest/queries/locations#arguments-query) argument to filter by location attributes like name, address, and whether local pickup is enabled.
+	Locations FindLocationsLocationsLocationConnection `json:"locations"`
+}
+
+// GetLocations returns FindLocationsResponse.Locations, and is useful for accessing the field via an interface.
+func (v *FindLocationsResponse) GetLocations() FindLocationsLocationsLocationConnection {
+	return v.Locations
+}
+
+// GetLocationLocation includes the requested fields of the GraphQL type Location.
+// The GraphQL type's documentation follows.
+//
+// A physical location where merchants store and fulfill inventory. Locations include retail stores, warehouses, popups, dropshippers, or other places where inventory is managed or stocked.
+//
+// Active locations can fulfill online orders when configured with shipping rates, local pickup, or local delivery options. Locations track inventory quantities for [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and process [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order) fulfillment. Third-party apps using [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) can create and manage their own locations.
+type GetLocationLocation struct {
+	LocationFields `json:"-"`
+}
+
+// GetId returns GetLocationLocation.Id, and is useful for accessing the field via an interface.
+func (v *GetLocationLocation) GetId() string { return v.LocationFields.Id }
+
+// GetLegacyResourceId returns GetLocationLocation.LegacyResourceId, and is useful for accessing the field via an interface.
+func (v *GetLocationLocation) GetLegacyResourceId() string { return v.LocationFields.LegacyResourceId }
+
+// GetName returns GetLocationLocation.Name, and is useful for accessing the field via an interface.
+func (v *GetLocationLocation) GetName() string { return v.LocationFields.Name }
+
+// GetIsActive returns GetLocationLocation.IsActive, and is useful for accessing the field via an interface.
+func (v *GetLocationLocation) GetIsActive() bool { return v.LocationFields.IsActive }
+
+// GetFulfillsOnlineOrders returns GetLocationLocation.FulfillsOnlineOrders, and is useful for accessing the field via an interface.
+func (v *GetLocationLocation) GetFulfillsOnlineOrders() bool {
+	return v.LocationFields.FulfillsOnlineOrders
+}
+
+// GetAddress returns GetLocationLocation.Address, and is useful for accessing the field via an interface.
+func (v *GetLocationLocation) GetAddress() LocationFieldsAddressLocationAddress {
+	return v.LocationFields.Address
+}
+
+func (v *GetLocationLocation) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetLocationLocation
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetLocationLocation = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.LocationFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetLocationLocation struct {
+	Id string `json:"id"`
+
+	LegacyResourceId string `json:"legacyResourceId"`
+
+	Name string `json:"name"`
+
+	IsActive bool `json:"isActive"`
+
+	FulfillsOnlineOrders bool `json:"fulfillsOnlineOrders"`
+
+	Address LocationFieldsAddressLocationAddress `json:"address"`
+}
+
+func (v *GetLocationLocation) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetLocationLocation) __premarshalJSON() (*__premarshalGetLocationLocation, error) {
+	var retval __premarshalGetLocationLocation
+
+	retval.Id = v.LocationFields.Id
+	retval.LegacyResourceId = v.LocationFields.LegacyResourceId
+	retval.Name = v.LocationFields.Name
+	retval.IsActive = v.LocationFields.IsActive
+	retval.FulfillsOnlineOrders = v.LocationFields.FulfillsOnlineOrders
+	retval.Address = v.LocationFields.Address
+	return &retval, nil
+}
+
+// GetLocationResponse is returned by GetLocation on success.
+type GetLocationResponse struct {
+	// Retrieves a [`Location`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Location) by its ID. Locations are physical places where merchants store inventory, such as warehouses, retail stores, or fulfillment centers.
+	//
+	// Each location tracks inventory levels, fulfillment capabilities, and address information. Active locations can stock products and fulfill orders based on their configuration settings.
+	Location *GetLocationLocation `json:"location"`
+}
+
+// GetLocation returns GetLocationResponse.Location, and is useful for accessing the field via an interface.
+func (v *GetLocationResponse) GetLocation() *GetLocationLocation { return v.Location }
 
 // GetMenuMenu includes the requested fields of the GraphQL type Menu.
 // The GraphQL type's documentation follows.
@@ -1923,6 +3579,220 @@ type ListMenusResponse struct {
 
 // GetMenus returns ListMenusResponse.Menus, and is useful for accessing the field via an interface.
 func (v *ListMenusResponse) GetMenus() ListMenusMenusMenuConnection { return v.Menus }
+
+// The input fields to use to specify the address while adding a location.
+type LocationAddAddressInput struct {
+	// The first line of the address.
+	Address1 *string `json:"address1,omitempty"`
+	// The second line of the address.
+	Address2 *string `json:"address2,omitempty"`
+	// The name of the city, district, village, or town.
+	City *string `json:"city,omitempty"`
+	// The phone number of the location.
+	Phone *string `json:"phone,omitempty"`
+	// The ZIP code or postal code of the address.
+	Zip *string `json:"zip,omitempty"`
+	// The two-letter code of country for the address.
+	CountryCode CountryCode `json:"countryCode"`
+	// The code for the region of the address, such as the state, province, or district.
+	// For example CA for California, United States.
+	ProvinceCode *string `json:"provinceCode,omitempty"`
+}
+
+// GetAddress1 returns LocationAddAddressInput.Address1, and is useful for accessing the field via an interface.
+func (v *LocationAddAddressInput) GetAddress1() *string { return v.Address1 }
+
+// GetAddress2 returns LocationAddAddressInput.Address2, and is useful for accessing the field via an interface.
+func (v *LocationAddAddressInput) GetAddress2() *string { return v.Address2 }
+
+// GetCity returns LocationAddAddressInput.City, and is useful for accessing the field via an interface.
+func (v *LocationAddAddressInput) GetCity() *string { return v.City }
+
+// GetPhone returns LocationAddAddressInput.Phone, and is useful for accessing the field via an interface.
+func (v *LocationAddAddressInput) GetPhone() *string { return v.Phone }
+
+// GetZip returns LocationAddAddressInput.Zip, and is useful for accessing the field via an interface.
+func (v *LocationAddAddressInput) GetZip() *string { return v.Zip }
+
+// GetCountryCode returns LocationAddAddressInput.CountryCode, and is useful for accessing the field via an interface.
+func (v *LocationAddAddressInput) GetCountryCode() CountryCode { return v.CountryCode }
+
+// GetProvinceCode returns LocationAddAddressInput.ProvinceCode, and is useful for accessing the field via an interface.
+func (v *LocationAddAddressInput) GetProvinceCode() *string { return v.ProvinceCode }
+
+// The input fields to use to add a location.
+type LocationAddInput struct {
+	// The name of the location.
+	Name string `json:"name"`
+	// The address of the location.
+	Address LocationAddAddressInput `json:"address"`
+	// Whether inventory at this location is available for sale online.
+	FulfillsOnlineOrders *bool `json:"fulfillsOnlineOrders,omitempty"`
+	// Additional customizable information to associate with the location.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+}
+
+// GetName returns LocationAddInput.Name, and is useful for accessing the field via an interface.
+func (v *LocationAddInput) GetName() string { return v.Name }
+
+// GetAddress returns LocationAddInput.Address, and is useful for accessing the field via an interface.
+func (v *LocationAddInput) GetAddress() LocationAddAddressInput { return v.Address }
+
+// GetFulfillsOnlineOrders returns LocationAddInput.FulfillsOnlineOrders, and is useful for accessing the field via an interface.
+func (v *LocationAddInput) GetFulfillsOnlineOrders() *bool { return v.FulfillsOnlineOrders }
+
+// GetMetafields returns LocationAddInput.Metafields, and is useful for accessing the field via an interface.
+func (v *LocationAddInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// The input fields to use to edit the address of a location.
+type LocationEditAddressInput struct {
+	// The first line of the address.
+	Address1 *string `json:"address1,omitempty"`
+	// The second line of the address.
+	Address2 *string `json:"address2,omitempty"`
+	// The name of the city, district, village, or town.
+	City *string `json:"city,omitempty"`
+	// The phone number of the location.
+	Phone *string `json:"phone,omitempty"`
+	// The ZIP code or postal code of the location.
+	Zip *string `json:"zip,omitempty"`
+	// The two-letter code of country for the address.
+	CountryCode *CountryCode `json:"countryCode,omitempty"`
+	// The code for the region of the address, such as the state, province, or district.
+	// For example CA for California, United States.
+	ProvinceCode *string `json:"provinceCode,omitempty"`
+}
+
+// GetAddress1 returns LocationEditAddressInput.Address1, and is useful for accessing the field via an interface.
+func (v *LocationEditAddressInput) GetAddress1() *string { return v.Address1 }
+
+// GetAddress2 returns LocationEditAddressInput.Address2, and is useful for accessing the field via an interface.
+func (v *LocationEditAddressInput) GetAddress2() *string { return v.Address2 }
+
+// GetCity returns LocationEditAddressInput.City, and is useful for accessing the field via an interface.
+func (v *LocationEditAddressInput) GetCity() *string { return v.City }
+
+// GetPhone returns LocationEditAddressInput.Phone, and is useful for accessing the field via an interface.
+func (v *LocationEditAddressInput) GetPhone() *string { return v.Phone }
+
+// GetZip returns LocationEditAddressInput.Zip, and is useful for accessing the field via an interface.
+func (v *LocationEditAddressInput) GetZip() *string { return v.Zip }
+
+// GetCountryCode returns LocationEditAddressInput.CountryCode, and is useful for accessing the field via an interface.
+func (v *LocationEditAddressInput) GetCountryCode() *CountryCode { return v.CountryCode }
+
+// GetProvinceCode returns LocationEditAddressInput.ProvinceCode, and is useful for accessing the field via an interface.
+func (v *LocationEditAddressInput) GetProvinceCode() *string { return v.ProvinceCode }
+
+// The input fields to use to edit a location.
+type LocationEditInput struct {
+	// The name of the location.
+	Name *string `json:"name,omitempty"`
+	// The address of the location.
+	Address *LocationEditAddressInput `json:"address,omitempty"`
+	// Whether inventory at this location is available for sale online.
+	//
+	// **Note:** This can't be disabled for fulfillment service locations.
+	FulfillsOnlineOrders *bool `json:"fulfillsOnlineOrders,omitempty"`
+	// Additional customizable information to associate with the location.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+}
+
+// GetName returns LocationEditInput.Name, and is useful for accessing the field via an interface.
+func (v *LocationEditInput) GetName() *string { return v.Name }
+
+// GetAddress returns LocationEditInput.Address, and is useful for accessing the field via an interface.
+func (v *LocationEditInput) GetAddress() *LocationEditAddressInput { return v.Address }
+
+// GetFulfillsOnlineOrders returns LocationEditInput.FulfillsOnlineOrders, and is useful for accessing the field via an interface.
+func (v *LocationEditInput) GetFulfillsOnlineOrders() *bool { return v.FulfillsOnlineOrders }
+
+// GetMetafields returns LocationEditInput.Metafields, and is useful for accessing the field via an interface.
+func (v *LocationEditInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// LocationFields includes the GraphQL fields of Location requested by the fragment LocationFields.
+// The GraphQL type's documentation follows.
+//
+// A physical location where merchants store and fulfill inventory. Locations include retail stores, warehouses, popups, dropshippers, or other places where inventory is managed or stocked.
+//
+// Active locations can fulfill online orders when configured with shipping rates, local pickup, or local delivery options. Locations track inventory quantities for [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and process [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order) fulfillment. Third-party apps using [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) can create and manage their own locations.
+type LocationFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The ID of the corresponding resource in the REST Admin API.
+	LegacyResourceId string `json:"legacyResourceId"`
+	// The name of the location.
+	Name string `json:"name"`
+	// Whether the location is active. A deactivated location can be activated (change `isActive: true`) if it has
+	// `activatable` set to `true` by calling the
+	// [`locationActivate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/locationActivate)
+	// mutation.
+	IsActive bool `json:"isActive"`
+	// Whether this location can fulfill online orders.
+	FulfillsOnlineOrders bool `json:"fulfillsOnlineOrders"`
+	// The address of this location.
+	Address LocationFieldsAddressLocationAddress `json:"address"`
+}
+
+// GetId returns LocationFields.Id, and is useful for accessing the field via an interface.
+func (v *LocationFields) GetId() string { return v.Id }
+
+// GetLegacyResourceId returns LocationFields.LegacyResourceId, and is useful for accessing the field via an interface.
+func (v *LocationFields) GetLegacyResourceId() string { return v.LegacyResourceId }
+
+// GetName returns LocationFields.Name, and is useful for accessing the field via an interface.
+func (v *LocationFields) GetName() string { return v.Name }
+
+// GetIsActive returns LocationFields.IsActive, and is useful for accessing the field via an interface.
+func (v *LocationFields) GetIsActive() bool { return v.IsActive }
+
+// GetFulfillsOnlineOrders returns LocationFields.FulfillsOnlineOrders, and is useful for accessing the field via an interface.
+func (v *LocationFields) GetFulfillsOnlineOrders() bool { return v.FulfillsOnlineOrders }
+
+// GetAddress returns LocationFields.Address, and is useful for accessing the field via an interface.
+func (v *LocationFields) GetAddress() LocationFieldsAddressLocationAddress { return v.Address }
+
+// LocationFieldsAddressLocationAddress includes the requested fields of the GraphQL type LocationAddress.
+// The GraphQL type's documentation follows.
+//
+// Represents the address of a location.
+type LocationFieldsAddressLocationAddress struct {
+	// The first line of the address for the location.
+	Address1 *string `json:"address1"`
+	// The second line of the address for the location.
+	Address2 *string `json:"address2"`
+	// The city of the location.
+	City *string `json:"city"`
+	// The ZIP code of the location.
+	Zip *string `json:"zip"`
+	// The code for the province, state, or district of the address of the location.
+	ProvinceCode *string `json:"provinceCode"`
+	// The country code of the location.
+	CountryCode *string `json:"countryCode"`
+	// The phone number of the location.
+	Phone *string `json:"phone"`
+}
+
+// GetAddress1 returns LocationFieldsAddressLocationAddress.Address1, and is useful for accessing the field via an interface.
+func (v *LocationFieldsAddressLocationAddress) GetAddress1() *string { return v.Address1 }
+
+// GetAddress2 returns LocationFieldsAddressLocationAddress.Address2, and is useful for accessing the field via an interface.
+func (v *LocationFieldsAddressLocationAddress) GetAddress2() *string { return v.Address2 }
+
+// GetCity returns LocationFieldsAddressLocationAddress.City, and is useful for accessing the field via an interface.
+func (v *LocationFieldsAddressLocationAddress) GetCity() *string { return v.City }
+
+// GetZip returns LocationFieldsAddressLocationAddress.Zip, and is useful for accessing the field via an interface.
+func (v *LocationFieldsAddressLocationAddress) GetZip() *string { return v.Zip }
+
+// GetProvinceCode returns LocationFieldsAddressLocationAddress.ProvinceCode, and is useful for accessing the field via an interface.
+func (v *LocationFieldsAddressLocationAddress) GetProvinceCode() *string { return v.ProvinceCode }
+
+// GetCountryCode returns LocationFieldsAddressLocationAddress.CountryCode, and is useful for accessing the field via an interface.
+func (v *LocationFieldsAddressLocationAddress) GetCountryCode() *string { return v.CountryCode }
+
+// GetPhone returns LocationFieldsAddressLocationAddress.Phone, and is useful for accessing the field via an interface.
+func (v *LocationFieldsAddressLocationAddress) GetPhone() *string { return v.Phone }
 
 // MenuFields includes the GraphQL fields of Menu requested by the fragment MenuFields.
 // The GraphQL type's documentation follows.
@@ -3075,6 +4945,51 @@ func (v *MetafieldDefinitionValidationInput) GetName() string { return v.Name }
 
 // GetValue returns MetafieldDefinitionValidationInput.Value, and is useful for accessing the field via an interface.
 func (v *MetafieldDefinitionValidationInput) GetValue() string { return v.Value }
+
+// The input fields to use to create or update a metafield through a mutation on the owning resource.
+// An alternative way to create or update a metafield is by using the
+// [metafieldsSet](https://shopify.dev/api/admin-graphql/latest/mutations/metafieldsSet) mutation.
+type MetafieldInput struct {
+	// The unique ID of the metafield. Using `namespace` and `key` is preferred for creating and updating.
+	Id *string `json:"id"`
+	// The container for a group of metafields that the metafield is or will be associated with. Used in tandem with
+	// `key` to lookup a metafield on a resource, preventing conflicts with other metafields with the same `key`.
+	//
+	// Required when creating a metafield, but optional when updating. Used to help identify the metafield when
+	// updating, but can't be updated itself.
+	//
+	// Must be 3-255 characters long and can contain alphanumeric, hyphen, and underscore characters.
+	Namespace *string `json:"namespace"`
+	// The unique identifier for a metafield within its namespace.
+	//
+	// Required when creating a metafield, but optional when updating. Used to help identify the metafield when
+	// updating, but can't be updated itself.
+	//
+	// Must be 2-64 characters long and can contain alphanumeric, hyphen, and underscore characters.
+	Key *string `json:"key"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value *string `json:"value"`
+	// The type of data that's stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	//
+	// Required when creating or updating a metafield without a definition.
+	Type *string `json:"type"`
+}
+
+// GetId returns MetafieldInput.Id, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetId() *string { return v.Id }
+
+// GetNamespace returns MetafieldInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetNamespace() *string { return v.Namespace }
+
+// GetKey returns MetafieldInput.Key, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetKey() *string { return v.Key }
+
+// GetValue returns MetafieldInput.Value, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetValue() *string { return v.Value }
+
+// GetType returns MetafieldInput.Type, and is useful for accessing the field via an interface.
+func (v *MetafieldInput) GetType() *string { return v.Type }
 
 // Possible types of a metafield's owner resource.
 type MetafieldOwnerType string
@@ -4427,6 +6342,26 @@ func (v *UpdateMetaobjectDefinitionResponse) GetMetaobjectDefinitionUpdate() *Up
 	return v.MetaobjectDefinitionUpdate
 }
 
+// __ActivateLocationInput is used internally by genqlient
+type __ActivateLocationInput struct {
+	LocationId     string `json:"locationId"`
+	IdempotencyKey string `json:"idempotencyKey"`
+}
+
+// GetLocationId returns __ActivateLocationInput.LocationId, and is useful for accessing the field via an interface.
+func (v *__ActivateLocationInput) GetLocationId() string { return v.LocationId }
+
+// GetIdempotencyKey returns __ActivateLocationInput.IdempotencyKey, and is useful for accessing the field via an interface.
+func (v *__ActivateLocationInput) GetIdempotencyKey() string { return v.IdempotencyKey }
+
+// __AddLocationInput is used internally by genqlient
+type __AddLocationInput struct {
+	Input LocationAddInput `json:"input"`
+}
+
+// GetInput returns __AddLocationInput.Input, and is useful for accessing the field via an interface.
+func (v *__AddLocationInput) GetInput() LocationAddInput { return v.Input }
+
 // __CreateMenuInput is used internally by genqlient
 type __CreateMenuInput struct {
 	Title  string                `json:"title"`
@@ -4463,6 +6398,26 @@ func (v *__CreateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinition
 	return v.Definition
 }
 
+// __DeactivateLocationInput is used internally by genqlient
+type __DeactivateLocationInput struct {
+	LocationId     string `json:"locationId"`
+	IdempotencyKey string `json:"idempotencyKey"`
+}
+
+// GetLocationId returns __DeactivateLocationInput.LocationId, and is useful for accessing the field via an interface.
+func (v *__DeactivateLocationInput) GetLocationId() string { return v.LocationId }
+
+// GetIdempotencyKey returns __DeactivateLocationInput.IdempotencyKey, and is useful for accessing the field via an interface.
+func (v *__DeactivateLocationInput) GetIdempotencyKey() string { return v.IdempotencyKey }
+
+// __DeleteLocationInput is used internally by genqlient
+type __DeleteLocationInput struct {
+	LocationId string `json:"locationId"`
+}
+
+// GetLocationId returns __DeleteLocationInput.LocationId, and is useful for accessing the field via an interface.
+func (v *__DeleteLocationInput) GetLocationId() string { return v.LocationId }
+
 // __DeleteMenuInput is used internally by genqlient
 type __DeleteMenuInput struct {
 	Id string `json:"id"`
@@ -4492,6 +6447,34 @@ type __DeleteMetaobjectDefinitionInput struct {
 
 // GetId returns __DeleteMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteMetaobjectDefinitionInput) GetId() string { return v.Id }
+
+// __EditLocationInput is used internally by genqlient
+type __EditLocationInput struct {
+	Id    string            `json:"id"`
+	Input LocationEditInput `json:"input"`
+}
+
+// GetId returns __EditLocationInput.Id, and is useful for accessing the field via an interface.
+func (v *__EditLocationInput) GetId() string { return v.Id }
+
+// GetInput returns __EditLocationInput.Input, and is useful for accessing the field via an interface.
+func (v *__EditLocationInput) GetInput() LocationEditInput { return v.Input }
+
+// __FindLocationsInput is used internally by genqlient
+type __FindLocationsInput struct {
+	Query string `json:"query"`
+}
+
+// GetQuery returns __FindLocationsInput.Query, and is useful for accessing the field via an interface.
+func (v *__FindLocationsInput) GetQuery() string { return v.Query }
+
+// __GetLocationInput is used internally by genqlient
+type __GetLocationInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetLocationInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetLocationInput) GetId() string { return v.Id }
 
 // __GetMenuInput is used internally by genqlient
 type __GetMenuInput struct {
@@ -4577,6 +6560,121 @@ func (v *__UpdateMetaobjectDefinitionInput) GetId() string { return v.Id }
 // GetDefinition returns __UpdateMetaobjectDefinitionInput.Definition, and is useful for accessing the field via an interface.
 func (v *__UpdateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinitionUpdateInput {
 	return v.Definition
+}
+
+// The mutation executed by ActivateLocation.
+const ActivateLocation_Operation = `
+mutation ActivateLocation ($locationId: ID!, $idempotencyKey: String!) {
+	locationActivate(locationId: $locationId) @idempotent(key: $idempotencyKey) {
+		location {
+			... LocationFields
+		}
+		locationActivateUserErrors {
+			field
+			message
+		}
+	}
+}
+fragment LocationFields on Location {
+	id
+	legacyResourceId
+	name
+	isActive
+	fulfillsOnlineOrders
+	address {
+		address1
+		address2
+		city
+		zip
+		provinceCode
+		countryCode
+		phone
+	}
+}
+`
+
+// The idempotency key is required since 2026-04; a retry of the same request reuses it.
+func ActivateLocation(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	locationId string,
+	idempotencyKey string,
+) (data_ *ActivateLocationResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ActivateLocation",
+		Query:  ActivateLocation_Operation,
+		Variables: &__ActivateLocationInput{
+			LocationId:     locationId,
+			IdempotencyKey: idempotencyKey,
+		},
+	}
+
+	data_ = &ActivateLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by AddLocation.
+const AddLocation_Operation = `
+mutation AddLocation ($input: LocationAddInput!) {
+	locationAdd(input: $input) {
+		location {
+			... LocationFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment LocationFields on Location {
+	id
+	legacyResourceId
+	name
+	isActive
+	fulfillsOnlineOrders
+	address {
+		address1
+		address2
+		city
+		zip
+		provinceCode
+		countryCode
+		phone
+	}
+}
+`
+
+func AddLocation(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input LocationAddInput,
+) (data_ *AddLocationResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "AddLocation",
+		Query:  AddLocation_Operation,
+		Variables: &__AddLocationInput{
+			Input: input,
+		},
+	}
+
+	data_ = &AddLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
 }
 
 // The mutation executed by CreateMenu.
@@ -4789,6 +6887,102 @@ func CreateMetaobjectDefinition(
 	return data_, err_
 }
 
+// The mutation executed by DeactivateLocation.
+const DeactivateLocation_Operation = `
+mutation DeactivateLocation ($locationId: ID!, $idempotencyKey: String!) {
+	locationDeactivate(locationId: $locationId) @idempotent(key: $idempotencyKey) {
+		location {
+			... LocationFields
+		}
+		locationDeactivateUserErrors {
+			field
+			message
+		}
+	}
+}
+fragment LocationFields on Location {
+	id
+	legacyResourceId
+	name
+	isActive
+	fulfillsOnlineOrders
+	address {
+		address1
+		address2
+		city
+		zip
+		provinceCode
+		countryCode
+		phone
+	}
+}
+`
+
+func DeactivateLocation(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	locationId string,
+	idempotencyKey string,
+) (data_ *DeactivateLocationResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeactivateLocation",
+		Query:  DeactivateLocation_Operation,
+		Variables: &__DeactivateLocationInput{
+			LocationId:     locationId,
+			IdempotencyKey: idempotencyKey,
+		},
+	}
+
+	data_ = &DeactivateLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteLocation.
+const DeleteLocation_Operation = `
+mutation DeleteLocation ($locationId: ID!) {
+	locationDelete(locationId: $locationId) {
+		deletedLocationId
+		locationDeleteUserErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DeleteLocation(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	locationId string,
+) (data_ *DeleteLocationResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteLocation",
+		Query:  DeleteLocation_Operation,
+		Variables: &__DeleteLocationInput{
+			LocationId: locationId,
+		},
+	}
+
+	data_ = &DeleteLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by DeleteMenu.
 const DeleteMenu_Operation = `
 mutation DeleteMenu ($id: ID!) {
@@ -4894,6 +7088,167 @@ func DeleteMetaobjectDefinition(
 	}
 
 	data_ = &DeleteMetaobjectDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by EditLocation.
+const EditLocation_Operation = `
+mutation EditLocation ($id: ID!, $input: LocationEditInput!) {
+	locationEdit(id: $id, input: $input) {
+		location {
+			... LocationFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment LocationFields on Location {
+	id
+	legacyResourceId
+	name
+	isActive
+	fulfillsOnlineOrders
+	address {
+		address1
+		address2
+		city
+		zip
+		provinceCode
+		countryCode
+		phone
+	}
+}
+`
+
+func EditLocation(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input LocationEditInput,
+) (data_ *EditLocationResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "EditLocation",
+		Query:  EditLocation_Operation,
+		Variables: &__EditLocationInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &EditLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by FindLocations.
+const FindLocations_Operation = `
+query FindLocations ($query: String!) {
+	locations(first: 50, query: $query, includeInactive: true) {
+		nodes {
+			... LocationFields
+		}
+	}
+}
+fragment LocationFields on Location {
+	id
+	legacyResourceId
+	name
+	isActive
+	fulfillsOnlineOrders
+	address {
+		address1
+		address2
+		city
+		zip
+		provinceCode
+		countryCode
+		phone
+	}
+}
+`
+
+// Search-backed, so it can lag behind writes; used only for import and the Read fallback.
+func FindLocations(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	query string,
+) (data_ *FindLocationsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "FindLocations",
+		Query:  FindLocations_Operation,
+		Variables: &__FindLocationsInput{
+			Query: query,
+		},
+	}
+
+	data_ = &FindLocationsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetLocation.
+const GetLocation_Operation = `
+query GetLocation ($id: ID!) {
+	location(id: $id) {
+		... LocationFields
+	}
+}
+fragment LocationFields on Location {
+	id
+	legacyResourceId
+	name
+	isActive
+	fulfillsOnlineOrders
+	address {
+		address1
+		address2
+		city
+		zip
+		provinceCode
+		countryCode
+		phone
+	}
+}
+`
+
+func GetLocation(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetLocationResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetLocation",
+		Query:  GetLocation_Operation,
+		Variables: &__GetLocationInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetLocationResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

@@ -260,14 +260,16 @@ resource "shopify_location" "warehouse_hamburg" {
 
 | Attribute | Type | Behaviour |
 |---|---|---|
-| `name` | string | Required, import key |
+| `name` | string | Required, import key (numeric ID as fallback) |
 | `address` | object | Updatable via `locationEdit` |
 | `fulfills_online_orders` | bool | |
 | `active` | bool | `locationActivate` / `locationDeactivate` |
-| `deletion_policy` | string | `deactivate` (default) or `delete`. Delete requires deactivating first. Shopify may refuse deletion for locations with inventory or history ⚠ |
+| `deletion_policy` | string | `deactivate` (default) or `delete`. Delete requires deactivating first. Shopify refuses deletion with `LOCATION_HAS_INVENTORY` / `LOCATION_HAS_PENDING_ORDERS` (from the error enum; not exercised) |
 | `allow_data_deletion` | bool | Pattern B. Guards only `deletion_policy = "delete"`; deactivation is never blocked |
 
-Mutations: `locationAdd`, `locationEdit`, `locationActivate`, `locationDeactivate`, `locationDelete`.
+Mutations: `locationAdd`, `locationEdit`, `locationActivate`, `locationDeactivate`, `locationDelete`. Activate and deactivate require an `@idempotent(key:)` directive since 2026-04; the provider sends a random key per call, which retries reuse.
+
+**Lookup:** Read uses `location(id:)`, falling back to `locations(query: "name:\"…\"", includeInactive: true)` with an exact-name match. Import accepts the name or the numeric `legacyResourceId`. The search lags a few seconds behind writes. Names are unique per shop: `locationAdd` returns `TAKEN` ("You already have a location with this name"), confirmed against an active location; ⚠ not checked against a deactivated one.
 
 Watch out: the location limit depends on the plan, and deactivating a location that holds inventory needs a destination for that inventory ⚠. That is a reason to default to `deactivate` and treat deletion as rare.
 

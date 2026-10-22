@@ -4,3 +4,7 @@ operations:
 generated: generated.go
 package: client
 optional: pointer
+bindings:
+  # Shopify serializes UnsignedInt64 as a JSON string.
+  UnsignedInt64:
+    type: string
