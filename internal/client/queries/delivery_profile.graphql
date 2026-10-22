@@ -1,0 +1,147 @@
+fragment DeliveryMethodFields on DeliveryMethodDefinition {
+  id
+  name
+  description
+  active
+  rateProvider {
+    __typename
+    ... on DeliveryRateDefinition {
+      id
+      price {
+        amount
+        currencyCode
+      }
+    }
+  }
+  methodConditions {
+    id
+    field
+    operator
+    conditionCriteria {
+      __typename
+      ... on MoneyV2 {
+        amount
+        currencyCode
+      }
+      ... on Weight {
+        unit
+        value
+      }
+    }
+  }
+}
+
+# Page sizes keep the query under Shopify's single-query cost limit; truncation is reported, not ignored.
+query GetDeliveryProfile(
+  $id: ID!
+) {
+  deliveryProfile(id: $id) {
+    id
+    name
+    default
+    profileLocationGroups {
+      locationGroup {
+        id
+        locations(first: 50) {
+          nodes {
+            id
+          }
+          pageInfo {
+            hasNextPage
+          }
+        }
+      }
+      locationGroupZones(first: 25) {
+        nodes {
+          zone {
+            id
+            name
+            countries {
+              code {
+                countryCode
+                restOfWorld
+              }
+            }
+          }
+          methodDefinitions(first: 25) {
+            nodes {
+              ...DeliveryMethodFields
+            }
+            pageInfo {
+              hasNextPage
+            }
+          }
+        }
+        pageInfo {
+          hasNextPage
+        }
+      }
+    }
+  }
+}
+
+query ListDeliveryProfiles {
+  deliveryProfiles(first: 50) {
+    nodes {
+      id
+      default
+    }
+  }
+}
+
+# @genqlient(for: "DeliveryProfileInput.name", omitempty: true)
+# @genqlient(for: "DeliveryProfileInput.profileLocationGroups", omitempty: true)
+# @genqlient(for: "DeliveryProfileInput.locationGroupsToCreate", omitempty: true)
+# @genqlient(for: "DeliveryProfileInput.locationGroupsToUpdate", omitempty: true)
+# @genqlient(for: "DeliveryProfileInput.locationGroupsToDelete", omitempty: true)
+# @genqlient(for: "DeliveryProfileInput.variantsToAssociate", omitempty: true)
+# @genqlient(for: "DeliveryProfileInput.variantsToDissociate", omitempty: true)
+# @genqlient(for: "DeliveryProfileInput.zonesToDelete", omitempty: true)
+# @genqlient(for: "DeliveryProfileInput.methodDefinitionsToDelete", omitempty: true)
+# @genqlient(for: "DeliveryProfileInput.conditionsToDelete", omitempty: true)
+# @genqlient(for: "DeliveryProfileInput.sellingPlanGroupsToAssociate", omitempty: true)
+# @genqlient(for: "DeliveryProfileInput.sellingPlanGroupsToDissociate", omitempty: true)
+# @genqlient(for: "DeliveryProfileInput.coversAllItems", omitempty: true)
+# @genqlient(for: "DeliveryProfileLocationGroupInput.id", omitempty: true)
+# @genqlient(for: "DeliveryProfileLocationGroupInput.locations", omitempty: true)
+# @genqlient(for: "DeliveryProfileLocationGroupInput.locationsToAdd", omitempty: true)
+# @genqlient(for: "DeliveryProfileLocationGroupInput.locationsToRemove", omitempty: true)
+# @genqlient(for: "DeliveryProfileLocationGroupInput.zonesToCreate", omitempty: true)
+# @genqlient(for: "DeliveryProfileLocationGroupInput.zonesToUpdate", omitempty: true)
+# @genqlient(for: "DeliveryLocationGroupZoneInput.id", omitempty: true)
+# @genqlient(for: "DeliveryLocationGroupZoneInput.name", omitempty: true)
+# @genqlient(for: "DeliveryLocationGroupZoneInput.countries", omitempty: true)
+# @genqlient(for: "DeliveryLocationGroupZoneInput.methodDefinitionsToCreate", omitempty: true)
+# @genqlient(for: "DeliveryLocationGroupZoneInput.methodDefinitionsToUpdate", omitempty: true)
+# @genqlient(for: "DeliveryMethodDefinitionInput.id", omitempty: true)
+# @genqlient(for: "DeliveryMethodDefinitionInput.name", omitempty: true)
+# @genqlient(for: "DeliveryMethodDefinitionInput.description", omitempty: true)
+# @genqlient(for: "DeliveryMethodDefinitionInput.active", omitempty: true)
+# @genqlient(for: "DeliveryMethodDefinitionInput.rateDefinition", omitempty: true)
+# @genqlient(for: "DeliveryMethodDefinitionInput.participant", omitempty: true)
+# @genqlient(for: "DeliveryMethodDefinitionInput.weightConditionsToCreate", omitempty: true)
+# @genqlient(for: "DeliveryMethodDefinitionInput.priceConditionsToCreate", omitempty: true)
+# @genqlient(for: "DeliveryMethodDefinitionInput.conditionsToUpdate", omitempty: true)
+# @genqlient(for: "DeliveryRateDefinitionInput.id", omitempty: true)
+# @genqlient(for: "DeliveryPriceConditionInput.criteria", omitempty: true)
+# @genqlient(for: "DeliveryPriceConditionInput.operator", omitempty: true)
+# @genqlient(for: "DeliveryWeightConditionInput.criteria", omitempty: true)
+# @genqlient(for: "DeliveryWeightConditionInput.operator", omitempty: true)
+# @genqlient(for: "DeliveryCountryInput.code", omitempty: true)
+# @genqlient(for: "DeliveryCountryInput.restOfWorld", omitempty: true)
+# @genqlient(for: "DeliveryCountryInput.provinces", omitempty: true)
+# @genqlient(for: "DeliveryCountryInput.includeAllProvinces", omitempty: true)
+mutation UpdateDeliveryProfile(
+  $id: ID!
+  $profile: DeliveryProfileInput!
+) {
+  deliveryProfileUpdate(id: $id, profile: $profile) {
+    profile {
+      id
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

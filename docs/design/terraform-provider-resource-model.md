@@ -312,12 +312,16 @@ resource "shopify_delivery_profile" "general" {
 }
 ```
 
-Recommendation: **phase 2.**
-- Start with the general profile only (adopted implicitly, no flag), with flat rates and price- or weight-based conditions.
-- Product-to-profile assignment is catalog work and stays out of scope; the general profile covers everything by default.
-- Update is complicated: the update input uses separate lists for create, update and delete at each level ⚠. Matching is by zone name and method name. Write good unit tests for the diff logic before shipping.
+Phase 1 implements the general profile only:
+- Adopted implicitly (no flag): create takes it over, destroy only removes it from state. Import key `default`.
+- Flat rates with optional price or weight conditions. Carrier-calculated rates are read past and never touched. Product-to-profile assignment stays out of scope.
+- **Diff against the live tree.** Update fetches the current profile and diffs config against it, so no nested IDs live in state. Location groups match by position, zones by name, rates by **name plus condition**: real profiles repeat rate names (a flat "Standard" and a free "Standard" over €55 in the same zone), so name alone isn't unique. Validators require unique zone names per group and unique name + condition per zone.
+- The update input has create/update lists per level and profile-level delete lists by ID (confirmed). Flat rates update in place via the rate definition ID. Conditional rates come back with synthetic IDs (`DeliveryRateDefinition/0?source=RateRangeCondition…`), so any change to one is a delete + create.
+- Amounts come back reformatted (`"55.00"` → `"55.0"`); they are compared numerically and state keeps the configured string.
+- Zone countries are sent only when the set changes, with all provinces included. Province subsets are not modeled: changing a zone's countries widens partial-province selections in that zone. `*` stands for the rest of the world.
+- The full tree can exceed Shopify's single-query cost limit (1000). The provider reads ≤ 50 locations per group, ≤ 25 zones per group and ≤ 25 rates per zone, and fails on larger profiles instead of managing part of one.
 
-Mutations: `deliveryProfileCreate`, `deliveryProfileUpdate`, `deliveryProfileRemove`.
+Mutations: `deliveryProfileUpdate` only (create/remove are for custom profiles, out of scope).
 
 ---
 

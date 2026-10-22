@@ -2911,6 +2911,60 @@ func (v *DeliveryCarrierCalculatedRateGroupUpdateInput) GetAutoIncludeNewService
 	return v.AutoIncludeNewServices
 }
 
+// The field type that the condition will be applied to.
+type DeliveryConditionField string
+
+const (
+	// The condition will check against the total weight of the order.
+	DeliveryConditionFieldTotalWeight DeliveryConditionField = "TOTAL_WEIGHT"
+	// The condition will check against the total price of the order.
+	DeliveryConditionFieldTotalPrice DeliveryConditionField = "TOTAL_PRICE"
+)
+
+var AllDeliveryConditionField = []DeliveryConditionField{
+	DeliveryConditionFieldTotalWeight,
+	DeliveryConditionFieldTotalPrice,
+}
+
+// The operator to use to determine if the condition passes.
+type DeliveryConditionOperator string
+
+const (
+	// The condition will check whether the field is greater than or equal to the criterion.
+	DeliveryConditionOperatorGreaterThanOrEqualTo DeliveryConditionOperator = "GREATER_THAN_OR_EQUAL_TO"
+	// The condition will check if the field is less than or equal to the criterion.
+	DeliveryConditionOperatorLessThanOrEqualTo DeliveryConditionOperator = "LESS_THAN_OR_EQUAL_TO"
+)
+
+var AllDeliveryConditionOperator = []DeliveryConditionOperator{
+	DeliveryConditionOperatorGreaterThanOrEqualTo,
+	DeliveryConditionOperatorLessThanOrEqualTo,
+}
+
+// The input fields to specify a country.
+type DeliveryCountryInput struct {
+	// The country code of the country in the ISO 3166-1 alpha-2 format.
+	Code *CountryCode `json:"code,omitempty"`
+	// Whether the country is a part of the 'Rest of World' shipping zone.
+	RestOfWorld *bool `json:"restOfWorld,omitempty"`
+	// The regions associated with this country.
+	Provinces []DeliveryProvinceInput `json:"provinces,omitempty"`
+	// Associate all available provinces with this country.
+	IncludeAllProvinces *bool `json:"includeAllProvinces,omitempty"`
+}
+
+// GetCode returns DeliveryCountryInput.Code, and is useful for accessing the field via an interface.
+func (v *DeliveryCountryInput) GetCode() *CountryCode { return v.Code }
+
+// GetRestOfWorld returns DeliveryCountryInput.RestOfWorld, and is useful for accessing the field via an interface.
+func (v *DeliveryCountryInput) GetRestOfWorld() *bool { return v.RestOfWorld }
+
+// GetProvinces returns DeliveryCountryInput.Provinces, and is useful for accessing the field via an interface.
+func (v *DeliveryCountryInput) GetProvinces() []DeliveryProvinceInput { return v.Provinces }
+
+// GetIncludeAllProvinces returns DeliveryCountryInput.IncludeAllProvinces, and is useful for accessing the field via an interface.
+func (v *DeliveryCountryInput) GetIncludeAllProvinces() *bool { return v.IncludeAllProvinces }
+
 // The input fields for creating a flat rate.
 type DeliveryFlatRateCreateInput struct {
 	// The fixed price charged for this rate.
@@ -3081,6 +3135,597 @@ func (v *DeliveryFlatRateUpdateInput) GetTransitTimeMinSeconds() *int { return v
 // GetTransitTimeMaxSeconds returns DeliveryFlatRateUpdateInput.TransitTimeMaxSeconds, and is useful for accessing the field via an interface.
 func (v *DeliveryFlatRateUpdateInput) GetTransitTimeMaxSeconds() *int { return v.TransitTimeMaxSeconds }
 
+// The input fields for a delivery zone associated to a location group and profile.
+type DeliveryLocationGroupZoneInput struct {
+	// A globally-unique ID of the zone.
+	Id *string `json:"id,omitempty"`
+	// The name of the zone.
+	Name *string `json:"name,omitempty"`
+	// A list of countries to associate with the zone.
+	Countries []DeliveryCountryInput `json:"countries,omitempty"`
+	// A list of method definitions to create.
+	MethodDefinitionsToCreate []DeliveryMethodDefinitionInput `json:"methodDefinitionsToCreate,omitempty"`
+	// A list of method definitions to update.
+	MethodDefinitionsToUpdate []DeliveryMethodDefinitionInput `json:"methodDefinitionsToUpdate,omitempty"`
+}
+
+// GetId returns DeliveryLocationGroupZoneInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryLocationGroupZoneInput) GetId() *string { return v.Id }
+
+// GetName returns DeliveryLocationGroupZoneInput.Name, and is useful for accessing the field via an interface.
+func (v *DeliveryLocationGroupZoneInput) GetName() *string { return v.Name }
+
+// GetCountries returns DeliveryLocationGroupZoneInput.Countries, and is useful for accessing the field via an interface.
+func (v *DeliveryLocationGroupZoneInput) GetCountries() []DeliveryCountryInput { return v.Countries }
+
+// GetMethodDefinitionsToCreate returns DeliveryLocationGroupZoneInput.MethodDefinitionsToCreate, and is useful for accessing the field via an interface.
+func (v *DeliveryLocationGroupZoneInput) GetMethodDefinitionsToCreate() []DeliveryMethodDefinitionInput {
+	return v.MethodDefinitionsToCreate
+}
+
+// GetMethodDefinitionsToUpdate returns DeliveryLocationGroupZoneInput.MethodDefinitionsToUpdate, and is useful for accessing the field via an interface.
+func (v *DeliveryLocationGroupZoneInput) GetMethodDefinitionsToUpdate() []DeliveryMethodDefinitionInput {
+	return v.MethodDefinitionsToUpdate
+}
+
+// The input fields for a method definition.
+type DeliveryMethodDefinitionInput struct {
+	// A globally-unique ID of the method definition. Use only when updating a method definition.
+	Id *string `json:"id,omitempty"`
+	// The name of the method definition.
+	Name *string `json:"name,omitempty"`
+	// The description of the method definition.
+	Description *string `json:"description,omitempty"`
+	// Whether to use this method definition during rate calculation.
+	Active *bool `json:"active,omitempty"`
+	// A rate definition to apply to the method definition.
+	RateDefinition *DeliveryRateDefinitionInput `json:"rateDefinition,omitempty"`
+	// A participant to apply to the method definition.
+	Participant *DeliveryParticipantInput `json:"participant,omitempty"`
+	// A list of weight conditions on the method definition.
+	WeightConditionsToCreate []DeliveryWeightConditionInput `json:"weightConditionsToCreate,omitempty"`
+	// A list of price conditions on the method definition.
+	PriceConditionsToCreate []DeliveryPriceConditionInput `json:"priceConditionsToCreate,omitempty"`
+	// A list of conditions to update on the method definition.
+	ConditionsToUpdate []DeliveryUpdateConditionInput `json:"conditionsToUpdate,omitempty"`
+}
+
+// GetId returns DeliveryMethodDefinitionInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodDefinitionInput) GetId() *string { return v.Id }
+
+// GetName returns DeliveryMethodDefinitionInput.Name, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodDefinitionInput) GetName() *string { return v.Name }
+
+// GetDescription returns DeliveryMethodDefinitionInput.Description, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodDefinitionInput) GetDescription() *string { return v.Description }
+
+// GetActive returns DeliveryMethodDefinitionInput.Active, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodDefinitionInput) GetActive() *bool { return v.Active }
+
+// GetRateDefinition returns DeliveryMethodDefinitionInput.RateDefinition, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodDefinitionInput) GetRateDefinition() *DeliveryRateDefinitionInput {
+	return v.RateDefinition
+}
+
+// GetParticipant returns DeliveryMethodDefinitionInput.Participant, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodDefinitionInput) GetParticipant() *DeliveryParticipantInput {
+	return v.Participant
+}
+
+// GetWeightConditionsToCreate returns DeliveryMethodDefinitionInput.WeightConditionsToCreate, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodDefinitionInput) GetWeightConditionsToCreate() []DeliveryWeightConditionInput {
+	return v.WeightConditionsToCreate
+}
+
+// GetPriceConditionsToCreate returns DeliveryMethodDefinitionInput.PriceConditionsToCreate, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodDefinitionInput) GetPriceConditionsToCreate() []DeliveryPriceConditionInput {
+	return v.PriceConditionsToCreate
+}
+
+// GetConditionsToUpdate returns DeliveryMethodDefinitionInput.ConditionsToUpdate, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodDefinitionInput) GetConditionsToUpdate() []DeliveryUpdateConditionInput {
+	return v.ConditionsToUpdate
+}
+
+// DeliveryMethodFields includes the GraphQL fields of DeliveryMethodDefinition requested by the fragment DeliveryMethodFields.
+// The GraphQL type's documentation follows.
+//
+// A method definition contains the delivery rate and the conditions that must be met for the method to be
+// applied.
+type DeliveryMethodFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The name of the method definition.
+	Name string `json:"name"`
+	// The description of the method definition. Only available on shipping rates that are custom.
+	Description *string `json:"description"`
+	// Whether this method definition is active.
+	Active bool `json:"active"`
+	// The provided rate for this method definition, from a rate definition or participant.
+	RateProvider DeliveryMethodFieldsRateProviderDeliveryRateProvider `json:"-"`
+	// The method conditions that must pass for this method definition to be applied to an order.
+	MethodConditions []DeliveryMethodFieldsMethodConditionsDeliveryCondition `json:"methodConditions"`
+}
+
+// GetId returns DeliveryMethodFields.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFields) GetId() string { return v.Id }
+
+// GetName returns DeliveryMethodFields.Name, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFields) GetName() string { return v.Name }
+
+// GetDescription returns DeliveryMethodFields.Description, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFields) GetDescription() *string { return v.Description }
+
+// GetActive returns DeliveryMethodFields.Active, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFields) GetActive() bool { return v.Active }
+
+// GetRateProvider returns DeliveryMethodFields.RateProvider, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFields) GetRateProvider() DeliveryMethodFieldsRateProviderDeliveryRateProvider {
+	return v.RateProvider
+}
+
+// GetMethodConditions returns DeliveryMethodFields.MethodConditions, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFields) GetMethodConditions() []DeliveryMethodFieldsMethodConditionsDeliveryCondition {
+	return v.MethodConditions
+}
+
+func (v *DeliveryMethodFields) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DeliveryMethodFields
+		RateProvider json.RawMessage `json:"rateProvider"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DeliveryMethodFields = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.RateProvider
+		src := firstPass.RateProvider
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDeliveryMethodFieldsRateProviderDeliveryRateProvider(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DeliveryMethodFields.RateProvider: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDeliveryMethodFields struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	Active bool `json:"active"`
+
+	RateProvider json.RawMessage `json:"rateProvider"`
+
+	MethodConditions []DeliveryMethodFieldsMethodConditionsDeliveryCondition `json:"methodConditions"`
+}
+
+func (v *DeliveryMethodFields) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DeliveryMethodFields) __premarshalJSON() (*__premarshalDeliveryMethodFields, error) {
+	var retval __premarshalDeliveryMethodFields
+
+	retval.Id = v.Id
+	retval.Name = v.Name
+	retval.Description = v.Description
+	retval.Active = v.Active
+	{
+
+		dst := &retval.RateProvider
+		src := v.RateProvider
+		var err error
+		*dst, err = __marshalDeliveryMethodFieldsRateProviderDeliveryRateProvider(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DeliveryMethodFields.RateProvider: %w", err)
+		}
+	}
+	retval.MethodConditions = v.MethodConditions
+	return &retval, nil
+}
+
+// DeliveryMethodFieldsMethodConditionsDeliveryCondition includes the requested fields of the GraphQL type DeliveryCondition.
+// The GraphQL type's documentation follows.
+//
+// A condition that must pass for a delivery method definition to be applied to an order.
+type DeliveryMethodFieldsMethodConditionsDeliveryCondition struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The field to compare the criterion value against, using the operator.
+	Field DeliveryConditionField `json:"field"`
+	// The operator to compare the field and criterion value.
+	Operator DeliveryConditionOperator `json:"operator"`
+	// The value (weight or price) that the condition field is compared to.
+	ConditionCriteria DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria `json:"-"`
+}
+
+// GetId returns DeliveryMethodFieldsMethodConditionsDeliveryCondition.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryCondition) GetId() string { return v.Id }
+
+// GetField returns DeliveryMethodFieldsMethodConditionsDeliveryCondition.Field, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryCondition) GetField() DeliveryConditionField {
+	return v.Field
+}
+
+// GetOperator returns DeliveryMethodFieldsMethodConditionsDeliveryCondition.Operator, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryCondition) GetOperator() DeliveryConditionOperator {
+	return v.Operator
+}
+
+// GetConditionCriteria returns DeliveryMethodFieldsMethodConditionsDeliveryCondition.ConditionCriteria, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryCondition) GetConditionCriteria() DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria {
+	return v.ConditionCriteria
+}
+
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryCondition) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DeliveryMethodFieldsMethodConditionsDeliveryCondition
+		ConditionCriteria json.RawMessage `json:"conditionCriteria"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DeliveryMethodFieldsMethodConditionsDeliveryCondition = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.ConditionCriteria
+		src := firstPass.ConditionCriteria
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DeliveryMethodFieldsMethodConditionsDeliveryCondition.ConditionCriteria: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDeliveryMethodFieldsMethodConditionsDeliveryCondition struct {
+	Id string `json:"id"`
+
+	Field DeliveryConditionField `json:"field"`
+
+	Operator DeliveryConditionOperator `json:"operator"`
+
+	ConditionCriteria json.RawMessage `json:"conditionCriteria"`
+}
+
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryCondition) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryCondition) __premarshalJSON() (*__premarshalDeliveryMethodFieldsMethodConditionsDeliveryCondition, error) {
+	var retval __premarshalDeliveryMethodFieldsMethodConditionsDeliveryCondition
+
+	retval.Id = v.Id
+	retval.Field = v.Field
+	retval.Operator = v.Operator
+	{
+
+		dst := &retval.ConditionCriteria
+		src := v.ConditionCriteria
+		var err error
+		*dst, err = __marshalDeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DeliveryMethodFieldsMethodConditionsDeliveryCondition.ConditionCriteria: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria includes the requested fields of the GraphQL interface DeliveryConditionCriteria.
+//
+// DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria is implemented by the following types:
+// DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2
+// DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight
+// The GraphQL type's documentation follows.
+//
+// The value (weight or price) that the condition field is compared to.
+type DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria interface {
+	implementsGraphQLInterfaceDeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2) implementsGraphQLInterfaceDeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria() {
+}
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight) implementsGraphQLInterfaceDeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria() {
+}
+
+func __unmarshalDeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria(b []byte, v *DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "MoneyV2":
+		*v = new(DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2)
+		return json.Unmarshal(b, *v)
+	case "Weight":
+		*v = new(DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DeliveryConditionCriteria.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria(v *DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2:
+		typename = "MoneyV2"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2
+		}{typename, v}
+		return json.Marshal(result)
+	case *DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight:
+		typename = "Weight"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaDeliveryConditionCriteria: "%T"`, v)
+	}
+}
+
+// DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2 includes the requested fields of the GraphQL type MoneyV2.
+// The GraphQL type's documentation follows.
+//
+// A precise monetary value and its associated currency. Combines a decimal amount with a three-letter currency code to express prices, costs, and other financial values throughout the API. For example, 12.99 USD.
+type DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2 struct {
+	Typename *string `json:"__typename"`
+	// A monetary value in decimal format, allowing for precise representation of cents or fractional
+	// currency. For example, 12.99.
+	Amount string `json:"amount"`
+	// The three-letter currency code that represents a world currency used in a store. Currency codes
+	// include standard [standard ISO 4217 codes](https://en.wikipedia.org/wiki/ISO_4217), legacy codes,
+	// and non-standard codes. For example, USD.
+	CurrencyCode CurrencyCode `json:"currencyCode"`
+}
+
+// GetTypename returns DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2.Typename, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2) GetTypename() *string {
+	return v.Typename
+}
+
+// GetAmount returns DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2.Amount, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2) GetAmount() string {
+	return v.Amount
+}
+
+// GetCurrencyCode returns DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2.CurrencyCode, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaMoneyV2) GetCurrencyCode() CurrencyCode {
+	return v.CurrencyCode
+}
+
+// DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight includes the requested fields of the GraphQL type Weight.
+// The GraphQL type's documentation follows.
+//
+// A weight measurement with its numeric value and unit. Used throughout the API, for example in shipping calculations, delivery conditions, order line items, and inventory measurements.
+//
+// The weight combines a decimal value with a standard unit of measurement to ensure consistent weight handling across different regional systems.
+type DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight struct {
+	Typename *string `json:"__typename"`
+	// The unit of measurement for `value`.
+	Unit WeightUnit `json:"unit"`
+	// The weight value using the unit system specified with `unit`.
+	Value float64 `json:"value"`
+}
+
+// GetTypename returns DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight.Typename, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight) GetTypename() *string {
+	return v.Typename
+}
+
+// GetUnit returns DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight.Unit, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight) GetUnit() WeightUnit {
+	return v.Unit
+}
+
+// GetValue returns DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight.Value, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsMethodConditionsDeliveryConditionConditionCriteriaWeight) GetValue() float64 {
+	return v.Value
+}
+
+// DeliveryMethodFieldsRateProviderDeliveryParticipant includes the requested fields of the GraphQL type DeliveryParticipant.
+// The GraphQL type's documentation follows.
+//
+// A participant defines carrier-calculated rates for shipping services
+// with a possible merchant-defined fixed fee or a percentage-of-rate fee.
+type DeliveryMethodFieldsRateProviderDeliveryParticipant struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DeliveryMethodFieldsRateProviderDeliveryParticipant.Typename, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsRateProviderDeliveryParticipant) GetTypename() *string {
+	return v.Typename
+}
+
+// DeliveryMethodFieldsRateProviderDeliveryRateDefinition includes the requested fields of the GraphQL type DeliveryRateDefinition.
+// The GraphQL type's documentation follows.
+//
+// The merchant-defined rate of the [DeliveryMethodDefinition](https://shopify.dev/api/admin-graphql/latest/objects/DeliveryMethodDefinition).
+type DeliveryMethodFieldsRateProviderDeliveryRateDefinition struct {
+	Typename *string `json:"__typename"`
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The price of this rate.
+	Price DeliveryMethodFieldsRateProviderDeliveryRateDefinitionPriceMoneyV2 `json:"price"`
+}
+
+// GetTypename returns DeliveryMethodFieldsRateProviderDeliveryRateDefinition.Typename, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsRateProviderDeliveryRateDefinition) GetTypename() *string {
+	return v.Typename
+}
+
+// GetId returns DeliveryMethodFieldsRateProviderDeliveryRateDefinition.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsRateProviderDeliveryRateDefinition) GetId() string { return v.Id }
+
+// GetPrice returns DeliveryMethodFieldsRateProviderDeliveryRateDefinition.Price, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsRateProviderDeliveryRateDefinition) GetPrice() DeliveryMethodFieldsRateProviderDeliveryRateDefinitionPriceMoneyV2 {
+	return v.Price
+}
+
+// DeliveryMethodFieldsRateProviderDeliveryRateDefinitionPriceMoneyV2 includes the requested fields of the GraphQL type MoneyV2.
+// The GraphQL type's documentation follows.
+//
+// A precise monetary value and its associated currency. Combines a decimal amount with a three-letter currency code to express prices, costs, and other financial values throughout the API. For example, 12.99 USD.
+type DeliveryMethodFieldsRateProviderDeliveryRateDefinitionPriceMoneyV2 struct {
+	// A monetary value in decimal format, allowing for precise representation of cents or fractional
+	// currency. For example, 12.99.
+	Amount string `json:"amount"`
+	// The three-letter currency code that represents a world currency used in a store. Currency codes
+	// include standard [standard ISO 4217 codes](https://en.wikipedia.org/wiki/ISO_4217), legacy codes,
+	// and non-standard codes. For example, USD.
+	CurrencyCode CurrencyCode `json:"currencyCode"`
+}
+
+// GetAmount returns DeliveryMethodFieldsRateProviderDeliveryRateDefinitionPriceMoneyV2.Amount, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsRateProviderDeliveryRateDefinitionPriceMoneyV2) GetAmount() string {
+	return v.Amount
+}
+
+// GetCurrencyCode returns DeliveryMethodFieldsRateProviderDeliveryRateDefinitionPriceMoneyV2.CurrencyCode, and is useful for accessing the field via an interface.
+func (v *DeliveryMethodFieldsRateProviderDeliveryRateDefinitionPriceMoneyV2) GetCurrencyCode() CurrencyCode {
+	return v.CurrencyCode
+}
+
+// DeliveryMethodFieldsRateProviderDeliveryRateProvider includes the requested fields of the GraphQL interface DeliveryRateProvider.
+//
+// DeliveryMethodFieldsRateProviderDeliveryRateProvider is implemented by the following types:
+// DeliveryMethodFieldsRateProviderDeliveryParticipant
+// DeliveryMethodFieldsRateProviderDeliveryRateDefinition
+// The GraphQL type's documentation follows.
+//
+// A rate provided by a merchant-defined rate or a participant.
+type DeliveryMethodFieldsRateProviderDeliveryRateProvider interface {
+	implementsGraphQLInterfaceDeliveryMethodFieldsRateProviderDeliveryRateProvider()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DeliveryMethodFieldsRateProviderDeliveryParticipant) implementsGraphQLInterfaceDeliveryMethodFieldsRateProviderDeliveryRateProvider() {
+}
+func (v *DeliveryMethodFieldsRateProviderDeliveryRateDefinition) implementsGraphQLInterfaceDeliveryMethodFieldsRateProviderDeliveryRateProvider() {
+}
+
+func __unmarshalDeliveryMethodFieldsRateProviderDeliveryRateProvider(b []byte, v *DeliveryMethodFieldsRateProviderDeliveryRateProvider) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DeliveryParticipant":
+		*v = new(DeliveryMethodFieldsRateProviderDeliveryParticipant)
+		return json.Unmarshal(b, *v)
+	case "DeliveryRateDefinition":
+		*v = new(DeliveryMethodFieldsRateProviderDeliveryRateDefinition)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DeliveryRateProvider.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DeliveryMethodFieldsRateProviderDeliveryRateProvider: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDeliveryMethodFieldsRateProviderDeliveryRateProvider(v *DeliveryMethodFieldsRateProviderDeliveryRateProvider) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DeliveryMethodFieldsRateProviderDeliveryParticipant:
+		typename = "DeliveryParticipant"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DeliveryMethodFieldsRateProviderDeliveryParticipant
+		}{typename, v}
+		return json.Marshal(result)
+	case *DeliveryMethodFieldsRateProviderDeliveryRateDefinition:
+		typename = "DeliveryRateDefinition"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DeliveryMethodFieldsRateProviderDeliveryRateDefinition
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DeliveryMethodFieldsRateProviderDeliveryRateProvider: "%T"`, v)
+	}
+}
+
 // The input fields for creating a shipping option. Provide exactly one option type.
 type DeliveryOptionDefinitionCreateInput struct {
 	// A flat rate shipping option.
@@ -3145,6 +3790,217 @@ func (v *DeliveryOptionDefinitionUpdateInput) GetWeightBased() *DeliveryWeightBa
 	return v.WeightBased
 }
 
+// The input fields for a participant.
+type DeliveryParticipantInput struct {
+	// The ID of the participant.
+	Id *string `json:"id"`
+	// The ID of the carrier service for this participant.
+	CarrierServiceId *string `json:"carrierServiceId"`
+	// The fixed feed that's defined by the merchant for this participant.
+	FixedFee *MoneyInput `json:"fixedFee"`
+	// The merchant-defined percentage-of-rate fee for this participant.
+	PercentageOfRateFee *float64 `json:"percentageOfRateFee"`
+	// The list of shipping services offered by the participant.
+	ParticipantServices []DeliveryParticipantServiceInput `json:"participantServices"`
+	// Whether to automatically display new shipping services to the customer when a service becomes available.
+	AdaptToNewServices *bool `json:"adaptToNewServices"`
+}
+
+// GetId returns DeliveryParticipantInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryParticipantInput) GetId() *string { return v.Id }
+
+// GetCarrierServiceId returns DeliveryParticipantInput.CarrierServiceId, and is useful for accessing the field via an interface.
+func (v *DeliveryParticipantInput) GetCarrierServiceId() *string { return v.CarrierServiceId }
+
+// GetFixedFee returns DeliveryParticipantInput.FixedFee, and is useful for accessing the field via an interface.
+func (v *DeliveryParticipantInput) GetFixedFee() *MoneyInput { return v.FixedFee }
+
+// GetPercentageOfRateFee returns DeliveryParticipantInput.PercentageOfRateFee, and is useful for accessing the field via an interface.
+func (v *DeliveryParticipantInput) GetPercentageOfRateFee() *float64 { return v.PercentageOfRateFee }
+
+// GetParticipantServices returns DeliveryParticipantInput.ParticipantServices, and is useful for accessing the field via an interface.
+func (v *DeliveryParticipantInput) GetParticipantServices() []DeliveryParticipantServiceInput {
+	return v.ParticipantServices
+}
+
+// GetAdaptToNewServices returns DeliveryParticipantInput.AdaptToNewServices, and is useful for accessing the field via an interface.
+func (v *DeliveryParticipantInput) GetAdaptToNewServices() *bool { return v.AdaptToNewServices }
+
+// The input fields for a shipping service provided by a participant.
+type DeliveryParticipantServiceInput struct {
+	// The name of the service.
+	Name string `json:"name"`
+	// Whether the service is active.
+	Active bool `json:"active"`
+}
+
+// GetName returns DeliveryParticipantServiceInput.Name, and is useful for accessing the field via an interface.
+func (v *DeliveryParticipantServiceInput) GetName() string { return v.Name }
+
+// GetActive returns DeliveryParticipantServiceInput.Active, and is useful for accessing the field via an interface.
+func (v *DeliveryParticipantServiceInput) GetActive() bool { return v.Active }
+
+// The input fields for a price-based condition of a delivery method definition.
+type DeliveryPriceConditionInput struct {
+	// The monetary value to compare the price of an order to.
+	Criteria *MoneyInput `json:"criteria,omitempty"`
+	// The operator to use for comparison.
+	Operator *DeliveryConditionOperator `json:"operator,omitempty"`
+}
+
+// GetCriteria returns DeliveryPriceConditionInput.Criteria, and is useful for accessing the field via an interface.
+func (v *DeliveryPriceConditionInput) GetCriteria() *MoneyInput { return v.Criteria }
+
+// GetOperator returns DeliveryPriceConditionInput.Operator, and is useful for accessing the field via an interface.
+func (v *DeliveryPriceConditionInput) GetOperator() *DeliveryConditionOperator { return v.Operator }
+
+// The input fields for a delivery profile.
+type DeliveryProfileInput struct {
+	// The name of the delivery profile.
+	Name *string `json:"name,omitempty"`
+	// The list of location groups associated with the delivery profile.
+	ProfileLocationGroups []DeliveryProfileLocationGroupInput `json:"profileLocationGroups,omitempty"`
+	// The list of location groups to be created in the delivery profile.
+	//
+	// **Note:** due to the potential complexity of the nested data, it is recommended to send no more than 5 location groups per each request.
+	LocationGroupsToCreate []DeliveryProfileLocationGroupInput `json:"locationGroupsToCreate,omitempty"`
+	// The list of location groups to be updated in the delivery profile.
+	//
+	// **Note:** due to the potential complexity of the nested data, it is recommended to send no more than 5 location groups per each request.
+	LocationGroupsToUpdate []DeliveryProfileLocationGroupInput `json:"locationGroupsToUpdate,omitempty"`
+	// The list of location groups to be deleted from the delivery profile.
+	LocationGroupsToDelete []string `json:"locationGroupsToDelete,omitempty"`
+	// The list of product variant IDs to be associated with the delivery profile.
+	VariantsToAssociate []string `json:"variantsToAssociate,omitempty"`
+	// The list of product variant IDs to be dissociated from the delivery profile.
+	// The dissociated product variants are moved back to the default delivery profile.
+	VariantsToDissociate []string `json:"variantsToDissociate,omitempty"`
+	// The list of zone IDs to delete.
+	ZonesToDelete []string `json:"zonesToDelete,omitempty"`
+	// The list of method definition IDs to delete.
+	MethodDefinitionsToDelete []string `json:"methodDefinitionsToDelete,omitempty"`
+	// The list of condition IDs to delete.
+	ConditionsToDelete []string `json:"conditionsToDelete,omitempty"`
+	// The list of selling plan groups to be associated with the delivery profile.
+	SellingPlanGroupsToAssociate []string `json:"sellingPlanGroupsToAssociate,omitempty"`
+	// The list of selling plan groups to be dissociated with the delivery profile.
+	SellingPlanGroupsToDissociate []string `json:"sellingPlanGroupsToDissociate,omitempty"`
+	// Whether this delivery profile covers all items in the shop. This field is only supported on
+	// app-owned shipping profiles. Set it to `true` to make the profile cover all shippable items,
+	// or `false` to disable this behavior. When omitted
+	// on create, the profile is created with `coversAllItems: false`. When omitted on update, the
+	// existing value is preserved.
+	CoversAllItems *bool `json:"coversAllItems,omitempty"`
+}
+
+// GetName returns DeliveryProfileInput.Name, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetName() *string { return v.Name }
+
+// GetProfileLocationGroups returns DeliveryProfileInput.ProfileLocationGroups, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetProfileLocationGroups() []DeliveryProfileLocationGroupInput {
+	return v.ProfileLocationGroups
+}
+
+// GetLocationGroupsToCreate returns DeliveryProfileInput.LocationGroupsToCreate, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetLocationGroupsToCreate() []DeliveryProfileLocationGroupInput {
+	return v.LocationGroupsToCreate
+}
+
+// GetLocationGroupsToUpdate returns DeliveryProfileInput.LocationGroupsToUpdate, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetLocationGroupsToUpdate() []DeliveryProfileLocationGroupInput {
+	return v.LocationGroupsToUpdate
+}
+
+// GetLocationGroupsToDelete returns DeliveryProfileInput.LocationGroupsToDelete, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetLocationGroupsToDelete() []string { return v.LocationGroupsToDelete }
+
+// GetVariantsToAssociate returns DeliveryProfileInput.VariantsToAssociate, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetVariantsToAssociate() []string { return v.VariantsToAssociate }
+
+// GetVariantsToDissociate returns DeliveryProfileInput.VariantsToDissociate, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetVariantsToDissociate() []string { return v.VariantsToDissociate }
+
+// GetZonesToDelete returns DeliveryProfileInput.ZonesToDelete, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetZonesToDelete() []string { return v.ZonesToDelete }
+
+// GetMethodDefinitionsToDelete returns DeliveryProfileInput.MethodDefinitionsToDelete, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetMethodDefinitionsToDelete() []string {
+	return v.MethodDefinitionsToDelete
+}
+
+// GetConditionsToDelete returns DeliveryProfileInput.ConditionsToDelete, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetConditionsToDelete() []string { return v.ConditionsToDelete }
+
+// GetSellingPlanGroupsToAssociate returns DeliveryProfileInput.SellingPlanGroupsToAssociate, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetSellingPlanGroupsToAssociate() []string {
+	return v.SellingPlanGroupsToAssociate
+}
+
+// GetSellingPlanGroupsToDissociate returns DeliveryProfileInput.SellingPlanGroupsToDissociate, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetSellingPlanGroupsToDissociate() []string {
+	return v.SellingPlanGroupsToDissociate
+}
+
+// GetCoversAllItems returns DeliveryProfileInput.CoversAllItems, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileInput) GetCoversAllItems() *bool { return v.CoversAllItems }
+
+// The input fields for a location group associated to a delivery profile.
+type DeliveryProfileLocationGroupInput struct {
+	// The globally-unique ID of the delivery profile location group.
+	Id *string `json:"id,omitempty"`
+	// The list of location IDs to be moved to this location group.
+	Locations []string `json:"locations,omitempty"`
+	// The list of location IDs to be added to this location group.
+	//
+	// **Note:** due to API input array limits, a maximum of 250 items can be sent per each request.
+	LocationsToAdd []string `json:"locationsToAdd,omitempty"`
+	// The list of location IDs to be removed from this location group.
+	//
+	// **Note:** due to API input array limits, a maximum of 250 items can be sent per each request.
+	LocationsToRemove []string `json:"locationsToRemove,omitempty"`
+	// The list of location group zones to create.
+	//
+	// **Note:** due to the potential complexity of the nested data, it is recommended to send no more than 5 zones per each request.
+	ZonesToCreate []DeliveryLocationGroupZoneInput `json:"zonesToCreate,omitempty"`
+	// The list of location group zones to update.
+	//
+	// **Note:** due to the potential complexity of the nested data, it is recommended to send no more than 5 zones per each request.
+	ZonesToUpdate []DeliveryLocationGroupZoneInput `json:"zonesToUpdate,omitempty"`
+}
+
+// GetId returns DeliveryProfileLocationGroupInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileLocationGroupInput) GetId() *string { return v.Id }
+
+// GetLocations returns DeliveryProfileLocationGroupInput.Locations, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileLocationGroupInput) GetLocations() []string { return v.Locations }
+
+// GetLocationsToAdd returns DeliveryProfileLocationGroupInput.LocationsToAdd, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileLocationGroupInput) GetLocationsToAdd() []string { return v.LocationsToAdd }
+
+// GetLocationsToRemove returns DeliveryProfileLocationGroupInput.LocationsToRemove, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileLocationGroupInput) GetLocationsToRemove() []string {
+	return v.LocationsToRemove
+}
+
+// GetZonesToCreate returns DeliveryProfileLocationGroupInput.ZonesToCreate, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileLocationGroupInput) GetZonesToCreate() []DeliveryLocationGroupZoneInput {
+	return v.ZonesToCreate
+}
+
+// GetZonesToUpdate returns DeliveryProfileLocationGroupInput.ZonesToUpdate, and is useful for accessing the field via an interface.
+func (v *DeliveryProfileLocationGroupInput) GetZonesToUpdate() []DeliveryLocationGroupZoneInput {
+	return v.ZonesToUpdate
+}
+
+// The input fields to specify a region.
+type DeliveryProvinceInput struct {
+	// The code of the region.
+	Code string `json:"code"`
+}
+
+// GetCode returns DeliveryProvinceInput.Code, and is useful for accessing the field via an interface.
+func (v *DeliveryProvinceInput) GetCode() string { return v.Code }
+
 // The input fields for conditions that limit a rate group to specific collections or origin locations.
 type DeliveryRateConditionsCreateInput struct {
 	// Collection IDs to add. The rate group applies only to products in these collections.
@@ -3197,6 +4053,49 @@ func (v *DeliveryRateConditionsUpdateInput) GetOriginLocationsToAdd() []string {
 func (v *DeliveryRateConditionsUpdateInput) GetOriginLocationsToRemove() []string {
 	return v.OriginLocationsToRemove
 }
+
+// The input fields for a rate definition.
+type DeliveryRateDefinitionInput struct {
+	// A globally-unique ID of the rate definition.
+	Id *string `json:"id,omitempty"`
+	// The price of the rate definition.
+	Price MoneyInput `json:"price"`
+}
+
+// GetId returns DeliveryRateDefinitionInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryRateDefinitionInput) GetId() *string { return v.Id }
+
+// GetPrice returns DeliveryRateDefinitionInput.Price, and is useful for accessing the field via an interface.
+func (v *DeliveryRateDefinitionInput) GetPrice() MoneyInput { return v.Price }
+
+// The input fields for updating the condition of a delivery method definition.
+type DeliveryUpdateConditionInput struct {
+	// A globally-unique ID of the condition.
+	Id string `json:"id"`
+	// The value that will be used in comparison.
+	Criteria *float64 `json:"criteria"`
+	// The unit associated with the value that will be used in comparison.
+	CriteriaUnit *string `json:"criteriaUnit"`
+	// The property of an order that will be used in comparison.
+	Field *DeliveryConditionField `json:"field"`
+	// The operator to use for comparison.
+	Operator *DeliveryConditionOperator `json:"operator"`
+}
+
+// GetId returns DeliveryUpdateConditionInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryUpdateConditionInput) GetId() string { return v.Id }
+
+// GetCriteria returns DeliveryUpdateConditionInput.Criteria, and is useful for accessing the field via an interface.
+func (v *DeliveryUpdateConditionInput) GetCriteria() *float64 { return v.Criteria }
+
+// GetCriteriaUnit returns DeliveryUpdateConditionInput.CriteriaUnit, and is useful for accessing the field via an interface.
+func (v *DeliveryUpdateConditionInput) GetCriteriaUnit() *string { return v.CriteriaUnit }
+
+// GetField returns DeliveryUpdateConditionInput.Field, and is useful for accessing the field via an interface.
+func (v *DeliveryUpdateConditionInput) GetField() *DeliveryConditionField { return v.Field }
+
+// GetOperator returns DeliveryUpdateConditionInput.Operator, and is useful for accessing the field via an interface.
+func (v *DeliveryUpdateConditionInput) GetOperator() *DeliveryConditionOperator { return v.Operator }
 
 // The input fields for creating a value-based shipping option.
 type DeliveryValueBasedOptionDefinitionCreateInput struct {
@@ -3650,6 +4549,20 @@ func (v *DeliveryWeightBasedRateUpdateInput) GetMinWeight() *WeightInput { retur
 // GetMaxWeight returns DeliveryWeightBasedRateUpdateInput.MaxWeight, and is useful for accessing the field via an interface.
 func (v *DeliveryWeightBasedRateUpdateInput) GetMaxWeight() *WeightInput { return v.MaxWeight }
 
+// The input fields for a weight-based condition of a delivery method definition.
+type DeliveryWeightConditionInput struct {
+	// The weight value to compare the weight of an order to.
+	Criteria *WeightInput `json:"criteria,omitempty"`
+	// The operator to use for comparison.
+	Operator *DeliveryConditionOperator `json:"operator,omitempty"`
+}
+
+// GetCriteria returns DeliveryWeightConditionInput.Criteria, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightConditionInput) GetCriteria() *WeightInput { return v.Criteria }
+
+// GetOperator returns DeliveryWeightConditionInput.Operator, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightConditionInput) GetOperator() *DeliveryConditionOperator { return v.Operator }
+
 // EditLocationLocationEditLocationEditPayload includes the requested fields of the GraphQL type LocationEditPayload.
 // The GraphQL type's documentation follows.
 //
@@ -3933,6 +4846,417 @@ type FindLocationsResponse struct {
 // GetLocations returns FindLocationsResponse.Locations, and is useful for accessing the field via an interface.
 func (v *FindLocationsResponse) GetLocations() FindLocationsLocationsLocationConnection {
 	return v.Locations
+}
+
+// GetDeliveryProfileDeliveryProfile includes the requested fields of the GraphQL type DeliveryProfile.
+// The GraphQL type's documentation follows.
+//
+// A shipping profile that defines shipping rates for specific [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) objects and [`ProductVariant`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) objects. Delivery profiles determine which products can ship from which [`Location`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Location) objects to which zones, and at what rates.
+//
+// Profiles can associate with [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup) objects to provide custom shipping rules for subscriptions, such as free shipping or restricted delivery zones. The default profile applies to all products that aren't assigned to other profiles.
+//
+// Learn more about [building delivery profiles](https://shopify.dev/apps/build/purchase-options/deferred/delivery-and-deferment/build-delivery-profiles).
+type GetDeliveryProfileDeliveryProfile struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The name of the delivery profile.
+	Name string `json:"name"`
+	// Whether this is the default profile.
+	Default bool `json:"default"`
+	// The location groups and associated zones using this profile.
+	ProfileLocationGroups []GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroup `json:"profileLocationGroups"`
+}
+
+// GetId returns GetDeliveryProfileDeliveryProfile.Id, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfile) GetId() string { return v.Id }
+
+// GetName returns GetDeliveryProfileDeliveryProfile.Name, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfile) GetName() string { return v.Name }
+
+// GetDefault returns GetDeliveryProfileDeliveryProfile.Default, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfile) GetDefault() bool { return v.Default }
+
+// GetProfileLocationGroups returns GetDeliveryProfileDeliveryProfile.ProfileLocationGroups, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfile) GetProfileLocationGroups() []GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroup {
+	return v.ProfileLocationGroups
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroup includes the requested fields of the GraphQL type DeliveryProfileLocationGroup.
+// The GraphQL type's documentation follows.
+//
+// Links a location group with zones. Both are associated to a delivery profile.
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroup struct {
+	// The collection of locations that make up the specified location group.
+	LocationGroup GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroup `json:"locationGroup"`
+	// The applicable zones associated to the specified location group.
+	LocationGroupZones GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnection `json:"locationGroupZones"`
+}
+
+// GetLocationGroup returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroup.LocationGroup, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroup) GetLocationGroup() GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroup {
+	return v.LocationGroup
+}
+
+// GetLocationGroupZones returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroup.LocationGroupZones, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroup) GetLocationGroupZones() GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnection {
+	return v.LocationGroupZones
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroup includes the requested fields of the GraphQL type DeliveryLocationGroup.
+// The GraphQL type's documentation follows.
+//
+// A location group is a collection of locations. They share zones and delivery methods across delivery
+// profiles.
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroup struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A list of all locations that are part of this location group.
+	Locations GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnection `json:"locations"`
+}
+
+// GetId returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroup.Id, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroup) GetId() string {
+	return v.Id
+}
+
+// GetLocations returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroup.Locations, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroup) GetLocations() GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnection {
+	return v.Locations
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnection includes the requested fields of the GraphQL type LocationConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Locations.
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnection struct {
+	// A list of nodes that are contained in LocationEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnectionNodesLocation `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnection) GetNodes() []GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnectionNodesLocation {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnection) GetPageInfo() GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnectionNodesLocation includes the requested fields of the GraphQL type Location.
+// The GraphQL type's documentation follows.
+//
+// A physical location where merchants store and fulfill inventory. Locations include retail stores, warehouses, popups, dropshippers, or other places where inventory is managed or stocked.
+//
+// Active locations can fulfill online orders when configured with shipping rates, local pickup, or local delivery options. Locations track inventory quantities for [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and process [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order) fulfillment. Third-party apps using [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) can create and manage their own locations.
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnectionNodesLocation struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnectionNodesLocation.Id, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnectionNodesLocation) GetId() string {
+	return v.Id
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+}
+
+// GetHasNextPage returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupDeliveryLocationGroupLocationsLocationConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnection includes the requested fields of the GraphQL type DeliveryLocationGroupZoneConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple DeliveryLocationGroupZones.
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnection struct {
+	// A list of nodes that are contained in DeliveryLocationGroupZoneEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZone `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnection) GetNodes() []GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZone {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnection) GetPageInfo() GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZone includes the requested fields of the GraphQL type DeliveryLocationGroupZone.
+// The GraphQL type's documentation follows.
+//
+// Links a location group with a zone and the associated method definitions.
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZone struct {
+	// The zone associated to a location group.
+	Zone GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZone `json:"zone"`
+	// The method definitions associated to a zone and location group.
+	MethodDefinitions GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnection `json:"methodDefinitions"`
+}
+
+// GetZone returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZone.Zone, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZone) GetZone() GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZone {
+	return v.Zone
+}
+
+// GetMethodDefinitions returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZone.MethodDefinitions, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZone) GetMethodDefinitions() GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnection {
+	return v.MethodDefinitions
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnection includes the requested fields of the GraphQL type DeliveryMethodDefinitionConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple DeliveryMethodDefinitions.
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnection struct {
+	// A list of nodes that are contained in DeliveryMethodDefinitionEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnection) GetNodes() []GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnection) GetPageInfo() GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition includes the requested fields of the GraphQL type DeliveryMethodDefinition.
+// The GraphQL type's documentation follows.
+//
+// A method definition contains the delivery rate and the conditions that must be met for the method to be
+// applied.
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition struct {
+	DeliveryMethodFields `json:"-"`
+}
+
+// GetId returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition.Id, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition) GetId() string {
+	return v.DeliveryMethodFields.Id
+}
+
+// GetName returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition.Name, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition) GetName() string {
+	return v.DeliveryMethodFields.Name
+}
+
+// GetDescription returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition.Description, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition) GetDescription() *string {
+	return v.DeliveryMethodFields.Description
+}
+
+// GetActive returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition.Active, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition) GetActive() bool {
+	return v.DeliveryMethodFields.Active
+}
+
+// GetRateProvider returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition.RateProvider, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition) GetRateProvider() DeliveryMethodFieldsRateProviderDeliveryRateProvider {
+	return v.DeliveryMethodFields.RateProvider
+}
+
+// GetMethodConditions returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition.MethodConditions, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition) GetMethodConditions() []DeliveryMethodFieldsMethodConditionsDeliveryCondition {
+	return v.DeliveryMethodFields.MethodConditions
+}
+
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.DeliveryMethodFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	Active bool `json:"active"`
+
+	RateProvider json.RawMessage `json:"rateProvider"`
+
+	MethodConditions []DeliveryMethodFieldsMethodConditionsDeliveryCondition `json:"methodConditions"`
+}
+
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition) __premarshalJSON() (*__premarshalGetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition, error) {
+	var retval __premarshalGetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition
+
+	retval.Id = v.DeliveryMethodFields.Id
+	retval.Name = v.DeliveryMethodFields.Name
+	retval.Description = v.DeliveryMethodFields.Description
+	retval.Active = v.DeliveryMethodFields.Active
+	{
+
+		dst := &retval.RateProvider
+		src := v.DeliveryMethodFields.RateProvider
+		var err error
+		*dst, err = __marshalDeliveryMethodFieldsRateProviderDeliveryRateProvider(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionNodesDeliveryMethodDefinition.DeliveryMethodFields.RateProvider: %w", err)
+		}
+	}
+	retval.MethodConditions = v.DeliveryMethodFields.MethodConditions
+	return &retval, nil
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+}
+
+// GetHasNextPage returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneMethodDefinitionsDeliveryMethodDefinitionConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZone includes the requested fields of the GraphQL type DeliveryZone.
+// The GraphQL type's documentation follows.
+//
+// A zone is a group of countries that have the same shipping rates. Customers can order products from a store only if they choose a shipping destination that's included in one of the store's zones.
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZone struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The name of the zone.
+	Name string `json:"name"`
+	// The list of countries within the zone.
+	Countries []GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountry `json:"countries"`
+}
+
+// GetId returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZone.Id, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZone) GetId() string {
+	return v.Id
+}
+
+// GetName returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZone.Name, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZone) GetName() string {
+	return v.Name
+}
+
+// GetCountries returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZone.Countries, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZone) GetCountries() []GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountry {
+	return v.Countries
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountry includes the requested fields of the GraphQL type DeliveryCountry.
+// The GraphQL type's documentation follows.
+//
+// A country that is used to define a shipping zone.
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountry struct {
+	// A two-letter country code in ISO 3166-1 alpha-2 standard.
+	// It also includes a flag indicating whether the country should be
+	// a part of the 'Rest Of World' shipping zone.
+	Code GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountryCodeDeliveryCountryCodeOrRestOfWorld `json:"code"`
+}
+
+// GetCode returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountry.Code, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountry) GetCode() GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountryCodeDeliveryCountryCodeOrRestOfWorld {
+	return v.Code
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountryCodeDeliveryCountryCodeOrRestOfWorld includes the requested fields of the GraphQL type DeliveryCountryCodeOrRestOfWorld.
+// The GraphQL type's documentation follows.
+//
+// The country code and whether the country is a part of the 'Rest Of World' shipping zone.
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountryCodeDeliveryCountryCodeOrRestOfWorld struct {
+	// The country code in the ISO 3166-1 alpha-2 format.
+	CountryCode *CountryCode `json:"countryCode"`
+	// Whether the country is a part of the 'Rest of World' shipping zone.
+	RestOfWorld bool `json:"restOfWorld"`
+}
+
+// GetCountryCode returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountryCodeDeliveryCountryCodeOrRestOfWorld.CountryCode, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountryCodeDeliveryCountryCodeOrRestOfWorld) GetCountryCode() *CountryCode {
+	return v.CountryCode
+}
+
+// GetRestOfWorld returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountryCodeDeliveryCountryCodeOrRestOfWorld.RestOfWorld, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionNodesDeliveryLocationGroupZoneZoneDeliveryZoneCountriesDeliveryCountryCodeDeliveryCountryCodeOrRestOfWorld) GetRestOfWorld() bool {
+	return v.RestOfWorld
+}
+
+// GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+}
+
+// GetHasNextPage returns GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileDeliveryProfileProfileLocationGroupsDeliveryProfileLocationGroupLocationGroupZonesDeliveryLocationGroupZoneConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetDeliveryProfileResponse is returned by GetDeliveryProfile on success.
+type GetDeliveryProfileResponse struct {
+	// Retrieves a [`DeliveryProfile`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryProfile) by ID. Delivery profiles group shipping settings for specific [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) objects that ship from selected [`Location`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Location) objects to [delivery zones](https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryZone with defined rates.
+	//
+	// Learn more about [delivery profiles](https://shopify.dev/docs/apps/build/purchase-options/deferred/delivery-and-deferment#whats-a-delivery-profile).
+	DeliveryProfile *GetDeliveryProfileDeliveryProfile `json:"deliveryProfile"`
+}
+
+// GetDeliveryProfile returns GetDeliveryProfileResponse.DeliveryProfile, and is useful for accessing the field via an interface.
+func (v *GetDeliveryProfileResponse) GetDeliveryProfile() *GetDeliveryProfileDeliveryProfile {
+	return v.DeliveryProfile
 }
 
 // GetLocationLocation includes the requested fields of the GraphQL type Location.
@@ -4780,6 +6104,60 @@ var AllInclusiveTaxPricingStrategy = []InclusiveTaxPricingStrategy{
 	InclusiveTaxPricingStrategyAddTaxesAtCheckout,
 	InclusiveTaxPricingStrategyIncludesTaxesInPrice,
 	InclusiveTaxPricingStrategyIncludesTaxesInPriceBasedOnCountry,
+}
+
+// ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection includes the requested fields of the GraphQL type DeliveryProfileConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple DeliveryProfiles.
+type ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection struct {
+	// A list of nodes that are contained in DeliveryProfileEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile `json:"nodes"`
+}
+
+// GetNodes returns ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection) GetNodes() []ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile {
+	return v.Nodes
+}
+
+// ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile includes the requested fields of the GraphQL type DeliveryProfile.
+// The GraphQL type's documentation follows.
+//
+// A shipping profile that defines shipping rates for specific [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) objects and [`ProductVariant`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) objects. Delivery profiles determine which products can ship from which [`Location`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Location) objects to which zones, and at what rates.
+//
+// Profiles can associate with [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup) objects to provide custom shipping rules for subscriptions, such as free shipping or restricted delivery zones. The default profile applies to all products that aren't assigned to other profiles.
+//
+// Learn more about [building delivery profiles](https://shopify.dev/apps/build/purchase-options/deferred/delivery-and-deferment/build-delivery-profiles).
+type ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// Whether this is the default profile.
+	Default bool `json:"default"`
+}
+
+// GetId returns ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile.Id, and is useful for accessing the field via an interface.
+func (v *ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile) GetId() string {
+	return v.Id
+}
+
+// GetDefault returns ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile.Default, and is useful for accessing the field via an interface.
+func (v *ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile) GetDefault() bool {
+	return v.Default
+}
+
+// ListDeliveryProfilesResponse is returned by ListDeliveryProfiles on success.
+type ListDeliveryProfilesResponse struct {
+	// Returns a paginated list of [`DeliveryProfile`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryProfile) objects for the shop. Delivery profiles group [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and [`ProductVariant`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) objects that share shipping rates and zones.
+	//
+	// Each profile contains [`DeliveryLocationGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryLocationGroup) objects that organize fulfillment [`Location`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Location) objects and their associated delivery zones. [`DeliveryZone`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryZone) objects define geographic regions with specific shipping methods and rates. Use the [`merchantOwnedOnly`](https://shopify.dev/docs/api/admin-graphql/latest/queries/deliveryProfiles#arguments-merchantOwnedOnly) filter to exclude profiles that third-party apps manage.
+	//
+	// Learn more about [delivery profiles](https://shopify.dev/docs/apps/build/purchase-options/deferred/delivery-and-deferment#whats-a-delivery-profile).
+	DeliveryProfiles ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection `json:"deliveryProfiles"`
+}
+
+// GetDeliveryProfiles returns ListDeliveryProfilesResponse.DeliveryProfiles, and is useful for accessing the field via an interface.
+func (v *ListDeliveryProfilesResponse) GetDeliveryProfiles() ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection {
+	return v.DeliveryProfiles
 }
 
 // ListMarketsMarketsMarketConnection includes the requested fields of the GraphQL type MarketConnection.
@@ -8202,6 +9580,83 @@ func (v *ShippingConfigurationUpdateInput) GetOptionDefinitionsToDelete() []stri
 	return v.OptionDefinitionsToDelete
 }
 
+// UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayload includes the requested fields of the GraphQL type DeliveryProfileUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `deliveryProfileUpdate` mutation.
+type UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayload struct {
+	// The delivery profile that was updated.
+	Profile *UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadProfileDeliveryProfile `json:"profile"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetProfile returns UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayload.Profile, and is useful for accessing the field via an interface.
+func (v *UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayload) GetProfile() *UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadProfileDeliveryProfile {
+	return v.Profile
+}
+
+// GetUserErrors returns UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayload) GetUserErrors() []UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadProfileDeliveryProfile includes the requested fields of the GraphQL type DeliveryProfile.
+// The GraphQL type's documentation follows.
+//
+// A shipping profile that defines shipping rates for specific [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) objects and [`ProductVariant`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) objects. Delivery profiles determine which products can ship from which [`Location`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Location) objects to which zones, and at what rates.
+//
+// Profiles can associate with [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup) objects to provide custom shipping rules for subscriptions, such as free shipping or restricted delivery zones. The default profile applies to all products that aren't assigned to other profiles.
+//
+// Learn more about [building delivery profiles](https://shopify.dev/apps/build/purchase-options/deferred/delivery-and-deferment/build-delivery-profiles).
+type UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadProfileDeliveryProfile struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadProfileDeliveryProfile.Id, and is useful for accessing the field via an interface.
+func (v *UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadProfileDeliveryProfile) GetId() string {
+	return v.Id
+}
+
+// UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// UpdateDeliveryProfileResponse is returned by UpdateDeliveryProfile on success.
+type UpdateDeliveryProfileResponse struct {
+	// Updates a [`DeliveryProfile`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DeliveryProfile)'s configuration, including its shipping zones, rates, and associated products.
+	//
+	// Modify location groups to control which fulfillment [`Location`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Location) objects serve specific geographic areas. Add or remove shipping zones with custom countries and provinces. Create or update shipping methods with rate definitions and delivery conditions. Associate or dissociate [`ProductVariant`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) objects and [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup) objects to determine which products use this profile's shipping rules.
+	//
+	// The mutation supports partial updates through dedicated input fields for creating, updating, and deleting specific components without affecting the entire profile structure.
+	//
+	// Learn more about [building delivery profiles](https://shopify.dev/docs/apps/build/purchase-options/deferred/delivery-and-deferment/build-delivery-profiles).
+	DeliveryProfileUpdate *UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayload `json:"deliveryProfileUpdate"`
+}
+
+// GetDeliveryProfileUpdate returns UpdateDeliveryProfileResponse.DeliveryProfileUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateDeliveryProfileResponse) GetDeliveryProfileUpdate() *UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayload {
+	return v.DeliveryProfileUpdate
+}
+
 // UpdateMarketMarketUpdateMarketUpdatePayload includes the requested fields of the GraphQL type MarketUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -9070,6 +10525,14 @@ type __FindLocationsInput struct {
 // GetQuery returns __FindLocationsInput.Query, and is useful for accessing the field via an interface.
 func (v *__FindLocationsInput) GetQuery() string { return v.Query }
 
+// __GetDeliveryProfileInput is used internally by genqlient
+type __GetDeliveryProfileInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetDeliveryProfileInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetDeliveryProfileInput) GetId() string { return v.Id }
+
 // __GetLocationInput is used internally by genqlient
 type __GetLocationInput struct {
 	Id string `json:"id"`
@@ -9135,6 +10598,18 @@ type __ListMenusInput struct {
 
 // GetAfter returns __ListMenusInput.After, and is useful for accessing the field via an interface.
 func (v *__ListMenusInput) GetAfter() *string { return v.After }
+
+// __UpdateDeliveryProfileInput is used internally by genqlient
+type __UpdateDeliveryProfileInput struct {
+	Id      string               `json:"id"`
+	Profile DeliveryProfileInput `json:"profile"`
+}
+
+// GetId returns __UpdateDeliveryProfileInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateDeliveryProfileInput) GetId() string { return v.Id }
+
+// GetProfile returns __UpdateDeliveryProfileInput.Profile, and is useful for accessing the field via an interface.
+func (v *__UpdateDeliveryProfileInput) GetProfile() DeliveryProfileInput { return v.Profile }
 
 // __UpdateMarketInput is used internally by genqlient
 type __UpdateMarketInput struct {
@@ -9952,6 +11427,113 @@ func FindLocations(
 	return data_, err_
 }
 
+// The query executed by GetDeliveryProfile.
+const GetDeliveryProfile_Operation = `
+query GetDeliveryProfile ($id: ID!) {
+	deliveryProfile(id: $id) {
+		id
+		name
+		default
+		profileLocationGroups {
+			locationGroup {
+				id
+				locations(first: 50) {
+					nodes {
+						id
+					}
+					pageInfo {
+						hasNextPage
+					}
+				}
+			}
+			locationGroupZones(first: 25) {
+				nodes {
+					zone {
+						id
+						name
+						countries {
+							code {
+								countryCode
+								restOfWorld
+							}
+						}
+					}
+					methodDefinitions(first: 25) {
+						nodes {
+							... DeliveryMethodFields
+						}
+						pageInfo {
+							hasNextPage
+						}
+					}
+				}
+				pageInfo {
+					hasNextPage
+				}
+			}
+		}
+	}
+}
+fragment DeliveryMethodFields on DeliveryMethodDefinition {
+	id
+	name
+	description
+	active
+	rateProvider {
+		__typename
+		... on DeliveryRateDefinition {
+			id
+			price {
+				amount
+				currencyCode
+			}
+		}
+	}
+	methodConditions {
+		id
+		field
+		operator
+		conditionCriteria {
+			__typename
+			... on MoneyV2 {
+				amount
+				currencyCode
+			}
+			... on Weight {
+				unit
+				value
+			}
+		}
+	}
+}
+`
+
+// Page sizes keep the query under Shopify's single-query cost limit; truncation is reported, not ignored.
+func GetDeliveryProfile(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetDeliveryProfileResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetDeliveryProfile",
+		Query:  GetDeliveryProfile_Operation,
+		Variables: &__GetDeliveryProfileInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetDeliveryProfileResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetLocation.
 const GetLocation_Operation = `
 query GetLocation ($id: ID!) {
@@ -10367,6 +11949,39 @@ func GetShop(
 	return data_, err_
 }
 
+// The query executed by ListDeliveryProfiles.
+const ListDeliveryProfiles_Operation = `
+query ListDeliveryProfiles {
+	deliveryProfiles(first: 50) {
+		nodes {
+			id
+			default
+		}
+	}
+}
+`
+
+func ListDeliveryProfiles(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *ListDeliveryProfilesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListDeliveryProfiles",
+		Query:  ListDeliveryProfiles_Operation,
+	}
+
+	data_ = &ListDeliveryProfilesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListMarkets.
 const ListMarkets_Operation = `
 query ListMarkets ($after: String) {
@@ -10494,6 +12109,48 @@ func ListMenus(
 	}
 
 	data_ = &ListMenusResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateDeliveryProfile.
+const UpdateDeliveryProfile_Operation = `
+mutation UpdateDeliveryProfile ($id: ID!, $profile: DeliveryProfileInput!) {
+	deliveryProfileUpdate(id: $id, profile: $profile) {
+		profile {
+			id
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func UpdateDeliveryProfile(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	profile DeliveryProfileInput,
+) (data_ *UpdateDeliveryProfileResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateDeliveryProfile",
+		Query:  UpdateDeliveryProfile_Operation,
+		Variables: &__UpdateDeliveryProfileInput{
+			Id:      id,
+			Profile: profile,
+		},
+	}
+
+	data_ = &UpdateDeliveryProfileResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

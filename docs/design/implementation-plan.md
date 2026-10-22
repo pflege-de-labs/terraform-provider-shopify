@@ -63,7 +63,7 @@ This plan follows the implementation order in section 12 of the resource model, 
 
 ## Step 6: `shopify_delivery_profile` (general profile only)
 
-- Write unit tests first for the diff: the create, update and delete lists at each level, matched by zone name and method name. Add validators that require those names to be unique.
+- Write unit tests first for the diff: the create, update and delete lists at each level, matched by zone name and by method name plus condition (method names repeat in real profiles). Add validators that require those keys to be unique. See resource model §8.
 - Pattern A, implicit (no flag): always adopts the general profile. Delete only removes it from state.
 
 ## Dependencies needing approval
