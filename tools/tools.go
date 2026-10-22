@@ -6,8 +6,12 @@
 package tools
 
 import (
+	_ "github.com/Khan/genqlient"
 	_ "github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs"
 )
+
+// Generate typed GraphQL code from the pinned Admin API schema.
+//go:generate go run github.com/Khan/genqlient ../internal/client/genqlient.yaml
 
 // Format Terraform code for use in documentation.
 // If you do not have Terraform installed, you can remove the formatting command, but it is suggested

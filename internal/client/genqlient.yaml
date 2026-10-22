@@ -1,0 +1,6 @@
+schema: schema/admin-2026-10.graphql
+operations:
+  - queries/*.graphql
+generated: generated.go
+package: client
+optional: pointer

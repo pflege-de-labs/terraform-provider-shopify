@@ -30,6 +30,7 @@ This plan follows the implementation order in section 12 of the resource model, 
 ## Step 2: `shopify_metafield_definition`
 
 - Build `internal/patterns` here, not up front: the natural-key import helper (`OWNER_TYPE/namespace/key`), Read by GID with a natural-key fallback, and the `allow_data_deletion` guard (Pattern B).
+- genqlient `optional: pointer` marshals nil input fields as `null`, which would clear admin-set values. Mark optional mutation inputs `# @genqlient(omitempty: true)` so unset attributes are omitted.
 - ⚠ to check: whether `type` can change in place, the `access.customer_account` field, and `deleteAllAssociatedMetafields`.
 - Acceptance tests: create, update, import, delete blocked when the flag is false, and the ModifyPlan warning on replace.
 
@@ -82,4 +83,4 @@ This plan follows the implementation order in section 12 of the resource model, 
 4. **Provider address:** `registry.terraform.io/pflege-de-labs/shopify`, Go module `github.com/pflege-de-labs/terraform-provider-shopify`.
 5. **No `adopt_default` flag:** phase 1 supports only the general delivery profile, so adopting it is implicit. `adopt_existing` (natural-key takeover) is a different concern and stays. Revisit when custom profiles are added.
 6. **Authentication:** client credentials grant (`client_id` / `client_secret`) is the main mode, because Dev Dashboard tokens expire after 24h. A static `access_token` stays as alternative. See resource model §1.
-7. **Schema source and dev store:** deferred until implementation. Step 1 needs a disposable dev store and token, which will be set up then.
+7. **Schema source:** `internal/client/schema/admin-2026-10.graphql`, introspected from Shopify's public proxy (`https://shopify.dev/admin-graphql-direct-proxy/<version>`) with `schema/fetch-schema.js`. No store token needed. `make generate` only runs genqlient on the committed file; refetch only when bumping the version. Dev store: see [bootstrapping](../bootstrapping.md).
