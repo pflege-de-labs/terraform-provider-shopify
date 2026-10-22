@@ -31,7 +31,7 @@ No official Shopify Terraform provider exists, and Shopify only partly fits the 
 
 ### Bootstrapping and auth
 
-- Chicken-and-egg: the provider needs an Admin API token. That needs an installed app, which needs a store, which can't be created through the API for production. Plan for a manual "step 0" for each store.
+- Chicken-and-egg: the provider needs an Admin API token. That needs an installed app, which needs a store, which can't be created through the API for production. Plan for a manual "step 0" for each store: see [bootstrapping](../bootstrapping.md).
 - New apps are created in the Dev Dashboard, not the old Partner Dashboard. For apps our organization owns, installed on stores in the same organization, the client credentials grant issues a token without user interaction. Tokens expire after 24 hours, so the provider fetches them itself from the client ID and secret ([Get API access tokens for Dev Dashboard apps](https://shopify.dev/docs/apps/build/dev-dashboard/get-api-access-tokens)).
 - Scopes covering protected customer data need Shopify's approval and can't be fully automated.
 
