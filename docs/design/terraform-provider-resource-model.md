@@ -1,6 +1,6 @@
 # Terraform Provider for Shopify: Resource Model (Draft)
 
-**Status:** Draft for discussion · **Owner:** Jens Hausherr · **Last updated:** 2026-10-21
+**Status:** Draft for discussion · **Owner:** Jens Hausherr · **Last updated:** 2026-10-22
 **Related:** [[shopify-infra-automation-approach]]
 
 This draft covers the first scope from the approach doc: the shop data source, metafield definitions, metaobject definitions, markets, locations, shipping (delivery) profiles and menus. It targets Admin GraphQL API **2026-10** (current stable). Items marked ⚠ need checking against the API reference before implementation.
@@ -35,7 +35,7 @@ provider "shopify" {
 | `shopify_metafield_definition` | `<OWNER_TYPE>/<namespace>/<key>`, e.g. `PRODUCT/custom/material` |
 | `shopify_metaobject_definition` | `<type>`, e.g. `care_level` |
 | `shopify_market` | `<handle>` |
-| `shopify_location` | `<name>` (no handle exists; falls back to numeric ID) |
+| `shopify_location` | `<name>` (no handle exists; unique per shop ⚠). A numeric `legacyResourceId` is accepted as fallback |
 | `shopify_delivery_profile` | `<name>`, or `default` for the general profile |
 | `shopify_menu` | `<handle>` |
 
@@ -199,7 +199,7 @@ resource "shopify_market" "dach" {
     local_currencies = false
   }
 
-  web_presence_ids = [shopify_market_web_presence.de.id] # optional
+  web_presence_ids = ["gid://shopify/MarketWebPresence/1"] # optional, plain IDs for now
 }
 ```
 
@@ -210,7 +210,7 @@ resource "shopify_market" "dach" {
 | `enabled` | bool | |
 | `conditions.regions` | set(string) | Country codes. B2B (`company_location_ids`) and POS (`location_ids`) conditions come later; they are dev preview |
 | `currency_settings` | object | `base_currency`, `local_currencies` |
-| `catalog_ids`, `web_presence_ids` | set(string) | Links only. Catalogs and price lists are content and stay out of scope |
+| `catalog_ids`, `web_presence_ids` | set(string) | Links only, as plain IDs. Catalogs and price lists are content and stay out of scope. No `shopify_market_web_presence` resource yet; revisit later |
 
 Notes:
 - Uses the **2025+ Markets model** (conditions-based `marketCreate` / `marketUpdate`), not the legacy region mutations.
@@ -233,8 +233,9 @@ resource "shopify_location" "warehouse_hamburg" {
     country_code = "DE"
   }
 
-  active          = true
-  deletion_policy = "deactivate" # or "delete"
+  active              = true
+  deletion_policy     = "deactivate" # or "delete"
+  allow_data_deletion = false        # only checked when deletion_policy = "delete"
 }
 ```
 
@@ -245,6 +246,7 @@ resource "shopify_location" "warehouse_hamburg" {
 | `fulfills_online_orders` | bool | |
 | `active` | bool | `locationActivate` / `locationDeactivate` |
 | `deletion_policy` | string | `deactivate` (default) or `delete`. Delete requires deactivating first. Shopify may refuse deletion for locations with inventory or history ⚠ |
+| `allow_data_deletion` | bool | Pattern B. Guards only `deletion_policy = "delete"`; deactivation is never blocked |
 
 Mutations: `locationAdd`, `locationEdit`, `locationActivate`, `locationDeactivate`, `locationDelete`.
 

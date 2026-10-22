@@ -34,7 +34,7 @@ internal/patterns/     adopt, data-deletion guard, natural-key import helpers
 examples/  docs/  templates/
 ```
 
-The template's `example_*` resources, data sources, functions and ephemeral resources in `internal/provider/` are placeholders: remove them as real ones replace them. Provider address and names still need renaming from `hashicorp/scaffolding`.
+The template's `example_*` resources, data sources, functions and ephemeral resources in `internal/provider/` are placeholders: remove them as real ones replace them. Provider address and names still need renaming from `hashicorp/scaffolding` to `registry.terraform.io/pflege-de-labs/shopify` (module `github.com/pflege-de-labs/shopify`).
 
 ## Commands
 
