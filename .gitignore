@@ -1,3 +1,30 @@
+# Claude Code: personal overrides (commit CLAUDE.md and .claude/settings.json)
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+.envrc
+*.pem
+*.key
+
+# Terraform state, plans, local config
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+.terraform/
+.terraform.lock.hcl
+
+# Local acceptance-test and scratch output
+/tmp/
+coverage.out
+
 *.dll
 *.exe
 .DS_Store
