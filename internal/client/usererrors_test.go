@@ -27,7 +27,7 @@ func TestFieldPath(t *testing.T) {
 }
 
 func TestUserErrorDiags(t *testing.T) {
-	diags := UserErrorDiags("Create failed", []UserError{
+	diags := UserErrorDiags("Create failed", []CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadUserErrorsMetafieldDefinitionCreateUserError{
 		{Field: []string{"definition", "key"}, Message: "Key is taken"},
 		{Message: "Something else"},
 	})

@@ -10,19 +10,23 @@ import (
 )
 
 // UserError is the common shape of the per-mutation userErrors types Shopify returns inside HTTP 200.
-type UserError struct {
-	Field   []string
-	Message string
+type UserError interface {
+	GetField() []string
+	GetMessage() string
 }
 
-// UserErrorDiags turns userErrors into error diagnostics, attribute-scoped where the field maps to a path.
-func UserErrorDiags(summary string, errs []UserError) diag.Diagnostics {
+// UserErrorDiags turns generated userErrors into error diagnostics, attribute-scoped where the field maps to a path.
+func UserErrorDiags[E any, P interface {
+	*E
+	UserError
+}](summary string, errs []E) diag.Diagnostics {
 	var diags diag.Diagnostics
-	for _, e := range errs {
-		if p, ok := FieldPath(e.Field); ok {
-			diags.AddAttributeError(p, summary, e.Message)
+	for i := range errs {
+		e := P(&errs[i])
+		if p, ok := FieldPath(e.GetField()); ok {
+			diags.AddAttributeError(p, summary, e.GetMessage())
 		} else {
-			diags.AddError(summary, e.Message)
+			diags.AddError(summary, e.GetMessage())
 		}
 	}
 	return diags

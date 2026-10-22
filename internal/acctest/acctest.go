@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/provider"
 )
 
@@ -25,4 +26,20 @@ func PreCheck(t *testing.T) {
 	if os.Getenv("SHOPIFY_ACCESS_TOKEN") == "" && (os.Getenv("SHOPIFY_CLIENT_ID") == "" || os.Getenv("SHOPIFY_CLIENT_SECRET") == "") {
 		t.Fatal("set SHOPIFY_CLIENT_ID and SHOPIFY_CLIENT_SECRET, or SHOPIFY_ACCESS_TOKEN")
 	}
+}
+
+// Client returns an API client for the dev store, for CheckDestroy and similar out-of-band checks.
+func Client(t *testing.T) *client.Client {
+	t.Helper()
+	c, err := client.New(client.Config{
+		StoreDomain:  os.Getenv("SHOPIFY_STORE_DOMAIN"),
+		ClientID:     os.Getenv("SHOPIFY_CLIENT_ID"),
+		ClientSecret: os.Getenv("SHOPIFY_CLIENT_SECRET"),
+		AccessToken:  os.Getenv("SHOPIFY_ACCESS_TOKEN"),
+		MaxRetries:   3,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return c
 }

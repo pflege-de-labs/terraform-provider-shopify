@@ -130,15 +130,17 @@ resource "shopify_metafield_definition" "care_level" {
 | `owner_type` | string | Required, RequiresReplace |
 | `namespace` | string | Required, RequiresReplace |
 | `key` | string | Required, RequiresReplace |
-| `type` | string | Required, RequiresReplace ⚠ (check whether some type migrations are allowed in place) |
+| `type` | string | Required, RequiresReplace. Confirmed: `MetafieldDefinitionUpdateInput` has no `type` field |
 | `name`, `description` | string | Updatable |
-| `validations` | map(string) | Updatable. Values are strings, as in the API. JSON-shaped validations (e.g. `metaobject_definition_id`) are passed as JSON strings |
-| `access` | object | `admin`, `storefront`, `customer_account` ⚠ |
-| `pin` | bool | Maps to the pin/unpin mutations |
-| `use_as_collection_condition` | bool | Delete is blocked by Shopify while in use as a collection rule |
-| `allow_data_deletion` | bool | Pattern B. When true, delete calls `metafieldDefinitionDelete` with `deleteAllAssociatedMetafields: true` ⚠ |
+| `validations` | map(string) | Updatable. Values are strings, as in the API. JSON-shaped validations (e.g. `metaobject_definition_id`) are passed as JSON strings. Update replaces the whole list (verified by acceptance test), so the provider always sends it in full |
+| `access` | object | `admin` (`MERCHANT_READ`, `MERCHANT_READ_WRITE`), `storefront` (`PUBLIC_READ`, `NONE`), `customer_account` (`READ_WRITE`, `READ`, `NONE`). Reads can return admin values that aren't valid input (e.g. `PUBLIC_READ_WRITE`), so only configured fields are sent |
+| `pin` | bool | `pin` field on create/update input; read from `pinnedPosition` |
+| `use_as_collection_condition` | bool | `capabilities.smartCollectionCondition.enabled`. Delete is blocked by Shopify while in use as a collection rule |
+| `allow_data_deletion` | bool | Pattern B. When true, delete calls `metafieldDefinitionDelete` with `deleteAllAssociatedMetafields: true` (confirmed; the values are deleted asynchronously) |
 
-Mutations: `metafieldDefinitionCreate`, `metafieldDefinitionUpdate`, `metafieldDefinitionDelete`, `metafieldDefinitionPin`/`Unpin`.
+Mutations: `metafieldDefinitionCreate`, `metafieldDefinitionUpdate`, `metafieldDefinitionDelete`.
+
+**Read** uses `metafieldDefinition(identifier:)` with the natural key only. The query has no `id` argument, and genqlient can't generate `node(id:)` (the schema has interfaces implementing `Node`). Owner type, namespace and key can't change, so this finds a definition recreated in the admin just like GID-first with fallback would.
 
 ---
 

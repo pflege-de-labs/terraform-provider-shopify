@@ -31,7 +31,7 @@ This plan follows the implementation order in section 12 of the resource model, 
 
 - Build `internal/patterns` here, not up front: the natural-key import helper (`OWNER_TYPE/namespace/key`), Read by GID with a natural-key fallback, and the `allow_data_deletion` guard (Pattern B).
 - genqlient `optional: pointer` marshals nil input fields as `null`, which would clear admin-set values. Mark optional mutation inputs `# @genqlient(omitempty: true)` so unset attributes are omitted.
-- ⚠ to check: whether `type` can change in place, the `access.customer_account` field, and `deleteAllAssociatedMetafields`.
+- ⚠ items resolved in resource model §4.
 - Acceptance tests: create, update, import, delete blocked when the flag is false, and the ModifyPlan warning on replace.
 
 ## Step 3: `shopify_metaobject_definition`

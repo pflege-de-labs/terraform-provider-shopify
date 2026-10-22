@@ -4,9 +4,206 @@ package client
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/Khan/genqlient/graphql"
 )
+
+// CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayload includes the requested fields of the GraphQL type MetafieldDefinitionCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `metafieldDefinitionCreate` mutation.
+type CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayload struct {
+	// The metafield definition that was created.
+	CreatedDefinition *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition `json:"createdDefinition"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadUserErrorsMetafieldDefinitionCreateUserError `json:"userErrors"`
+}
+
+// GetCreatedDefinition returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayload.CreatedDefinition, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayload) GetCreatedDefinition() *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition {
+	return v.CreatedDefinition
+}
+
+// GetUserErrors returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayload) GetUserErrors() []CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadUserErrorsMetafieldDefinitionCreateUserError {
+	return v.UserErrors
+}
+
+// CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition includes the requested fields of the GraphQL type MetafieldDefinition.
+// The GraphQL type's documentation follows.
+//
+// Defines the structure, validation rules, and permissions for [`Metafield`](https://shopify.dev/docs/api/admin-graphql/current/objects/Metafield) objects attached to a specific owner type. Each definition establishes a schema that metafields must follow, including the data type and validation constraints.
+//
+// The definition controls access permissions across different APIs, determines whether the metafield can be used for filtering or as a collection condition, and can be constrained to specific resource subtypes.
+type CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition struct {
+	MetafieldDefinitionFields `json:"-"`
+}
+
+// GetId returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition.Id, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) GetId() string {
+	return v.MetafieldDefinitionFields.Id
+}
+
+// GetOwnerType returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition.OwnerType, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) GetOwnerType() MetafieldOwnerType {
+	return v.MetafieldDefinitionFields.OwnerType
+}
+
+// GetNamespace returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition.Namespace, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) GetNamespace() string {
+	return v.MetafieldDefinitionFields.Namespace
+}
+
+// GetKey returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition.Key, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) GetKey() string {
+	return v.MetafieldDefinitionFields.Key
+}
+
+// GetName returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition.Name, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) GetName() string {
+	return v.MetafieldDefinitionFields.Name
+}
+
+// GetDescription returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition.Description, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) GetDescription() *string {
+	return v.MetafieldDefinitionFields.Description
+}
+
+// GetType returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition.Type, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) GetType() MetafieldDefinitionFieldsTypeMetafieldDefinitionType {
+	return v.MetafieldDefinitionFields.Type
+}
+
+// GetValidations returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition.Validations, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) GetValidations() []MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation {
+	return v.MetafieldDefinitionFields.Validations
+}
+
+// GetAccess returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition.Access, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) GetAccess() MetafieldDefinitionFieldsAccessMetafieldAccess {
+	return v.MetafieldDefinitionFields.Access
+}
+
+// GetPinnedPosition returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition.PinnedPosition, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) GetPinnedPosition() *int {
+	return v.MetafieldDefinitionFields.PinnedPosition
+}
+
+// GetCapabilities returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition.Capabilities, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) GetCapabilities() MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilities {
+	return v.MetafieldDefinitionFields.Capabilities
+}
+
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MetafieldDefinitionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition struct {
+	Id string `json:"id"`
+
+	OwnerType MetafieldOwnerType `json:"ownerType"`
+
+	Namespace string `json:"namespace"`
+
+	Key string `json:"key"`
+
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	Type MetafieldDefinitionFieldsTypeMetafieldDefinitionType `json:"type"`
+
+	Validations []MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation `json:"validations"`
+
+	Access MetafieldDefinitionFieldsAccessMetafieldAccess `json:"access"`
+
+	PinnedPosition *int `json:"pinnedPosition"`
+
+	Capabilities MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilities `json:"capabilities"`
+}
+
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition) __premarshalJSON() (*__premarshalCreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition, error) {
+	var retval __premarshalCreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadCreatedDefinitionMetafieldDefinition
+
+	retval.Id = v.MetafieldDefinitionFields.Id
+	retval.OwnerType = v.MetafieldDefinitionFields.OwnerType
+	retval.Namespace = v.MetafieldDefinitionFields.Namespace
+	retval.Key = v.MetafieldDefinitionFields.Key
+	retval.Name = v.MetafieldDefinitionFields.Name
+	retval.Description = v.MetafieldDefinitionFields.Description
+	retval.Type = v.MetafieldDefinitionFields.Type
+	retval.Validations = v.MetafieldDefinitionFields.Validations
+	retval.Access = v.MetafieldDefinitionFields.Access
+	retval.PinnedPosition = v.MetafieldDefinitionFields.PinnedPosition
+	retval.Capabilities = v.MetafieldDefinitionFields.Capabilities
+	return &retval, nil
+}
+
+// CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadUserErrorsMetafieldDefinitionCreateUserError includes the requested fields of the GraphQL type MetafieldDefinitionCreateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `MetafieldDefinitionCreate`.
+type CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadUserErrorsMetafieldDefinitionCreateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadUserErrorsMetafieldDefinitionCreateUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadUserErrorsMetafieldDefinitionCreateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadUserErrorsMetafieldDefinitionCreateUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadUserErrorsMetafieldDefinitionCreateUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreateMetafieldDefinitionResponse is returned by CreateMetafieldDefinition on success.
+type CreateMetafieldDefinitionResponse struct {
+	// Creates a [`MetafieldDefinition`](https://shopify.dev/docs/api/admin-graphql/current/objects/MetafieldDefinition) that establishes structure and validation rules for metafields. The definition specifies the data type, validation constraints, and access permissions for metafields with a given namespace and key combination.
+	//
+	// When you create a new definition, the system validates any existing unstructured metafields matching the same owner type, namespace, and key against it. The system updates each valid metafield's type to match the definition. Invalid metafields remain unchanged but must conform to the definition when updated.
+	//
+	// Learn more about [creating metafield definitions](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions).
+	MetafieldDefinitionCreate *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayload `json:"metafieldDefinitionCreate"`
+}
+
+// GetMetafieldDefinitionCreate returns CreateMetafieldDefinitionResponse.MetafieldDefinitionCreate, and is useful for accessing the field via an interface.
+func (v *CreateMetafieldDefinitionResponse) GetMetafieldDefinitionCreate() *CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayload {
+	return v.MetafieldDefinitionCreate
+}
 
 // The currency codes that represent the world currencies throughout the Admin API. Currency codes include
 // [standard ISO 4217 codes](https://en.wikipedia.org/wiki/ISO_4217), legacy codes, non-standard codes,
@@ -508,6 +705,215 @@ var AllCurrencyCode = []CurrencyCode{
 	CurrencyCodeXxx,
 }
 
+// DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayload includes the requested fields of the GraphQL type MetafieldDefinitionDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `metafieldDefinitionDelete` mutation.
+type DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayload struct {
+	// The ID of the deleted metafield definition.
+	DeletedDefinitionId *string `json:"deletedDefinitionId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayloadUserErrorsMetafieldDefinitionDeleteUserError `json:"userErrors"`
+}
+
+// GetDeletedDefinitionId returns DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayload.DeletedDefinitionId, and is useful for accessing the field via an interface.
+func (v *DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayload) GetDeletedDefinitionId() *string {
+	return v.DeletedDefinitionId
+}
+
+// GetUserErrors returns DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayload) GetUserErrors() []DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayloadUserErrorsMetafieldDefinitionDeleteUserError {
+	return v.UserErrors
+}
+
+// DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayloadUserErrorsMetafieldDefinitionDeleteUserError includes the requested fields of the GraphQL type MetafieldDefinitionDeleteUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `MetafieldDefinitionDelete`.
+type DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayloadUserErrorsMetafieldDefinitionDeleteUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayloadUserErrorsMetafieldDefinitionDeleteUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayloadUserErrorsMetafieldDefinitionDeleteUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayloadUserErrorsMetafieldDefinitionDeleteUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayloadUserErrorsMetafieldDefinitionDeleteUserError) GetMessage() string {
+	return v.Message
+}
+
+// DeleteMetafieldDefinitionResponse is returned by DeleteMetafieldDefinition on success.
+type DeleteMetafieldDefinitionResponse struct {
+	// Deletes a [`MetafieldDefinition`](https://shopify.dev/docs/api/admin-graphql/current/objects/MetafieldDefinition). You can identify the definition by providing either its owner type, namespace, and key, or its global ID.
+	//
+	// When you set [`deleteAllAssociatedMetafields`](https://shopify.dev/docs/api/admin-graphql/current/mutations/metafieldDefinitionDelete#arguments-deleteAllAssociatedMetafields) to `true`, the mutation asynchronously deletes all [`Metafield`](https://shopify.dev/docs/api/admin-graphql/current/objects/Metafield) objects that use this definition. This option must be `true` when deleting definitions under the `$app` namespace.
+	//
+	// Learn more about [deleting metafield definitions](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions).
+	MetafieldDefinitionDelete *DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayload `json:"metafieldDefinitionDelete"`
+}
+
+// GetMetafieldDefinitionDelete returns DeleteMetafieldDefinitionResponse.MetafieldDefinitionDelete, and is useful for accessing the field via an interface.
+func (v *DeleteMetafieldDefinitionResponse) GetMetafieldDefinitionDelete() *DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayload {
+	return v.MetafieldDefinitionDelete
+}
+
+// GetMetafieldDefinitionMetafieldDefinition includes the requested fields of the GraphQL type MetafieldDefinition.
+// The GraphQL type's documentation follows.
+//
+// Defines the structure, validation rules, and permissions for [`Metafield`](https://shopify.dev/docs/api/admin-graphql/current/objects/Metafield) objects attached to a specific owner type. Each definition establishes a schema that metafields must follow, including the data type and validation constraints.
+//
+// The definition controls access permissions across different APIs, determines whether the metafield can be used for filtering or as a collection condition, and can be constrained to specific resource subtypes.
+type GetMetafieldDefinitionMetafieldDefinition struct {
+	MetafieldDefinitionFields `json:"-"`
+}
+
+// GetId returns GetMetafieldDefinitionMetafieldDefinition.Id, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionMetafieldDefinition) GetId() string {
+	return v.MetafieldDefinitionFields.Id
+}
+
+// GetOwnerType returns GetMetafieldDefinitionMetafieldDefinition.OwnerType, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionMetafieldDefinition) GetOwnerType() MetafieldOwnerType {
+	return v.MetafieldDefinitionFields.OwnerType
+}
+
+// GetNamespace returns GetMetafieldDefinitionMetafieldDefinition.Namespace, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionMetafieldDefinition) GetNamespace() string {
+	return v.MetafieldDefinitionFields.Namespace
+}
+
+// GetKey returns GetMetafieldDefinitionMetafieldDefinition.Key, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionMetafieldDefinition) GetKey() string {
+	return v.MetafieldDefinitionFields.Key
+}
+
+// GetName returns GetMetafieldDefinitionMetafieldDefinition.Name, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionMetafieldDefinition) GetName() string {
+	return v.MetafieldDefinitionFields.Name
+}
+
+// GetDescription returns GetMetafieldDefinitionMetafieldDefinition.Description, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionMetafieldDefinition) GetDescription() *string {
+	return v.MetafieldDefinitionFields.Description
+}
+
+// GetType returns GetMetafieldDefinitionMetafieldDefinition.Type, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionMetafieldDefinition) GetType() MetafieldDefinitionFieldsTypeMetafieldDefinitionType {
+	return v.MetafieldDefinitionFields.Type
+}
+
+// GetValidations returns GetMetafieldDefinitionMetafieldDefinition.Validations, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionMetafieldDefinition) GetValidations() []MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation {
+	return v.MetafieldDefinitionFields.Validations
+}
+
+// GetAccess returns GetMetafieldDefinitionMetafieldDefinition.Access, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionMetafieldDefinition) GetAccess() MetafieldDefinitionFieldsAccessMetafieldAccess {
+	return v.MetafieldDefinitionFields.Access
+}
+
+// GetPinnedPosition returns GetMetafieldDefinitionMetafieldDefinition.PinnedPosition, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionMetafieldDefinition) GetPinnedPosition() *int {
+	return v.MetafieldDefinitionFields.PinnedPosition
+}
+
+// GetCapabilities returns GetMetafieldDefinitionMetafieldDefinition.Capabilities, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionMetafieldDefinition) GetCapabilities() MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilities {
+	return v.MetafieldDefinitionFields.Capabilities
+}
+
+func (v *GetMetafieldDefinitionMetafieldDefinition) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetMetafieldDefinitionMetafieldDefinition
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetMetafieldDefinitionMetafieldDefinition = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MetafieldDefinitionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetMetafieldDefinitionMetafieldDefinition struct {
+	Id string `json:"id"`
+
+	OwnerType MetafieldOwnerType `json:"ownerType"`
+
+	Namespace string `json:"namespace"`
+
+	Key string `json:"key"`
+
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	Type MetafieldDefinitionFieldsTypeMetafieldDefinitionType `json:"type"`
+
+	Validations []MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation `json:"validations"`
+
+	Access MetafieldDefinitionFieldsAccessMetafieldAccess `json:"access"`
+
+	PinnedPosition *int `json:"pinnedPosition"`
+
+	Capabilities MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilities `json:"capabilities"`
+}
+
+func (v *GetMetafieldDefinitionMetafieldDefinition) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetMetafieldDefinitionMetafieldDefinition) __premarshalJSON() (*__premarshalGetMetafieldDefinitionMetafieldDefinition, error) {
+	var retval __premarshalGetMetafieldDefinitionMetafieldDefinition
+
+	retval.Id = v.MetafieldDefinitionFields.Id
+	retval.OwnerType = v.MetafieldDefinitionFields.OwnerType
+	retval.Namespace = v.MetafieldDefinitionFields.Namespace
+	retval.Key = v.MetafieldDefinitionFields.Key
+	retval.Name = v.MetafieldDefinitionFields.Name
+	retval.Description = v.MetafieldDefinitionFields.Description
+	retval.Type = v.MetafieldDefinitionFields.Type
+	retval.Validations = v.MetafieldDefinitionFields.Validations
+	retval.Access = v.MetafieldDefinitionFields.Access
+	retval.PinnedPosition = v.MetafieldDefinitionFields.PinnedPosition
+	retval.Capabilities = v.MetafieldDefinitionFields.Capabilities
+	return &retval, nil
+}
+
+// GetMetafieldDefinitionResponse is returned by GetMetafieldDefinition on success.
+type GetMetafieldDefinitionResponse struct {
+	// Retrieves a [`MetafieldDefinition`](https://shopify.dev/docs/api/admin-graphql/current/objects/MetafieldDefinition) by its identifier. You can identify a definition using either its owner type, namespace, and key, or its global ID.
+	//
+	// Use this query to inspect a definition's configuration, including its data type, validations, access settings, and the count of [metafields](https://shopify.dev/docs/api/admin-graphql/current/objects/Metafield) using it.
+	MetafieldDefinition *GetMetafieldDefinitionMetafieldDefinition `json:"metafieldDefinition"`
+}
+
+// GetMetafieldDefinition returns GetMetafieldDefinitionResponse.MetafieldDefinition, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionResponse) GetMetafieldDefinition() *GetMetafieldDefinitionMetafieldDefinition {
+	return v.MetafieldDefinition
+}
+
 // GetShopResponse is returned by GetShop on success.
 type GetShopResponse struct {
 	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
@@ -593,6 +999,1180 @@ type GetShopShopPrimaryDomain struct {
 // GetHost returns GetShopShopPrimaryDomain.Host, and is useful for accessing the field via an interface.
 func (v *GetShopShopPrimaryDomain) GetHost() string { return v.Host }
 
+// The input fields that set access permissions for the definition's metafields.
+type MetafieldAccessInput struct {
+	// The access permitted on the Admin API.
+	Admin *MetafieldAdminAccessInput `json:"admin,omitempty"`
+	// The access permitted on the Storefront API.
+	Storefront *MetafieldStorefrontAccessInput `json:"storefront,omitempty"`
+	// The access permitted on the Customer Account API.
+	CustomerAccount *MetafieldCustomerAccountAccessInput `json:"customerAccount,omitempty"`
+}
+
+// GetAdmin returns MetafieldAccessInput.Admin, and is useful for accessing the field via an interface.
+func (v *MetafieldAccessInput) GetAdmin() *MetafieldAdminAccessInput { return v.Admin }
+
+// GetStorefront returns MetafieldAccessInput.Storefront, and is useful for accessing the field via an interface.
+func (v *MetafieldAccessInput) GetStorefront() *MetafieldStorefrontAccessInput { return v.Storefront }
+
+// GetCustomerAccount returns MetafieldAccessInput.CustomerAccount, and is useful for accessing the field via an interface.
+func (v *MetafieldAccessInput) GetCustomerAccount() *MetafieldCustomerAccountAccessInput {
+	return v.CustomerAccount
+}
+
+// The input fields for the access settings for the metafields under the definition.
+type MetafieldAccessUpdateInput struct {
+	// The admin access setting to use for the metafields under this definition.
+	Admin *MetafieldAdminAccessInput `json:"admin,omitempty"`
+	// The storefront access setting to use for the metafields under this definition.
+	Storefront *MetafieldStorefrontAccessInput `json:"storefront,omitempty"`
+	// The Customer Account API access setting to use for the metafields under this definition.
+	CustomerAccount *MetafieldCustomerAccountAccessInput `json:"customerAccount,omitempty"`
+}
+
+// GetAdmin returns MetafieldAccessUpdateInput.Admin, and is useful for accessing the field via an interface.
+func (v *MetafieldAccessUpdateInput) GetAdmin() *MetafieldAdminAccessInput { return v.Admin }
+
+// GetStorefront returns MetafieldAccessUpdateInput.Storefront, and is useful for accessing the field via an interface.
+func (v *MetafieldAccessUpdateInput) GetStorefront() *MetafieldStorefrontAccessInput {
+	return v.Storefront
+}
+
+// GetCustomerAccount returns MetafieldAccessUpdateInput.CustomerAccount, and is useful for accessing the field via an interface.
+func (v *MetafieldAccessUpdateInput) GetCustomerAccount() *MetafieldCustomerAccountAccessInput {
+	return v.CustomerAccount
+}
+
+// Metafield access permissions for the Admin API.
+type MetafieldAdminAccess string
+
+const (
+	// The merchant and other apps have no access.
+	MetafieldAdminAccessPrivate MetafieldAdminAccess = "PRIVATE"
+	// The merchant and other apps have read-only access.
+	MetafieldAdminAccessPublicRead MetafieldAdminAccess = "PUBLIC_READ"
+	// The merchant and other apps have read and write access.
+	MetafieldAdminAccessPublicReadWrite MetafieldAdminAccess = "PUBLIC_READ_WRITE"
+	// The merchant has read-only access. No other apps have access.
+	MetafieldAdminAccessMerchantRead MetafieldAdminAccess = "MERCHANT_READ"
+	// The merchant has read and write access. No other apps have access.
+	MetafieldAdminAccessMerchantReadWrite MetafieldAdminAccess = "MERCHANT_READ_WRITE"
+)
+
+var AllMetafieldAdminAccess = []MetafieldAdminAccess{
+	MetafieldAdminAccessPrivate,
+	MetafieldAdminAccessPublicRead,
+	MetafieldAdminAccessPublicReadWrite,
+	MetafieldAdminAccessMerchantRead,
+	MetafieldAdminAccessMerchantReadWrite,
+}
+
+// Metafield access permissions for the Admin API.
+type MetafieldAdminAccessInput string
+
+const (
+	// The merchant has read-only access. No other apps have access.
+	MetafieldAdminAccessInputMerchantRead MetafieldAdminAccessInput = "MERCHANT_READ"
+	// The merchant has read and write access. No other apps have access.
+	MetafieldAdminAccessInputMerchantReadWrite MetafieldAdminAccessInput = "MERCHANT_READ_WRITE"
+)
+
+var AllMetafieldAdminAccessInput = []MetafieldAdminAccessInput{
+	MetafieldAdminAccessInputMerchantRead,
+	MetafieldAdminAccessInputMerchantReadWrite,
+}
+
+// The input fields for enabling and disabling the admin filterable capability.
+type MetafieldCapabilityAdminFilterableInput struct {
+	// Indicates whether the capability should be enabled or disabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns MetafieldCapabilityAdminFilterableInput.Enabled, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityAdminFilterableInput) GetEnabled() bool { return v.Enabled }
+
+// The input fields for the analytics queryable capability.
+type MetafieldCapabilityAnalyticsQueryableInput struct {
+	// Indicates whether the capability should be enabled or disabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns MetafieldCapabilityAnalyticsQueryableInput.Enabled, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityAnalyticsQueryableInput) GetEnabled() bool { return v.Enabled }
+
+// The input fields for enabling or disabling the "Cart to order copyable" capability.
+// This capability is only available for order metafield definitions.
+//
+// When enabled, the value from a cart metafield is automatically copied to the corresponding
+// order metafield when an order is created. The namespace and key must match between the cart and order metafields.
+type MetafieldCapabilityCartToOrderCopyableInput struct {
+	// Indicates whether the capability should be enabled or disabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns MetafieldCapabilityCartToOrderCopyableInput.Enabled, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityCartToOrderCopyableInput) GetEnabled() bool { return v.Enabled }
+
+// The input fields for creating a metafield capability.
+type MetafieldCapabilityCreateInput struct {
+	// The input for updating the smart collection condition capability.
+	SmartCollectionCondition *MetafieldCapabilitySmartCollectionConditionInput `json:"smartCollectionCondition,omitempty"`
+	// The input for updating the admin filterable capability.
+	AdminFilterable *MetafieldCapabilityAdminFilterableInput `json:"adminFilterable,omitempty"`
+	// The input for updating the unique values capability.
+	UniqueValues *MetafieldCapabilityUniqueValuesInput `json:"uniqueValues,omitempty"`
+	// The input for the analytics queryable capability.
+	AnalyticsQueryable *MetafieldCapabilityAnalyticsQueryableInput `json:"analyticsQueryable,omitempty"`
+	// The input for updating the cart to order copyable capability.
+	CartToOrderCopyable *MetafieldCapabilityCartToOrderCopyableInput `json:"cartToOrderCopyable,omitempty"`
+}
+
+// GetSmartCollectionCondition returns MetafieldCapabilityCreateInput.SmartCollectionCondition, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityCreateInput) GetSmartCollectionCondition() *MetafieldCapabilitySmartCollectionConditionInput {
+	return v.SmartCollectionCondition
+}
+
+// GetAdminFilterable returns MetafieldCapabilityCreateInput.AdminFilterable, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityCreateInput) GetAdminFilterable() *MetafieldCapabilityAdminFilterableInput {
+	return v.AdminFilterable
+}
+
+// GetUniqueValues returns MetafieldCapabilityCreateInput.UniqueValues, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityCreateInput) GetUniqueValues() *MetafieldCapabilityUniqueValuesInput {
+	return v.UniqueValues
+}
+
+// GetAnalyticsQueryable returns MetafieldCapabilityCreateInput.AnalyticsQueryable, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityCreateInput) GetAnalyticsQueryable() *MetafieldCapabilityAnalyticsQueryableInput {
+	return v.AnalyticsQueryable
+}
+
+// GetCartToOrderCopyable returns MetafieldCapabilityCreateInput.CartToOrderCopyable, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityCreateInput) GetCartToOrderCopyable() *MetafieldCapabilityCartToOrderCopyableInput {
+	return v.CartToOrderCopyable
+}
+
+// The input fields for enabling and disabling the smart collection condition capability.
+type MetafieldCapabilitySmartCollectionConditionInput struct {
+	// Indicates whether the capability should be enabled or disabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns MetafieldCapabilitySmartCollectionConditionInput.Enabled, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilitySmartCollectionConditionInput) GetEnabled() bool { return v.Enabled }
+
+// The input fields for enabling and disabling the unique values capability.
+type MetafieldCapabilityUniqueValuesInput struct {
+	// Indicates whether the capability should be enabled or disabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns MetafieldCapabilityUniqueValuesInput.Enabled, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityUniqueValuesInput) GetEnabled() bool { return v.Enabled }
+
+// The input fields for updating a metafield capability.
+type MetafieldCapabilityUpdateInput struct {
+	// The input for updating the smart collection condition capability.
+	SmartCollectionCondition *MetafieldCapabilitySmartCollectionConditionInput `json:"smartCollectionCondition,omitempty"`
+	// The input for updating the admin filterable capability.
+	AdminFilterable *MetafieldCapabilityAdminFilterableInput `json:"adminFilterable,omitempty"`
+	// The input for updating the unique values capability.
+	UniqueValues *MetafieldCapabilityUniqueValuesInput `json:"uniqueValues,omitempty"`
+	// The input for the analytics queryable capability.
+	AnalyticsQueryable *MetafieldCapabilityAnalyticsQueryableInput `json:"analyticsQueryable,omitempty"`
+	// The input for updating the cart to order copyable capability.
+	CartToOrderCopyable *MetafieldCapabilityCartToOrderCopyableInput `json:"cartToOrderCopyable,omitempty"`
+}
+
+// GetSmartCollectionCondition returns MetafieldCapabilityUpdateInput.SmartCollectionCondition, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityUpdateInput) GetSmartCollectionCondition() *MetafieldCapabilitySmartCollectionConditionInput {
+	return v.SmartCollectionCondition
+}
+
+// GetAdminFilterable returns MetafieldCapabilityUpdateInput.AdminFilterable, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityUpdateInput) GetAdminFilterable() *MetafieldCapabilityAdminFilterableInput {
+	return v.AdminFilterable
+}
+
+// GetUniqueValues returns MetafieldCapabilityUpdateInput.UniqueValues, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityUpdateInput) GetUniqueValues() *MetafieldCapabilityUniqueValuesInput {
+	return v.UniqueValues
+}
+
+// GetAnalyticsQueryable returns MetafieldCapabilityUpdateInput.AnalyticsQueryable, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityUpdateInput) GetAnalyticsQueryable() *MetafieldCapabilityAnalyticsQueryableInput {
+	return v.AnalyticsQueryable
+}
+
+// GetCartToOrderCopyable returns MetafieldCapabilityUpdateInput.CartToOrderCopyable, and is useful for accessing the field via an interface.
+func (v *MetafieldCapabilityUpdateInput) GetCartToOrderCopyable() *MetafieldCapabilityCartToOrderCopyableInput {
+	return v.CartToOrderCopyable
+}
+
+// Metafield access permissions for the Customer Account API.
+type MetafieldCustomerAccountAccess string
+
+const (
+	// Read and write access.
+	MetafieldCustomerAccountAccessReadWrite MetafieldCustomerAccountAccess = "READ_WRITE"
+	// Read-only access.
+	MetafieldCustomerAccountAccessRead MetafieldCustomerAccountAccess = "READ"
+	// No access.
+	MetafieldCustomerAccountAccessNone MetafieldCustomerAccountAccess = "NONE"
+)
+
+var AllMetafieldCustomerAccountAccess = []MetafieldCustomerAccountAccess{
+	MetafieldCustomerAccountAccessReadWrite,
+	MetafieldCustomerAccountAccessRead,
+	MetafieldCustomerAccountAccessNone,
+}
+
+// Metafield access permissions for the Customer Account API.
+type MetafieldCustomerAccountAccessInput string
+
+const (
+	// Read and write access.
+	MetafieldCustomerAccountAccessInputReadWrite MetafieldCustomerAccountAccessInput = "READ_WRITE"
+	// Read-only access.
+	MetafieldCustomerAccountAccessInputRead MetafieldCustomerAccountAccessInput = "READ"
+	// No access.
+	MetafieldCustomerAccountAccessInputNone MetafieldCustomerAccountAccessInput = "NONE"
+)
+
+var AllMetafieldCustomerAccountAccessInput = []MetafieldCustomerAccountAccessInput{
+	MetafieldCustomerAccountAccessInputReadWrite,
+	MetafieldCustomerAccountAccessInputRead,
+	MetafieldCustomerAccountAccessInputNone,
+}
+
+// The inputs fields for modifying a metafield definition's constraint subtype values.
+// Exactly one option is required.
+type MetafieldDefinitionConstraintValueUpdateInput struct {
+	// The constraint subtype value to create.
+	Create *string `json:"create"`
+	// The constraint subtype value to delete.
+	Delete *string `json:"delete"`
+}
+
+// GetCreate returns MetafieldDefinitionConstraintValueUpdateInput.Create, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionConstraintValueUpdateInput) GetCreate() *string { return v.Create }
+
+// GetDelete returns MetafieldDefinitionConstraintValueUpdateInput.Delete, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionConstraintValueUpdateInput) GetDelete() *string { return v.Delete }
+
+// The input fields required to create metafield definition [constraints](https://shopify.dev/apps/build/custom-data/metafields/conditional-metafield-definitions).
+// Each constraint applies a metafield definition to a subtype of a resource.
+type MetafieldDefinitionConstraintsInput struct {
+	// The category of resource subtypes that the definition applies to.
+	Key string `json:"key"`
+	// The specific constraint subtype values that the definition applies to.
+	Values []string `json:"values"`
+}
+
+// GetKey returns MetafieldDefinitionConstraintsInput.Key, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionConstraintsInput) GetKey() string { return v.Key }
+
+// GetValues returns MetafieldDefinitionConstraintsInput.Values, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionConstraintsInput) GetValues() []string { return v.Values }
+
+// The input fields required to update metafield definition [constraints](https://shopify.dev/apps/build/custom-data/metafields/conditional-metafield-definitions).
+// Each constraint applies a metafield definition to a subtype of a resource.
+type MetafieldDefinitionConstraintsUpdatesInput struct {
+	// The category of resource subtypes that the definition applies to.
+	// If omitted and the definition is already constrained, the existing constraint key will be used.
+	// If set to `null`, all constraints will be removed.
+	Key *string `json:"key"`
+	// The specific constraint subtype values to create or delete.
+	Values []MetafieldDefinitionConstraintValueUpdateInput `json:"values"`
+}
+
+// GetKey returns MetafieldDefinitionConstraintsUpdatesInput.Key, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionConstraintsUpdatesInput) GetKey() *string { return v.Key }
+
+// GetValues returns MetafieldDefinitionConstraintsUpdatesInput.Values, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionConstraintsUpdatesInput) GetValues() []MetafieldDefinitionConstraintValueUpdateInput {
+	return v.Values
+}
+
+// MetafieldDefinitionFields includes the GraphQL fields of MetafieldDefinition requested by the fragment MetafieldDefinitionFields.
+// The GraphQL type's documentation follows.
+//
+// Defines the structure, validation rules, and permissions for [`Metafield`](https://shopify.dev/docs/api/admin-graphql/current/objects/Metafield) objects attached to a specific owner type. Each definition establishes a schema that metafields must follow, including the data type and validation constraints.
+//
+// The definition controls access permissions across different APIs, determines whether the metafield can be used for filtering or as a collection condition, and can be constrained to specific resource subtypes.
+type MetafieldDefinitionFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The resource type that the metafield definition is attached to.
+	OwnerType MetafieldOwnerType `json:"ownerType"`
+	// The container for a group of metafields that the metafield definition is associated with.
+	Namespace string `json:"namespace"`
+	// The unique identifier for the metafield definition within its namespace.
+	Key string `json:"key"`
+	// The human-readable name of the metafield definition.
+	Name string `json:"name"`
+	// The description of the metafield definition.
+	Description *string `json:"description"`
+	// The type of data that each of the metafields that belong to the metafield definition will store.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type MetafieldDefinitionFieldsTypeMetafieldDefinitionType `json:"type"`
+	// A list of [validation options](https://shopify.dev/apps/metafields/definitions/validation) for
+	// the metafields that belong to the metafield definition. For example, for a metafield definition with the
+	// type `date`, you can set a minimum date validation so that each of the metafields that belong to it can only
+	// store dates after the specified minimum.
+	Validations []MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation `json:"validations"`
+	// The access settings associated with the metafield definition.
+	Access MetafieldDefinitionFieldsAccessMetafieldAccess `json:"access"`
+	// The position of the metafield definition in the pinned list.
+	PinnedPosition *int `json:"pinnedPosition"`
+	// The capabilities of the metafield definition.
+	Capabilities MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilities `json:"capabilities"`
+}
+
+// GetId returns MetafieldDefinitionFields.Id, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFields) GetId() string { return v.Id }
+
+// GetOwnerType returns MetafieldDefinitionFields.OwnerType, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFields) GetOwnerType() MetafieldOwnerType { return v.OwnerType }
+
+// GetNamespace returns MetafieldDefinitionFields.Namespace, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFields) GetNamespace() string { return v.Namespace }
+
+// GetKey returns MetafieldDefinitionFields.Key, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFields) GetKey() string { return v.Key }
+
+// GetName returns MetafieldDefinitionFields.Name, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFields) GetName() string { return v.Name }
+
+// GetDescription returns MetafieldDefinitionFields.Description, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFields) GetDescription() *string { return v.Description }
+
+// GetType returns MetafieldDefinitionFields.Type, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFields) GetType() MetafieldDefinitionFieldsTypeMetafieldDefinitionType {
+	return v.Type
+}
+
+// GetValidations returns MetafieldDefinitionFields.Validations, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFields) GetValidations() []MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation {
+	return v.Validations
+}
+
+// GetAccess returns MetafieldDefinitionFields.Access, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFields) GetAccess() MetafieldDefinitionFieldsAccessMetafieldAccess {
+	return v.Access
+}
+
+// GetPinnedPosition returns MetafieldDefinitionFields.PinnedPosition, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFields) GetPinnedPosition() *int { return v.PinnedPosition }
+
+// GetCapabilities returns MetafieldDefinitionFields.Capabilities, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFields) GetCapabilities() MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilities {
+	return v.Capabilities
+}
+
+// MetafieldDefinitionFieldsAccessMetafieldAccess includes the requested fields of the GraphQL type MetafieldAccess.
+// The GraphQL type's documentation follows.
+//
+// Access permissions for the definition's metafields.
+type MetafieldDefinitionFieldsAccessMetafieldAccess struct {
+	// The access permitted on the Admin API.
+	Admin *MetafieldAdminAccess `json:"admin"`
+	// The access permitted on the Storefront API.
+	Storefront *MetafieldStorefrontAccess `json:"storefront"`
+	// The access permitted on the Customer Account API.
+	CustomerAccount MetafieldCustomerAccountAccess `json:"customerAccount"`
+}
+
+// GetAdmin returns MetafieldDefinitionFieldsAccessMetafieldAccess.Admin, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFieldsAccessMetafieldAccess) GetAdmin() *MetafieldAdminAccess {
+	return v.Admin
+}
+
+// GetStorefront returns MetafieldDefinitionFieldsAccessMetafieldAccess.Storefront, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFieldsAccessMetafieldAccess) GetStorefront() *MetafieldStorefrontAccess {
+	return v.Storefront
+}
+
+// GetCustomerAccount returns MetafieldDefinitionFieldsAccessMetafieldAccess.CustomerAccount, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFieldsAccessMetafieldAccess) GetCustomerAccount() MetafieldCustomerAccountAccess {
+	return v.CustomerAccount
+}
+
+// MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilities includes the requested fields of the GraphQL type MetafieldCapabilities.
+// The GraphQL type's documentation follows.
+//
+// Provides the capabilities of a metafield definition.
+type MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilities struct {
+	// Indicate whether a metafield definition can be used as a smart collection condition.
+	SmartCollectionCondition MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilitiesSmartCollectionConditionMetafieldCapabilitySmartCollectionCondition `json:"smartCollectionCondition"`
+}
+
+// GetSmartCollectionCondition returns MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilities.SmartCollectionCondition, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilities) GetSmartCollectionCondition() MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilitiesSmartCollectionConditionMetafieldCapabilitySmartCollectionCondition {
+	return v.SmartCollectionCondition
+}
+
+// MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilitiesSmartCollectionConditionMetafieldCapabilitySmartCollectionCondition includes the requested fields of the GraphQL type MetafieldCapabilitySmartCollectionCondition.
+// The GraphQL type's documentation follows.
+//
+// Information about the smart collection condition capability on a metafield definition.
+type MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilitiesSmartCollectionConditionMetafieldCapabilitySmartCollectionCondition struct {
+	// Indicates if the capability is enabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetEnabled returns MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilitiesSmartCollectionConditionMetafieldCapabilitySmartCollectionCondition.Enabled, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilitiesSmartCollectionConditionMetafieldCapabilitySmartCollectionCondition) GetEnabled() bool {
+	return v.Enabled
+}
+
+// MetafieldDefinitionFieldsTypeMetafieldDefinitionType includes the requested fields of the GraphQL type MetafieldDefinitionType.
+// The GraphQL type's documentation follows.
+//
+// A metafield definition type provides basic foundation and validation for a metafield.
+type MetafieldDefinitionFieldsTypeMetafieldDefinitionType struct {
+	// The name of the type for the metafield definition.
+	// See the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Name string `json:"name"`
+}
+
+// GetName returns MetafieldDefinitionFieldsTypeMetafieldDefinitionType.Name, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFieldsTypeMetafieldDefinitionType) GetName() string { return v.Name }
+
+// MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation includes the requested fields of the GraphQL type MetafieldDefinitionValidation.
+// The GraphQL type's documentation follows.
+//
+// A configured metafield definition validation.
+//
+// For example, for a metafield definition of `number_integer` type, you can set a validation with the name `max`
+// and a value of `15`. This validation will ensure that the value of the metafield is a number less than or equal to 15.
+//
+// Refer to the [list of supported validations](https://shopify.dev/docs/apps/build/metafields/list-of-validation-options).
+type MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation struct {
+	// The validation name.
+	Name string `json:"name"`
+	// The validation value.
+	Value *string `json:"value"`
+}
+
+// GetName returns MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation.Name, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation) GetName() string {
+	return v.Name
+}
+
+// GetValue returns MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation.Value, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation) GetValue() *string {
+	return v.Value
+}
+
+// The input fields that identify metafield definitions.
+type MetafieldDefinitionIdentifierInput struct {
+	// The resource type that the metafield definition is attached to.
+	OwnerType MetafieldOwnerType `json:"ownerType"`
+	// The container for a group of metafields that the metafield definition will be associated with. If omitted, the
+	// app-reserved namespace will be used.
+	Namespace *string `json:"namespace"`
+	// The unique identifier for the metafield definition within its namespace.
+	Key string `json:"key"`
+}
+
+// GetOwnerType returns MetafieldDefinitionIdentifierInput.OwnerType, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionIdentifierInput) GetOwnerType() MetafieldOwnerType { return v.OwnerType }
+
+// GetNamespace returns MetafieldDefinitionIdentifierInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionIdentifierInput) GetNamespace() *string { return v.Namespace }
+
+// GetKey returns MetafieldDefinitionIdentifierInput.Key, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionIdentifierInput) GetKey() string { return v.Key }
+
+// The input fields required to create a metafield definition.
+type MetafieldDefinitionInput struct {
+	// The container for a group of metafields that the metafield definition will be associated with. If omitted, the
+	// app-reserved namespace will be used.
+	//
+	// Must be 3-255 characters long and only contain alphanumeric, hyphen, and underscore characters.
+	Namespace *string `json:"namespace,omitempty"`
+	// The unique identifier for the metafield definition within its namespace.
+	//
+	// Must be 2-64 characters long and only contain alphanumeric, hyphen, and underscore characters.
+	Key string `json:"key"`
+	// The human-readable name for the metafield definition.
+	Name string `json:"name"`
+	// The description for the metafield definition.
+	Description *string `json:"description,omitempty"`
+	// The resource type that the metafield definition is attached to.
+	OwnerType MetafieldOwnerType `json:"ownerType"`
+	// The type of data that each of the metafields that belong to the metafield definition will store.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type string `json:"type"`
+	// A list of [validation options](https://shopify.dev/apps/metafields/definitions/validation) for
+	// the metafields that belong to the metafield definition. For example, for a metafield definition with the
+	// type `date`, you can set a minimum date validation so that each of the metafields that belong to it can only
+	// store dates after the specified minimum.
+	Validations []MetafieldDefinitionValidationInput `json:"validations,omitempty"`
+	// Whether to [pin](https://help.shopify.com/manual/custom-data/metafields/pinning-metafield-definitions)
+	// the metafield definition.
+	Pin *bool `json:"pin,omitempty"`
+	// The access settings that apply to each of the metafields that belong to the metafield definition.
+	Access *MetafieldAccessInput `json:"access,omitempty"`
+	// The [constraints](https://shopify.dev/apps/build/custom-data/metafields/conditional-metafield-definitions)
+	// that determine what resources a metafield definition applies to.
+	Constraints *MetafieldDefinitionConstraintsInput `json:"constraints,omitempty"`
+	// The capabilities of the metafield definition.
+	Capabilities *MetafieldCapabilityCreateInput `json:"capabilities,omitempty"`
+}
+
+// GetNamespace returns MetafieldDefinitionInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionInput) GetNamespace() *string { return v.Namespace }
+
+// GetKey returns MetafieldDefinitionInput.Key, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionInput) GetKey() string { return v.Key }
+
+// GetName returns MetafieldDefinitionInput.Name, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionInput) GetName() string { return v.Name }
+
+// GetDescription returns MetafieldDefinitionInput.Description, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionInput) GetDescription() *string { return v.Description }
+
+// GetOwnerType returns MetafieldDefinitionInput.OwnerType, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionInput) GetOwnerType() MetafieldOwnerType { return v.OwnerType }
+
+// GetType returns MetafieldDefinitionInput.Type, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionInput) GetType() string { return v.Type }
+
+// GetValidations returns MetafieldDefinitionInput.Validations, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionInput) GetValidations() []MetafieldDefinitionValidationInput {
+	return v.Validations
+}
+
+// GetPin returns MetafieldDefinitionInput.Pin, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionInput) GetPin() *bool { return v.Pin }
+
+// GetAccess returns MetafieldDefinitionInput.Access, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionInput) GetAccess() *MetafieldAccessInput { return v.Access }
+
+// GetConstraints returns MetafieldDefinitionInput.Constraints, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionInput) GetConstraints() *MetafieldDefinitionConstraintsInput {
+	return v.Constraints
+}
+
+// GetCapabilities returns MetafieldDefinitionInput.Capabilities, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionInput) GetCapabilities() *MetafieldCapabilityCreateInput {
+	return v.Capabilities
+}
+
+// The input fields required to update a metafield definition.
+type MetafieldDefinitionUpdateInput struct {
+	// The container for a group of metafields that the metafield definition is associated with. Used to help identify
+	// the metafield definition, but can't be updated itself. If omitted, the app-reserved namespace will be used.
+	Namespace *string `json:"namespace,omitempty"`
+	// The unique identifier for the metafield definition within its namespace. Used to help identify the metafield
+	// definition, but can't be updated itself.
+	Key string `json:"key"`
+	// The human-readable name for the metafield definition.
+	Name *string `json:"name,omitempty"`
+	// The description for the metafield definition.
+	Description *string `json:"description,omitempty"`
+	// The resource type that the metafield definition is attached to. Used to help identify the metafield definition,
+	// but can't be updated itself.
+	OwnerType MetafieldOwnerType `json:"ownerType"`
+	// A list of [validation options](https://shopify.dev/apps/metafields/definitions/validation) for
+	// the metafields that belong to the metafield definition. For example, for a metafield definition with the
+	// type `date`, you can set a minimum date validation so that each of the metafields that belong to it can only
+	// store dates after the specified minimum.
+	Validations []MetafieldDefinitionValidationInput `json:"validations"`
+	// Whether to pin the metafield definition.
+	Pin *bool `json:"pin,omitempty"`
+	// The access settings that apply to each of the metafields that belong to the metafield definition.
+	Access *MetafieldAccessUpdateInput `json:"access,omitempty"`
+	// The [constraints](https://shopify.dev/apps/build/custom-data/metafields/conditional-metafield-definitions)
+	// that determine what resources a metafield definition applies to.
+	ConstraintsUpdates *MetafieldDefinitionConstraintsUpdatesInput `json:"constraintsUpdates,omitempty"`
+	// The capabilities of the metafield definition.
+	Capabilities *MetafieldCapabilityUpdateInput `json:"capabilities,omitempty"`
+}
+
+// GetNamespace returns MetafieldDefinitionUpdateInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionUpdateInput) GetNamespace() *string { return v.Namespace }
+
+// GetKey returns MetafieldDefinitionUpdateInput.Key, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionUpdateInput) GetKey() string { return v.Key }
+
+// GetName returns MetafieldDefinitionUpdateInput.Name, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionUpdateInput) GetName() *string { return v.Name }
+
+// GetDescription returns MetafieldDefinitionUpdateInput.Description, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionUpdateInput) GetDescription() *string { return v.Description }
+
+// GetOwnerType returns MetafieldDefinitionUpdateInput.OwnerType, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionUpdateInput) GetOwnerType() MetafieldOwnerType { return v.OwnerType }
+
+// GetValidations returns MetafieldDefinitionUpdateInput.Validations, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionUpdateInput) GetValidations() []MetafieldDefinitionValidationInput {
+	return v.Validations
+}
+
+// GetPin returns MetafieldDefinitionUpdateInput.Pin, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionUpdateInput) GetPin() *bool { return v.Pin }
+
+// GetAccess returns MetafieldDefinitionUpdateInput.Access, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionUpdateInput) GetAccess() *MetafieldAccessUpdateInput { return v.Access }
+
+// GetConstraintsUpdates returns MetafieldDefinitionUpdateInput.ConstraintsUpdates, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionUpdateInput) GetConstraintsUpdates() *MetafieldDefinitionConstraintsUpdatesInput {
+	return v.ConstraintsUpdates
+}
+
+// GetCapabilities returns MetafieldDefinitionUpdateInput.Capabilities, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionUpdateInput) GetCapabilities() *MetafieldCapabilityUpdateInput {
+	return v.Capabilities
+}
+
+// The name and value for a metafield definition validation.
+//
+// For example, for a metafield definition of `single_line_text_field` type, you can set a validation with the name `min` and a value of `10`.
+// This validation will ensure that the value of the metafield is at least 10 characters.
+//
+// Refer to the [list of supported validations](https://shopify.dev/docs/apps/build/metafields/list-of-validation-options).
+type MetafieldDefinitionValidationInput struct {
+	// The name for the metafield definition validation.
+	Name string `json:"name"`
+	// The value for the metafield definition validation.
+	Value string `json:"value"`
+}
+
+// GetName returns MetafieldDefinitionValidationInput.Name, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionValidationInput) GetName() string { return v.Name }
+
+// GetValue returns MetafieldDefinitionValidationInput.Value, and is useful for accessing the field via an interface.
+func (v *MetafieldDefinitionValidationInput) GetValue() string { return v.Value }
+
+// Possible types of a metafield's owner resource.
+type MetafieldOwnerType string
+
+const (
+	// The Api Permission metafield owner type.
+	MetafieldOwnerTypeApiPermission MetafieldOwnerType = "API_PERMISSION"
+	// The Company metafield owner type.
+	MetafieldOwnerTypeCompany MetafieldOwnerType = "COMPANY"
+	// The Company Location metafield owner type.
+	MetafieldOwnerTypeCompanyLocation MetafieldOwnerType = "COMPANY_LOCATION"
+	// The Payment Customization metafield owner type.
+	MetafieldOwnerTypePaymentCustomization MetafieldOwnerType = "PAYMENT_CUSTOMIZATION"
+	// The Validation metafield owner type.
+	MetafieldOwnerTypeValidation MetafieldOwnerType = "VALIDATION"
+	// The Customer metafield owner type.
+	MetafieldOwnerTypeCustomer MetafieldOwnerType = "CUSTOMER"
+	// The Delivery Customization metafield owner type.
+	MetafieldOwnerTypeDeliveryCustomization MetafieldOwnerType = "DELIVERY_CUSTOMIZATION"
+	// The draft order metafield owner type.
+	MetafieldOwnerTypeDraftorder MetafieldOwnerType = "DRAFTORDER"
+	// The GiftCardTransaction metafield owner type.
+	MetafieldOwnerTypeGiftCardTransaction MetafieldOwnerType = "GIFT_CARD_TRANSACTION"
+	// The Transfer metafield owner type.
+	MetafieldOwnerTypeTransfer MetafieldOwnerType = "TRANSFER"
+	// The Market metafield owner type.
+	MetafieldOwnerTypeMarket MetafieldOwnerType = "MARKET"
+	// The Cart Transform metafield owner type.
+	MetafieldOwnerTypeCarttransform MetafieldOwnerType = "CARTTRANSFORM"
+	// The Collection metafield owner type.
+	MetafieldOwnerTypeCollection MetafieldOwnerType = "COLLECTION"
+	// The Media Image metafield owner type.
+	MetafieldOwnerTypeMediaImage MetafieldOwnerType = "MEDIA_IMAGE"
+	// The Product metafield owner type.
+	MetafieldOwnerTypeProduct MetafieldOwnerType = "PRODUCT"
+	// The Product Variant metafield owner type.
+	MetafieldOwnerTypeProductvariant MetafieldOwnerType = "PRODUCTVARIANT"
+	// The Selling Plan metafield owner type.
+	MetafieldOwnerTypeSellingPlan MetafieldOwnerType = "SELLING_PLAN"
+	// The Article metafield owner type.
+	MetafieldOwnerTypeArticle MetafieldOwnerType = "ARTICLE"
+	// The Blog metafield owner type.
+	MetafieldOwnerTypeBlog MetafieldOwnerType = "BLOG"
+	// The Page metafield owner type.
+	MetafieldOwnerTypePage MetafieldOwnerType = "PAGE"
+	// The Fulfillment Constraint Rule metafield owner type.
+	MetafieldOwnerTypeFulfillmentConstraintRule MetafieldOwnerType = "FULFILLMENT_CONSTRAINT_RULE"
+	// The Order Routing Location Rule metafield owner type.
+	MetafieldOwnerTypeOrderRoutingLocationRule MetafieldOwnerType = "ORDER_ROUTING_LOCATION_RULE"
+	// The Discount metafield owner type.
+	MetafieldOwnerTypeDiscount MetafieldOwnerType = "DISCOUNT"
+	// The Order metafield owner type.
+	MetafieldOwnerTypeOrder MetafieldOwnerType = "ORDER"
+	// The Location metafield owner type.
+	MetafieldOwnerTypeLocation MetafieldOwnerType = "LOCATION"
+	// The Shop metafield owner type.
+	MetafieldOwnerTypeShop MetafieldOwnerType = "SHOP"
+)
+
+var AllMetafieldOwnerType = []MetafieldOwnerType{
+	MetafieldOwnerTypeApiPermission,
+	MetafieldOwnerTypeCompany,
+	MetafieldOwnerTypeCompanyLocation,
+	MetafieldOwnerTypePaymentCustomization,
+	MetafieldOwnerTypeValidation,
+	MetafieldOwnerTypeCustomer,
+	MetafieldOwnerTypeDeliveryCustomization,
+	MetafieldOwnerTypeDraftorder,
+	MetafieldOwnerTypeGiftCardTransaction,
+	MetafieldOwnerTypeTransfer,
+	MetafieldOwnerTypeMarket,
+	MetafieldOwnerTypeCarttransform,
+	MetafieldOwnerTypeCollection,
+	MetafieldOwnerTypeMediaImage,
+	MetafieldOwnerTypeProduct,
+	MetafieldOwnerTypeProductvariant,
+	MetafieldOwnerTypeSellingPlan,
+	MetafieldOwnerTypeArticle,
+	MetafieldOwnerTypeBlog,
+	MetafieldOwnerTypePage,
+	MetafieldOwnerTypeFulfillmentConstraintRule,
+	MetafieldOwnerTypeOrderRoutingLocationRule,
+	MetafieldOwnerTypeDiscount,
+	MetafieldOwnerTypeOrder,
+	MetafieldOwnerTypeLocation,
+	MetafieldOwnerTypeShop,
+}
+
+// Metafield access permissions for the Storefront API.
+type MetafieldStorefrontAccess string
+
+const (
+	// Read-only access.
+	MetafieldStorefrontAccessPublicRead MetafieldStorefrontAccess = "PUBLIC_READ"
+	// No access.
+	MetafieldStorefrontAccessNone MetafieldStorefrontAccess = "NONE"
+)
+
+var AllMetafieldStorefrontAccess = []MetafieldStorefrontAccess{
+	MetafieldStorefrontAccessPublicRead,
+	MetafieldStorefrontAccessNone,
+}
+
+// Metafield access permissions for the Storefront API.
+type MetafieldStorefrontAccessInput string
+
+const (
+	// Read-only access.
+	MetafieldStorefrontAccessInputPublicRead MetafieldStorefrontAccessInput = "PUBLIC_READ"
+	// No access.
+	MetafieldStorefrontAccessInputNone MetafieldStorefrontAccessInput = "NONE"
+)
+
+var AllMetafieldStorefrontAccessInput = []MetafieldStorefrontAccessInput{
+	MetafieldStorefrontAccessInputPublicRead,
+	MetafieldStorefrontAccessInputNone,
+}
+
+// UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayload includes the requested fields of the GraphQL type MetafieldDefinitionUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `metafieldDefinitionUpdate` mutation.
+type UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayload struct {
+	// The metafield definition that was updated.
+	UpdatedDefinition *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition `json:"updatedDefinition"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUserErrorsMetafieldDefinitionUpdateUserError `json:"userErrors"`
+}
+
+// GetUpdatedDefinition returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayload.UpdatedDefinition, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayload) GetUpdatedDefinition() *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition {
+	return v.UpdatedDefinition
+}
+
+// GetUserErrors returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayload) GetUserErrors() []UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUserErrorsMetafieldDefinitionUpdateUserError {
+	return v.UserErrors
+}
+
+// UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition includes the requested fields of the GraphQL type MetafieldDefinition.
+// The GraphQL type's documentation follows.
+//
+// Defines the structure, validation rules, and permissions for [`Metafield`](https://shopify.dev/docs/api/admin-graphql/current/objects/Metafield) objects attached to a specific owner type. Each definition establishes a schema that metafields must follow, including the data type and validation constraints.
+//
+// The definition controls access permissions across different APIs, determines whether the metafield can be used for filtering or as a collection condition, and can be constrained to specific resource subtypes.
+type UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition struct {
+	MetafieldDefinitionFields `json:"-"`
+}
+
+// GetId returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition.Id, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) GetId() string {
+	return v.MetafieldDefinitionFields.Id
+}
+
+// GetOwnerType returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition.OwnerType, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) GetOwnerType() MetafieldOwnerType {
+	return v.MetafieldDefinitionFields.OwnerType
+}
+
+// GetNamespace returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition.Namespace, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) GetNamespace() string {
+	return v.MetafieldDefinitionFields.Namespace
+}
+
+// GetKey returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition.Key, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) GetKey() string {
+	return v.MetafieldDefinitionFields.Key
+}
+
+// GetName returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition.Name, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) GetName() string {
+	return v.MetafieldDefinitionFields.Name
+}
+
+// GetDescription returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition.Description, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) GetDescription() *string {
+	return v.MetafieldDefinitionFields.Description
+}
+
+// GetType returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition.Type, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) GetType() MetafieldDefinitionFieldsTypeMetafieldDefinitionType {
+	return v.MetafieldDefinitionFields.Type
+}
+
+// GetValidations returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition.Validations, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) GetValidations() []MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation {
+	return v.MetafieldDefinitionFields.Validations
+}
+
+// GetAccess returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition.Access, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) GetAccess() MetafieldDefinitionFieldsAccessMetafieldAccess {
+	return v.MetafieldDefinitionFields.Access
+}
+
+// GetPinnedPosition returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition.PinnedPosition, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) GetPinnedPosition() *int {
+	return v.MetafieldDefinitionFields.PinnedPosition
+}
+
+// GetCapabilities returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition.Capabilities, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) GetCapabilities() MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilities {
+	return v.MetafieldDefinitionFields.Capabilities
+}
+
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MetafieldDefinitionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition struct {
+	Id string `json:"id"`
+
+	OwnerType MetafieldOwnerType `json:"ownerType"`
+
+	Namespace string `json:"namespace"`
+
+	Key string `json:"key"`
+
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	Type MetafieldDefinitionFieldsTypeMetafieldDefinitionType `json:"type"`
+
+	Validations []MetafieldDefinitionFieldsValidationsMetafieldDefinitionValidation `json:"validations"`
+
+	Access MetafieldDefinitionFieldsAccessMetafieldAccess `json:"access"`
+
+	PinnedPosition *int `json:"pinnedPosition"`
+
+	Capabilities MetafieldDefinitionFieldsCapabilitiesMetafieldCapabilities `json:"capabilities"`
+}
+
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition) __premarshalJSON() (*__premarshalUpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition, error) {
+	var retval __premarshalUpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUpdatedDefinitionMetafieldDefinition
+
+	retval.Id = v.MetafieldDefinitionFields.Id
+	retval.OwnerType = v.MetafieldDefinitionFields.OwnerType
+	retval.Namespace = v.MetafieldDefinitionFields.Namespace
+	retval.Key = v.MetafieldDefinitionFields.Key
+	retval.Name = v.MetafieldDefinitionFields.Name
+	retval.Description = v.MetafieldDefinitionFields.Description
+	retval.Type = v.MetafieldDefinitionFields.Type
+	retval.Validations = v.MetafieldDefinitionFields.Validations
+	retval.Access = v.MetafieldDefinitionFields.Access
+	retval.PinnedPosition = v.MetafieldDefinitionFields.PinnedPosition
+	retval.Capabilities = v.MetafieldDefinitionFields.Capabilities
+	return &retval, nil
+}
+
+// UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUserErrorsMetafieldDefinitionUpdateUserError includes the requested fields of the GraphQL type MetafieldDefinitionUpdateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `MetafieldDefinitionUpdate`.
+type UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUserErrorsMetafieldDefinitionUpdateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUserErrorsMetafieldDefinitionUpdateUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUserErrorsMetafieldDefinitionUpdateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUserErrorsMetafieldDefinitionUpdateUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayloadUserErrorsMetafieldDefinitionUpdateUserError) GetMessage() string {
+	return v.Message
+}
+
+// UpdateMetafieldDefinitionResponse is returned by UpdateMetafieldDefinition on success.
+type UpdateMetafieldDefinitionResponse struct {
+	// Updates a [`MetafieldDefinition`](https://shopify.dev/docs/api/admin-graphql/current/objects/MetafieldDefinition)'s configuration and settings. You can modify the definition's name, description, validation rules, access settings, capabilities, and constraints.
+	//
+	// The mutation updates access settings that control visibility across different APIs, such as the [GraphQL Admin API](https://shopify.dev/docs/api/admin-graphql), [Storefront API](https://shopify.dev/docs/api/storefront), and [Customer Account API](https://shopify.dev/docs/api/customer). It also enables capabilities like admin filtering or unique value validation, and modifies constraints that determine which resource subtypes the definition applies to.
+	//
+	// > Note: The type, namespace, key, and owner type identify the definition and so can't be changed.
+	//
+	// Learn more about [updating metafield definitions](https://shopify.dev/docs/apps/build/custom-data/metafields/definitions).
+	MetafieldDefinitionUpdate *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayload `json:"metafieldDefinitionUpdate"`
+}
+
+// GetMetafieldDefinitionUpdate returns UpdateMetafieldDefinitionResponse.MetafieldDefinitionUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateMetafieldDefinitionResponse) GetMetafieldDefinitionUpdate() *UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayload {
+	return v.MetafieldDefinitionUpdate
+}
+
+// __CreateMetafieldDefinitionInput is used internally by genqlient
+type __CreateMetafieldDefinitionInput struct {
+	Definition MetafieldDefinitionInput `json:"definition"`
+}
+
+// GetDefinition returns __CreateMetafieldDefinitionInput.Definition, and is useful for accessing the field via an interface.
+func (v *__CreateMetafieldDefinitionInput) GetDefinition() MetafieldDefinitionInput {
+	return v.Definition
+}
+
+// __DeleteMetafieldDefinitionInput is used internally by genqlient
+type __DeleteMetafieldDefinitionInput struct {
+	Id                            string `json:"id"`
+	DeleteAllAssociatedMetafields bool   `json:"deleteAllAssociatedMetafields"`
+}
+
+// GetId returns __DeleteMetafieldDefinitionInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteMetafieldDefinitionInput) GetId() string { return v.Id }
+
+// GetDeleteAllAssociatedMetafields returns __DeleteMetafieldDefinitionInput.DeleteAllAssociatedMetafields, and is useful for accessing the field via an interface.
+func (v *__DeleteMetafieldDefinitionInput) GetDeleteAllAssociatedMetafields() bool {
+	return v.DeleteAllAssociatedMetafields
+}
+
+// __GetMetafieldDefinitionInput is used internally by genqlient
+type __GetMetafieldDefinitionInput struct {
+	Identifier MetafieldDefinitionIdentifierInput `json:"identifier"`
+}
+
+// GetIdentifier returns __GetMetafieldDefinitionInput.Identifier, and is useful for accessing the field via an interface.
+func (v *__GetMetafieldDefinitionInput) GetIdentifier() MetafieldDefinitionIdentifierInput {
+	return v.Identifier
+}
+
+// __UpdateMetafieldDefinitionInput is used internally by genqlient
+type __UpdateMetafieldDefinitionInput struct {
+	Definition MetafieldDefinitionUpdateInput `json:"definition"`
+}
+
+// GetDefinition returns __UpdateMetafieldDefinitionInput.Definition, and is useful for accessing the field via an interface.
+func (v *__UpdateMetafieldDefinitionInput) GetDefinition() MetafieldDefinitionUpdateInput {
+	return v.Definition
+}
+
+// The mutation executed by CreateMetafieldDefinition.
+const CreateMetafieldDefinition_Operation = `
+mutation CreateMetafieldDefinition ($definition: MetafieldDefinitionInput!) {
+	metafieldDefinitionCreate(definition: $definition) {
+		createdDefinition {
+			... MetafieldDefinitionFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment MetafieldDefinitionFields on MetafieldDefinition {
+	id
+	ownerType
+	namespace
+	key
+	name
+	description
+	type {
+		name
+	}
+	validations {
+		name
+		value
+	}
+	access {
+		admin
+		storefront
+		customerAccount
+	}
+	pinnedPosition
+	capabilities {
+		smartCollectionCondition {
+			enabled
+		}
+	}
+}
+`
+
+// Unset optional inputs must be omitted, not sent as null, so admin edits to unmanaged attributes survive.
+func CreateMetafieldDefinition(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	definition MetafieldDefinitionInput,
+) (data_ *CreateMetafieldDefinitionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateMetafieldDefinition",
+		Query:  CreateMetafieldDefinition_Operation,
+		Variables: &__CreateMetafieldDefinitionInput{
+			Definition: definition,
+		},
+	}
+
+	data_ = &CreateMetafieldDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteMetafieldDefinition.
+const DeleteMetafieldDefinition_Operation = `
+mutation DeleteMetafieldDefinition ($id: ID!, $deleteAllAssociatedMetafields: Boolean!) {
+	metafieldDefinitionDelete(id: $id, deleteAllAssociatedMetafields: $deleteAllAssociatedMetafields) {
+		deletedDefinitionId
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DeleteMetafieldDefinition(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	deleteAllAssociatedMetafields bool,
+) (data_ *DeleteMetafieldDefinitionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteMetafieldDefinition",
+		Query:  DeleteMetafieldDefinition_Operation,
+		Variables: &__DeleteMetafieldDefinitionInput{
+			Id:                            id,
+			DeleteAllAssociatedMetafields: deleteAllAssociatedMetafields,
+		},
+	}
+
+	data_ = &DeleteMetafieldDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetMetafieldDefinition.
+const GetMetafieldDefinition_Operation = `
+query GetMetafieldDefinition ($identifier: MetafieldDefinitionIdentifierInput!) {
+	metafieldDefinition(identifier: $identifier) {
+		... MetafieldDefinitionFields
+	}
+}
+fragment MetafieldDefinitionFields on MetafieldDefinition {
+	id
+	ownerType
+	namespace
+	key
+	name
+	description
+	type {
+		name
+	}
+	validations {
+		name
+		value
+	}
+	access {
+		admin
+		storefront
+		customerAccount
+	}
+	pinnedPosition
+	capabilities {
+		smartCollectionCondition {
+			enabled
+		}
+	}
+}
+`
+
+func GetMetafieldDefinition(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	identifier MetafieldDefinitionIdentifierInput,
+) (data_ *GetMetafieldDefinitionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetMetafieldDefinition",
+		Query:  GetMetafieldDefinition_Operation,
+		Variables: &__GetMetafieldDefinitionInput{
+			Identifier: identifier,
+		},
+	}
+
+	data_ = &GetMetafieldDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetShop.
 const GetShop_Operation = `
 query GetShop {
@@ -623,6 +2203,73 @@ func GetShop(
 	}
 
 	data_ = &GetShopResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateMetafieldDefinition.
+const UpdateMetafieldDefinition_Operation = `
+mutation UpdateMetafieldDefinition ($definition: MetafieldDefinitionUpdateInput!) {
+	metafieldDefinitionUpdate(definition: $definition) {
+		updatedDefinition {
+			... MetafieldDefinitionFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment MetafieldDefinitionFields on MetafieldDefinition {
+	id
+	ownerType
+	namespace
+	key
+	name
+	description
+	type {
+		name
+	}
+	validations {
+		name
+		value
+	}
+	access {
+		admin
+		storefront
+		customerAccount
+	}
+	pinnedPosition
+	capabilities {
+		smartCollectionCondition {
+			enabled
+		}
+	}
+}
+`
+
+// validations is always sent in full (state value when unmanaged), so an empty list can clear it.
+func UpdateMetafieldDefinition(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	definition MetafieldDefinitionUpdateInput,
+) (data_ *UpdateMetafieldDefinitionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateMetafieldDefinition",
+		Query:  UpdateMetafieldDefinition_Operation,
+		Variables: &__UpdateMetafieldDefinitionInput{
+			Definition: definition,
+		},
+	}
+
+	data_ = &UpdateMetafieldDefinitionResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

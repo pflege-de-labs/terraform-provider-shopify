@@ -1,0 +1,102 @@
+fragment MetafieldDefinitionFields on MetafieldDefinition {
+  id
+  ownerType
+  namespace
+  key
+  name
+  description
+  type {
+    name
+  }
+  validations {
+    name
+    value
+  }
+  access {
+    admin
+    storefront
+    customerAccount
+  }
+  pinnedPosition
+  capabilities {
+    smartCollectionCondition {
+      enabled
+    }
+  }
+}
+
+query GetMetafieldDefinition($identifier: MetafieldDefinitionIdentifierInput!) {
+  metafieldDefinition(identifier: $identifier) {
+    ...MetafieldDefinitionFields
+  }
+}
+
+# Unset optional inputs must be omitted, not sent as null, so admin edits to unmanaged attributes survive.
+# @genqlient(for: "MetafieldDefinitionInput.namespace", omitempty: true)
+# @genqlient(for: "MetafieldDefinitionInput.description", omitempty: true)
+# @genqlient(for: "MetafieldDefinitionInput.validations", omitempty: true)
+# @genqlient(for: "MetafieldDefinitionInput.pin", omitempty: true)
+# @genqlient(for: "MetafieldDefinitionInput.access", omitempty: true)
+# @genqlient(for: "MetafieldDefinitionInput.constraints", omitempty: true)
+# @genqlient(for: "MetafieldDefinitionInput.capabilities", omitempty: true)
+# @genqlient(for: "MetafieldAccessInput.admin", omitempty: true)
+# @genqlient(for: "MetafieldAccessInput.storefront", omitempty: true)
+# @genqlient(for: "MetafieldAccessInput.customerAccount", omitempty: true)
+# @genqlient(for: "MetafieldCapabilityCreateInput.smartCollectionCondition", omitempty: true)
+# @genqlient(for: "MetafieldCapabilityCreateInput.adminFilterable", omitempty: true)
+# @genqlient(for: "MetafieldCapabilityCreateInput.uniqueValues", omitempty: true)
+# @genqlient(for: "MetafieldCapabilityCreateInput.analyticsQueryable", omitempty: true)
+# @genqlient(for: "MetafieldCapabilityCreateInput.cartToOrderCopyable", omitempty: true)
+mutation CreateMetafieldDefinition(
+  $definition: MetafieldDefinitionInput!
+) {
+  metafieldDefinitionCreate(definition: $definition) {
+    createdDefinition {
+      ...MetafieldDefinitionFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# validations is always sent in full (state value when unmanaged), so an empty list can clear it.
+# @genqlient(for: "MetafieldDefinitionUpdateInput.namespace", omitempty: true)
+# @genqlient(for: "MetafieldDefinitionUpdateInput.name", omitempty: true)
+# @genqlient(for: "MetafieldDefinitionUpdateInput.description", omitempty: true)
+# @genqlient(for: "MetafieldDefinitionUpdateInput.pin", omitempty: true)
+# @genqlient(for: "MetafieldDefinitionUpdateInput.access", omitempty: true)
+# @genqlient(for: "MetafieldDefinitionUpdateInput.constraintsUpdates", omitempty: true)
+# @genqlient(for: "MetafieldDefinitionUpdateInput.capabilities", omitempty: true)
+# @genqlient(for: "MetafieldAccessUpdateInput.admin", omitempty: true)
+# @genqlient(for: "MetafieldAccessUpdateInput.storefront", omitempty: true)
+# @genqlient(for: "MetafieldAccessUpdateInput.customerAccount", omitempty: true)
+# @genqlient(for: "MetafieldCapabilityUpdateInput.smartCollectionCondition", omitempty: true)
+# @genqlient(for: "MetafieldCapabilityUpdateInput.adminFilterable", omitempty: true)
+# @genqlient(for: "MetafieldCapabilityUpdateInput.uniqueValues", omitempty: true)
+# @genqlient(for: "MetafieldCapabilityUpdateInput.analyticsQueryable", omitempty: true)
+# @genqlient(for: "MetafieldCapabilityUpdateInput.cartToOrderCopyable", omitempty: true)
+mutation UpdateMetafieldDefinition(
+  $definition: MetafieldDefinitionUpdateInput!
+) {
+  metafieldDefinitionUpdate(definition: $definition) {
+    updatedDefinition {
+      ...MetafieldDefinitionFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeleteMetafieldDefinition($id: ID!, $deleteAllAssociatedMetafields: Boolean!) {
+  metafieldDefinitionDelete(id: $id, deleteAllAssociatedMetafields: $deleteAllAssociatedMetafields) {
+    deletedDefinitionId
+    userErrors {
+      field
+      message
+    }
+  }
+}
