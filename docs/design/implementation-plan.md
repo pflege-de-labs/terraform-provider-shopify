@@ -22,9 +22,9 @@ This plan follows the implementation order in section 12 of the resource model, 
 ## Step 1: `internal/client` and `shopify_shop` data source
 
 1. Commit the 2026-10 Admin API schema file and add genqlient to `make generate`.
-2. Write unit tests first, for throttle backoff (`THROTTLED` / `throttleStatus`) and for mapping `userErrors` to attribute paths.
-3. Build the client: auth header, pinned API version, a semaphore for `concurrency`, and `max_retries` for throttling and 5xx responses. Semantic errors are not retried.
-4. Add the provider schema: `store_domain`, `access_token` (Sensitive), `api_version`, `max_retries`, `concurrency`, with env-var fallbacks.
+2. Write unit tests first, for throttle backoff (`THROTTLED` / `throttleStatus`), for mapping `userErrors` to attribute paths, and for token fetch and refresh before expiry (against an `httptest` server).
+3. Build the client: client credentials grant or static token, auth header, pinned API version, a semaphore for `concurrency`, and `max_retries` for throttling and 5xx responses. Semantic errors are not retried.
+4. Add the provider schema: `store_domain`, `client_id` + `client_secret` or `access_token` (exactly one mode, all Sensitive), `api_version`, `max_retries`, `concurrency`, with env-var fallbacks.
 5. Build the `shopify_shop` data source and its acceptance test. This proves the auth and bootstrap path.
 
 ## Step 2: `shopify_metafield_definition`
@@ -81,4 +81,5 @@ This plan follows the implementation order in section 12 of the resource model, 
 3. **Market links:** `web_presence_ids` and `catalog_ids` take plain IDs. `shopify_market_web_presence` is deferred.
 4. **Provider address:** `registry.terraform.io/pflege-de-labs/shopify`, Go module `github.com/pflege-de-labs/terraform-provider-shopify`.
 5. **No `adopt_default` flag:** phase 1 supports only the general delivery profile, so adopting it is implicit. `adopt_existing` (natural-key takeover) is a different concern and stays. Revisit when custom profiles are added.
-6. **Schema source and dev store:** deferred until implementation. Step 1 needs a disposable dev store and token, which will be set up then.
+6. **Authentication:** client credentials grant (`client_id` / `client_secret`) is the main mode, because Dev Dashboard tokens expire after 24h. A static `access_token` stays as alternative. See resource model §1.
+7. **Schema source and dev store:** deferred until implementation. Step 1 needs a disposable dev store and token, which will be set up then.

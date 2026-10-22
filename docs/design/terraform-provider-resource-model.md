@@ -11,13 +11,27 @@ This draft covers the first scope from the approach doc: the shop data source, m
 
 ```hcl
 provider "shopify" {
-  store_domain = "pflege-dev.myshopify.com" # env: SHOPIFY_STORE_DOMAIN
-  access_token = var.shopify_token          # env: SHOPIFY_ACCESS_TOKEN (sensitive)
-  api_version  = "2026-10"                  # pinned default, overridable
-  max_retries  = 5                          # throttling / 5xx backoff
-  concurrency  = 2                          # max in-flight GraphQL calls
+  store_domain  = "pflege-dev.myshopify.com" # env: SHOPIFY_STORE_DOMAIN
+
+  # Either client credentials (preferred) ...
+  client_id     = var.shopify_client_id        # env: SHOPIFY_CLIENT_ID (sensitive)
+  client_secret = var.shopify_client_secret    # env: SHOPIFY_CLIENT_SECRET (sensitive)
+  # ... or a static token
+  # access_token = var.shopify_token           # env: SHOPIFY_ACCESS_TOKEN (sensitive)
+
+  api_version   = "2026-10"                    # pinned default, overridable
+  max_retries   = 5                            # throttling / 5xx backoff
+  concurrency   = 2                            # max in-flight GraphQL calls
 }
 ```
+
+**Authentication.** Dev Dashboard apps get Admin API tokens through the client credentials grant, and those tokens expire after 24 hours. A static token alone would need refreshing before every CI run.
+- `client_id` + `client_secret`: Configure POSTs `grant_type=client_credentials` to `https://<store_domain>/admin/oauth/access_token`. The client keeps the token in memory only, never in state, and fetches a new one shortly before `expires_in` runs out, so long applies keep working.
+- `access_token`: static token, used as is. For tokens obtained elsewhere.
+- Exactly one of the two modes must be set (plan-time validation; env vars count). Both credentials and the token are `Sensitive`.
+- Only works when the app and the store belong to the same Shopify organization; otherwise Shopify returns `shop_not_permitted`. Dev stores must be created from the Dev Dashboard for this reason.
+- Scopes come from the released app version, not from the token request. Missing-scope errors from the API are reported clearly, naming the scope where the API gives it ⚠.
+- Source: [Get API access tokens for Dev Dashboard apps](https://shopify.dev/docs/apps/build/dev-dashboard/get-api-access-tokens)
 
 - One provider instance is one store. Use provider aliases for multiple stores.
 - `concurrency` caps parallel requests no matter how many resources Terraform runs in parallel. This keeps us inside the cost-based leaky bucket.
@@ -395,4 +409,4 @@ terraform-provider-shopify/
 - Which resources do we let merchants own (→ `ignore_changes` or not managed at all)? Menus are the main candidate.
 - Do we need multi-store support in one Terraform root module, or one state per store?
 - Menu items: reference by GID, or resolve by handle?
-- Where does the Admin API token come from in CI (see the bootstrapping section of the approach doc)?
+- ~~Where does the Admin API token come from in CI?~~ Answered: client credentials grant from CI secrets `SHOPIFY_CLIENT_ID` / `SHOPIFY_CLIENT_SECRET` (see §1).

@@ -1,6 +1,6 @@
 # Shopify Infra Automation: Approach & Pitfalls
 
-**Status:** Proposal, not yet decided · **Owner:** Jens Hausherr · **Last updated:** 2026-10-21
+**Status:** Proposal, not yet decided · **Owner:** Jens Hausherr · **Last updated:** 2026-10-22
 
 ## Summary
 
@@ -32,7 +32,7 @@ No official Shopify Terraform provider exists, and Shopify only partly fits the 
 ### Bootstrapping and auth
 
 - Chicken-and-egg: the provider needs an Admin API token. That needs an installed app, which needs a store, which can't be created through the API for production. Plan for a manual "step 0" for each store.
-- New apps are created in the Dev Dashboard, not the old Partner Dashboard. Check whether a token can be issued without user interaction for apps our organization owns, before designing around it.
+- New apps are created in the Dev Dashboard, not the old Partner Dashboard. For apps our organization owns, installed on stores in the same organization, the client credentials grant issues a token without user interaction. Tokens expire after 24 hours, so the provider fetches them itself from the client ID and secret ([Get API access tokens for Dev Dashboard apps](https://shopify.dev/docs/apps/build/dev-dashboard/get-api-access-tokens)).
 - Scopes covering protected customer data need Shopify's approval and can't be fully automated.
 
 ### Drift and ownership
@@ -76,7 +76,7 @@ Put a manual runbook in the same repo for the settings the API doesn't cover.
 ## Open questions
 
 - Do we go with the hybrid approach? (Decision pending.)
-- Can a token be issued without user interaction for apps our organization owns (Dev Dashboard)?
+- ~~Can a token be issued without user interaction for apps our organization owns (Dev Dashboard)?~~ Yes, via the client credentials grant, if app and store are in the same organization.
 - For each resource, who owns it: Terraform or the Shopify admin?
 - Which stores and environments do we need (dev, staging, Plus sandbox)?
 
