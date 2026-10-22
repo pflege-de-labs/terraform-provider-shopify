@@ -1,0 +1,1 @@
+terraform import shopify_example.example "id-123"

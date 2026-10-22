@@ -1,4 +1,4 @@
-module github.com/hashicorp/terraform-provider-scaffolding-framework
+module github.com/pflege-de-labs/terraform-provider-shopify
 
 go 1.25.8
 

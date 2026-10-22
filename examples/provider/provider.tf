@@ -1,3 +1,3 @@
-provider "scaffolding" {
+provider "shopify" {
   # example configuration here
 }
