@@ -5,6 +5,7 @@ package client
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/Khan/genqlient/graphql"
 )
@@ -1066,6 +1067,181 @@ var AllCountryCode = []CountryCode{
 	CountryCodeZm,
 	CountryCodeZw,
 	CountryCodeZz,
+}
+
+// CreateMarketMarketCreateMarketCreatePayload includes the requested fields of the GraphQL type MarketCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `marketCreate` mutation.
+type CreateMarketMarketCreateMarketCreatePayload struct {
+	// The market object.
+	Market *CreateMarketMarketCreateMarketCreatePayloadMarket `json:"market"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateMarketMarketCreateMarketCreatePayloadUserErrorsMarketUserError `json:"userErrors"`
+}
+
+// GetMarket returns CreateMarketMarketCreateMarketCreatePayload.Market, and is useful for accessing the field via an interface.
+func (v *CreateMarketMarketCreateMarketCreatePayload) GetMarket() *CreateMarketMarketCreateMarketCreatePayloadMarket {
+	return v.Market
+}
+
+// GetUserErrors returns CreateMarketMarketCreateMarketCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateMarketMarketCreateMarketCreatePayload) GetUserErrors() []CreateMarketMarketCreateMarketCreatePayloadUserErrorsMarketUserError {
+	return v.UserErrors
+}
+
+// CreateMarketMarketCreateMarketCreatePayloadMarket includes the requested fields of the GraphQL type Market.
+// The GraphQL type's documentation follows.
+//
+// A merchant-defined group of buyers identified by conditions such as their
+// region, retail location, or company location. Each market allows configuration
+// of a distinct, localized buyer experience. Customizations include, but are
+// not limited to,
+// [currency](https://shopify.dev/api/admin-graphql/current/mutations/marketCurrencySettingsUpdate),
+// [pricing and product availability](https://shopify.dev/apps/internationalization/product-price-lists),
+// [web presence](https://shopify.dev/api/admin-graphql/current/objects/MarketWebPresence),
+// and content translations.
+type CreateMarketMarketCreateMarketCreatePayloadMarket struct {
+	MarketFields `json:"-"`
+}
+
+// GetId returns CreateMarketMarketCreateMarketCreatePayloadMarket.Id, and is useful for accessing the field via an interface.
+func (v *CreateMarketMarketCreateMarketCreatePayloadMarket) GetId() string { return v.MarketFields.Id }
+
+// GetHandle returns CreateMarketMarketCreateMarketCreatePayloadMarket.Handle, and is useful for accessing the field via an interface.
+func (v *CreateMarketMarketCreateMarketCreatePayloadMarket) GetHandle() string {
+	return v.MarketFields.Handle
+}
+
+// GetName returns CreateMarketMarketCreateMarketCreatePayloadMarket.Name, and is useful for accessing the field via an interface.
+func (v *CreateMarketMarketCreateMarketCreatePayloadMarket) GetName() string {
+	return v.MarketFields.Name
+}
+
+// GetStatus returns CreateMarketMarketCreateMarketCreatePayloadMarket.Status, and is useful for accessing the field via an interface.
+func (v *CreateMarketMarketCreateMarketCreatePayloadMarket) GetStatus() MarketStatus {
+	return v.MarketFields.Status
+}
+
+// GetConditions returns CreateMarketMarketCreateMarketCreatePayloadMarket.Conditions, and is useful for accessing the field via an interface.
+func (v *CreateMarketMarketCreateMarketCreatePayloadMarket) GetConditions() *MarketFieldsConditionsMarketConditions {
+	return v.MarketFields.Conditions
+}
+
+// GetCurrencySettings returns CreateMarketMarketCreateMarketCreatePayloadMarket.CurrencySettings, and is useful for accessing the field via an interface.
+func (v *CreateMarketMarketCreateMarketCreatePayloadMarket) GetCurrencySettings() *MarketFieldsCurrencySettingsMarketCurrencySettings {
+	return v.MarketFields.CurrencySettings
+}
+
+// GetWebPresences returns CreateMarketMarketCreateMarketCreatePayloadMarket.WebPresences, and is useful for accessing the field via an interface.
+func (v *CreateMarketMarketCreateMarketCreatePayloadMarket) GetWebPresences() MarketFieldsWebPresencesMarketWebPresenceConnection {
+	return v.MarketFields.WebPresences
+}
+
+// GetCatalogs returns CreateMarketMarketCreateMarketCreatePayloadMarket.Catalogs, and is useful for accessing the field via an interface.
+func (v *CreateMarketMarketCreateMarketCreatePayloadMarket) GetCatalogs() MarketFieldsCatalogsMarketCatalogConnection {
+	return v.MarketFields.Catalogs
+}
+
+func (v *CreateMarketMarketCreateMarketCreatePayloadMarket) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateMarketMarketCreateMarketCreatePayloadMarket
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateMarketMarketCreateMarketCreatePayloadMarket = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MarketFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateMarketMarketCreateMarketCreatePayloadMarket struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Name string `json:"name"`
+
+	Status MarketStatus `json:"status"`
+
+	Conditions *MarketFieldsConditionsMarketConditions `json:"conditions"`
+
+	CurrencySettings *MarketFieldsCurrencySettingsMarketCurrencySettings `json:"currencySettings"`
+
+	WebPresences MarketFieldsWebPresencesMarketWebPresenceConnection `json:"webPresences"`
+
+	Catalogs MarketFieldsCatalogsMarketCatalogConnection `json:"catalogs"`
+}
+
+func (v *CreateMarketMarketCreateMarketCreatePayloadMarket) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateMarketMarketCreateMarketCreatePayloadMarket) __premarshalJSON() (*__premarshalCreateMarketMarketCreateMarketCreatePayloadMarket, error) {
+	var retval __premarshalCreateMarketMarketCreateMarketCreatePayloadMarket
+
+	retval.Id = v.MarketFields.Id
+	retval.Handle = v.MarketFields.Handle
+	retval.Name = v.MarketFields.Name
+	retval.Status = v.MarketFields.Status
+	retval.Conditions = v.MarketFields.Conditions
+	retval.CurrencySettings = v.MarketFields.CurrencySettings
+	retval.WebPresences = v.MarketFields.WebPresences
+	retval.Catalogs = v.MarketFields.Catalogs
+	return &retval, nil
+}
+
+// CreateMarketMarketCreateMarketCreatePayloadUserErrorsMarketUserError includes the requested fields of the GraphQL type MarketUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors encountered while managing a Market.
+type CreateMarketMarketCreateMarketCreatePayloadUserErrorsMarketUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateMarketMarketCreateMarketCreatePayloadUserErrorsMarketUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateMarketMarketCreateMarketCreatePayloadUserErrorsMarketUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateMarketMarketCreateMarketCreatePayloadUserErrorsMarketUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateMarketMarketCreateMarketCreatePayloadUserErrorsMarketUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreateMarketResponse is returned by CreateMarket on success.
+type CreateMarketResponse struct {
+	// Creates a [`Market`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Market) to deliver customized shopping experiences. Markets define various aspects of the buyer experience including pricing, product availability, custom content, inventory and fulfillment priorities, and payment methods.
+	//
+	// Define conditions to match buyers by region, company location, retail location, or other criteria. Configure [`MarketCurrencySettings`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketCurrencySettings) to control currency behavior. Set [`MarketPriceInclusions`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketPriceInclusions) to determine tax and duty display. Assign [`Catalog`](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/Catalog) objects and [`MarketWebPresence`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketWebPresence) configurations to control product availability and SEO strategy.
+	//
+	// Learn more about [Shopify Markets](https://shopify.dev/docs/apps/build/markets).
+	MarketCreate *CreateMarketMarketCreateMarketCreatePayload `json:"marketCreate"`
+}
+
+// GetMarketCreate returns CreateMarketResponse.MarketCreate, and is useful for accessing the field via an interface.
+func (v *CreateMarketResponse) GetMarketCreate() *CreateMarketMarketCreateMarketCreatePayload {
+	return v.MarketCreate
 }
 
 // CreateMenuMenuCreateMenuCreatePayload includes the requested fields of the GraphQL type MenuCreatePayload.
@@ -2296,6 +2472,57 @@ func (v *DeleteLocationResponse) GetLocationDelete() *DeleteLocationLocationDele
 	return v.LocationDelete
 }
 
+// DeleteMarketMarketDeleteMarketDeletePayload includes the requested fields of the GraphQL type MarketDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `marketDelete` mutation.
+type DeleteMarketMarketDeleteMarketDeletePayload struct {
+	// The ID of the deleted market.
+	DeletedId *string `json:"deletedId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteMarketMarketDeleteMarketDeletePayloadUserErrorsMarketUserError `json:"userErrors"`
+}
+
+// GetDeletedId returns DeleteMarketMarketDeleteMarketDeletePayload.DeletedId, and is useful for accessing the field via an interface.
+func (v *DeleteMarketMarketDeleteMarketDeletePayload) GetDeletedId() *string { return v.DeletedId }
+
+// GetUserErrors returns DeleteMarketMarketDeleteMarketDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteMarketMarketDeleteMarketDeletePayload) GetUserErrors() []DeleteMarketMarketDeleteMarketDeletePayloadUserErrorsMarketUserError {
+	return v.UserErrors
+}
+
+// DeleteMarketMarketDeleteMarketDeletePayloadUserErrorsMarketUserError includes the requested fields of the GraphQL type MarketUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors encountered while managing a Market.
+type DeleteMarketMarketDeleteMarketDeletePayloadUserErrorsMarketUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeleteMarketMarketDeleteMarketDeletePayloadUserErrorsMarketUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteMarketMarketDeleteMarketDeletePayloadUserErrorsMarketUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteMarketMarketDeleteMarketDeletePayloadUserErrorsMarketUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteMarketMarketDeleteMarketDeletePayloadUserErrorsMarketUserError) GetMessage() string {
+	return v.Message
+}
+
+// DeleteMarketResponse is returned by DeleteMarket on success.
+type DeleteMarketResponse struct {
+	// Deletes a market definition.
+	MarketDelete *DeleteMarketMarketDeleteMarketDeletePayload `json:"marketDelete"`
+}
+
+// GetMarketDelete returns DeleteMarketResponse.MarketDelete, and is useful for accessing the field via an interface.
+func (v *DeleteMarketResponse) GetMarketDelete() *DeleteMarketMarketDeleteMarketDeletePayload {
+	return v.MarketDelete
+}
+
 // DeleteMenuMenuDeleteMenuDeletePayload includes the requested fields of the GraphQL type MenuDeletePayload.
 // The GraphQL type's documentation follows.
 //
@@ -2457,6 +2684,971 @@ type DeleteMetaobjectDefinitionResponse struct {
 func (v *DeleteMetaobjectDefinitionResponse) GetMetaobjectDefinitionDelete() *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload {
 	return v.MetaobjectDefinitionDelete
 }
+
+// The input fields for creating a carrier-calculated shipping option.
+type DeliveryCarrierCalculatedOptionDefinitionCreateInput struct {
+	// Optional description shown to buyers.
+	Description *string `json:"description"`
+	// Whether this shipping option is active and shown to buyers. Defaults to true.
+	IsActive *bool `json:"isActive"`
+	// The currency used for all money values in this shipping option.
+	Currency CurrencyCode `json:"currency"`
+	// The rate groups to create for this shipping option. At this time, only a single rate group is supported for carrier calculated shipping options.
+	RateGroups []DeliveryCarrierCalculatedRateGroupCreateInput `json:"rateGroups"`
+	// The cart subtotal required for free shipping. Currency must match the shipping option's currency.
+	FreeDeliveryMinimumValue *MoneyInput `json:"freeDeliveryMinimumValue"`
+}
+
+// GetDescription returns DeliveryCarrierCalculatedOptionDefinitionCreateInput.Description, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionCreateInput) GetDescription() *string {
+	return v.Description
+}
+
+// GetIsActive returns DeliveryCarrierCalculatedOptionDefinitionCreateInput.IsActive, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionCreateInput) GetIsActive() *bool { return v.IsActive }
+
+// GetCurrency returns DeliveryCarrierCalculatedOptionDefinitionCreateInput.Currency, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionCreateInput) GetCurrency() CurrencyCode {
+	return v.Currency
+}
+
+// GetRateGroups returns DeliveryCarrierCalculatedOptionDefinitionCreateInput.RateGroups, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionCreateInput) GetRateGroups() []DeliveryCarrierCalculatedRateGroupCreateInput {
+	return v.RateGroups
+}
+
+// GetFreeDeliveryMinimumValue returns DeliveryCarrierCalculatedOptionDefinitionCreateInput.FreeDeliveryMinimumValue, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionCreateInput) GetFreeDeliveryMinimumValue() *MoneyInput {
+	return v.FreeDeliveryMinimumValue
+}
+
+// The input fields for updating a carrier-calculated shipping option.
+type DeliveryCarrierCalculatedOptionDefinitionUpdateInput struct {
+	// The ID of the carrier-calculated shipping option to update.
+	Id string `json:"id"`
+	// Description shown to buyers.
+	Description *string `json:"description"`
+	// Whether this shipping option is active and shown to buyers.
+	IsActive *bool `json:"isActive"`
+	// The currency used for all money values in this shipping option.
+	Currency *CurrencyCode `json:"currency"`
+	// Rate groups to create for this shipping option. At this time, only a single rate group is supported for carrier calculated shipping options.
+	RateGroupsToCreate []DeliveryCarrierCalculatedRateGroupCreateInput `json:"rateGroupsToCreate"`
+	// Rate groups to update for this shipping option. Only the existing single rate group is supported.
+	RateGroupsToUpdate []DeliveryCarrierCalculatedRateGroupUpdateInput `json:"rateGroupsToUpdate"`
+	// The IDs of rate groups to delete from this shipping option.
+	RateGroupsToDelete []string `json:"rateGroupsToDelete"`
+	// The cart subtotal required for free shipping. Null clears the existing threshold. Currency must match the shipping option's currency.
+	FreeDeliveryMinimumValue *MoneyInput `json:"freeDeliveryMinimumValue"`
+}
+
+// GetId returns DeliveryCarrierCalculatedOptionDefinitionUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionUpdateInput) GetId() string { return v.Id }
+
+// GetDescription returns DeliveryCarrierCalculatedOptionDefinitionUpdateInput.Description, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionUpdateInput) GetDescription() *string {
+	return v.Description
+}
+
+// GetIsActive returns DeliveryCarrierCalculatedOptionDefinitionUpdateInput.IsActive, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionUpdateInput) GetIsActive() *bool { return v.IsActive }
+
+// GetCurrency returns DeliveryCarrierCalculatedOptionDefinitionUpdateInput.Currency, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionUpdateInput) GetCurrency() *CurrencyCode {
+	return v.Currency
+}
+
+// GetRateGroupsToCreate returns DeliveryCarrierCalculatedOptionDefinitionUpdateInput.RateGroupsToCreate, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionUpdateInput) GetRateGroupsToCreate() []DeliveryCarrierCalculatedRateGroupCreateInput {
+	return v.RateGroupsToCreate
+}
+
+// GetRateGroupsToUpdate returns DeliveryCarrierCalculatedOptionDefinitionUpdateInput.RateGroupsToUpdate, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionUpdateInput) GetRateGroupsToUpdate() []DeliveryCarrierCalculatedRateGroupUpdateInput {
+	return v.RateGroupsToUpdate
+}
+
+// GetRateGroupsToDelete returns DeliveryCarrierCalculatedOptionDefinitionUpdateInput.RateGroupsToDelete, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionUpdateInput) GetRateGroupsToDelete() []string {
+	return v.RateGroupsToDelete
+}
+
+// GetFreeDeliveryMinimumValue returns DeliveryCarrierCalculatedOptionDefinitionUpdateInput.FreeDeliveryMinimumValue, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedOptionDefinitionUpdateInput) GetFreeDeliveryMinimumValue() *MoneyInput {
+	return v.FreeDeliveryMinimumValue
+}
+
+// The input fields for creating a rate group for a carrier-calculated shipping option.
+type DeliveryCarrierCalculatedRateGroupCreateInput struct {
+	// The ID of the carrier service to use for this rate group.
+	CarrierServiceId string `json:"carrierServiceId"`
+	// Carrier-provided services to include or exclude.
+	// Services not listed follow the default behavior based on `autoIncludeNewServices`.
+	ServiceConfiguration []DeliveryCarrierCalculatedRateGroupServiceInput `json:"serviceConfiguration"`
+	// The flat amount added to or subtracted from carrier rates.
+	AbsoluteAdjustment *MoneyInput `json:"absoluteAdjustment"`
+	// The percentage added to or subtracted from carrier rates.
+	PercentageAdjustment *int `json:"percentageAdjustment"`
+	// Collection and origin location conditions for this rate group.
+	Conditions *DeliveryRateConditionsCreateInput `json:"conditions"`
+	// Whether new services from this carrier are automatically included at checkout.
+	// When omitted, defaults to true. Set to false to offer only explicitly
+	// included services for carriers that support service discovery.
+	AutoIncludeNewServices *bool `json:"autoIncludeNewServices"`
+}
+
+// GetCarrierServiceId returns DeliveryCarrierCalculatedRateGroupCreateInput.CarrierServiceId, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupCreateInput) GetCarrierServiceId() string {
+	return v.CarrierServiceId
+}
+
+// GetServiceConfiguration returns DeliveryCarrierCalculatedRateGroupCreateInput.ServiceConfiguration, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupCreateInput) GetServiceConfiguration() []DeliveryCarrierCalculatedRateGroupServiceInput {
+	return v.ServiceConfiguration
+}
+
+// GetAbsoluteAdjustment returns DeliveryCarrierCalculatedRateGroupCreateInput.AbsoluteAdjustment, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupCreateInput) GetAbsoluteAdjustment() *MoneyInput {
+	return v.AbsoluteAdjustment
+}
+
+// GetPercentageAdjustment returns DeliveryCarrierCalculatedRateGroupCreateInput.PercentageAdjustment, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupCreateInput) GetPercentageAdjustment() *int {
+	return v.PercentageAdjustment
+}
+
+// GetConditions returns DeliveryCarrierCalculatedRateGroupCreateInput.Conditions, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupCreateInput) GetConditions() *DeliveryRateConditionsCreateInput {
+	return v.Conditions
+}
+
+// GetAutoIncludeNewServices returns DeliveryCarrierCalculatedRateGroupCreateInput.AutoIncludeNewServices, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupCreateInput) GetAutoIncludeNewServices() *bool {
+	return v.AutoIncludeNewServices
+}
+
+// The input fields for including or excluding a carrier-provided service in a rate group.
+type DeliveryCarrierCalculatedRateGroupServiceInput struct {
+	// The name of the carrier-provided service.
+	Name string `json:"name"`
+	// Whether this service is included or excluded at checkout.
+	Status DeliveryCarrierCalculatedRateGroupServiceStatus `json:"status"`
+}
+
+// GetName returns DeliveryCarrierCalculatedRateGroupServiceInput.Name, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupServiceInput) GetName() string { return v.Name }
+
+// GetStatus returns DeliveryCarrierCalculatedRateGroupServiceInput.Status, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupServiceInput) GetStatus() DeliveryCarrierCalculatedRateGroupServiceStatus {
+	return v.Status
+}
+
+// Whether a carrier-provided service is included at checkout.
+type DeliveryCarrierCalculatedRateGroupServiceStatus string
+
+const (
+	// The service is included at checkout.
+	DeliveryCarrierCalculatedRateGroupServiceStatusIncluded DeliveryCarrierCalculatedRateGroupServiceStatus = "INCLUDED"
+	// The service is excluded at checkout.
+	DeliveryCarrierCalculatedRateGroupServiceStatusExcluded DeliveryCarrierCalculatedRateGroupServiceStatus = "EXCLUDED"
+)
+
+var AllDeliveryCarrierCalculatedRateGroupServiceStatus = []DeliveryCarrierCalculatedRateGroupServiceStatus{
+	DeliveryCarrierCalculatedRateGroupServiceStatusIncluded,
+	DeliveryCarrierCalculatedRateGroupServiceStatusExcluded,
+}
+
+// The input fields for updating a rate group for a carrier-calculated shipping option.
+type DeliveryCarrierCalculatedRateGroupUpdateInput struct {
+	// The ID of the rate group to update
+	Id string `json:"id"`
+	// The ID of the carrier service that provides rates for this shipping option.
+	CarrierServiceId *string `json:"carrierServiceId"`
+	// Carrier-provided services to include or exclude. Replaces the existing configuration.
+	ServiceConfiguration []DeliveryCarrierCalculatedRateGroupServiceInput `json:"serviceConfiguration"`
+	// The flat amount added to or subtracted from carrier rates.
+	AbsoluteAdjustment *MoneyInput `json:"absoluteAdjustment"`
+	// The percentage added to or subtracted from carrier rates.
+	PercentageAdjustment *int `json:"percentageAdjustment"`
+	// Collection and origin location conditions for this rate group.
+	Conditions *DeliveryRateConditionsUpdateInput `json:"conditions"`
+	// Whether new services from this carrier are automatically included at checkout.
+	// When true, buyers see any service that isn't excluded.
+	// When false, buyers see only included services.
+	AutoIncludeNewServices *bool `json:"autoIncludeNewServices"`
+}
+
+// GetId returns DeliveryCarrierCalculatedRateGroupUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupUpdateInput) GetId() string { return v.Id }
+
+// GetCarrierServiceId returns DeliveryCarrierCalculatedRateGroupUpdateInput.CarrierServiceId, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupUpdateInput) GetCarrierServiceId() *string {
+	return v.CarrierServiceId
+}
+
+// GetServiceConfiguration returns DeliveryCarrierCalculatedRateGroupUpdateInput.ServiceConfiguration, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupUpdateInput) GetServiceConfiguration() []DeliveryCarrierCalculatedRateGroupServiceInput {
+	return v.ServiceConfiguration
+}
+
+// GetAbsoluteAdjustment returns DeliveryCarrierCalculatedRateGroupUpdateInput.AbsoluteAdjustment, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupUpdateInput) GetAbsoluteAdjustment() *MoneyInput {
+	return v.AbsoluteAdjustment
+}
+
+// GetPercentageAdjustment returns DeliveryCarrierCalculatedRateGroupUpdateInput.PercentageAdjustment, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupUpdateInput) GetPercentageAdjustment() *int {
+	return v.PercentageAdjustment
+}
+
+// GetConditions returns DeliveryCarrierCalculatedRateGroupUpdateInput.Conditions, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupUpdateInput) GetConditions() *DeliveryRateConditionsUpdateInput {
+	return v.Conditions
+}
+
+// GetAutoIncludeNewServices returns DeliveryCarrierCalculatedRateGroupUpdateInput.AutoIncludeNewServices, and is useful for accessing the field via an interface.
+func (v *DeliveryCarrierCalculatedRateGroupUpdateInput) GetAutoIncludeNewServices() *bool {
+	return v.AutoIncludeNewServices
+}
+
+// The input fields for creating a flat rate.
+type DeliveryFlatRateCreateInput struct {
+	// The fixed price charged for this rate.
+	Price MoneyInput `json:"price"`
+	// The minimum estimated transit time in seconds.
+	TransitTimeMinSeconds *int `json:"transitTimeMinSeconds"`
+	// The maximum estimated transit time in seconds.
+	TransitTimeMaxSeconds *int `json:"transitTimeMaxSeconds"`
+}
+
+// GetPrice returns DeliveryFlatRateCreateInput.Price, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateCreateInput) GetPrice() MoneyInput { return v.Price }
+
+// GetTransitTimeMinSeconds returns DeliveryFlatRateCreateInput.TransitTimeMinSeconds, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateCreateInput) GetTransitTimeMinSeconds() *int { return v.TransitTimeMinSeconds }
+
+// GetTransitTimeMaxSeconds returns DeliveryFlatRateCreateInput.TransitTimeMaxSeconds, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateCreateInput) GetTransitTimeMaxSeconds() *int { return v.TransitTimeMaxSeconds }
+
+// The input fields for creating a flat rate group.
+type DeliveryFlatRateGroupCreateInput struct {
+	// The fixed-price rate and optional transit time.
+	Rate DeliveryFlatRateCreateInput `json:"rate"`
+	// Collection and origin location conditions for this rate group.
+	Conditions *DeliveryRateConditionsCreateInput `json:"conditions"`
+}
+
+// GetRate returns DeliveryFlatRateGroupCreateInput.Rate, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateGroupCreateInput) GetRate() DeliveryFlatRateCreateInput { return v.Rate }
+
+// GetConditions returns DeliveryFlatRateGroupCreateInput.Conditions, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateGroupCreateInput) GetConditions() *DeliveryRateConditionsCreateInput {
+	return v.Conditions
+}
+
+// The input fields for updating a flat rate group.
+type DeliveryFlatRateGroupUpdateInput struct {
+	// The globally unique ID of the flat rate group to update.
+	Id string `json:"id"`
+	// Updates to the fixed-price rate and optional transit time.
+	Rate *DeliveryFlatRateUpdateInput `json:"rate"`
+	// Collection and origin location conditions for this rate group.
+	Conditions *DeliveryRateConditionsUpdateInput `json:"conditions"`
+}
+
+// GetId returns DeliveryFlatRateGroupUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateGroupUpdateInput) GetId() string { return v.Id }
+
+// GetRate returns DeliveryFlatRateGroupUpdateInput.Rate, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateGroupUpdateInput) GetRate() *DeliveryFlatRateUpdateInput { return v.Rate }
+
+// GetConditions returns DeliveryFlatRateGroupUpdateInput.Conditions, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateGroupUpdateInput) GetConditions() *DeliveryRateConditionsUpdateInput {
+	return v.Conditions
+}
+
+// The input fields for creating a flat rate shipping option.
+type DeliveryFlatRateOptionDefinitionCreateInput struct {
+	// The name shown to buyers for this shipping option.
+	Name string `json:"name"`
+	// Optional description shown to buyers.
+	Description *string `json:"description"`
+	// Whether this shipping option is active and shown to buyers. Defaults to true.
+	IsActive *bool `json:"isActive"`
+	// The currency used for all money values in this shipping option.
+	Currency CurrencyCode `json:"currency"`
+	// The flat rate groups for this shipping option.
+	RateGroups []DeliveryFlatRateGroupCreateInput `json:"rateGroups"`
+	// The cart subtotal required for free shipping. Currency must match the shipping option's currency.
+	FreeDeliveryMinimumValue *MoneyInput `json:"freeDeliveryMinimumValue"`
+}
+
+// GetName returns DeliveryFlatRateOptionDefinitionCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionCreateInput) GetName() string { return v.Name }
+
+// GetDescription returns DeliveryFlatRateOptionDefinitionCreateInput.Description, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionCreateInput) GetDescription() *string { return v.Description }
+
+// GetIsActive returns DeliveryFlatRateOptionDefinitionCreateInput.IsActive, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionCreateInput) GetIsActive() *bool { return v.IsActive }
+
+// GetCurrency returns DeliveryFlatRateOptionDefinitionCreateInput.Currency, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionCreateInput) GetCurrency() CurrencyCode { return v.Currency }
+
+// GetRateGroups returns DeliveryFlatRateOptionDefinitionCreateInput.RateGroups, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionCreateInput) GetRateGroups() []DeliveryFlatRateGroupCreateInput {
+	return v.RateGroups
+}
+
+// GetFreeDeliveryMinimumValue returns DeliveryFlatRateOptionDefinitionCreateInput.FreeDeliveryMinimumValue, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionCreateInput) GetFreeDeliveryMinimumValue() *MoneyInput {
+	return v.FreeDeliveryMinimumValue
+}
+
+// The input fields for updating a flat rate shipping option.
+type DeliveryFlatRateOptionDefinitionUpdateInput struct {
+	// The globally unique ID of the flat rate shipping option to update.
+	Id string `json:"id"`
+	// The name shown to buyers for this shipping option.
+	Name *string `json:"name"`
+	// Optional description shown to buyers.
+	Description *string `json:"description"`
+	// Whether this shipping option is active and shown to buyers.
+	IsActive *bool `json:"isActive"`
+	// The currency used for all money values in this shipping option.
+	Currency *CurrencyCode `json:"currency"`
+	// Rate groups to create for this shipping option.
+	RateGroupsToCreate []DeliveryFlatRateGroupCreateInput `json:"rateGroupsToCreate"`
+	// Rate groups to update for this shipping option.
+	RateGroupsToUpdate []DeliveryFlatRateGroupUpdateInput `json:"rateGroupsToUpdate"`
+	// The IDs of rate groups to delete from this shipping option.
+	RateGroupsToDelete []string `json:"rateGroupsToDelete"`
+	// The cart subtotal required for free shipping. Null clears the threshold. Currency must match the shipping option's currency.
+	FreeDeliveryMinimumValue *MoneyInput `json:"freeDeliveryMinimumValue"`
+}
+
+// GetId returns DeliveryFlatRateOptionDefinitionUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionUpdateInput) GetId() string { return v.Id }
+
+// GetName returns DeliveryFlatRateOptionDefinitionUpdateInput.Name, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionUpdateInput) GetName() *string { return v.Name }
+
+// GetDescription returns DeliveryFlatRateOptionDefinitionUpdateInput.Description, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionUpdateInput) GetDescription() *string { return v.Description }
+
+// GetIsActive returns DeliveryFlatRateOptionDefinitionUpdateInput.IsActive, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionUpdateInput) GetIsActive() *bool { return v.IsActive }
+
+// GetCurrency returns DeliveryFlatRateOptionDefinitionUpdateInput.Currency, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionUpdateInput) GetCurrency() *CurrencyCode { return v.Currency }
+
+// GetRateGroupsToCreate returns DeliveryFlatRateOptionDefinitionUpdateInput.RateGroupsToCreate, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionUpdateInput) GetRateGroupsToCreate() []DeliveryFlatRateGroupCreateInput {
+	return v.RateGroupsToCreate
+}
+
+// GetRateGroupsToUpdate returns DeliveryFlatRateOptionDefinitionUpdateInput.RateGroupsToUpdate, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionUpdateInput) GetRateGroupsToUpdate() []DeliveryFlatRateGroupUpdateInput {
+	return v.RateGroupsToUpdate
+}
+
+// GetRateGroupsToDelete returns DeliveryFlatRateOptionDefinitionUpdateInput.RateGroupsToDelete, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionUpdateInput) GetRateGroupsToDelete() []string {
+	return v.RateGroupsToDelete
+}
+
+// GetFreeDeliveryMinimumValue returns DeliveryFlatRateOptionDefinitionUpdateInput.FreeDeliveryMinimumValue, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateOptionDefinitionUpdateInput) GetFreeDeliveryMinimumValue() *MoneyInput {
+	return v.FreeDeliveryMinimumValue
+}
+
+// The input fields for updating a flat rate.
+type DeliveryFlatRateUpdateInput struct {
+	// The fixed price charged for this rate.
+	Price *MoneyInput `json:"price"`
+	// The minimum estimated transit time in seconds.
+	TransitTimeMinSeconds *int `json:"transitTimeMinSeconds"`
+	// The maximum estimated transit time in seconds.
+	TransitTimeMaxSeconds *int `json:"transitTimeMaxSeconds"`
+}
+
+// GetPrice returns DeliveryFlatRateUpdateInput.Price, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateUpdateInput) GetPrice() *MoneyInput { return v.Price }
+
+// GetTransitTimeMinSeconds returns DeliveryFlatRateUpdateInput.TransitTimeMinSeconds, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateUpdateInput) GetTransitTimeMinSeconds() *int { return v.TransitTimeMinSeconds }
+
+// GetTransitTimeMaxSeconds returns DeliveryFlatRateUpdateInput.TransitTimeMaxSeconds, and is useful for accessing the field via an interface.
+func (v *DeliveryFlatRateUpdateInput) GetTransitTimeMaxSeconds() *int { return v.TransitTimeMaxSeconds }
+
+// The input fields for creating a shipping option. Provide exactly one option type.
+type DeliveryOptionDefinitionCreateInput struct {
+	// A flat rate shipping option.
+	FlatRate *DeliveryFlatRateOptionDefinitionCreateInput `json:"flatRate"`
+	// A carrier-calculated shipping option.
+	CarrierCalculated *DeliveryCarrierCalculatedOptionDefinitionCreateInput `json:"carrierCalculated"`
+	// A weight-based shipping option.
+	WeightBased *DeliveryWeightBasedOptionDefinitionCreateInput `json:"weightBased"`
+	// A value-based shipping option.
+	ValueBased *DeliveryValueBasedOptionDefinitionCreateInput `json:"valueBased"`
+}
+
+// GetFlatRate returns DeliveryOptionDefinitionCreateInput.FlatRate, and is useful for accessing the field via an interface.
+func (v *DeliveryOptionDefinitionCreateInput) GetFlatRate() *DeliveryFlatRateOptionDefinitionCreateInput {
+	return v.FlatRate
+}
+
+// GetCarrierCalculated returns DeliveryOptionDefinitionCreateInput.CarrierCalculated, and is useful for accessing the field via an interface.
+func (v *DeliveryOptionDefinitionCreateInput) GetCarrierCalculated() *DeliveryCarrierCalculatedOptionDefinitionCreateInput {
+	return v.CarrierCalculated
+}
+
+// GetWeightBased returns DeliveryOptionDefinitionCreateInput.WeightBased, and is useful for accessing the field via an interface.
+func (v *DeliveryOptionDefinitionCreateInput) GetWeightBased() *DeliveryWeightBasedOptionDefinitionCreateInput {
+	return v.WeightBased
+}
+
+// GetValueBased returns DeliveryOptionDefinitionCreateInput.ValueBased, and is useful for accessing the field via an interface.
+func (v *DeliveryOptionDefinitionCreateInput) GetValueBased() *DeliveryValueBasedOptionDefinitionCreateInput {
+	return v.ValueBased
+}
+
+// The input fields for updating a shipping option. Provide exactly one option type.
+type DeliveryOptionDefinitionUpdateInput struct {
+	// A flat rate shipping option to update.
+	FlatRate *DeliveryFlatRateOptionDefinitionUpdateInput `json:"flatRate"`
+	// A carrier-calculated shipping option to update.
+	CarrierCalculated *DeliveryCarrierCalculatedOptionDefinitionUpdateInput `json:"carrierCalculated"`
+	// A value-based shipping option to update.
+	ValueBased *DeliveryValueBasedOptionDefinitionUpdateInput `json:"valueBased"`
+	// A weight-based shipping option to update.
+	WeightBased *DeliveryWeightBasedOptionDefinitionUpdateInput `json:"weightBased"`
+}
+
+// GetFlatRate returns DeliveryOptionDefinitionUpdateInput.FlatRate, and is useful for accessing the field via an interface.
+func (v *DeliveryOptionDefinitionUpdateInput) GetFlatRate() *DeliveryFlatRateOptionDefinitionUpdateInput {
+	return v.FlatRate
+}
+
+// GetCarrierCalculated returns DeliveryOptionDefinitionUpdateInput.CarrierCalculated, and is useful for accessing the field via an interface.
+func (v *DeliveryOptionDefinitionUpdateInput) GetCarrierCalculated() *DeliveryCarrierCalculatedOptionDefinitionUpdateInput {
+	return v.CarrierCalculated
+}
+
+// GetValueBased returns DeliveryOptionDefinitionUpdateInput.ValueBased, and is useful for accessing the field via an interface.
+func (v *DeliveryOptionDefinitionUpdateInput) GetValueBased() *DeliveryValueBasedOptionDefinitionUpdateInput {
+	return v.ValueBased
+}
+
+// GetWeightBased returns DeliveryOptionDefinitionUpdateInput.WeightBased, and is useful for accessing the field via an interface.
+func (v *DeliveryOptionDefinitionUpdateInput) GetWeightBased() *DeliveryWeightBasedOptionDefinitionUpdateInput {
+	return v.WeightBased
+}
+
+// The input fields for conditions that limit a rate group to specific collections or origin locations.
+type DeliveryRateConditionsCreateInput struct {
+	// Collection IDs to add. The rate group applies only to products in these collections.
+	CollectionsToAdd []string `json:"collectionsToAdd"`
+	// Origin location IDs to add. The rate group applies only to shipments from these locations.
+	OriginLocationsToAdd []string `json:"originLocationsToAdd"`
+}
+
+// GetCollectionsToAdd returns DeliveryRateConditionsCreateInput.CollectionsToAdd, and is useful for accessing the field via an interface.
+func (v *DeliveryRateConditionsCreateInput) GetCollectionsToAdd() []string { return v.CollectionsToAdd }
+
+// GetOriginLocationsToAdd returns DeliveryRateConditionsCreateInput.OriginLocationsToAdd, and is useful for accessing the field via an interface.
+func (v *DeliveryRateConditionsCreateInput) GetOriginLocationsToAdd() []string {
+	return v.OriginLocationsToAdd
+}
+
+// The input fields for conditions that limit a rate group to specific collections or origin locations.
+type DeliveryRateConditionsUpdateInput struct {
+	// Collection IDs to add. The rate group applies only to products in these collections.
+	CollectionsToAdd []string `json:"collectionsToAdd"`
+	// Collection IDs to remove.
+	CollectionsToRemove []string `json:"collectionsToRemove"`
+	// Whether to remove all collection conditions so the rate group applies to all products.
+	ResetToAllProducts *bool `json:"resetToAllProducts"`
+	// Origin location IDs to add. The rate group applies only to shipments from these locations.
+	OriginLocationsToAdd []string `json:"originLocationsToAdd"`
+	// Origin location IDs to remove.
+	OriginLocationsToRemove []string `json:"originLocationsToRemove"`
+}
+
+// GetCollectionsToAdd returns DeliveryRateConditionsUpdateInput.CollectionsToAdd, and is useful for accessing the field via an interface.
+func (v *DeliveryRateConditionsUpdateInput) GetCollectionsToAdd() []string { return v.CollectionsToAdd }
+
+// GetCollectionsToRemove returns DeliveryRateConditionsUpdateInput.CollectionsToRemove, and is useful for accessing the field via an interface.
+func (v *DeliveryRateConditionsUpdateInput) GetCollectionsToRemove() []string {
+	return v.CollectionsToRemove
+}
+
+// GetResetToAllProducts returns DeliveryRateConditionsUpdateInput.ResetToAllProducts, and is useful for accessing the field via an interface.
+func (v *DeliveryRateConditionsUpdateInput) GetResetToAllProducts() *bool {
+	return v.ResetToAllProducts
+}
+
+// GetOriginLocationsToAdd returns DeliveryRateConditionsUpdateInput.OriginLocationsToAdd, and is useful for accessing the field via an interface.
+func (v *DeliveryRateConditionsUpdateInput) GetOriginLocationsToAdd() []string {
+	return v.OriginLocationsToAdd
+}
+
+// GetOriginLocationsToRemove returns DeliveryRateConditionsUpdateInput.OriginLocationsToRemove, and is useful for accessing the field via an interface.
+func (v *DeliveryRateConditionsUpdateInput) GetOriginLocationsToRemove() []string {
+	return v.OriginLocationsToRemove
+}
+
+// The input fields for creating a value-based shipping option.
+type DeliveryValueBasedOptionDefinitionCreateInput struct {
+	// The name shown to buyers for this shipping option.
+	Name string `json:"name"`
+	// Optional description shown to buyers.
+	Description *string `json:"description"`
+	// Whether this shipping option is active and shown to buyers. Defaults to true.
+	IsActive *bool `json:"isActive"`
+	// The currency used for all money values in this shipping option.
+	Currency CurrencyCode `json:"currency"`
+	// Rate groups to create for this shipping option.
+	RateGroups []DeliveryValueBasedRateGroupCreateInput `json:"rateGroups"`
+	// The cart subtotal required for free shipping. Currency must match the shipping option's currency.
+	FreeDeliveryMinimumValue *MoneyInput `json:"freeDeliveryMinimumValue"`
+}
+
+// GetName returns DeliveryValueBasedOptionDefinitionCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionCreateInput) GetName() string { return v.Name }
+
+// GetDescription returns DeliveryValueBasedOptionDefinitionCreateInput.Description, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionCreateInput) GetDescription() *string {
+	return v.Description
+}
+
+// GetIsActive returns DeliveryValueBasedOptionDefinitionCreateInput.IsActive, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionCreateInput) GetIsActive() *bool { return v.IsActive }
+
+// GetCurrency returns DeliveryValueBasedOptionDefinitionCreateInput.Currency, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionCreateInput) GetCurrency() CurrencyCode { return v.Currency }
+
+// GetRateGroups returns DeliveryValueBasedOptionDefinitionCreateInput.RateGroups, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionCreateInput) GetRateGroups() []DeliveryValueBasedRateGroupCreateInput {
+	return v.RateGroups
+}
+
+// GetFreeDeliveryMinimumValue returns DeliveryValueBasedOptionDefinitionCreateInput.FreeDeliveryMinimumValue, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionCreateInput) GetFreeDeliveryMinimumValue() *MoneyInput {
+	return v.FreeDeliveryMinimumValue
+}
+
+// The input fields for updating a value-based shipping option.
+type DeliveryValueBasedOptionDefinitionUpdateInput struct {
+	// The ID of the value-based shipping option to update.
+	Id string `json:"id"`
+	// The name shown to buyers for this shipping option.
+	Name *string `json:"name"`
+	// Description shown to buyers.
+	Description *string `json:"description"`
+	// Whether this shipping option is active and shown to buyers.
+	IsActive *bool `json:"isActive"`
+	// The currency used for all money values in this shipping option.
+	Currency *CurrencyCode `json:"currency"`
+	// Rate groups to create for this shipping option.
+	RateGroupsToCreate []DeliveryValueBasedRateGroupCreateInput `json:"rateGroupsToCreate"`
+	// Rate groups to update for this shipping option.
+	RateGroupsToUpdate []DeliveryValueBasedRateGroupUpdateInput `json:"rateGroupsToUpdate"`
+	// The IDs of rate groups to delete from this shipping option.
+	RateGroupsToDelete []string `json:"rateGroupsToDelete"`
+	// The cart subtotal required for free shipping. Null clears the threshold. Currency must match the shipping option's currency.
+	FreeDeliveryMinimumValue *MoneyInput `json:"freeDeliveryMinimumValue"`
+}
+
+// GetId returns DeliveryValueBasedOptionDefinitionUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionUpdateInput) GetId() string { return v.Id }
+
+// GetName returns DeliveryValueBasedOptionDefinitionUpdateInput.Name, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionUpdateInput) GetName() *string { return v.Name }
+
+// GetDescription returns DeliveryValueBasedOptionDefinitionUpdateInput.Description, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionUpdateInput) GetDescription() *string {
+	return v.Description
+}
+
+// GetIsActive returns DeliveryValueBasedOptionDefinitionUpdateInput.IsActive, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionUpdateInput) GetIsActive() *bool { return v.IsActive }
+
+// GetCurrency returns DeliveryValueBasedOptionDefinitionUpdateInput.Currency, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionUpdateInput) GetCurrency() *CurrencyCode {
+	return v.Currency
+}
+
+// GetRateGroupsToCreate returns DeliveryValueBasedOptionDefinitionUpdateInput.RateGroupsToCreate, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionUpdateInput) GetRateGroupsToCreate() []DeliveryValueBasedRateGroupCreateInput {
+	return v.RateGroupsToCreate
+}
+
+// GetRateGroupsToUpdate returns DeliveryValueBasedOptionDefinitionUpdateInput.RateGroupsToUpdate, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionUpdateInput) GetRateGroupsToUpdate() []DeliveryValueBasedRateGroupUpdateInput {
+	return v.RateGroupsToUpdate
+}
+
+// GetRateGroupsToDelete returns DeliveryValueBasedOptionDefinitionUpdateInput.RateGroupsToDelete, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionUpdateInput) GetRateGroupsToDelete() []string {
+	return v.RateGroupsToDelete
+}
+
+// GetFreeDeliveryMinimumValue returns DeliveryValueBasedOptionDefinitionUpdateInput.FreeDeliveryMinimumValue, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedOptionDefinitionUpdateInput) GetFreeDeliveryMinimumValue() *MoneyInput {
+	return v.FreeDeliveryMinimumValue
+}
+
+// The input fields for creating a value-based rate.
+type DeliveryValueBasedRateCreateInput struct {
+	// The price charged for this rate.
+	Price MoneyInput `json:"price"`
+	// The minimum cart value (inclusive) for this rate.
+	MinValue MoneyInput `json:"minValue"`
+	// The maximum cart value (inclusive) for this rate. Omit for no upper limit.
+	MaxValue *MoneyInput `json:"maxValue"`
+	// The minimum transit time estimate in seconds.
+	TransitTimeMinSeconds *int `json:"transitTimeMinSeconds"`
+	// The maximum transit time estimate in seconds.
+	TransitTimeMaxSeconds *int `json:"transitTimeMaxSeconds"`
+}
+
+// GetPrice returns DeliveryValueBasedRateCreateInput.Price, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateCreateInput) GetPrice() MoneyInput { return v.Price }
+
+// GetMinValue returns DeliveryValueBasedRateCreateInput.MinValue, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateCreateInput) GetMinValue() MoneyInput { return v.MinValue }
+
+// GetMaxValue returns DeliveryValueBasedRateCreateInput.MaxValue, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateCreateInput) GetMaxValue() *MoneyInput { return v.MaxValue }
+
+// GetTransitTimeMinSeconds returns DeliveryValueBasedRateCreateInput.TransitTimeMinSeconds, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateCreateInput) GetTransitTimeMinSeconds() *int {
+	return v.TransitTimeMinSeconds
+}
+
+// GetTransitTimeMaxSeconds returns DeliveryValueBasedRateCreateInput.TransitTimeMaxSeconds, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateCreateInput) GetTransitTimeMaxSeconds() *int {
+	return v.TransitTimeMaxSeconds
+}
+
+// The input fields for creating a rate group for a value-based shipping option.
+type DeliveryValueBasedRateGroupCreateInput struct {
+	// The rates to create in this rate group.
+	Rates []DeliveryValueBasedRateCreateInput `json:"rates"`
+	// Collection and origin location conditions for this rate group.
+	Conditions DeliveryRateConditionsCreateInput `json:"conditions"`
+}
+
+// GetRates returns DeliveryValueBasedRateGroupCreateInput.Rates, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateGroupCreateInput) GetRates() []DeliveryValueBasedRateCreateInput {
+	return v.Rates
+}
+
+// GetConditions returns DeliveryValueBasedRateGroupCreateInput.Conditions, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateGroupCreateInput) GetConditions() DeliveryRateConditionsCreateInput {
+	return v.Conditions
+}
+
+// The input fields for updating a rate group for a value-based shipping option.
+type DeliveryValueBasedRateGroupUpdateInput struct {
+	// The ID of the rate group to update.
+	Id string `json:"id"`
+	// Rates to create within this rate group.
+	RatesToCreate []DeliveryValueBasedRateCreateInput `json:"ratesToCreate"`
+	// Rates to update within this rate group.
+	RatesToUpdate []DeliveryValueBasedRateUpdateInput `json:"ratesToUpdate"`
+	// IDs of rates to delete from this rate group.
+	RatesToDelete []string `json:"ratesToDelete"`
+	// Collection and origin location conditions for this rate group.
+	Conditions *DeliveryRateConditionsUpdateInput `json:"conditions"`
+}
+
+// GetId returns DeliveryValueBasedRateGroupUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateGroupUpdateInput) GetId() string { return v.Id }
+
+// GetRatesToCreate returns DeliveryValueBasedRateGroupUpdateInput.RatesToCreate, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateGroupUpdateInput) GetRatesToCreate() []DeliveryValueBasedRateCreateInput {
+	return v.RatesToCreate
+}
+
+// GetRatesToUpdate returns DeliveryValueBasedRateGroupUpdateInput.RatesToUpdate, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateGroupUpdateInput) GetRatesToUpdate() []DeliveryValueBasedRateUpdateInput {
+	return v.RatesToUpdate
+}
+
+// GetRatesToDelete returns DeliveryValueBasedRateGroupUpdateInput.RatesToDelete, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateGroupUpdateInput) GetRatesToDelete() []string { return v.RatesToDelete }
+
+// GetConditions returns DeliveryValueBasedRateGroupUpdateInput.Conditions, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateGroupUpdateInput) GetConditions() *DeliveryRateConditionsUpdateInput {
+	return v.Conditions
+}
+
+// The input fields for updating a value-based rate.
+type DeliveryValueBasedRateUpdateInput struct {
+	// The ID of the rate to update.
+	Id string `json:"id"`
+	// The price charged for this rate.
+	Price *MoneyInput `json:"price"`
+	// The minimum cart value for this rate.
+	MinValue *MoneyInput `json:"minValue"`
+	// The maximum cart value (inclusive) for this rate. Set to null for no upper limit.
+	MaxValue *MoneyInput `json:"maxValue"`
+	// The minimum transit time estimate in seconds.
+	TransitTimeMinSeconds *int `json:"transitTimeMinSeconds"`
+	// The maximum transit time estimate in seconds.
+	TransitTimeMaxSeconds *int `json:"transitTimeMaxSeconds"`
+}
+
+// GetId returns DeliveryValueBasedRateUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateUpdateInput) GetId() string { return v.Id }
+
+// GetPrice returns DeliveryValueBasedRateUpdateInput.Price, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateUpdateInput) GetPrice() *MoneyInput { return v.Price }
+
+// GetMinValue returns DeliveryValueBasedRateUpdateInput.MinValue, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateUpdateInput) GetMinValue() *MoneyInput { return v.MinValue }
+
+// GetMaxValue returns DeliveryValueBasedRateUpdateInput.MaxValue, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateUpdateInput) GetMaxValue() *MoneyInput { return v.MaxValue }
+
+// GetTransitTimeMinSeconds returns DeliveryValueBasedRateUpdateInput.TransitTimeMinSeconds, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateUpdateInput) GetTransitTimeMinSeconds() *int {
+	return v.TransitTimeMinSeconds
+}
+
+// GetTransitTimeMaxSeconds returns DeliveryValueBasedRateUpdateInput.TransitTimeMaxSeconds, and is useful for accessing the field via an interface.
+func (v *DeliveryValueBasedRateUpdateInput) GetTransitTimeMaxSeconds() *int {
+	return v.TransitTimeMaxSeconds
+}
+
+// The input fields for creating a weight-based shipping option.
+type DeliveryWeightBasedOptionDefinitionCreateInput struct {
+	// The name shown to buyers for this shipping option.
+	Name string `json:"name"`
+	// Optional description shown to buyers.
+	Description *string `json:"description"`
+	// Whether this shipping option is active and shown to buyers. Defaults to true.
+	IsActive *bool `json:"isActive"`
+	// The currency used for all money values in this shipping option.
+	Currency CurrencyCode `json:"currency"`
+	// The weight-based rate groups for this shipping option. At this time, only a single rate group is supported for weight-based shipping options.
+	RateGroups []DeliveryWeightBasedRateGroupCreateInput `json:"rateGroups"`
+	// The cart subtotal required for free shipping. Currency must match the shipping option's currency.
+	FreeDeliveryMinimumValue *MoneyInput `json:"freeDeliveryMinimumValue"`
+}
+
+// GetName returns DeliveryWeightBasedOptionDefinitionCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionCreateInput) GetName() string { return v.Name }
+
+// GetDescription returns DeliveryWeightBasedOptionDefinitionCreateInput.Description, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionCreateInput) GetDescription() *string {
+	return v.Description
+}
+
+// GetIsActive returns DeliveryWeightBasedOptionDefinitionCreateInput.IsActive, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionCreateInput) GetIsActive() *bool { return v.IsActive }
+
+// GetCurrency returns DeliveryWeightBasedOptionDefinitionCreateInput.Currency, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionCreateInput) GetCurrency() CurrencyCode {
+	return v.Currency
+}
+
+// GetRateGroups returns DeliveryWeightBasedOptionDefinitionCreateInput.RateGroups, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionCreateInput) GetRateGroups() []DeliveryWeightBasedRateGroupCreateInput {
+	return v.RateGroups
+}
+
+// GetFreeDeliveryMinimumValue returns DeliveryWeightBasedOptionDefinitionCreateInput.FreeDeliveryMinimumValue, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionCreateInput) GetFreeDeliveryMinimumValue() *MoneyInput {
+	return v.FreeDeliveryMinimumValue
+}
+
+// The input fields for updating a weight-based shipping option.
+type DeliveryWeightBasedOptionDefinitionUpdateInput struct {
+	// The globally unique ID of the weight-based shipping option to update.
+	Id string `json:"id"`
+	// The name shown to buyers for this shipping option.
+	Name *string `json:"name"`
+	// Optional description shown to buyers.
+	Description *string `json:"description"`
+	// Whether this shipping option is active and shown to buyers.
+	IsActive *bool `json:"isActive"`
+	// The currency used for all money values in this shipping option.
+	Currency *CurrencyCode `json:"currency"`
+	// Rate groups to create for this shipping option. At this time, only a single rate group is supported for weight-based shipping options.
+	RateGroupsToCreate []DeliveryWeightBasedRateGroupCreateInput `json:"rateGroupsToCreate"`
+	// Rate groups to update for this shipping option. Only the existing single rate group is supported.
+	RateGroupsToUpdate []DeliveryWeightBasedRateGroupUpdateInput `json:"rateGroupsToUpdate"`
+	// The IDs of rate groups to delete from this shipping option.
+	RateGroupsToDelete []string `json:"rateGroupsToDelete"`
+	// The cart subtotal required for free shipping. Null clears the threshold. Currency must match the shipping option's currency.
+	FreeDeliveryMinimumValue *MoneyInput `json:"freeDeliveryMinimumValue"`
+}
+
+// GetId returns DeliveryWeightBasedOptionDefinitionUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionUpdateInput) GetId() string { return v.Id }
+
+// GetName returns DeliveryWeightBasedOptionDefinitionUpdateInput.Name, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionUpdateInput) GetName() *string { return v.Name }
+
+// GetDescription returns DeliveryWeightBasedOptionDefinitionUpdateInput.Description, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionUpdateInput) GetDescription() *string {
+	return v.Description
+}
+
+// GetIsActive returns DeliveryWeightBasedOptionDefinitionUpdateInput.IsActive, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionUpdateInput) GetIsActive() *bool { return v.IsActive }
+
+// GetCurrency returns DeliveryWeightBasedOptionDefinitionUpdateInput.Currency, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionUpdateInput) GetCurrency() *CurrencyCode {
+	return v.Currency
+}
+
+// GetRateGroupsToCreate returns DeliveryWeightBasedOptionDefinitionUpdateInput.RateGroupsToCreate, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionUpdateInput) GetRateGroupsToCreate() []DeliveryWeightBasedRateGroupCreateInput {
+	return v.RateGroupsToCreate
+}
+
+// GetRateGroupsToUpdate returns DeliveryWeightBasedOptionDefinitionUpdateInput.RateGroupsToUpdate, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionUpdateInput) GetRateGroupsToUpdate() []DeliveryWeightBasedRateGroupUpdateInput {
+	return v.RateGroupsToUpdate
+}
+
+// GetRateGroupsToDelete returns DeliveryWeightBasedOptionDefinitionUpdateInput.RateGroupsToDelete, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionUpdateInput) GetRateGroupsToDelete() []string {
+	return v.RateGroupsToDelete
+}
+
+// GetFreeDeliveryMinimumValue returns DeliveryWeightBasedOptionDefinitionUpdateInput.FreeDeliveryMinimumValue, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedOptionDefinitionUpdateInput) GetFreeDeliveryMinimumValue() *MoneyInput {
+	return v.FreeDeliveryMinimumValue
+}
+
+// The input fields for creating a weight-based rate.
+type DeliveryWeightBasedRateCreateInput struct {
+	// The price charged for this rate tier.
+	Price MoneyInput `json:"price"`
+	// The minimum estimated transit time in seconds.
+	TransitTimeMinSeconds *int `json:"transitTimeMinSeconds"`
+	// The maximum estimated transit time in seconds.
+	TransitTimeMaxSeconds *int `json:"transitTimeMaxSeconds"`
+	// The minimum package weight for this rate tier.
+	MinWeight WeightInput `json:"minWeight"`
+	// The maximum package weight for this rate tier. If omitted, the tier has no upper weight limit.
+	MaxWeight *WeightInput `json:"maxWeight"`
+}
+
+// GetPrice returns DeliveryWeightBasedRateCreateInput.Price, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateCreateInput) GetPrice() MoneyInput { return v.Price }
+
+// GetTransitTimeMinSeconds returns DeliveryWeightBasedRateCreateInput.TransitTimeMinSeconds, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateCreateInput) GetTransitTimeMinSeconds() *int {
+	return v.TransitTimeMinSeconds
+}
+
+// GetTransitTimeMaxSeconds returns DeliveryWeightBasedRateCreateInput.TransitTimeMaxSeconds, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateCreateInput) GetTransitTimeMaxSeconds() *int {
+	return v.TransitTimeMaxSeconds
+}
+
+// GetMinWeight returns DeliveryWeightBasedRateCreateInput.MinWeight, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateCreateInput) GetMinWeight() WeightInput { return v.MinWeight }
+
+// GetMaxWeight returns DeliveryWeightBasedRateCreateInput.MaxWeight, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateCreateInput) GetMaxWeight() *WeightInput { return v.MaxWeight }
+
+// The input fields for creating a weight-based rate group.
+type DeliveryWeightBasedRateGroupCreateInput struct {
+	// The weight-based rates for this rate group.
+	Rates []DeliveryWeightBasedRateCreateInput `json:"rates"`
+	// Collection and origin location conditions for this rate group.
+	Conditions DeliveryRateConditionsCreateInput `json:"conditions"`
+}
+
+// GetRates returns DeliveryWeightBasedRateGroupCreateInput.Rates, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateGroupCreateInput) GetRates() []DeliveryWeightBasedRateCreateInput {
+	return v.Rates
+}
+
+// GetConditions returns DeliveryWeightBasedRateGroupCreateInput.Conditions, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateGroupCreateInput) GetConditions() DeliveryRateConditionsCreateInput {
+	return v.Conditions
+}
+
+// The input fields for updating a weight-based rate group.
+type DeliveryWeightBasedRateGroupUpdateInput struct {
+	// The ID of the rate group to update.
+	Id string `json:"id"`
+	// Rates to create in this rate group.
+	RatesToCreate []DeliveryWeightBasedRateCreateInput `json:"ratesToCreate"`
+	// Rates to update in this rate group.
+	RatesToUpdate []DeliveryWeightBasedRateUpdateInput `json:"ratesToUpdate"`
+	// IDs of rates to delete from this rate group.
+	RatesToDelete []string `json:"ratesToDelete"`
+	// Collection and origin location conditions for this rate group.
+	Conditions *DeliveryRateConditionsUpdateInput `json:"conditions"`
+}
+
+// GetId returns DeliveryWeightBasedRateGroupUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateGroupUpdateInput) GetId() string { return v.Id }
+
+// GetRatesToCreate returns DeliveryWeightBasedRateGroupUpdateInput.RatesToCreate, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateGroupUpdateInput) GetRatesToCreate() []DeliveryWeightBasedRateCreateInput {
+	return v.RatesToCreate
+}
+
+// GetRatesToUpdate returns DeliveryWeightBasedRateGroupUpdateInput.RatesToUpdate, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateGroupUpdateInput) GetRatesToUpdate() []DeliveryWeightBasedRateUpdateInput {
+	return v.RatesToUpdate
+}
+
+// GetRatesToDelete returns DeliveryWeightBasedRateGroupUpdateInput.RatesToDelete, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateGroupUpdateInput) GetRatesToDelete() []string { return v.RatesToDelete }
+
+// GetConditions returns DeliveryWeightBasedRateGroupUpdateInput.Conditions, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateGroupUpdateInput) GetConditions() *DeliveryRateConditionsUpdateInput {
+	return v.Conditions
+}
+
+// The input fields for updating a weight-based rate.
+type DeliveryWeightBasedRateUpdateInput struct {
+	// The globally unique ID of the weight-based rate to update.
+	Id string `json:"id"`
+	// The price charged for this rate tier.
+	Price *MoneyInput `json:"price"`
+	// The minimum estimated transit time in seconds.
+	TransitTimeMinSeconds *int `json:"transitTimeMinSeconds"`
+	// The maximum estimated transit time in seconds.
+	TransitTimeMaxSeconds *int `json:"transitTimeMaxSeconds"`
+	// The minimum package weight for this rate tier.
+	MinWeight *WeightInput `json:"minWeight"`
+	// The maximum package weight for this rate tier. Null means no upper weight limit.
+	MaxWeight *WeightInput `json:"maxWeight"`
+}
+
+// GetId returns DeliveryWeightBasedRateUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateUpdateInput) GetId() string { return v.Id }
+
+// GetPrice returns DeliveryWeightBasedRateUpdateInput.Price, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateUpdateInput) GetPrice() *MoneyInput { return v.Price }
+
+// GetTransitTimeMinSeconds returns DeliveryWeightBasedRateUpdateInput.TransitTimeMinSeconds, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateUpdateInput) GetTransitTimeMinSeconds() *int {
+	return v.TransitTimeMinSeconds
+}
+
+// GetTransitTimeMaxSeconds returns DeliveryWeightBasedRateUpdateInput.TransitTimeMaxSeconds, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateUpdateInput) GetTransitTimeMaxSeconds() *int {
+	return v.TransitTimeMaxSeconds
+}
+
+// GetMinWeight returns DeliveryWeightBasedRateUpdateInput.MinWeight, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateUpdateInput) GetMinWeight() *WeightInput { return v.MinWeight }
+
+// GetMaxWeight returns DeliveryWeightBasedRateUpdateInput.MaxWeight, and is useful for accessing the field via an interface.
+func (v *DeliveryWeightBasedRateUpdateInput) GetMaxWeight() *WeightInput { return v.MaxWeight }
 
 // EditLocationLocationEditLocationEditPayload includes the requested fields of the GraphQL type LocationEditPayload.
 // The GraphQL type's documentation follows.
@@ -2844,6 +4036,127 @@ type GetLocationResponse struct {
 
 // GetLocation returns GetLocationResponse.Location, and is useful for accessing the field via an interface.
 func (v *GetLocationResponse) GetLocation() *GetLocationLocation { return v.Location }
+
+// GetMarketMarket includes the requested fields of the GraphQL type Market.
+// The GraphQL type's documentation follows.
+//
+// A merchant-defined group of buyers identified by conditions such as their
+// region, retail location, or company location. Each market allows configuration
+// of a distinct, localized buyer experience. Customizations include, but are
+// not limited to,
+// [currency](https://shopify.dev/api/admin-graphql/current/mutations/marketCurrencySettingsUpdate),
+// [pricing and product availability](https://shopify.dev/apps/internationalization/product-price-lists),
+// [web presence](https://shopify.dev/api/admin-graphql/current/objects/MarketWebPresence),
+// and content translations.
+type GetMarketMarket struct {
+	MarketFields `json:"-"`
+}
+
+// GetId returns GetMarketMarket.Id, and is useful for accessing the field via an interface.
+func (v *GetMarketMarket) GetId() string { return v.MarketFields.Id }
+
+// GetHandle returns GetMarketMarket.Handle, and is useful for accessing the field via an interface.
+func (v *GetMarketMarket) GetHandle() string { return v.MarketFields.Handle }
+
+// GetName returns GetMarketMarket.Name, and is useful for accessing the field via an interface.
+func (v *GetMarketMarket) GetName() string { return v.MarketFields.Name }
+
+// GetStatus returns GetMarketMarket.Status, and is useful for accessing the field via an interface.
+func (v *GetMarketMarket) GetStatus() MarketStatus { return v.MarketFields.Status }
+
+// GetConditions returns GetMarketMarket.Conditions, and is useful for accessing the field via an interface.
+func (v *GetMarketMarket) GetConditions() *MarketFieldsConditionsMarketConditions {
+	return v.MarketFields.Conditions
+}
+
+// GetCurrencySettings returns GetMarketMarket.CurrencySettings, and is useful for accessing the field via an interface.
+func (v *GetMarketMarket) GetCurrencySettings() *MarketFieldsCurrencySettingsMarketCurrencySettings {
+	return v.MarketFields.CurrencySettings
+}
+
+// GetWebPresences returns GetMarketMarket.WebPresences, and is useful for accessing the field via an interface.
+func (v *GetMarketMarket) GetWebPresences() MarketFieldsWebPresencesMarketWebPresenceConnection {
+	return v.MarketFields.WebPresences
+}
+
+// GetCatalogs returns GetMarketMarket.Catalogs, and is useful for accessing the field via an interface.
+func (v *GetMarketMarket) GetCatalogs() MarketFieldsCatalogsMarketCatalogConnection {
+	return v.MarketFields.Catalogs
+}
+
+func (v *GetMarketMarket) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetMarketMarket
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetMarketMarket = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MarketFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetMarketMarket struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Name string `json:"name"`
+
+	Status MarketStatus `json:"status"`
+
+	Conditions *MarketFieldsConditionsMarketConditions `json:"conditions"`
+
+	CurrencySettings *MarketFieldsCurrencySettingsMarketCurrencySettings `json:"currencySettings"`
+
+	WebPresences MarketFieldsWebPresencesMarketWebPresenceConnection `json:"webPresences"`
+
+	Catalogs MarketFieldsCatalogsMarketCatalogConnection `json:"catalogs"`
+}
+
+func (v *GetMarketMarket) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetMarketMarket) __premarshalJSON() (*__premarshalGetMarketMarket, error) {
+	var retval __premarshalGetMarketMarket
+
+	retval.Id = v.MarketFields.Id
+	retval.Handle = v.MarketFields.Handle
+	retval.Name = v.MarketFields.Name
+	retval.Status = v.MarketFields.Status
+	retval.Conditions = v.MarketFields.Conditions
+	retval.CurrencySettings = v.MarketFields.CurrencySettings
+	retval.WebPresences = v.MarketFields.WebPresences
+	retval.Catalogs = v.MarketFields.Catalogs
+	return &retval, nil
+}
+
+// GetMarketResponse is returned by GetMarket on success.
+type GetMarketResponse struct {
+	// Returns a `Market` resource by ID.
+	Market *GetMarketMarket `json:"market"`
+}
+
+// GetMarket returns GetMarketResponse.Market, and is useful for accessing the field via an interface.
+func (v *GetMarketResponse) GetMarket() *GetMarketMarket { return v.Market }
 
 // GetMenuMenu includes the requested fields of the GraphQL type Menu.
 // The GraphQL type's documentation follows.
@@ -3436,6 +4749,208 @@ type GetShopShopPrimaryDomain struct {
 // GetHost returns GetShopShopPrimaryDomain.Host, and is useful for accessing the field via an interface.
 func (v *GetShopShopPrimaryDomain) GetHost() string { return v.Host }
 
+// Answers the question if prices include duties and / or taxes.
+type InclusiveDutiesPricingStrategy string
+
+const (
+	// Add duties at checkout when configured to collect.
+	InclusiveDutiesPricingStrategyAddDutiesAtCheckout InclusiveDutiesPricingStrategy = "ADD_DUTIES_AT_CHECKOUT"
+	// Include duties in price when configured to collect.
+	InclusiveDutiesPricingStrategyIncludeDutiesInPrice InclusiveDutiesPricingStrategy = "INCLUDE_DUTIES_IN_PRICE"
+)
+
+var AllInclusiveDutiesPricingStrategy = []InclusiveDutiesPricingStrategy{
+	InclusiveDutiesPricingStrategyAddDutiesAtCheckout,
+	InclusiveDutiesPricingStrategyIncludeDutiesInPrice,
+}
+
+// Answers the question if prices include duties and / or taxes.
+type InclusiveTaxPricingStrategy string
+
+const (
+	// Add taxes at checkout when configured to collect.
+	InclusiveTaxPricingStrategyAddTaxesAtCheckout InclusiveTaxPricingStrategy = "ADD_TAXES_AT_CHECKOUT"
+	// Include taxes in price when configured to collect.
+	InclusiveTaxPricingStrategyIncludesTaxesInPrice InclusiveTaxPricingStrategy = "INCLUDES_TAXES_IN_PRICE"
+	// Include taxes in price based on country when configured to collect.
+	InclusiveTaxPricingStrategyIncludesTaxesInPriceBasedOnCountry InclusiveTaxPricingStrategy = "INCLUDES_TAXES_IN_PRICE_BASED_ON_COUNTRY"
+)
+
+var AllInclusiveTaxPricingStrategy = []InclusiveTaxPricingStrategy{
+	InclusiveTaxPricingStrategyAddTaxesAtCheckout,
+	InclusiveTaxPricingStrategyIncludesTaxesInPrice,
+	InclusiveTaxPricingStrategyIncludesTaxesInPriceBasedOnCountry,
+}
+
+// ListMarketsMarketsMarketConnection includes the requested fields of the GraphQL type MarketConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Markets.
+type ListMarketsMarketsMarketConnection struct {
+	// A list of nodes that are contained in MarketEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListMarketsMarketsMarketConnectionNodesMarket `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListMarketsMarketsMarketConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListMarketsMarketsMarketConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListMarketsMarketsMarketConnection) GetNodes() []ListMarketsMarketsMarketConnectionNodesMarket {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListMarketsMarketsMarketConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListMarketsMarketsMarketConnection) GetPageInfo() ListMarketsMarketsMarketConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListMarketsMarketsMarketConnectionNodesMarket includes the requested fields of the GraphQL type Market.
+// The GraphQL type's documentation follows.
+//
+// A merchant-defined group of buyers identified by conditions such as their
+// region, retail location, or company location. Each market allows configuration
+// of a distinct, localized buyer experience. Customizations include, but are
+// not limited to,
+// [currency](https://shopify.dev/api/admin-graphql/current/mutations/marketCurrencySettingsUpdate),
+// [pricing and product availability](https://shopify.dev/apps/internationalization/product-price-lists),
+// [web presence](https://shopify.dev/api/admin-graphql/current/objects/MarketWebPresence),
+// and content translations.
+type ListMarketsMarketsMarketConnectionNodesMarket struct {
+	MarketFields `json:"-"`
+}
+
+// GetId returns ListMarketsMarketsMarketConnectionNodesMarket.Id, and is useful for accessing the field via an interface.
+func (v *ListMarketsMarketsMarketConnectionNodesMarket) GetId() string { return v.MarketFields.Id }
+
+// GetHandle returns ListMarketsMarketsMarketConnectionNodesMarket.Handle, and is useful for accessing the field via an interface.
+func (v *ListMarketsMarketsMarketConnectionNodesMarket) GetHandle() string {
+	return v.MarketFields.Handle
+}
+
+// GetName returns ListMarketsMarketsMarketConnectionNodesMarket.Name, and is useful for accessing the field via an interface.
+func (v *ListMarketsMarketsMarketConnectionNodesMarket) GetName() string { return v.MarketFields.Name }
+
+// GetStatus returns ListMarketsMarketsMarketConnectionNodesMarket.Status, and is useful for accessing the field via an interface.
+func (v *ListMarketsMarketsMarketConnectionNodesMarket) GetStatus() MarketStatus {
+	return v.MarketFields.Status
+}
+
+// GetConditions returns ListMarketsMarketsMarketConnectionNodesMarket.Conditions, and is useful for accessing the field via an interface.
+func (v *ListMarketsMarketsMarketConnectionNodesMarket) GetConditions() *MarketFieldsConditionsMarketConditions {
+	return v.MarketFields.Conditions
+}
+
+// GetCurrencySettings returns ListMarketsMarketsMarketConnectionNodesMarket.CurrencySettings, and is useful for accessing the field via an interface.
+func (v *ListMarketsMarketsMarketConnectionNodesMarket) GetCurrencySettings() *MarketFieldsCurrencySettingsMarketCurrencySettings {
+	return v.MarketFields.CurrencySettings
+}
+
+// GetWebPresences returns ListMarketsMarketsMarketConnectionNodesMarket.WebPresences, and is useful for accessing the field via an interface.
+func (v *ListMarketsMarketsMarketConnectionNodesMarket) GetWebPresences() MarketFieldsWebPresencesMarketWebPresenceConnection {
+	return v.MarketFields.WebPresences
+}
+
+// GetCatalogs returns ListMarketsMarketsMarketConnectionNodesMarket.Catalogs, and is useful for accessing the field via an interface.
+func (v *ListMarketsMarketsMarketConnectionNodesMarket) GetCatalogs() MarketFieldsCatalogsMarketCatalogConnection {
+	return v.MarketFields.Catalogs
+}
+
+func (v *ListMarketsMarketsMarketConnectionNodesMarket) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListMarketsMarketsMarketConnectionNodesMarket
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListMarketsMarketsMarketConnectionNodesMarket = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MarketFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListMarketsMarketsMarketConnectionNodesMarket struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Name string `json:"name"`
+
+	Status MarketStatus `json:"status"`
+
+	Conditions *MarketFieldsConditionsMarketConditions `json:"conditions"`
+
+	CurrencySettings *MarketFieldsCurrencySettingsMarketCurrencySettings `json:"currencySettings"`
+
+	WebPresences MarketFieldsWebPresencesMarketWebPresenceConnection `json:"webPresences"`
+
+	Catalogs MarketFieldsCatalogsMarketCatalogConnection `json:"catalogs"`
+}
+
+func (v *ListMarketsMarketsMarketConnectionNodesMarket) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListMarketsMarketsMarketConnectionNodesMarket) __premarshalJSON() (*__premarshalListMarketsMarketsMarketConnectionNodesMarket, error) {
+	var retval __premarshalListMarketsMarketsMarketConnectionNodesMarket
+
+	retval.Id = v.MarketFields.Id
+	retval.Handle = v.MarketFields.Handle
+	retval.Name = v.MarketFields.Name
+	retval.Status = v.MarketFields.Status
+	retval.Conditions = v.MarketFields.Conditions
+	retval.CurrencySettings = v.MarketFields.CurrencySettings
+	retval.WebPresences = v.MarketFields.WebPresences
+	retval.Catalogs = v.MarketFields.Catalogs
+	return &retval, nil
+}
+
+// ListMarketsMarketsMarketConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListMarketsMarketsMarketConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListMarketsMarketsMarketConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListMarketsMarketsMarketConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ListMarketsMarketsMarketConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListMarketsMarketsMarketConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
+
+// ListMarketsResponse is returned by ListMarkets on success.
+type ListMarketsResponse struct {
+	// Returns a paginated list of [`Market`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Market) objects configured for the shop. Markets match buyers based on defined conditions to deliver customized shopping experiences.
+	//
+	// Filter markets by [`MarketType`](https://shopify.dev/docs/api/admin-graphql/latest/enums/MarketType) and [`MarketStatus`](https://shopify.dev/docs/api/admin-graphql/latest/enums/MarketStatus), search by name, and control sort order. Retrieve market configurations including [`MarketCurrencySettings`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketCurrencySettings), [`MarketWebPresence`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketWebPresence) objects, and [`MarketConditions`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketConditions).
+	//
+	// Learn more about [Shopify Markets](https://shopify.dev/docs/apps/build/markets).
+	Markets ListMarketsMarketsMarketConnection `json:"markets"`
+}
+
+// GetMarkets returns ListMarketsResponse.Markets, and is useful for accessing the field via an interface.
+func (v *ListMarketsResponse) GetMarkets() ListMarketsMarketsMarketConnection { return v.Markets }
+
 // ListMenusMenusMenuConnection includes the requested fields of the GraphQL type MenuConnection.
 // The GraphQL type's documentation follows.
 //
@@ -3793,6 +5308,811 @@ func (v *LocationFieldsAddressLocationAddress) GetCountryCode() *string { return
 
 // GetPhone returns LocationFieldsAddressLocationAddress.Phone, and is useful for accessing the field via an interface.
 func (v *LocationFieldsAddressLocationAddress) GetPhone() *string { return v.Phone }
+
+// The application level for a market condition.
+type MarketConditionApplicationType string
+
+const (
+	// The condition matches specified records of a given type.
+	MarketConditionApplicationTypeSpecified MarketConditionApplicationType = "SPECIFIED"
+	// The condition matches all records of a given type.
+	MarketConditionApplicationTypeAll MarketConditionApplicationType = "ALL"
+)
+
+var AllMarketConditionApplicationType = []MarketConditionApplicationType{
+	MarketConditionApplicationTypeSpecified,
+	MarketConditionApplicationTypeAll,
+}
+
+// The input fields required to create or update a channel market condition.
+type MarketConditionsChannelsInput struct {
+	// A list of channel IDs to include in the market condition.
+	ChannelIds []string `json:"channelIds"`
+}
+
+// GetChannelIds returns MarketConditionsChannelsInput.ChannelIds, and is useful for accessing the field via an interface.
+func (v *MarketConditionsChannelsInput) GetChannelIds() []string { return v.ChannelIds }
+
+// The input fields required to create or update a company location market condition.
+type MarketConditionsCompanyLocationsInput struct {
+	// A list of company location IDs to include in the market condition.
+	CompanyLocationIds []string `json:"companyLocationIds"`
+	// A type of market condition (e.g. ALL) to apply.
+	ApplicationLevel *MarketConditionApplicationType `json:"applicationLevel"`
+}
+
+// GetCompanyLocationIds returns MarketConditionsCompanyLocationsInput.CompanyLocationIds, and is useful for accessing the field via an interface.
+func (v *MarketConditionsCompanyLocationsInput) GetCompanyLocationIds() []string {
+	return v.CompanyLocationIds
+}
+
+// GetApplicationLevel returns MarketConditionsCompanyLocationsInput.ApplicationLevel, and is useful for accessing the field via an interface.
+func (v *MarketConditionsCompanyLocationsInput) GetApplicationLevel() *MarketConditionApplicationType {
+	return v.ApplicationLevel
+}
+
+// The input fields required to create or update the market conditions.
+type MarketConditionsInput struct {
+	// The company locations to include in the market conditions.
+	CompanyLocationsCondition *MarketConditionsCompanyLocationsInput `json:"companyLocationsCondition,omitempty"`
+	// The locations to include in the market conditions.
+	LocationsCondition *MarketConditionsLocationsInput `json:"locationsCondition,omitempty"`
+	// The regions to include in the market conditions.
+	RegionsCondition *MarketConditionsRegionsInput `json:"regionsCondition,omitempty"`
+	// The channels to include in the market conditions.
+	ChannelsCondition *MarketConditionsChannelsInput `json:"channelsCondition,omitempty"`
+}
+
+// GetCompanyLocationsCondition returns MarketConditionsInput.CompanyLocationsCondition, and is useful for accessing the field via an interface.
+func (v *MarketConditionsInput) GetCompanyLocationsCondition() *MarketConditionsCompanyLocationsInput {
+	return v.CompanyLocationsCondition
+}
+
+// GetLocationsCondition returns MarketConditionsInput.LocationsCondition, and is useful for accessing the field via an interface.
+func (v *MarketConditionsInput) GetLocationsCondition() *MarketConditionsLocationsInput {
+	return v.LocationsCondition
+}
+
+// GetRegionsCondition returns MarketConditionsInput.RegionsCondition, and is useful for accessing the field via an interface.
+func (v *MarketConditionsInput) GetRegionsCondition() *MarketConditionsRegionsInput {
+	return v.RegionsCondition
+}
+
+// GetChannelsCondition returns MarketConditionsInput.ChannelsCondition, and is useful for accessing the field via an interface.
+func (v *MarketConditionsInput) GetChannelsCondition() *MarketConditionsChannelsInput {
+	return v.ChannelsCondition
+}
+
+// The input fields required to create or update a location market condition.
+type MarketConditionsLocationsInput struct {
+	// A list of location IDs to include in the market condition.
+	LocationIds []string `json:"locationIds"`
+	// A type of market condition (e.g. ALL) to apply.
+	ApplicationLevel *MarketConditionApplicationType `json:"applicationLevel"`
+}
+
+// GetLocationIds returns MarketConditionsLocationsInput.LocationIds, and is useful for accessing the field via an interface.
+func (v *MarketConditionsLocationsInput) GetLocationIds() []string { return v.LocationIds }
+
+// GetApplicationLevel returns MarketConditionsLocationsInput.ApplicationLevel, and is useful for accessing the field via an interface.
+func (v *MarketConditionsLocationsInput) GetApplicationLevel() *MarketConditionApplicationType {
+	return v.ApplicationLevel
+}
+
+// The input fields to specify a region condition.
+type MarketConditionsRegionInput struct {
+	// A country code to which this condition should apply.
+	CountryCode CountryCode `json:"countryCode"`
+	// A subdivision such as a province or state.
+	Subdivision *string `json:"subdivision,omitempty"`
+}
+
+// GetCountryCode returns MarketConditionsRegionInput.CountryCode, and is useful for accessing the field via an interface.
+func (v *MarketConditionsRegionInput) GetCountryCode() CountryCode { return v.CountryCode }
+
+// GetSubdivision returns MarketConditionsRegionInput.Subdivision, and is useful for accessing the field via an interface.
+func (v *MarketConditionsRegionInput) GetSubdivision() *string { return v.Subdivision }
+
+// The input fields required to create or update a region market condition.
+type MarketConditionsRegionsInput struct {
+	// A list of market region IDs to include in the market condition.
+	RegionIds []string `json:"regionIds,omitempty"`
+	// A list of market regions to include in the market condition.
+	Regions []MarketConditionsRegionInput `json:"regions,omitempty"`
+	// A type of market condition (e.g. ALL) to apply.
+	ApplicationLevel *MarketConditionApplicationType `json:"applicationLevel,omitempty"`
+}
+
+// GetRegionIds returns MarketConditionsRegionsInput.RegionIds, and is useful for accessing the field via an interface.
+func (v *MarketConditionsRegionsInput) GetRegionIds() []string { return v.RegionIds }
+
+// GetRegions returns MarketConditionsRegionsInput.Regions, and is useful for accessing the field via an interface.
+func (v *MarketConditionsRegionsInput) GetRegions() []MarketConditionsRegionInput { return v.Regions }
+
+// GetApplicationLevel returns MarketConditionsRegionsInput.ApplicationLevel, and is useful for accessing the field via an interface.
+func (v *MarketConditionsRegionsInput) GetApplicationLevel() *MarketConditionApplicationType {
+	return v.ApplicationLevel
+}
+
+// The input fields required to update a market condition.
+type MarketConditionsUpdateInput struct {
+	// The conditions to update to the market condition.
+	ConditionsToAdd *MarketConditionsInput `json:"conditionsToAdd,omitempty"`
+	// The conditions to delete from the market condition.
+	ConditionsToDelete *MarketConditionsInput `json:"conditionsToDelete,omitempty"`
+}
+
+// GetConditionsToAdd returns MarketConditionsUpdateInput.ConditionsToAdd, and is useful for accessing the field via an interface.
+func (v *MarketConditionsUpdateInput) GetConditionsToAdd() *MarketConditionsInput {
+	return v.ConditionsToAdd
+}
+
+// GetConditionsToDelete returns MarketConditionsUpdateInput.ConditionsToDelete, and is useful for accessing the field via an interface.
+func (v *MarketConditionsUpdateInput) GetConditionsToDelete() *MarketConditionsInput {
+	return v.ConditionsToDelete
+}
+
+// The input fields required to create a market.
+type MarketCreateInput struct {
+	// The name of the market. Not shown to customers.
+	Name string `json:"name"`
+	// A unique identifier for the market. For example `"ca"`.
+	// If the handle isn't provided, then the handle is auto-generated based on the country or name.
+	Handle *string `json:"handle,omitempty"`
+	// The conditions that apply to the market.
+	Conditions *MarketConditionsInput `json:"conditions,omitempty"`
+	// Catalog IDs to include in the market.
+	Catalogs []string `json:"catalogs,omitempty"`
+	// Whether to update duplicate region or wildcard markets' status to draft.
+	MakeDuplicateUniqueMarketsDraft *bool `json:"makeDuplicateUniqueMarketsDraft,omitempty"`
+	// The status of the market.
+	Status *MarketStatus `json:"status,omitempty"`
+	// Web presence IDs to include in the market.
+	WebPresences []string `json:"webPresences,omitempty"`
+	// Currency settings for the market.
+	CurrencySettings *MarketCurrencySettingsUpdateInput `json:"currencySettings,omitempty"`
+	// The strategy used to determine how prices are displayed to the customer.
+	PriceInclusions *MarketPriceInclusionsInput `json:"priceInclusions,omitempty"`
+	// Discounts that are eligible for this market.
+	Discounts []string `json:"discounts,omitempty"`
+	// Delivery settings for the market.
+	Delivery *MarketDeliveryConfigurationsCreateInput `json:"delivery,omitempty"`
+	// The unique identifier of the Return Policy Profile to be associated with the market. When omitted, will inherit from parent market.
+	ReturnPolicyProfileId *string `json:"returnPolicyProfileId,omitempty"`
+}
+
+// GetName returns MarketCreateInput.Name, and is useful for accessing the field via an interface.
+func (v *MarketCreateInput) GetName() string { return v.Name }
+
+// GetHandle returns MarketCreateInput.Handle, and is useful for accessing the field via an interface.
+func (v *MarketCreateInput) GetHandle() *string { return v.Handle }
+
+// GetConditions returns MarketCreateInput.Conditions, and is useful for accessing the field via an interface.
+func (v *MarketCreateInput) GetConditions() *MarketConditionsInput { return v.Conditions }
+
+// GetCatalogs returns MarketCreateInput.Catalogs, and is useful for accessing the field via an interface.
+func (v *MarketCreateInput) GetCatalogs() []string { return v.Catalogs }
+
+// GetMakeDuplicateUniqueMarketsDraft returns MarketCreateInput.MakeDuplicateUniqueMarketsDraft, and is useful for accessing the field via an interface.
+func (v *MarketCreateInput) GetMakeDuplicateUniqueMarketsDraft() *bool {
+	return v.MakeDuplicateUniqueMarketsDraft
+}
+
+// GetStatus returns MarketCreateInput.Status, and is useful for accessing the field via an interface.
+func (v *MarketCreateInput) GetStatus() *MarketStatus { return v.Status }
+
+// GetWebPresences returns MarketCreateInput.WebPresences, and is useful for accessing the field via an interface.
+func (v *MarketCreateInput) GetWebPresences() []string { return v.WebPresences }
+
+// GetCurrencySettings returns MarketCreateInput.CurrencySettings, and is useful for accessing the field via an interface.
+func (v *MarketCreateInput) GetCurrencySettings() *MarketCurrencySettingsUpdateInput {
+	return v.CurrencySettings
+}
+
+// GetPriceInclusions returns MarketCreateInput.PriceInclusions, and is useful for accessing the field via an interface.
+func (v *MarketCreateInput) GetPriceInclusions() *MarketPriceInclusionsInput {
+	return v.PriceInclusions
+}
+
+// GetDiscounts returns MarketCreateInput.Discounts, and is useful for accessing the field via an interface.
+func (v *MarketCreateInput) GetDiscounts() []string { return v.Discounts }
+
+// GetDelivery returns MarketCreateInput.Delivery, and is useful for accessing the field via an interface.
+func (v *MarketCreateInput) GetDelivery() *MarketDeliveryConfigurationsCreateInput { return v.Delivery }
+
+// GetReturnPolicyProfileId returns MarketCreateInput.ReturnPolicyProfileId, and is useful for accessing the field via an interface.
+func (v *MarketCreateInput) GetReturnPolicyProfileId() *string { return v.ReturnPolicyProfileId }
+
+// The input fields used to update the currency settings of a market.
+type MarketCurrencySettingsUpdateInput struct {
+	// The currency which this market’s customers must use if local currencies are disabled.
+	BaseCurrency *CurrencyCode `json:"baseCurrency,omitempty"`
+	// The manual exchange rate that will be used to convert shop currency prices. If null, then the automatic exchange rates will be used.
+	BaseCurrencyManualRate *string `json:"baseCurrencyManualRate,omitempty"`
+	// Whether or not local currencies are enabled. If enabled, then prices will
+	// be converted to give each customer the best experience based on their
+	// region. If disabled, then all customers in this market will see prices
+	// in the market's base currency.
+	LocalCurrencies *bool `json:"localCurrencies,omitempty"`
+	// Whether or not rounding is enabled on multi-currency prices.
+	RoundingEnabled *bool `json:"roundingEnabled,omitempty"`
+}
+
+// GetBaseCurrency returns MarketCurrencySettingsUpdateInput.BaseCurrency, and is useful for accessing the field via an interface.
+func (v *MarketCurrencySettingsUpdateInput) GetBaseCurrency() *CurrencyCode { return v.BaseCurrency }
+
+// GetBaseCurrencyManualRate returns MarketCurrencySettingsUpdateInput.BaseCurrencyManualRate, and is useful for accessing the field via an interface.
+func (v *MarketCurrencySettingsUpdateInput) GetBaseCurrencyManualRate() *string {
+	return v.BaseCurrencyManualRate
+}
+
+// GetLocalCurrencies returns MarketCurrencySettingsUpdateInput.LocalCurrencies, and is useful for accessing the field via an interface.
+func (v *MarketCurrencySettingsUpdateInput) GetLocalCurrencies() *bool { return v.LocalCurrencies }
+
+// GetRoundingEnabled returns MarketCurrencySettingsUpdateInput.RoundingEnabled, and is useful for accessing the field via an interface.
+func (v *MarketCurrencySettingsUpdateInput) GetRoundingEnabled() *bool { return v.RoundingEnabled }
+
+// The input fields for configuring delivery for a new market.
+type MarketDeliveryConfigurationsCreateInput struct {
+	// The shipping configuration for the market.
+	Shipping *ShippingConfigurationCreateInput `json:"shipping"`
+}
+
+// GetShipping returns MarketDeliveryConfigurationsCreateInput.Shipping, and is useful for accessing the field via an interface.
+func (v *MarketDeliveryConfigurationsCreateInput) GetShipping() *ShippingConfigurationCreateInput {
+	return v.Shipping
+}
+
+// The input fields for configuring delivery for an existing market.
+type MarketDeliveryConfigurationsUpdateInput struct {
+	// Shipping configuration changes. When omitted, shipping is not changed.
+	Shipping *ShippingConfigurationUpdateInput `json:"shipping"`
+	// When true, removes the shipping configuration so the market inherits shipping from its parent.
+	RemoveShipping *bool `json:"removeShipping"`
+}
+
+// GetShipping returns MarketDeliveryConfigurationsUpdateInput.Shipping, and is useful for accessing the field via an interface.
+func (v *MarketDeliveryConfigurationsUpdateInput) GetShipping() *ShippingConfigurationUpdateInput {
+	return v.Shipping
+}
+
+// GetRemoveShipping returns MarketDeliveryConfigurationsUpdateInput.RemoveShipping, and is useful for accessing the field via an interface.
+func (v *MarketDeliveryConfigurationsUpdateInput) GetRemoveShipping() *bool { return v.RemoveShipping }
+
+// MarketFields includes the GraphQL fields of Market requested by the fragment MarketFields.
+// The GraphQL type's documentation follows.
+//
+// A merchant-defined group of buyers identified by conditions such as their
+// region, retail location, or company location. Each market allows configuration
+// of a distinct, localized buyer experience. Customizations include, but are
+// not limited to,
+// [currency](https://shopify.dev/api/admin-graphql/current/mutations/marketCurrencySettingsUpdate),
+// [pricing and product availability](https://shopify.dev/apps/internationalization/product-price-lists),
+// [web presence](https://shopify.dev/api/admin-graphql/current/objects/MarketWebPresence),
+// and content translations.
+type MarketFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A short, human-readable unique identifier for the market. This is changeable by the merchant.
+	Handle string `json:"handle"`
+	// The name of the market. Not shown to customers.
+	Name string `json:"name"`
+	// Status of the market. Replaces the enabled field.
+	Status MarketStatus `json:"status"`
+	// The conditions under which a visitor is in the market.
+	Conditions *MarketFieldsConditionsMarketConditions `json:"conditions"`
+	// The market’s currency settings.
+	CurrencySettings *MarketFieldsCurrencySettingsMarketCurrencySettings `json:"currencySettings"`
+	// The market’s web presences, which defines its SEO strategy. This can be a different domain,
+	// subdomain, or subfolders of the primary domain. Each web presence comprises one or more
+	// language variants. If a market doesn't have any web presences, then the market is accessible on the
+	// primary market's domains using [country
+	// selectors](https://shopify.dev/themes/internationalization/multiple-currencies-languages#the-country-selector).
+	WebPresences MarketFieldsWebPresencesMarketWebPresenceConnection `json:"webPresences"`
+	// The catalogs that belong to the market.
+	Catalogs MarketFieldsCatalogsMarketCatalogConnection `json:"catalogs"`
+}
+
+// GetId returns MarketFields.Id, and is useful for accessing the field via an interface.
+func (v *MarketFields) GetId() string { return v.Id }
+
+// GetHandle returns MarketFields.Handle, and is useful for accessing the field via an interface.
+func (v *MarketFields) GetHandle() string { return v.Handle }
+
+// GetName returns MarketFields.Name, and is useful for accessing the field via an interface.
+func (v *MarketFields) GetName() string { return v.Name }
+
+// GetStatus returns MarketFields.Status, and is useful for accessing the field via an interface.
+func (v *MarketFields) GetStatus() MarketStatus { return v.Status }
+
+// GetConditions returns MarketFields.Conditions, and is useful for accessing the field via an interface.
+func (v *MarketFields) GetConditions() *MarketFieldsConditionsMarketConditions { return v.Conditions }
+
+// GetCurrencySettings returns MarketFields.CurrencySettings, and is useful for accessing the field via an interface.
+func (v *MarketFields) GetCurrencySettings() *MarketFieldsCurrencySettingsMarketCurrencySettings {
+	return v.CurrencySettings
+}
+
+// GetWebPresences returns MarketFields.WebPresences, and is useful for accessing the field via an interface.
+func (v *MarketFields) GetWebPresences() MarketFieldsWebPresencesMarketWebPresenceConnection {
+	return v.WebPresences
+}
+
+// GetCatalogs returns MarketFields.Catalogs, and is useful for accessing the field via an interface.
+func (v *MarketFields) GetCatalogs() MarketFieldsCatalogsMarketCatalogConnection { return v.Catalogs }
+
+// MarketFieldsCatalogsMarketCatalogConnection includes the requested fields of the GraphQL type MarketCatalogConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple MarketCatalogs.
+type MarketFieldsCatalogsMarketCatalogConnection struct {
+	// A list of nodes that are contained in MarketCatalogEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []MarketFieldsCatalogsMarketCatalogConnectionNodesMarketCatalog `json:"nodes"`
+}
+
+// GetNodes returns MarketFieldsCatalogsMarketCatalogConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *MarketFieldsCatalogsMarketCatalogConnection) GetNodes() []MarketFieldsCatalogsMarketCatalogConnectionNodesMarketCatalog {
+	return v.Nodes
+}
+
+// MarketFieldsCatalogsMarketCatalogConnectionNodesMarketCatalog includes the requested fields of the GraphQL type MarketCatalog.
+// The GraphQL type's documentation follows.
+//
+// A catalog for managing product availability and pricing for specific [`Market`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Market) contexts. Each catalog links to one or more markets. The catalog can optionally include a [`Publication`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication) to control which [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) objects customers see, and a [`PriceList`](https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceList) for market-specific pricing adjustments. When a publication isn't associated with the catalog, product availability is determined by the sales channel.
+//
+// Use catalogs to create distinct shopping experiences for different geographic regions or customer segments.
+//
+// Learn more about [building a catalog](https://shopify.dev/docs/apps/build/markets/build-catalog) and [managing markets](https://shopify.dev/docs/apps/build/markets).
+type MarketFieldsCatalogsMarketCatalogConnectionNodesMarketCatalog struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns MarketFieldsCatalogsMarketCatalogConnectionNodesMarketCatalog.Id, and is useful for accessing the field via an interface.
+func (v *MarketFieldsCatalogsMarketCatalogConnectionNodesMarketCatalog) GetId() string { return v.Id }
+
+// MarketFieldsConditionsMarketConditions includes the requested fields of the GraphQL type MarketConditions.
+// The GraphQL type's documentation follows.
+//
+// The conditions that determine whether a visitor is in a market.
+type MarketFieldsConditionsMarketConditions struct {
+	// The region conditions that determine whether a visitor is in the market.
+	RegionsCondition *MarketFieldsConditionsMarketConditionsRegionsCondition `json:"regionsCondition"`
+}
+
+// GetRegionsCondition returns MarketFieldsConditionsMarketConditions.RegionsCondition, and is useful for accessing the field via an interface.
+func (v *MarketFieldsConditionsMarketConditions) GetRegionsCondition() *MarketFieldsConditionsMarketConditionsRegionsCondition {
+	return v.RegionsCondition
+}
+
+// MarketFieldsConditionsMarketConditionsRegionsCondition includes the requested fields of the GraphQL type RegionsCondition.
+// The GraphQL type's documentation follows.
+//
+// A condition checking the visitor's region.
+type MarketFieldsConditionsMarketConditionsRegionsCondition struct {
+	// The regions that comprise the market.
+	Regions MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection `json:"regions"`
+}
+
+// GetRegions returns MarketFieldsConditionsMarketConditionsRegionsCondition.Regions, and is useful for accessing the field via an interface.
+func (v *MarketFieldsConditionsMarketConditionsRegionsCondition) GetRegions() MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection {
+	return v.Regions
+}
+
+// MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection includes the requested fields of the GraphQL type MarketRegionConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple MarketRegions.
+type MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection struct {
+	// A list of nodes that are contained in MarketRegionEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion `json:"-"`
+}
+
+// GetNodes returns MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection) GetNodes() []MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion {
+	return v.Nodes
+}
+
+func (v *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection
+		Nodes []json.RawMessage `json:"nodes"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Nodes
+		src := firstPass.Nodes
+		*dst = make(
+			[]MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			if len(src) != 0 && string(src) != "null" {
+				err = __unmarshalMarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion(
+					src, dst)
+				if err != nil {
+					return fmt.Errorf(
+						"unable to unmarshal MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection.Nodes: %w", err)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalMarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection struct {
+	Nodes []json.RawMessage `json:"nodes"`
+}
+
+func (v *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection) __premarshalJSON() (*__premarshalMarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection, error) {
+	var retval __premarshalMarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection
+
+	{
+
+		dst := &retval.Nodes
+		src := v.Nodes
+		*dst = make(
+			[]json.RawMessage,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			var err error
+			*dst, err = __marshalMarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion(
+				&src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnection.Nodes: %w", err)
+			}
+		}
+	}
+	return &retval, nil
+}
+
+// MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion includes the requested fields of the GraphQL interface MarketRegion.
+//
+// MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion is implemented by the following types:
+// MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionCountry
+// MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionSubdivision
+// The GraphQL type's documentation follows.
+//
+// A geographic region which comprises a market.
+type MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion interface {
+	implementsGraphQLInterfaceMarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionCountry) implementsGraphQLInterfaceMarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion() {
+}
+func (v *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionSubdivision) implementsGraphQLInterfaceMarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion() {
+}
+
+func __unmarshalMarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion(b []byte, v *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "MarketRegionCountry":
+		*v = new(MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionCountry)
+		return json.Unmarshal(b, *v)
+	case "MarketRegionSubdivision":
+		*v = new(MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionSubdivision)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing MarketRegion.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalMarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion(v *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionCountry:
+		typename = "MarketRegionCountry"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionCountry
+		}{typename, v}
+		return json.Marshal(result)
+	case *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionSubdivision:
+		typename = "MarketRegionSubdivision"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionSubdivision
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegion: "%T"`, v)
+	}
+}
+
+// MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionCountry includes the requested fields of the GraphQL type MarketRegionCountry.
+// The GraphQL type's documentation follows.
+//
+// A country which comprises a market.
+type MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionCountry struct {
+	Typename *string `json:"__typename"`
+	// The ISO code identifying the country.
+	Code CountryCode `json:"code"`
+}
+
+// GetTypename returns MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionCountry.Typename, and is useful for accessing the field via an interface.
+func (v *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionCountry) GetTypename() *string {
+	return v.Typename
+}
+
+// GetCode returns MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionCountry.Code, and is useful for accessing the field via an interface.
+func (v *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionCountry) GetCode() CountryCode {
+	return v.Code
+}
+
+// MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionSubdivision includes the requested fields of the GraphQL type MarketRegionSubdivision.
+// The GraphQL type's documentation follows.
+//
+// A subdivision of a country which comprises a market.
+type MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionSubdivision struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionSubdivision.Typename, and is useful for accessing the field via an interface.
+func (v *MarketFieldsConditionsMarketConditionsRegionsConditionRegionsMarketRegionConnectionNodesMarketRegionSubdivision) GetTypename() *string {
+	return v.Typename
+}
+
+// MarketFieldsCurrencySettingsMarketCurrencySettings includes the requested fields of the GraphQL type MarketCurrencySettings.
+// The GraphQL type's documentation follows.
+//
+// A market's currency settings.
+type MarketFieldsCurrencySettingsMarketCurrencySettings struct {
+	// The currency which this market's customers must use if local currencies are disabled.
+	BaseCurrency MarketFieldsCurrencySettingsMarketCurrencySettingsBaseCurrencyCurrencySetting `json:"baseCurrency"`
+	// Whether or not local currencies are enabled. If enabled, then prices will
+	// be converted to give each customer the best experience based on their
+	// region. If disabled, then all customers in this market will see prices
+	// in the market's base currency.
+	LocalCurrencies bool `json:"localCurrencies"`
+}
+
+// GetBaseCurrency returns MarketFieldsCurrencySettingsMarketCurrencySettings.BaseCurrency, and is useful for accessing the field via an interface.
+func (v *MarketFieldsCurrencySettingsMarketCurrencySettings) GetBaseCurrency() MarketFieldsCurrencySettingsMarketCurrencySettingsBaseCurrencyCurrencySetting {
+	return v.BaseCurrency
+}
+
+// GetLocalCurrencies returns MarketFieldsCurrencySettingsMarketCurrencySettings.LocalCurrencies, and is useful for accessing the field via an interface.
+func (v *MarketFieldsCurrencySettingsMarketCurrencySettings) GetLocalCurrencies() bool {
+	return v.LocalCurrencies
+}
+
+// MarketFieldsCurrencySettingsMarketCurrencySettingsBaseCurrencyCurrencySetting includes the requested fields of the GraphQL type CurrencySetting.
+// The GraphQL type's documentation follows.
+//
+// A setting for a presentment currency.
+type MarketFieldsCurrencySettingsMarketCurrencySettingsBaseCurrencyCurrencySetting struct {
+	// The currency's ISO code.
+	CurrencyCode CurrencyCode `json:"currencyCode"`
+}
+
+// GetCurrencyCode returns MarketFieldsCurrencySettingsMarketCurrencySettingsBaseCurrencyCurrencySetting.CurrencyCode, and is useful for accessing the field via an interface.
+func (v *MarketFieldsCurrencySettingsMarketCurrencySettingsBaseCurrencyCurrencySetting) GetCurrencyCode() CurrencyCode {
+	return v.CurrencyCode
+}
+
+// MarketFieldsWebPresencesMarketWebPresenceConnection includes the requested fields of the GraphQL type MarketWebPresenceConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple MarketWebPresences.
+type MarketFieldsWebPresencesMarketWebPresenceConnection struct {
+	// A list of nodes that are contained in MarketWebPresenceEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []MarketFieldsWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence `json:"nodes"`
+}
+
+// GetNodes returns MarketFieldsWebPresencesMarketWebPresenceConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *MarketFieldsWebPresencesMarketWebPresenceConnection) GetNodes() []MarketFieldsWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence {
+	return v.Nodes
+}
+
+// MarketFieldsWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence includes the requested fields of the GraphQL type MarketWebPresence.
+// The GraphQL type's documentation follows.
+//
+// The market’s web presence, which defines its SEO strategy. This can be a different domain
+// (e.g. `example.ca`), subdomain (e.g. `ca.example.com`), or subfolders of the primary
+// domain (e.g. `example.com/en-ca`). Each web presence comprises one or more language
+// variants. If a market does not have its own web presence, it is accessible on the shop’s
+// primary domain via [country
+// selectors](https://shopify.dev/themes/internationalization/multiple-currencies-languages#the-country-selector).
+//
+// Note: while the domain/subfolders defined by a market’s web presence are not applicable to
+// custom storefronts, which must manage their own domains and routing, the languages chosen
+// here do govern [the languages available on the Storefront
+// API](https://shopify.dev/custom-storefronts/internationalization/multiple-languages) for the countries in
+// this market.
+type MarketFieldsWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns MarketFieldsWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence.Id, and is useful for accessing the field via an interface.
+func (v *MarketFieldsWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence) GetId() string {
+	return v.Id
+}
+
+// The input fields used to create a price inclusion.
+type MarketPriceInclusionsInput struct {
+	// The inclusive tax pricing strategy for the market.
+	TaxPricingStrategy *InclusiveTaxPricingStrategy `json:"taxPricingStrategy"`
+	// The inclusive duties pricing strategy for the market.
+	DutiesPricingStrategy *InclusiveDutiesPricingStrategy `json:"dutiesPricingStrategy"`
+	// Whether adaptive pricing is enabled for the market. Only applicable for Markets with Managed Market enabled. When enabled, forces a state of `INCLUDES_TAXES_IN_PRICE_BASED_ON_COUNTRY`, `INCLUDE_DUTIES_IN_PRICE`, and `DDP`. When disabled, defaults to `INCLUDES_TAXES_IN_PRICE_BASED_ON_COUNTRY`, `ADD_DUTIES_AT_CHECKOUT`, and `DDP` unless otherwise specified.
+	AdaptivePricingEnabled *bool `json:"adaptivePricingEnabled"`
+}
+
+// GetTaxPricingStrategy returns MarketPriceInclusionsInput.TaxPricingStrategy, and is useful for accessing the field via an interface.
+func (v *MarketPriceInclusionsInput) GetTaxPricingStrategy() *InclusiveTaxPricingStrategy {
+	return v.TaxPricingStrategy
+}
+
+// GetDutiesPricingStrategy returns MarketPriceInclusionsInput.DutiesPricingStrategy, and is useful for accessing the field via an interface.
+func (v *MarketPriceInclusionsInput) GetDutiesPricingStrategy() *InclusiveDutiesPricingStrategy {
+	return v.DutiesPricingStrategy
+}
+
+// GetAdaptivePricingEnabled returns MarketPriceInclusionsInput.AdaptivePricingEnabled, and is useful for accessing the field via an interface.
+func (v *MarketPriceInclusionsInput) GetAdaptivePricingEnabled() *bool {
+	return v.AdaptivePricingEnabled
+}
+
+// The possible market statuses.
+type MarketStatus string
+
+const (
+	// The market is active.
+	MarketStatusActive MarketStatus = "ACTIVE"
+	// The market is in draft.
+	MarketStatusDraft MarketStatus = "DRAFT"
+)
+
+var AllMarketStatus = []MarketStatus{
+	MarketStatusActive,
+	MarketStatusDraft,
+}
+
+// The input fields used to update a market.
+type MarketUpdateInput struct {
+	// The name of the market. Not shown to customers.
+	Name *string `json:"name,omitempty"`
+	// A unique identifier for the market. For example `"ca"`.
+	Handle *string `json:"handle,omitempty"`
+	// The conditions to update.
+	Conditions *MarketConditionsUpdateInput `json:"conditions,omitempty"`
+	// Catalog IDs to include in the market.
+	CatalogsToAdd []string `json:"catalogsToAdd,omitempty"`
+	// Catalog IDs to remove from the market.
+	CatalogsToDelete []string `json:"catalogsToDelete,omitempty"`
+	// The web presences to add to the market.
+	WebPresencesToAdd []string `json:"webPresencesToAdd,omitempty"`
+	// The web presences to remove from the market.
+	WebPresencesToDelete []string `json:"webPresencesToDelete,omitempty"`
+	// The discounts to add to the market.
+	DiscountsToAdd []string `json:"discountsToAdd,omitempty"`
+	// The discounts to remove from the market.
+	DiscountsToDelete []string `json:"discountsToDelete,omitempty"`
+	// Whether to update duplicate region or wildcard markets' status to draft.
+	MakeDuplicateUniqueMarketsDraft *bool `json:"makeDuplicateUniqueMarketsDraft,omitempty"`
+	// The status of the market.
+	Status *MarketStatus `json:"status,omitempty"`
+	// Currency settings for the market.
+	CurrencySettings *MarketCurrencySettingsUpdateInput `json:"currencySettings,omitempty"`
+	// Remove any currency settings that are defined for the market.
+	RemoveCurrencySettings *bool `json:"removeCurrencySettings,omitempty"`
+	// The price inclusions to remove from the market.
+	RemovePriceInclusions *bool `json:"removePriceInclusions,omitempty"`
+	// The strategy used to determine how prices are displayed to the customer.
+	PriceInclusions *MarketPriceInclusionsInput `json:"priceInclusions,omitempty"`
+	// Delivery setting updates. When omitted, delivery settings are not changed.
+	Delivery *MarketDeliveryConfigurationsUpdateInput `json:"delivery,omitempty"`
+	// The unique identifier of the Return Policy Profile to be associated with the market.
+	ReturnPolicyProfileId *string `json:"returnPolicyProfileId,omitempty"`
+	// Remove the Return Policy Profile that is defined for the market.
+	RemoveReturnPolicyProfile *bool `json:"removeReturnPolicyProfile,omitempty"`
+}
+
+// GetName returns MarketUpdateInput.Name, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetName() *string { return v.Name }
+
+// GetHandle returns MarketUpdateInput.Handle, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetHandle() *string { return v.Handle }
+
+// GetConditions returns MarketUpdateInput.Conditions, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetConditions() *MarketConditionsUpdateInput { return v.Conditions }
+
+// GetCatalogsToAdd returns MarketUpdateInput.CatalogsToAdd, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetCatalogsToAdd() []string { return v.CatalogsToAdd }
+
+// GetCatalogsToDelete returns MarketUpdateInput.CatalogsToDelete, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetCatalogsToDelete() []string { return v.CatalogsToDelete }
+
+// GetWebPresencesToAdd returns MarketUpdateInput.WebPresencesToAdd, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetWebPresencesToAdd() []string { return v.WebPresencesToAdd }
+
+// GetWebPresencesToDelete returns MarketUpdateInput.WebPresencesToDelete, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetWebPresencesToDelete() []string { return v.WebPresencesToDelete }
+
+// GetDiscountsToAdd returns MarketUpdateInput.DiscountsToAdd, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetDiscountsToAdd() []string { return v.DiscountsToAdd }
+
+// GetDiscountsToDelete returns MarketUpdateInput.DiscountsToDelete, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetDiscountsToDelete() []string { return v.DiscountsToDelete }
+
+// GetMakeDuplicateUniqueMarketsDraft returns MarketUpdateInput.MakeDuplicateUniqueMarketsDraft, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetMakeDuplicateUniqueMarketsDraft() *bool {
+	return v.MakeDuplicateUniqueMarketsDraft
+}
+
+// GetStatus returns MarketUpdateInput.Status, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetStatus() *MarketStatus { return v.Status }
+
+// GetCurrencySettings returns MarketUpdateInput.CurrencySettings, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetCurrencySettings() *MarketCurrencySettingsUpdateInput {
+	return v.CurrencySettings
+}
+
+// GetRemoveCurrencySettings returns MarketUpdateInput.RemoveCurrencySettings, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetRemoveCurrencySettings() *bool { return v.RemoveCurrencySettings }
+
+// GetRemovePriceInclusions returns MarketUpdateInput.RemovePriceInclusions, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetRemovePriceInclusions() *bool { return v.RemovePriceInclusions }
+
+// GetPriceInclusions returns MarketUpdateInput.PriceInclusions, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetPriceInclusions() *MarketPriceInclusionsInput {
+	return v.PriceInclusions
+}
+
+// GetDelivery returns MarketUpdateInput.Delivery, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetDelivery() *MarketDeliveryConfigurationsUpdateInput { return v.Delivery }
+
+// GetReturnPolicyProfileId returns MarketUpdateInput.ReturnPolicyProfileId, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetReturnPolicyProfileId() *string { return v.ReturnPolicyProfileId }
+
+// GetRemoveReturnPolicyProfile returns MarketUpdateInput.RemoveReturnPolicyProfile, and is useful for accessing the field via an interface.
+func (v *MarketUpdateInput) GetRemoveReturnPolicyProfile() *bool { return v.RemoveReturnPolicyProfile }
 
 // MenuFields includes the GraphQL fields of Menu requested by the fragment MenuFields.
 // The GraphQL type's documentation follows.
@@ -5822,6 +8142,237 @@ var AllMetaobjectStorefrontAccess = []MetaobjectStorefrontAccess{
 	MetaobjectStorefrontAccessPublicRead,
 }
 
+// The input fields for a monetary value with currency.
+type MoneyInput struct {
+	// Decimal money amount.
+	Amount string `json:"amount"`
+	// Currency of the money.
+	CurrencyCode CurrencyCode `json:"currencyCode"`
+}
+
+// GetAmount returns MoneyInput.Amount, and is useful for accessing the field via an interface.
+func (v *MoneyInput) GetAmount() string { return v.Amount }
+
+// GetCurrencyCode returns MoneyInput.CurrencyCode, and is useful for accessing the field via an interface.
+func (v *MoneyInput) GetCurrencyCode() CurrencyCode { return v.CurrencyCode }
+
+// The input fields for creating a market's shipping configuration.
+type ShippingConfigurationCreateInput struct {
+	// Whether shipping is enabled for this market. When false, customers in this market won't see shipping options at checkout.
+	IsEnabled bool `json:"isEnabled"`
+	// Shipping options to create for the market.
+	OptionDefinitions []DeliveryOptionDefinitionCreateInput `json:"optionDefinitions"`
+}
+
+// GetIsEnabled returns ShippingConfigurationCreateInput.IsEnabled, and is useful for accessing the field via an interface.
+func (v *ShippingConfigurationCreateInput) GetIsEnabled() bool { return v.IsEnabled }
+
+// GetOptionDefinitions returns ShippingConfigurationCreateInput.OptionDefinitions, and is useful for accessing the field via an interface.
+func (v *ShippingConfigurationCreateInput) GetOptionDefinitions() []DeliveryOptionDefinitionCreateInput {
+	return v.OptionDefinitions
+}
+
+// The input fields for updating a market's shipping configuration.
+type ShippingConfigurationUpdateInput struct {
+	// Whether shipping is enabled for this market. When false, customers in this market won't see shipping options at checkout. Defaults to true when the market has no shipping configuration; otherwise preserves the existing value.
+	IsEnabled *bool `json:"isEnabled"`
+	// Shipping options to create for this market.
+	OptionDefinitionsToCreate []DeliveryOptionDefinitionCreateInput `json:"optionDefinitionsToCreate"`
+	// Shipping options to update, matched by ID.
+	OptionDefinitionsToUpdate []DeliveryOptionDefinitionUpdateInput `json:"optionDefinitionsToUpdate"`
+	// The IDs of shipping options to remove.
+	OptionDefinitionsToDelete []string `json:"optionDefinitionsToDelete"`
+}
+
+// GetIsEnabled returns ShippingConfigurationUpdateInput.IsEnabled, and is useful for accessing the field via an interface.
+func (v *ShippingConfigurationUpdateInput) GetIsEnabled() *bool { return v.IsEnabled }
+
+// GetOptionDefinitionsToCreate returns ShippingConfigurationUpdateInput.OptionDefinitionsToCreate, and is useful for accessing the field via an interface.
+func (v *ShippingConfigurationUpdateInput) GetOptionDefinitionsToCreate() []DeliveryOptionDefinitionCreateInput {
+	return v.OptionDefinitionsToCreate
+}
+
+// GetOptionDefinitionsToUpdate returns ShippingConfigurationUpdateInput.OptionDefinitionsToUpdate, and is useful for accessing the field via an interface.
+func (v *ShippingConfigurationUpdateInput) GetOptionDefinitionsToUpdate() []DeliveryOptionDefinitionUpdateInput {
+	return v.OptionDefinitionsToUpdate
+}
+
+// GetOptionDefinitionsToDelete returns ShippingConfigurationUpdateInput.OptionDefinitionsToDelete, and is useful for accessing the field via an interface.
+func (v *ShippingConfigurationUpdateInput) GetOptionDefinitionsToDelete() []string {
+	return v.OptionDefinitionsToDelete
+}
+
+// UpdateMarketMarketUpdateMarketUpdatePayload includes the requested fields of the GraphQL type MarketUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `marketUpdate` mutation.
+type UpdateMarketMarketUpdateMarketUpdatePayload struct {
+	// The market object.
+	Market *UpdateMarketMarketUpdateMarketUpdatePayloadMarket `json:"market"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateMarketMarketUpdateMarketUpdatePayloadUserErrorsMarketUserError `json:"userErrors"`
+}
+
+// GetMarket returns UpdateMarketMarketUpdateMarketUpdatePayload.Market, and is useful for accessing the field via an interface.
+func (v *UpdateMarketMarketUpdateMarketUpdatePayload) GetMarket() *UpdateMarketMarketUpdateMarketUpdatePayloadMarket {
+	return v.Market
+}
+
+// GetUserErrors returns UpdateMarketMarketUpdateMarketUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateMarketMarketUpdateMarketUpdatePayload) GetUserErrors() []UpdateMarketMarketUpdateMarketUpdatePayloadUserErrorsMarketUserError {
+	return v.UserErrors
+}
+
+// UpdateMarketMarketUpdateMarketUpdatePayloadMarket includes the requested fields of the GraphQL type Market.
+// The GraphQL type's documentation follows.
+//
+// A merchant-defined group of buyers identified by conditions such as their
+// region, retail location, or company location. Each market allows configuration
+// of a distinct, localized buyer experience. Customizations include, but are
+// not limited to,
+// [currency](https://shopify.dev/api/admin-graphql/current/mutations/marketCurrencySettingsUpdate),
+// [pricing and product availability](https://shopify.dev/apps/internationalization/product-price-lists),
+// [web presence](https://shopify.dev/api/admin-graphql/current/objects/MarketWebPresence),
+// and content translations.
+type UpdateMarketMarketUpdateMarketUpdatePayloadMarket struct {
+	MarketFields `json:"-"`
+}
+
+// GetId returns UpdateMarketMarketUpdateMarketUpdatePayloadMarket.Id, and is useful for accessing the field via an interface.
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadMarket) GetId() string { return v.MarketFields.Id }
+
+// GetHandle returns UpdateMarketMarketUpdateMarketUpdatePayloadMarket.Handle, and is useful for accessing the field via an interface.
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadMarket) GetHandle() string {
+	return v.MarketFields.Handle
+}
+
+// GetName returns UpdateMarketMarketUpdateMarketUpdatePayloadMarket.Name, and is useful for accessing the field via an interface.
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadMarket) GetName() string {
+	return v.MarketFields.Name
+}
+
+// GetStatus returns UpdateMarketMarketUpdateMarketUpdatePayloadMarket.Status, and is useful for accessing the field via an interface.
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadMarket) GetStatus() MarketStatus {
+	return v.MarketFields.Status
+}
+
+// GetConditions returns UpdateMarketMarketUpdateMarketUpdatePayloadMarket.Conditions, and is useful for accessing the field via an interface.
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadMarket) GetConditions() *MarketFieldsConditionsMarketConditions {
+	return v.MarketFields.Conditions
+}
+
+// GetCurrencySettings returns UpdateMarketMarketUpdateMarketUpdatePayloadMarket.CurrencySettings, and is useful for accessing the field via an interface.
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadMarket) GetCurrencySettings() *MarketFieldsCurrencySettingsMarketCurrencySettings {
+	return v.MarketFields.CurrencySettings
+}
+
+// GetWebPresences returns UpdateMarketMarketUpdateMarketUpdatePayloadMarket.WebPresences, and is useful for accessing the field via an interface.
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadMarket) GetWebPresences() MarketFieldsWebPresencesMarketWebPresenceConnection {
+	return v.MarketFields.WebPresences
+}
+
+// GetCatalogs returns UpdateMarketMarketUpdateMarketUpdatePayloadMarket.Catalogs, and is useful for accessing the field via an interface.
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadMarket) GetCatalogs() MarketFieldsCatalogsMarketCatalogConnection {
+	return v.MarketFields.Catalogs
+}
+
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadMarket) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateMarketMarketUpdateMarketUpdatePayloadMarket
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateMarketMarketUpdateMarketUpdatePayloadMarket = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MarketFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateMarketMarketUpdateMarketUpdatePayloadMarket struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Name string `json:"name"`
+
+	Status MarketStatus `json:"status"`
+
+	Conditions *MarketFieldsConditionsMarketConditions `json:"conditions"`
+
+	CurrencySettings *MarketFieldsCurrencySettingsMarketCurrencySettings `json:"currencySettings"`
+
+	WebPresences MarketFieldsWebPresencesMarketWebPresenceConnection `json:"webPresences"`
+
+	Catalogs MarketFieldsCatalogsMarketCatalogConnection `json:"catalogs"`
+}
+
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadMarket) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadMarket) __premarshalJSON() (*__premarshalUpdateMarketMarketUpdateMarketUpdatePayloadMarket, error) {
+	var retval __premarshalUpdateMarketMarketUpdateMarketUpdatePayloadMarket
+
+	retval.Id = v.MarketFields.Id
+	retval.Handle = v.MarketFields.Handle
+	retval.Name = v.MarketFields.Name
+	retval.Status = v.MarketFields.Status
+	retval.Conditions = v.MarketFields.Conditions
+	retval.CurrencySettings = v.MarketFields.CurrencySettings
+	retval.WebPresences = v.MarketFields.WebPresences
+	retval.Catalogs = v.MarketFields.Catalogs
+	return &retval, nil
+}
+
+// UpdateMarketMarketUpdateMarketUpdatePayloadUserErrorsMarketUserError includes the requested fields of the GraphQL type MarketUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors encountered while managing a Market.
+type UpdateMarketMarketUpdateMarketUpdatePayloadUserErrorsMarketUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateMarketMarketUpdateMarketUpdatePayloadUserErrorsMarketUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadUserErrorsMarketUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateMarketMarketUpdateMarketUpdatePayloadUserErrorsMarketUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateMarketMarketUpdateMarketUpdatePayloadUserErrorsMarketUserError) GetMessage() string {
+	return v.Message
+}
+
+// UpdateMarketResponse is returned by UpdateMarket on success.
+type UpdateMarketResponse struct {
+	// Updates the properties of a market.
+	MarketUpdate *UpdateMarketMarketUpdateMarketUpdatePayload `json:"marketUpdate"`
+}
+
+// GetMarketUpdate returns UpdateMarketResponse.MarketUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateMarketResponse) GetMarketUpdate() *UpdateMarketMarketUpdateMarketUpdatePayload {
+	return v.MarketUpdate
+}
+
 // UpdateMenuMenuUpdateMenuUpdatePayload includes the requested fields of the GraphQL type MenuUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -6342,6 +8893,41 @@ func (v *UpdateMetaobjectDefinitionResponse) GetMetaobjectDefinitionUpdate() *Up
 	return v.MetaobjectDefinitionUpdate
 }
 
+// The input fields for the weight unit and value inputs.
+type WeightInput struct {
+	// The weight value using the unit system specified with `weight_unit`.
+	Value float64 `json:"value"`
+	// Unit of measurement for `value`.
+	Unit WeightUnit `json:"unit"`
+}
+
+// GetValue returns WeightInput.Value, and is useful for accessing the field via an interface.
+func (v *WeightInput) GetValue() float64 { return v.Value }
+
+// GetUnit returns WeightInput.Unit, and is useful for accessing the field via an interface.
+func (v *WeightInput) GetUnit() WeightUnit { return v.Unit }
+
+// Units of measurement for weight.
+type WeightUnit string
+
+const (
+	// 1 kilogram equals 1000 grams.
+	WeightUnitKilograms WeightUnit = "KILOGRAMS"
+	// Metric system unit of mass.
+	WeightUnitGrams WeightUnit = "GRAMS"
+	// 1 pound equals 16 ounces.
+	WeightUnitPounds WeightUnit = "POUNDS"
+	// Imperial system unit of mass.
+	WeightUnitOunces WeightUnit = "OUNCES"
+)
+
+var AllWeightUnit = []WeightUnit{
+	WeightUnitKilograms,
+	WeightUnitGrams,
+	WeightUnitPounds,
+	WeightUnitOunces,
+}
+
 // __ActivateLocationInput is used internally by genqlient
 type __ActivateLocationInput struct {
 	LocationId     string `json:"locationId"`
@@ -6361,6 +8947,14 @@ type __AddLocationInput struct {
 
 // GetInput returns __AddLocationInput.Input, and is useful for accessing the field via an interface.
 func (v *__AddLocationInput) GetInput() LocationAddInput { return v.Input }
+
+// __CreateMarketInput is used internally by genqlient
+type __CreateMarketInput struct {
+	Input MarketCreateInput `json:"input"`
+}
+
+// GetInput returns __CreateMarketInput.Input, and is useful for accessing the field via an interface.
+func (v *__CreateMarketInput) GetInput() MarketCreateInput { return v.Input }
 
 // __CreateMenuInput is used internally by genqlient
 type __CreateMenuInput struct {
@@ -6417,6 +9011,14 @@ type __DeleteLocationInput struct {
 
 // GetLocationId returns __DeleteLocationInput.LocationId, and is useful for accessing the field via an interface.
 func (v *__DeleteLocationInput) GetLocationId() string { return v.LocationId }
+
+// __DeleteMarketInput is used internally by genqlient
+type __DeleteMarketInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteMarketInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteMarketInput) GetId() string { return v.Id }
 
 // __DeleteMenuInput is used internally by genqlient
 type __DeleteMenuInput struct {
@@ -6476,6 +9078,14 @@ type __GetLocationInput struct {
 // GetId returns __GetLocationInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetLocationInput) GetId() string { return v.Id }
 
+// __GetMarketInput is used internally by genqlient
+type __GetMarketInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetMarketInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetMarketInput) GetId() string { return v.Id }
+
 // __GetMenuInput is used internally by genqlient
 type __GetMenuInput struct {
 	Id string `json:"id"`
@@ -6510,6 +9120,14 @@ type __GetMetaobjectDefinitionInput struct {
 // GetId returns __GetMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetMetaobjectDefinitionInput) GetId() string { return v.Id }
 
+// __ListMarketsInput is used internally by genqlient
+type __ListMarketsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListMarketsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListMarketsInput) GetAfter() *string { return v.After }
+
 // __ListMenusInput is used internally by genqlient
 type __ListMenusInput struct {
 	After *string `json:"after"`
@@ -6517,6 +9135,18 @@ type __ListMenusInput struct {
 
 // GetAfter returns __ListMenusInput.After, and is useful for accessing the field via an interface.
 func (v *__ListMenusInput) GetAfter() *string { return v.After }
+
+// __UpdateMarketInput is used internally by genqlient
+type __UpdateMarketInput struct {
+	Id    string            `json:"id"`
+	Input MarketUpdateInput `json:"input"`
+}
+
+// GetId returns __UpdateMarketInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateMarketInput) GetId() string { return v.Id }
+
+// GetInput returns __UpdateMarketInput.Input, and is useful for accessing the field via an interface.
+func (v *__UpdateMarketInput) GetInput() MarketUpdateInput { return v.Input }
 
 // __UpdateMenuInput is used internally by genqlient
 type __UpdateMenuInput struct {
@@ -6666,6 +9296,80 @@ func AddLocation(
 	}
 
 	data_ = &AddLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateMarket.
+const CreateMarket_Operation = `
+mutation CreateMarket ($input: MarketCreateInput!) {
+	marketCreate(input: $input) {
+		market {
+			... MarketFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment MarketFields on Market {
+	id
+	handle
+	name
+	status
+	conditions {
+		regionsCondition {
+			regions(first: 250) {
+				nodes {
+					__typename
+					... on MarketRegionCountry {
+						code
+					}
+				}
+			}
+		}
+	}
+	currencySettings {
+		baseCurrency {
+			currencyCode
+		}
+		localCurrencies
+	}
+	webPresences(first: 250) {
+		nodes {
+			id
+		}
+	}
+	catalogs(first: 250) {
+		nodes {
+			id
+		}
+	}
+}
+`
+
+func CreateMarket(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input MarketCreateInput,
+) (data_ *CreateMarketResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateMarket",
+		Query:  CreateMarket_Operation,
+		Variables: &__CreateMarketInput{
+			Input: input,
+		},
+	}
+
+	data_ = &CreateMarketResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -6983,6 +9687,44 @@ func DeleteLocation(
 	return data_, err_
 }
 
+// The mutation executed by DeleteMarket.
+const DeleteMarket_Operation = `
+mutation DeleteMarket ($id: ID!) {
+	marketDelete(id: $id) {
+		deletedId
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DeleteMarket(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteMarketResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteMarket",
+		Query:  DeleteMarket_Operation,
+		Variables: &__DeleteMarketInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteMarketResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by DeleteMenu.
 const DeleteMenu_Operation = `
 mutation DeleteMenu ($id: ID!) {
@@ -7249,6 +9991,74 @@ func GetLocation(
 	}
 
 	data_ = &GetLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetMarket.
+const GetMarket_Operation = `
+query GetMarket ($id: ID!) {
+	market(id: $id) {
+		... MarketFields
+	}
+}
+fragment MarketFields on Market {
+	id
+	handle
+	name
+	status
+	conditions {
+		regionsCondition {
+			regions(first: 250) {
+				nodes {
+					__typename
+					... on MarketRegionCountry {
+						code
+					}
+				}
+			}
+		}
+	}
+	currencySettings {
+		baseCurrency {
+			currencyCode
+		}
+		localCurrencies
+	}
+	webPresences(first: 250) {
+		nodes {
+			id
+		}
+	}
+	catalogs(first: 250) {
+		nodes {
+			id
+		}
+	}
+}
+`
+
+func GetMarket(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetMarketResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetMarket",
+		Query:  GetMarket_Operation,
+		Variables: &__GetMarketInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetMarketResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -7557,6 +10367,81 @@ func GetShop(
 	return data_, err_
 }
 
+// The query executed by ListMarkets.
+const ListMarkets_Operation = `
+query ListMarkets ($after: String) {
+	markets(first: 250, after: $after) {
+		nodes {
+			... MarketFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment MarketFields on Market {
+	id
+	handle
+	name
+	status
+	conditions {
+		regionsCondition {
+			regions(first: 250) {
+				nodes {
+					__typename
+					... on MarketRegionCountry {
+						code
+					}
+				}
+			}
+		}
+	}
+	currencySettings {
+		baseCurrency {
+			currencyCode
+		}
+		localCurrencies
+	}
+	webPresences(first: 250) {
+		nodes {
+			id
+		}
+	}
+	catalogs(first: 250) {
+		nodes {
+			id
+		}
+	}
+}
+`
+
+// markets(query:) can't filter by handle, so lookups by handle page through all markets.
+func ListMarkets(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListMarketsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListMarkets",
+		Query:  ListMarkets_Operation,
+		Variables: &__ListMarketsInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListMarketsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListMenus.
 const ListMenus_Operation = `
 query ListMenus ($after: String) {
@@ -7609,6 +10494,82 @@ func ListMenus(
 	}
 
 	data_ = &ListMenusResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateMarket.
+const UpdateMarket_Operation = `
+mutation UpdateMarket ($id: ID!, $input: MarketUpdateInput!) {
+	marketUpdate(id: $id, input: $input) {
+		market {
+			... MarketFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment MarketFields on Market {
+	id
+	handle
+	name
+	status
+	conditions {
+		regionsCondition {
+			regions(first: 250) {
+				nodes {
+					__typename
+					... on MarketRegionCountry {
+						code
+					}
+				}
+			}
+		}
+	}
+	currencySettings {
+		baseCurrency {
+			currencyCode
+		}
+		localCurrencies
+	}
+	webPresences(first: 250) {
+		nodes {
+			id
+		}
+	}
+	catalogs(first: 250) {
+		nodes {
+			id
+		}
+	}
+}
+`
+
+func UpdateMarket(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input MarketUpdateInput,
+) (data_ *UpdateMarketResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateMarket",
+		Query:  UpdateMarket_Operation,
+		Variables: &__UpdateMarketInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &UpdateMarketResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

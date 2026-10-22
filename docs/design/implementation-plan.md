@@ -58,7 +58,7 @@ This plan follows the implementation order in section 12 of the resource model, 
 ## Step 5: `shopify_market`
 
 - Uses the conditions-based `marketCreate` / `marketUpdate` mutations. `conditions.regions` is a set.
-- Shopify's "country already belongs to another market" error is reported clearly and never retried.
+- Shopify's duplicate-market error (same region set, both active) is reported clearly and never retried. Overlapping markets are allowed, see resource model §6.
 - `web_presence_ids` and `catalog_ids` are plain IDs.
 
 ## Step 6: `shopify_delivery_profile` (general profile only)

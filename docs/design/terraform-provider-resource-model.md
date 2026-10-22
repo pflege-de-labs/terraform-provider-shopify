@@ -224,16 +224,17 @@ resource "shopify_market" "dach" {
 
 | Attribute | Type | Behaviour |
 |---|---|---|
-| `handle` | string | Required, import key |
+| `handle` | string | Required, import key. Updatable. A taken handle fails with `TAKEN` |
 | `name` | string | Required |
-| `enabled` | bool | |
+| `enabled` | bool | Maps to `status` (`ACTIVE` / `DRAFT`); the API's `enabled` field is deprecated |
 | `conditions.regions` | set(string) | Country codes. B2B (`company_location_ids`) and POS (`location_ids`) conditions come later; they are dev preview |
 | `currency_settings` | object | `base_currency`, `local_currencies` |
 | `catalog_ids`, `web_presence_ids` | set(string) | Links only, as plain IDs. Catalogs and price lists are content and stay out of scope. No `shopify_market_web_presence` resource yet; revisit later |
 
 Notes:
 - Uses the **2025+ Markets model** (conditions-based `marketCreate` / `marketUpdate`), not the legacy region mutations.
-- A country can belong to only one region market ⚠. Moving a country between two Terraform-managed markets needs a careful update order (remove from A, then add to B). The provider should report the Shopify error clearly rather than retry.
+- **Overlap is allowed** (checked on the dev store): a country can be in several markets. Only two active markets with exactly the same region set conflict (`DUPLICATE_REGION_MARKET` "There is an existing region market with the same regions", plus `DUPLICATE_UNIQUE_MARKET`). Draft markets don't conflict. So moving countries between markets needs no update order; the error is reported as is and not retried.
+- Regions, web presences and catalogs are updated with add/delete lists, diffed between state and plan. `markets(query:)` can't filter by handle, so lookups by handle page through all markets.
 - Possible follow-up resource: `shopify_market_web_presence` (domain or subfolder suffix, default and alternate locales).
 
 ---
