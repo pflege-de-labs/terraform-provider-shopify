@@ -6,7 +6,6 @@ package provider
 import (
 	"context"
 	"fmt"
-	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -16,6 +15,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+
+	shopify "github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
@@ -28,7 +29,7 @@ func NewExampleResource() resource.Resource {
 
 // ExampleResource defines the resource implementation.
 type ExampleResource struct {
-	client *http.Client
+	client *shopify.Client
 }
 
 // ExampleResourceModel describes the resource data model.
@@ -75,12 +76,12 @@ func (r *ExampleResource) Configure(ctx context.Context, req resource.ConfigureR
 		return
 	}
 
-	client, ok := req.ProviderData.(*http.Client)
+	client, ok := req.ProviderData.(*shopify.Client)
 
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Resource Configure Type",
-			fmt.Sprintf("Expected *http.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+			fmt.Sprintf("Expected *client.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
 
 		return
