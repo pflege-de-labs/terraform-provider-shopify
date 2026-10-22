@@ -348,15 +348,17 @@ resource "shopify_menu" "main" {
 
 | Attribute | Type | Behaviour |
 |---|---|---|
-| `handle` | string | Required, import key |
+| `handle` | string | Required, import key. Updatable, except for default menus |
 | `title` | string | Required |
 | `item` | nested blocks (≤ 3 levels) | `title`, `type`, `resource_id` or `url`, `tags` |
-| `adopt_existing` | bool | Pattern A for default menus |
+| `is_default` | bool | Computed. Default menus are never deleted, only removed from state |
+| `adopt_existing` | bool | Pattern A. With `true`, destroy only removes the menu from state |
 
 Notes:
-- **Terraform owns the whole tree.** Update sends the complete item list, which replaces the menu ⚠. Any item a merchant adds in the admin will be removed on the next apply. If merchants need to edit a menu, keep that menu out of Terraform.
+- **Terraform owns the whole tree.** Update sends the complete item list without item IDs, which replaces all items (confirmed by acceptance test). Any item a merchant adds in the admin will be removed on the next apply. If merchants need to edit a menu, keep that menu out of Terraform.
 - Menu items point at collections and pages, which are content. Referencing them by GID makes configs specific to one store. Option: allow `resource_handle` plus `type`, and resolve it to a GID at apply time.
-- Validation: `resource_id` is required for COLLECTION, PRODUCT and PAGE; `url` for HTTP ⚠ (check the full type enum).
+- Validation: `url` is required for HTTP and not allowed for other types (Shopify derives it, so it is only stored for HTTP items). `resource_id` is required for COLLECTION, PRODUCT, PAGE, BLOG, ARTICLE and METAOBJECT. ⚠ Unverified whether SHOP_POLICY, CATALOG and CUSTOMER_ACCOUNT_PAGE need one. Full enum: FRONTPAGE, COLLECTION, COLLECTIONS, PRODUCT, CATALOG, PAGE, BLOG, ARTICLE, SEARCH, SHOP_POLICY, HTTP, METAOBJECT, CUSTOMER_ACCOUNT_PAGE.
+- **Lookup by handle:** `menus(query:)` can't filter by handle, so the provider pages through all menus. The list lags a few seconds behind writes (search index), so a menu created moments ago may not be found yet by import or adopt. Shopify suffixes a taken handle (`-1`) instead of failing, so Create also checks the returned handle, removes the duplicate and fails.
 
 ---
 

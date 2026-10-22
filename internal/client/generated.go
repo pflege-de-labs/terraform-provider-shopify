@@ -9,6 +9,156 @@ import (
 	"github.com/Khan/genqlient/graphql"
 )
 
+// CreateMenuMenuCreateMenuCreatePayload includes the requested fields of the GraphQL type MenuCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `menuCreate` mutation.
+type CreateMenuMenuCreateMenuCreatePayload struct {
+	// The created menu.
+	Menu *CreateMenuMenuCreateMenuCreatePayloadMenu `json:"menu"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateMenuMenuCreateMenuCreatePayloadUserErrorsMenuCreateUserError `json:"userErrors"`
+}
+
+// GetMenu returns CreateMenuMenuCreateMenuCreatePayload.Menu, and is useful for accessing the field via an interface.
+func (v *CreateMenuMenuCreateMenuCreatePayload) GetMenu() *CreateMenuMenuCreateMenuCreatePayloadMenu {
+	return v.Menu
+}
+
+// GetUserErrors returns CreateMenuMenuCreateMenuCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateMenuMenuCreateMenuCreatePayload) GetUserErrors() []CreateMenuMenuCreateMenuCreatePayloadUserErrorsMenuCreateUserError {
+	return v.UserErrors
+}
+
+// CreateMenuMenuCreateMenuCreatePayloadMenu includes the requested fields of the GraphQL type Menu.
+// The GraphQL type's documentation follows.
+//
+// Navigation menus that organize links into logical structures to guide customers through a store. Menus serve as the backbone of store navigation, making it easy for customers to find products, pages, and other content through organized hierarchical links.
+//
+// For example, a merchant might create a main navigation menu with top-level categories like "Products," "About Us," and "Contact," where each category can contain nested menu items linking to specific collections, pages, or external resources.
+//
+// Use the `Menu` object to:
+// - Build and customize store navigation structures
+// - Organize hierarchical menu systems with nested items
+// - Work with default menus that can't be deleted
+// - Access menu items for building navigation
+//
+// Menus can be designated as default navigation elements (like main menu or footer), which can't be deleted and have restricted handle updates. The handle provides a unique identifier that themes can reference, while the items collection enables nested navigation structures.
+//
+// Each menu contains menu items that can link to various resource types. This flexibility lets merchants create navigation experiences that guide customers through their store.
+type CreateMenuMenuCreateMenuCreatePayloadMenu struct {
+	MenuFields `json:"-"`
+}
+
+// GetId returns CreateMenuMenuCreateMenuCreatePayloadMenu.Id, and is useful for accessing the field via an interface.
+func (v *CreateMenuMenuCreateMenuCreatePayloadMenu) GetId() string { return v.MenuFields.Id }
+
+// GetHandle returns CreateMenuMenuCreateMenuCreatePayloadMenu.Handle, and is useful for accessing the field via an interface.
+func (v *CreateMenuMenuCreateMenuCreatePayloadMenu) GetHandle() string { return v.MenuFields.Handle }
+
+// GetTitle returns CreateMenuMenuCreateMenuCreatePayloadMenu.Title, and is useful for accessing the field via an interface.
+func (v *CreateMenuMenuCreateMenuCreatePayloadMenu) GetTitle() string { return v.MenuFields.Title }
+
+// GetIsDefault returns CreateMenuMenuCreateMenuCreatePayloadMenu.IsDefault, and is useful for accessing the field via an interface.
+func (v *CreateMenuMenuCreateMenuCreatePayloadMenu) GetIsDefault() bool {
+	return v.MenuFields.IsDefault
+}
+
+// GetItems returns CreateMenuMenuCreateMenuCreatePayloadMenu.Items, and is useful for accessing the field via an interface.
+func (v *CreateMenuMenuCreateMenuCreatePayloadMenu) GetItems() []MenuFieldsItemsMenuItem {
+	return v.MenuFields.Items
+}
+
+func (v *CreateMenuMenuCreateMenuCreatePayloadMenu) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateMenuMenuCreateMenuCreatePayloadMenu
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateMenuMenuCreateMenuCreatePayloadMenu = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MenuFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateMenuMenuCreateMenuCreatePayloadMenu struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	IsDefault bool `json:"isDefault"`
+
+	Items []MenuFieldsItemsMenuItem `json:"items"`
+}
+
+func (v *CreateMenuMenuCreateMenuCreatePayloadMenu) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateMenuMenuCreateMenuCreatePayloadMenu) __premarshalJSON() (*__premarshalCreateMenuMenuCreateMenuCreatePayloadMenu, error) {
+	var retval __premarshalCreateMenuMenuCreateMenuCreatePayloadMenu
+
+	retval.Id = v.MenuFields.Id
+	retval.Handle = v.MenuFields.Handle
+	retval.Title = v.MenuFields.Title
+	retval.IsDefault = v.MenuFields.IsDefault
+	retval.Items = v.MenuFields.Items
+	return &retval, nil
+}
+
+// CreateMenuMenuCreateMenuCreatePayloadUserErrorsMenuCreateUserError includes the requested fields of the GraphQL type MenuCreateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `MenuCreate`.
+type CreateMenuMenuCreateMenuCreatePayloadUserErrorsMenuCreateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateMenuMenuCreateMenuCreatePayloadUserErrorsMenuCreateUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateMenuMenuCreateMenuCreatePayloadUserErrorsMenuCreateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateMenuMenuCreateMenuCreatePayloadUserErrorsMenuCreateUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateMenuMenuCreateMenuCreatePayloadUserErrorsMenuCreateUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreateMenuResponse is returned by CreateMenu on success.
+type CreateMenuResponse struct {
+	// Creates a navigation [`Menu`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Menu) for the online store. Menus organize links that help customers navigate to [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection), [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product), [pages](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page), [blogs](https://shopify.dev/docs/api/admin-graphql/latest/objects/Blog), and custom URLs.
+	//
+	// Each menu requires a unique handle for identification and can contain multiple [`MenuItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MenuItem) objects with nested sub-items up to three levels deep.
+	MenuCreate *CreateMenuMenuCreateMenuCreatePayload `json:"menuCreate"`
+}
+
+// GetMenuCreate returns CreateMenuResponse.MenuCreate, and is useful for accessing the field via an interface.
+func (v *CreateMenuResponse) GetMenuCreate() *CreateMenuMenuCreateMenuCreatePayload {
+	return v.MenuCreate
+}
+
 // CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayload includes the requested fields of the GraphQL type MetafieldDefinitionCreatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -877,6 +1027,57 @@ var AllCurrencyCode = []CurrencyCode{
 	CurrencyCodeXxx,
 }
 
+// DeleteMenuMenuDeleteMenuDeletePayload includes the requested fields of the GraphQL type MenuDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `menuDelete` mutation.
+type DeleteMenuMenuDeleteMenuDeletePayload struct {
+	// The ID of the deleted menu.
+	DeletedMenuId *string `json:"deletedMenuId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteMenuMenuDeleteMenuDeletePayloadUserErrorsMenuDeleteUserError `json:"userErrors"`
+}
+
+// GetDeletedMenuId returns DeleteMenuMenuDeleteMenuDeletePayload.DeletedMenuId, and is useful for accessing the field via an interface.
+func (v *DeleteMenuMenuDeleteMenuDeletePayload) GetDeletedMenuId() *string { return v.DeletedMenuId }
+
+// GetUserErrors returns DeleteMenuMenuDeleteMenuDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteMenuMenuDeleteMenuDeletePayload) GetUserErrors() []DeleteMenuMenuDeleteMenuDeletePayloadUserErrorsMenuDeleteUserError {
+	return v.UserErrors
+}
+
+// DeleteMenuMenuDeleteMenuDeletePayloadUserErrorsMenuDeleteUserError includes the requested fields of the GraphQL type MenuDeleteUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `MenuDelete`.
+type DeleteMenuMenuDeleteMenuDeletePayloadUserErrorsMenuDeleteUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeleteMenuMenuDeleteMenuDeletePayloadUserErrorsMenuDeleteUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteMenuMenuDeleteMenuDeletePayloadUserErrorsMenuDeleteUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteMenuMenuDeleteMenuDeletePayloadUserErrorsMenuDeleteUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteMenuMenuDeleteMenuDeletePayloadUserErrorsMenuDeleteUserError) GetMessage() string {
+	return v.Message
+}
+
+// DeleteMenuResponse is returned by DeleteMenu on success.
+type DeleteMenuResponse struct {
+	// Deletes a menu.
+	MenuDelete *DeleteMenuMenuDeleteMenuDeletePayload `json:"menuDelete"`
+}
+
+// GetMenuDelete returns DeleteMenuResponse.MenuDelete, and is useful for accessing the field via an interface.
+func (v *DeleteMenuResponse) GetMenuDelete() *DeleteMenuMenuDeleteMenuDeletePayload {
+	return v.MenuDelete
+}
+
 // DeleteMetafieldDefinitionMetafieldDefinitionDeleteMetafieldDefinitionDeletePayload includes the requested fields of the GraphQL type MetafieldDefinitionDeletePayload.
 // The GraphQL type's documentation follows.
 //
@@ -987,6 +1188,106 @@ type DeleteMetaobjectDefinitionResponse struct {
 func (v *DeleteMetaobjectDefinitionResponse) GetMetaobjectDefinitionDelete() *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload {
 	return v.MetaobjectDefinitionDelete
 }
+
+// GetMenuMenu includes the requested fields of the GraphQL type Menu.
+// The GraphQL type's documentation follows.
+//
+// Navigation menus that organize links into logical structures to guide customers through a store. Menus serve as the backbone of store navigation, making it easy for customers to find products, pages, and other content through organized hierarchical links.
+//
+// For example, a merchant might create a main navigation menu with top-level categories like "Products," "About Us," and "Contact," where each category can contain nested menu items linking to specific collections, pages, or external resources.
+//
+// Use the `Menu` object to:
+// - Build and customize store navigation structures
+// - Organize hierarchical menu systems with nested items
+// - Work with default menus that can't be deleted
+// - Access menu items for building navigation
+//
+// Menus can be designated as default navigation elements (like main menu or footer), which can't be deleted and have restricted handle updates. The handle provides a unique identifier that themes can reference, while the items collection enables nested navigation structures.
+//
+// Each menu contains menu items that can link to various resource types. This flexibility lets merchants create navigation experiences that guide customers through their store.
+type GetMenuMenu struct {
+	MenuFields `json:"-"`
+}
+
+// GetId returns GetMenuMenu.Id, and is useful for accessing the field via an interface.
+func (v *GetMenuMenu) GetId() string { return v.MenuFields.Id }
+
+// GetHandle returns GetMenuMenu.Handle, and is useful for accessing the field via an interface.
+func (v *GetMenuMenu) GetHandle() string { return v.MenuFields.Handle }
+
+// GetTitle returns GetMenuMenu.Title, and is useful for accessing the field via an interface.
+func (v *GetMenuMenu) GetTitle() string { return v.MenuFields.Title }
+
+// GetIsDefault returns GetMenuMenu.IsDefault, and is useful for accessing the field via an interface.
+func (v *GetMenuMenu) GetIsDefault() bool { return v.MenuFields.IsDefault }
+
+// GetItems returns GetMenuMenu.Items, and is useful for accessing the field via an interface.
+func (v *GetMenuMenu) GetItems() []MenuFieldsItemsMenuItem { return v.MenuFields.Items }
+
+func (v *GetMenuMenu) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetMenuMenu
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetMenuMenu = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MenuFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetMenuMenu struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	IsDefault bool `json:"isDefault"`
+
+	Items []MenuFieldsItemsMenuItem `json:"items"`
+}
+
+func (v *GetMenuMenu) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetMenuMenu) __premarshalJSON() (*__premarshalGetMenuMenu, error) {
+	var retval __premarshalGetMenuMenu
+
+	retval.Id = v.MenuFields.Id
+	retval.Handle = v.MenuFields.Handle
+	retval.Title = v.MenuFields.Title
+	retval.IsDefault = v.MenuFields.IsDefault
+	retval.Items = v.MenuFields.Items
+	return &retval, nil
+}
+
+// GetMenuResponse is returned by GetMenu on success.
+type GetMenuResponse struct {
+	// Returns a `Menu` resource by ID.
+	Menu *GetMenuMenu `json:"menu"`
+}
+
+// GetMenu returns GetMenuResponse.Menu, and is useful for accessing the field via an interface.
+func (v *GetMenuResponse) GetMenu() *GetMenuMenu { return v.Menu }
 
 // GetMetafieldDefinitionMetafieldDefinition includes the requested fields of the GraphQL type MetafieldDefinition.
 // The GraphQL type's documentation follows.
@@ -1478,6 +1779,654 @@ type GetShopShopPrimaryDomain struct {
 
 // GetHost returns GetShopShopPrimaryDomain.Host, and is useful for accessing the field via an interface.
 func (v *GetShopShopPrimaryDomain) GetHost() string { return v.Host }
+
+// ListMenusMenusMenuConnection includes the requested fields of the GraphQL type MenuConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Menus.
+type ListMenusMenusMenuConnection struct {
+	// A list of nodes that are contained in MenuEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListMenusMenusMenuConnectionNodesMenu `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListMenusMenusMenuConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListMenusMenusMenuConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListMenusMenusMenuConnection) GetNodes() []ListMenusMenusMenuConnectionNodesMenu {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListMenusMenusMenuConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListMenusMenusMenuConnection) GetPageInfo() ListMenusMenusMenuConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListMenusMenusMenuConnectionNodesMenu includes the requested fields of the GraphQL type Menu.
+// The GraphQL type's documentation follows.
+//
+// Navigation menus that organize links into logical structures to guide customers through a store. Menus serve as the backbone of store navigation, making it easy for customers to find products, pages, and other content through organized hierarchical links.
+//
+// For example, a merchant might create a main navigation menu with top-level categories like "Products," "About Us," and "Contact," where each category can contain nested menu items linking to specific collections, pages, or external resources.
+//
+// Use the `Menu` object to:
+// - Build and customize store navigation structures
+// - Organize hierarchical menu systems with nested items
+// - Work with default menus that can't be deleted
+// - Access menu items for building navigation
+//
+// Menus can be designated as default navigation elements (like main menu or footer), which can't be deleted and have restricted handle updates. The handle provides a unique identifier that themes can reference, while the items collection enables nested navigation structures.
+//
+// Each menu contains menu items that can link to various resource types. This flexibility lets merchants create navigation experiences that guide customers through their store.
+type ListMenusMenusMenuConnectionNodesMenu struct {
+	MenuFields `json:"-"`
+}
+
+// GetId returns ListMenusMenusMenuConnectionNodesMenu.Id, and is useful for accessing the field via an interface.
+func (v *ListMenusMenusMenuConnectionNodesMenu) GetId() string { return v.MenuFields.Id }
+
+// GetHandle returns ListMenusMenusMenuConnectionNodesMenu.Handle, and is useful for accessing the field via an interface.
+func (v *ListMenusMenusMenuConnectionNodesMenu) GetHandle() string { return v.MenuFields.Handle }
+
+// GetTitle returns ListMenusMenusMenuConnectionNodesMenu.Title, and is useful for accessing the field via an interface.
+func (v *ListMenusMenusMenuConnectionNodesMenu) GetTitle() string { return v.MenuFields.Title }
+
+// GetIsDefault returns ListMenusMenusMenuConnectionNodesMenu.IsDefault, and is useful for accessing the field via an interface.
+func (v *ListMenusMenusMenuConnectionNodesMenu) GetIsDefault() bool { return v.MenuFields.IsDefault }
+
+// GetItems returns ListMenusMenusMenuConnectionNodesMenu.Items, and is useful for accessing the field via an interface.
+func (v *ListMenusMenusMenuConnectionNodesMenu) GetItems() []MenuFieldsItemsMenuItem {
+	return v.MenuFields.Items
+}
+
+func (v *ListMenusMenusMenuConnectionNodesMenu) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListMenusMenusMenuConnectionNodesMenu
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListMenusMenusMenuConnectionNodesMenu = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MenuFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListMenusMenusMenuConnectionNodesMenu struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	IsDefault bool `json:"isDefault"`
+
+	Items []MenuFieldsItemsMenuItem `json:"items"`
+}
+
+func (v *ListMenusMenusMenuConnectionNodesMenu) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListMenusMenusMenuConnectionNodesMenu) __premarshalJSON() (*__premarshalListMenusMenusMenuConnectionNodesMenu, error) {
+	var retval __premarshalListMenusMenusMenuConnectionNodesMenu
+
+	retval.Id = v.MenuFields.Id
+	retval.Handle = v.MenuFields.Handle
+	retval.Title = v.MenuFields.Title
+	retval.IsDefault = v.MenuFields.IsDefault
+	retval.Items = v.MenuFields.Items
+	return &retval, nil
+}
+
+// ListMenusMenusMenuConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListMenusMenusMenuConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListMenusMenusMenuConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListMenusMenusMenuConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ListMenusMenusMenuConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListMenusMenusMenuConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
+
+// ListMenusResponse is returned by ListMenus on success.
+type ListMenusResponse struct {
+	// Retrieves navigation menus. Menus organize content into hierarchical navigation structures that merchants can display in the online store (for example, in headers, footers, and sidebars) and customer accounts.
+	//
+	// Each [`Menu`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Menu) contains a handle for identification, a title for display, and a collection of [`MenuItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MenuItem) objects that can be nested up to 3 levels deep. Default menus have protected handles that can't be modified.
+	Menus ListMenusMenusMenuConnection `json:"menus"`
+}
+
+// GetMenus returns ListMenusResponse.Menus, and is useful for accessing the field via an interface.
+func (v *ListMenusResponse) GetMenus() ListMenusMenusMenuConnection { return v.Menus }
+
+// MenuFields includes the GraphQL fields of Menu requested by the fragment MenuFields.
+// The GraphQL type's documentation follows.
+//
+// Navigation menus that organize links into logical structures to guide customers through a store. Menus serve as the backbone of store navigation, making it easy for customers to find products, pages, and other content through organized hierarchical links.
+//
+// For example, a merchant might create a main navigation menu with top-level categories like "Products," "About Us," and "Contact," where each category can contain nested menu items linking to specific collections, pages, or external resources.
+//
+// Use the `Menu` object to:
+// - Build and customize store navigation structures
+// - Organize hierarchical menu systems with nested items
+// - Work with default menus that can't be deleted
+// - Access menu items for building navigation
+//
+// Menus can be designated as default navigation elements (like main menu or footer), which can't be deleted and have restricted handle updates. The handle provides a unique identifier that themes can reference, while the items collection enables nested navigation structures.
+//
+// Each menu contains menu items that can link to various resource types. This flexibility lets merchants create navigation experiences that guide customers through their store.
+type MenuFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The menu's handle.
+	Handle string `json:"handle"`
+	// The menu's title.
+	Title string `json:"title"`
+	// Whether the menu is a default. The handle for default menus can't be updated and default menus can't be deleted.
+	IsDefault bool `json:"isDefault"`
+	// A list of items on the menu sorted by position.
+	Items []MenuFieldsItemsMenuItem `json:"items"`
+}
+
+// GetId returns MenuFields.Id, and is useful for accessing the field via an interface.
+func (v *MenuFields) GetId() string { return v.Id }
+
+// GetHandle returns MenuFields.Handle, and is useful for accessing the field via an interface.
+func (v *MenuFields) GetHandle() string { return v.Handle }
+
+// GetTitle returns MenuFields.Title, and is useful for accessing the field via an interface.
+func (v *MenuFields) GetTitle() string { return v.Title }
+
+// GetIsDefault returns MenuFields.IsDefault, and is useful for accessing the field via an interface.
+func (v *MenuFields) GetIsDefault() bool { return v.IsDefault }
+
+// GetItems returns MenuFields.Items, and is useful for accessing the field via an interface.
+func (v *MenuFields) GetItems() []MenuFieldsItemsMenuItem { return v.Items }
+
+// MenuFieldsItemsMenuItem includes the requested fields of the GraphQL type MenuItem.
+// The GraphQL type's documentation follows.
+//
+// Individual navigation links that make up store menus, giving customers clickable paths to explore the store. Menu items are the building blocks that connect shoppers to products, collections, pages, or external resources.
+//
+// For example, within a "Products" menu, individual menu items might link to specific collections like "Summer Collection" or "Best Sellers," each with its own title, URL, and resource connection.
+//
+// Use the `MenuItem` object to:
+// - Define individual navigation links and their destinations
+// - Create nested menu hierarchies through item relationships
+// - Use tags for collection filtering
+// - Connect menu links to specific store resources
+//
+// Menu items support various link types, enabling connections to internal store content or external websites. The nested items capability allows for dropdown or multi-level navigation structures that help organize complex store catalogs.
+type MenuFieldsItemsMenuItem struct {
+	MenuItemFields `json:"-"`
+	// List of the menu items nested under this item sorted by position.
+	Items []MenuFieldsItemsMenuItemItemsMenuItem `json:"items"`
+}
+
+// GetItems returns MenuFieldsItemsMenuItem.Items, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItem) GetItems() []MenuFieldsItemsMenuItemItemsMenuItem { return v.Items }
+
+// GetTitle returns MenuFieldsItemsMenuItem.Title, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItem) GetTitle() string { return v.MenuItemFields.Title }
+
+// GetType returns MenuFieldsItemsMenuItem.Type, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItem) GetType() MenuItemType { return v.MenuItemFields.Type }
+
+// GetResourceId returns MenuFieldsItemsMenuItem.ResourceId, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItem) GetResourceId() *string { return v.MenuItemFields.ResourceId }
+
+// GetUrl returns MenuFieldsItemsMenuItem.Url, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItem) GetUrl() *string { return v.MenuItemFields.Url }
+
+// GetTags returns MenuFieldsItemsMenuItem.Tags, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItem) GetTags() []string { return v.MenuItemFields.Tags }
+
+func (v *MenuFieldsItemsMenuItem) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*MenuFieldsItemsMenuItem
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.MenuFieldsItemsMenuItem = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MenuItemFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalMenuFieldsItemsMenuItem struct {
+	Items []MenuFieldsItemsMenuItemItemsMenuItem `json:"items"`
+
+	Title string `json:"title"`
+
+	Type MenuItemType `json:"type"`
+
+	ResourceId *string `json:"resourceId"`
+
+	Url *string `json:"url"`
+
+	Tags []string `json:"tags"`
+}
+
+func (v *MenuFieldsItemsMenuItem) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *MenuFieldsItemsMenuItem) __premarshalJSON() (*__premarshalMenuFieldsItemsMenuItem, error) {
+	var retval __premarshalMenuFieldsItemsMenuItem
+
+	retval.Items = v.Items
+	retval.Title = v.MenuItemFields.Title
+	retval.Type = v.MenuItemFields.Type
+	retval.ResourceId = v.MenuItemFields.ResourceId
+	retval.Url = v.MenuItemFields.Url
+	retval.Tags = v.MenuItemFields.Tags
+	return &retval, nil
+}
+
+// MenuFieldsItemsMenuItemItemsMenuItem includes the requested fields of the GraphQL type MenuItem.
+// The GraphQL type's documentation follows.
+//
+// Individual navigation links that make up store menus, giving customers clickable paths to explore the store. Menu items are the building blocks that connect shoppers to products, collections, pages, or external resources.
+//
+// For example, within a "Products" menu, individual menu items might link to specific collections like "Summer Collection" or "Best Sellers," each with its own title, URL, and resource connection.
+//
+// Use the `MenuItem` object to:
+// - Define individual navigation links and their destinations
+// - Create nested menu hierarchies through item relationships
+// - Use tags for collection filtering
+// - Connect menu links to specific store resources
+//
+// Menu items support various link types, enabling connections to internal store content or external websites. The nested items capability allows for dropdown or multi-level navigation structures that help organize complex store catalogs.
+type MenuFieldsItemsMenuItemItemsMenuItem struct {
+	MenuItemFields `json:"-"`
+	// List of the menu items nested under this item sorted by position.
+	Items []MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem `json:"items"`
+}
+
+// GetItems returns MenuFieldsItemsMenuItemItemsMenuItem.Items, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItemItemsMenuItem) GetItems() []MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem {
+	return v.Items
+}
+
+// GetTitle returns MenuFieldsItemsMenuItemItemsMenuItem.Title, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItemItemsMenuItem) GetTitle() string { return v.MenuItemFields.Title }
+
+// GetType returns MenuFieldsItemsMenuItemItemsMenuItem.Type, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItemItemsMenuItem) GetType() MenuItemType { return v.MenuItemFields.Type }
+
+// GetResourceId returns MenuFieldsItemsMenuItemItemsMenuItem.ResourceId, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItemItemsMenuItem) GetResourceId() *string {
+	return v.MenuItemFields.ResourceId
+}
+
+// GetUrl returns MenuFieldsItemsMenuItemItemsMenuItem.Url, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItemItemsMenuItem) GetUrl() *string { return v.MenuItemFields.Url }
+
+// GetTags returns MenuFieldsItemsMenuItemItemsMenuItem.Tags, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItemItemsMenuItem) GetTags() []string { return v.MenuItemFields.Tags }
+
+func (v *MenuFieldsItemsMenuItemItemsMenuItem) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*MenuFieldsItemsMenuItemItemsMenuItem
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.MenuFieldsItemsMenuItemItemsMenuItem = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MenuItemFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalMenuFieldsItemsMenuItemItemsMenuItem struct {
+	Items []MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem `json:"items"`
+
+	Title string `json:"title"`
+
+	Type MenuItemType `json:"type"`
+
+	ResourceId *string `json:"resourceId"`
+
+	Url *string `json:"url"`
+
+	Tags []string `json:"tags"`
+}
+
+func (v *MenuFieldsItemsMenuItemItemsMenuItem) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *MenuFieldsItemsMenuItemItemsMenuItem) __premarshalJSON() (*__premarshalMenuFieldsItemsMenuItemItemsMenuItem, error) {
+	var retval __premarshalMenuFieldsItemsMenuItemItemsMenuItem
+
+	retval.Items = v.Items
+	retval.Title = v.MenuItemFields.Title
+	retval.Type = v.MenuItemFields.Type
+	retval.ResourceId = v.MenuItemFields.ResourceId
+	retval.Url = v.MenuItemFields.Url
+	retval.Tags = v.MenuItemFields.Tags
+	return &retval, nil
+}
+
+// MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem includes the requested fields of the GraphQL type MenuItem.
+// The GraphQL type's documentation follows.
+//
+// Individual navigation links that make up store menus, giving customers clickable paths to explore the store. Menu items are the building blocks that connect shoppers to products, collections, pages, or external resources.
+//
+// For example, within a "Products" menu, individual menu items might link to specific collections like "Summer Collection" or "Best Sellers," each with its own title, URL, and resource connection.
+//
+// Use the `MenuItem` object to:
+// - Define individual navigation links and their destinations
+// - Create nested menu hierarchies through item relationships
+// - Use tags for collection filtering
+// - Connect menu links to specific store resources
+//
+// Menu items support various link types, enabling connections to internal store content or external websites. The nested items capability allows for dropdown or multi-level navigation structures that help organize complex store catalogs.
+type MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem struct {
+	MenuItemFields `json:"-"`
+}
+
+// GetTitle returns MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem.Title, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem) GetTitle() string {
+	return v.MenuItemFields.Title
+}
+
+// GetType returns MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem.Type, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem) GetType() MenuItemType {
+	return v.MenuItemFields.Type
+}
+
+// GetResourceId returns MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem.ResourceId, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem) GetResourceId() *string {
+	return v.MenuItemFields.ResourceId
+}
+
+// GetUrl returns MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem.Url, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem) GetUrl() *string {
+	return v.MenuItemFields.Url
+}
+
+// GetTags returns MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem.Tags, and is useful for accessing the field via an interface.
+func (v *MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem) GetTags() []string {
+	return v.MenuItemFields.Tags
+}
+
+func (v *MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MenuItemFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalMenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem struct {
+	Title string `json:"title"`
+
+	Type MenuItemType `json:"type"`
+
+	ResourceId *string `json:"resourceId"`
+
+	Url *string `json:"url"`
+
+	Tags []string `json:"tags"`
+}
+
+func (v *MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *MenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem) __premarshalJSON() (*__premarshalMenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem, error) {
+	var retval __premarshalMenuFieldsItemsMenuItemItemsMenuItemItemsMenuItem
+
+	retval.Title = v.MenuItemFields.Title
+	retval.Type = v.MenuItemFields.Type
+	retval.ResourceId = v.MenuItemFields.ResourceId
+	retval.Url = v.MenuItemFields.Url
+	retval.Tags = v.MenuItemFields.Tags
+	return &retval, nil
+}
+
+// The input fields required to create a valid menu item.
+type MenuItemCreateInput struct {
+	// The menu item's title.
+	Title string `json:"title"`
+	// The menu item's type.
+	Type MenuItemType `json:"type"`
+	// The menu item's association with an existing resource.
+	ResourceId *string `json:"resourceId,omitempty"`
+	// The menu item's url to be used when the item doesn't point to a resource.
+	Url *string `json:"url,omitempty"`
+	// The menu item's tags to filter a collection.
+	Tags []string `json:"tags,omitempty"`
+	// List of the menu items nested under this item sorted by position.
+	Items []MenuItemCreateInput `json:"items,omitempty"`
+}
+
+// GetTitle returns MenuItemCreateInput.Title, and is useful for accessing the field via an interface.
+func (v *MenuItemCreateInput) GetTitle() string { return v.Title }
+
+// GetType returns MenuItemCreateInput.Type, and is useful for accessing the field via an interface.
+func (v *MenuItemCreateInput) GetType() MenuItemType { return v.Type }
+
+// GetResourceId returns MenuItemCreateInput.ResourceId, and is useful for accessing the field via an interface.
+func (v *MenuItemCreateInput) GetResourceId() *string { return v.ResourceId }
+
+// GetUrl returns MenuItemCreateInput.Url, and is useful for accessing the field via an interface.
+func (v *MenuItemCreateInput) GetUrl() *string { return v.Url }
+
+// GetTags returns MenuItemCreateInput.Tags, and is useful for accessing the field via an interface.
+func (v *MenuItemCreateInput) GetTags() []string { return v.Tags }
+
+// GetItems returns MenuItemCreateInput.Items, and is useful for accessing the field via an interface.
+func (v *MenuItemCreateInput) GetItems() []MenuItemCreateInput { return v.Items }
+
+// MenuItemFields includes the GraphQL fields of MenuItem requested by the fragment MenuItemFields.
+// The GraphQL type's documentation follows.
+//
+// Individual navigation links that make up store menus, giving customers clickable paths to explore the store. Menu items are the building blocks that connect shoppers to products, collections, pages, or external resources.
+//
+// For example, within a "Products" menu, individual menu items might link to specific collections like "Summer Collection" or "Best Sellers," each with its own title, URL, and resource connection.
+//
+// Use the `MenuItem` object to:
+// - Define individual navigation links and their destinations
+// - Create nested menu hierarchies through item relationships
+// - Use tags for collection filtering
+// - Connect menu links to specific store resources
+//
+// Menu items support various link types, enabling connections to internal store content or external websites. The nested items capability allows for dropdown or multi-level navigation structures that help organize complex store catalogs.
+type MenuItemFields struct {
+	// The menu item's title.
+	Title string `json:"title"`
+	// The menu item's type.
+	Type MenuItemType `json:"type"`
+	// The ID of the resource to link to.
+	ResourceId *string `json:"resourceId"`
+	// The menu item's url.
+	Url *string `json:"url"`
+	// The menu item's tags to filter a collection.
+	Tags []string `json:"tags"`
+}
+
+// GetTitle returns MenuItemFields.Title, and is useful for accessing the field via an interface.
+func (v *MenuItemFields) GetTitle() string { return v.Title }
+
+// GetType returns MenuItemFields.Type, and is useful for accessing the field via an interface.
+func (v *MenuItemFields) GetType() MenuItemType { return v.Type }
+
+// GetResourceId returns MenuItemFields.ResourceId, and is useful for accessing the field via an interface.
+func (v *MenuItemFields) GetResourceId() *string { return v.ResourceId }
+
+// GetUrl returns MenuItemFields.Url, and is useful for accessing the field via an interface.
+func (v *MenuItemFields) GetUrl() *string { return v.Url }
+
+// GetTags returns MenuItemFields.Tags, and is useful for accessing the field via an interface.
+func (v *MenuItemFields) GetTags() []string { return v.Tags }
+
+// A menu item type.
+type MenuItemType string
+
+const (
+	// The frontpage menu item type.
+	MenuItemTypeFrontpage MenuItemType = "FRONTPAGE"
+	// The collection menu item type.
+	MenuItemTypeCollection MenuItemType = "COLLECTION"
+	// The collections menu item type.
+	MenuItemTypeCollections MenuItemType = "COLLECTIONS"
+	// The product menu item type.
+	MenuItemTypeProduct MenuItemType = "PRODUCT"
+	// The catalog menu item type.
+	MenuItemTypeCatalog MenuItemType = "CATALOG"
+	// The page menu item type.
+	MenuItemTypePage MenuItemType = "PAGE"
+	// The blog menu item type.
+	MenuItemTypeBlog MenuItemType = "BLOG"
+	// The article menu item type.
+	MenuItemTypeArticle MenuItemType = "ARTICLE"
+	// The search menu item type.
+	MenuItemTypeSearch MenuItemType = "SEARCH"
+	// The shop_policy menu item type.
+	MenuItemTypeShopPolicy MenuItemType = "SHOP_POLICY"
+	// The http menu item type.
+	MenuItemTypeHttp MenuItemType = "HTTP"
+	// The metaobject menu item type.
+	MenuItemTypeMetaobject MenuItemType = "METAOBJECT"
+	// The customer_account_page menu item type.
+	MenuItemTypeCustomerAccountPage MenuItemType = "CUSTOMER_ACCOUNT_PAGE"
+)
+
+var AllMenuItemType = []MenuItemType{
+	MenuItemTypeFrontpage,
+	MenuItemTypeCollection,
+	MenuItemTypeCollections,
+	MenuItemTypeProduct,
+	MenuItemTypeCatalog,
+	MenuItemTypePage,
+	MenuItemTypeBlog,
+	MenuItemTypeArticle,
+	MenuItemTypeSearch,
+	MenuItemTypeShopPolicy,
+	MenuItemTypeHttp,
+	MenuItemTypeMetaobject,
+	MenuItemTypeCustomerAccountPage,
+}
+
+// The input fields required to update a valid menu item.
+type MenuItemUpdateInput struct {
+	// The menu item's title.
+	Title string `json:"title"`
+	// The menu item's type.
+	Type MenuItemType `json:"type"`
+	// The menu item's association with an existing resource.
+	ResourceId *string `json:"resourceId,omitempty"`
+	// The menu item's url to be used when the item doesn't point to a resource.
+	Url *string `json:"url,omitempty"`
+	// The menu item's tags to filter a collection.
+	Tags []string `json:"tags,omitempty"`
+	// A globally-unique ID of the online store navigation menu item.
+	Id *string `json:"id,omitempty"`
+	// List of the menu items nested under this item sorted by position.
+	Items []MenuItemUpdateInput `json:"items,omitempty"`
+}
+
+// GetTitle returns MenuItemUpdateInput.Title, and is useful for accessing the field via an interface.
+func (v *MenuItemUpdateInput) GetTitle() string { return v.Title }
+
+// GetType returns MenuItemUpdateInput.Type, and is useful for accessing the field via an interface.
+func (v *MenuItemUpdateInput) GetType() MenuItemType { return v.Type }
+
+// GetResourceId returns MenuItemUpdateInput.ResourceId, and is useful for accessing the field via an interface.
+func (v *MenuItemUpdateInput) GetResourceId() *string { return v.ResourceId }
+
+// GetUrl returns MenuItemUpdateInput.Url, and is useful for accessing the field via an interface.
+func (v *MenuItemUpdateInput) GetUrl() *string { return v.Url }
+
+// GetTags returns MenuItemUpdateInput.Tags, and is useful for accessing the field via an interface.
+func (v *MenuItemUpdateInput) GetTags() []string { return v.Tags }
+
+// GetId returns MenuItemUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *MenuItemUpdateInput) GetId() *string { return v.Id }
+
+// GetItems returns MenuItemUpdateInput.Items, and is useful for accessing the field via an interface.
+func (v *MenuItemUpdateInput) GetItems() []MenuItemUpdateInput { return v.Items }
 
 // The input fields that set access permissions for the definition's metafields.
 type MetafieldAccessInput struct {
@@ -2958,6 +3907,156 @@ var AllMetaobjectStorefrontAccess = []MetaobjectStorefrontAccess{
 	MetaobjectStorefrontAccessPublicRead,
 }
 
+// UpdateMenuMenuUpdateMenuUpdatePayload includes the requested fields of the GraphQL type MenuUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `menuUpdate` mutation.
+type UpdateMenuMenuUpdateMenuUpdatePayload struct {
+	// The updated menu.
+	Menu *UpdateMenuMenuUpdateMenuUpdatePayloadMenu `json:"menu"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateMenuMenuUpdateMenuUpdatePayloadUserErrorsMenuUpdateUserError `json:"userErrors"`
+}
+
+// GetMenu returns UpdateMenuMenuUpdateMenuUpdatePayload.Menu, and is useful for accessing the field via an interface.
+func (v *UpdateMenuMenuUpdateMenuUpdatePayload) GetMenu() *UpdateMenuMenuUpdateMenuUpdatePayloadMenu {
+	return v.Menu
+}
+
+// GetUserErrors returns UpdateMenuMenuUpdateMenuUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateMenuMenuUpdateMenuUpdatePayload) GetUserErrors() []UpdateMenuMenuUpdateMenuUpdatePayloadUserErrorsMenuUpdateUserError {
+	return v.UserErrors
+}
+
+// UpdateMenuMenuUpdateMenuUpdatePayloadMenu includes the requested fields of the GraphQL type Menu.
+// The GraphQL type's documentation follows.
+//
+// Navigation menus that organize links into logical structures to guide customers through a store. Menus serve as the backbone of store navigation, making it easy for customers to find products, pages, and other content through organized hierarchical links.
+//
+// For example, a merchant might create a main navigation menu with top-level categories like "Products," "About Us," and "Contact," where each category can contain nested menu items linking to specific collections, pages, or external resources.
+//
+// Use the `Menu` object to:
+// - Build and customize store navigation structures
+// - Organize hierarchical menu systems with nested items
+// - Work with default menus that can't be deleted
+// - Access menu items for building navigation
+//
+// Menus can be designated as default navigation elements (like main menu or footer), which can't be deleted and have restricted handle updates. The handle provides a unique identifier that themes can reference, while the items collection enables nested navigation structures.
+//
+// Each menu contains menu items that can link to various resource types. This flexibility lets merchants create navigation experiences that guide customers through their store.
+type UpdateMenuMenuUpdateMenuUpdatePayloadMenu struct {
+	MenuFields `json:"-"`
+}
+
+// GetId returns UpdateMenuMenuUpdateMenuUpdatePayloadMenu.Id, and is useful for accessing the field via an interface.
+func (v *UpdateMenuMenuUpdateMenuUpdatePayloadMenu) GetId() string { return v.MenuFields.Id }
+
+// GetHandle returns UpdateMenuMenuUpdateMenuUpdatePayloadMenu.Handle, and is useful for accessing the field via an interface.
+func (v *UpdateMenuMenuUpdateMenuUpdatePayloadMenu) GetHandle() string { return v.MenuFields.Handle }
+
+// GetTitle returns UpdateMenuMenuUpdateMenuUpdatePayloadMenu.Title, and is useful for accessing the field via an interface.
+func (v *UpdateMenuMenuUpdateMenuUpdatePayloadMenu) GetTitle() string { return v.MenuFields.Title }
+
+// GetIsDefault returns UpdateMenuMenuUpdateMenuUpdatePayloadMenu.IsDefault, and is useful for accessing the field via an interface.
+func (v *UpdateMenuMenuUpdateMenuUpdatePayloadMenu) GetIsDefault() bool {
+	return v.MenuFields.IsDefault
+}
+
+// GetItems returns UpdateMenuMenuUpdateMenuUpdatePayloadMenu.Items, and is useful for accessing the field via an interface.
+func (v *UpdateMenuMenuUpdateMenuUpdatePayloadMenu) GetItems() []MenuFieldsItemsMenuItem {
+	return v.MenuFields.Items
+}
+
+func (v *UpdateMenuMenuUpdateMenuUpdatePayloadMenu) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateMenuMenuUpdateMenuUpdatePayloadMenu
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateMenuMenuUpdateMenuUpdatePayloadMenu = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MenuFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateMenuMenuUpdateMenuUpdatePayloadMenu struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	IsDefault bool `json:"isDefault"`
+
+	Items []MenuFieldsItemsMenuItem `json:"items"`
+}
+
+func (v *UpdateMenuMenuUpdateMenuUpdatePayloadMenu) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateMenuMenuUpdateMenuUpdatePayloadMenu) __premarshalJSON() (*__premarshalUpdateMenuMenuUpdateMenuUpdatePayloadMenu, error) {
+	var retval __premarshalUpdateMenuMenuUpdateMenuUpdatePayloadMenu
+
+	retval.Id = v.MenuFields.Id
+	retval.Handle = v.MenuFields.Handle
+	retval.Title = v.MenuFields.Title
+	retval.IsDefault = v.MenuFields.IsDefault
+	retval.Items = v.MenuFields.Items
+	return &retval, nil
+}
+
+// UpdateMenuMenuUpdateMenuUpdatePayloadUserErrorsMenuUpdateUserError includes the requested fields of the GraphQL type MenuUpdateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `MenuUpdate`.
+type UpdateMenuMenuUpdateMenuUpdatePayloadUserErrorsMenuUpdateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateMenuMenuUpdateMenuUpdatePayloadUserErrorsMenuUpdateUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateMenuMenuUpdateMenuUpdatePayloadUserErrorsMenuUpdateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateMenuMenuUpdateMenuUpdatePayloadUserErrorsMenuUpdateUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateMenuMenuUpdateMenuUpdatePayloadUserErrorsMenuUpdateUserError) GetMessage() string {
+	return v.Message
+}
+
+// UpdateMenuResponse is returned by UpdateMenu on success.
+type UpdateMenuResponse struct {
+	// Updates a [`Menu`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Menu) for display on the storefront. Modifies the menu's title and navigation structure, including nested [`MenuItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MenuItem) objects. You can update the handle for non-default menus.
+	//
+	// The items argument accepts a list of menu items with their nested structure. Each item can include nested items to create multi-level navigation hierarchies. Default menus have restricted updates—you can't change their handles.
+	MenuUpdate *UpdateMenuMenuUpdateMenuUpdatePayload `json:"menuUpdate"`
+}
+
+// GetMenuUpdate returns UpdateMenuResponse.MenuUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateMenuResponse) GetMenuUpdate() *UpdateMenuMenuUpdateMenuUpdatePayload {
+	return v.MenuUpdate
+}
+
 // UpdateMetafieldDefinitionMetafieldDefinitionUpdateMetafieldDefinitionUpdatePayload includes the requested fields of the GraphQL type MetafieldDefinitionUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -3328,6 +4427,22 @@ func (v *UpdateMetaobjectDefinitionResponse) GetMetaobjectDefinitionUpdate() *Up
 	return v.MetaobjectDefinitionUpdate
 }
 
+// __CreateMenuInput is used internally by genqlient
+type __CreateMenuInput struct {
+	Title  string                `json:"title"`
+	Handle string                `json:"handle"`
+	Items  []MenuItemCreateInput `json:"items"`
+}
+
+// GetTitle returns __CreateMenuInput.Title, and is useful for accessing the field via an interface.
+func (v *__CreateMenuInput) GetTitle() string { return v.Title }
+
+// GetHandle returns __CreateMenuInput.Handle, and is useful for accessing the field via an interface.
+func (v *__CreateMenuInput) GetHandle() string { return v.Handle }
+
+// GetItems returns __CreateMenuInput.Items, and is useful for accessing the field via an interface.
+func (v *__CreateMenuInput) GetItems() []MenuItemCreateInput { return v.Items }
+
 // __CreateMetafieldDefinitionInput is used internally by genqlient
 type __CreateMetafieldDefinitionInput struct {
 	Definition MetafieldDefinitionInput `json:"definition"`
@@ -3347,6 +4462,14 @@ type __CreateMetaobjectDefinitionInput struct {
 func (v *__CreateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinitionCreateInput {
 	return v.Definition
 }
+
+// __DeleteMenuInput is used internally by genqlient
+type __DeleteMenuInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteMenuInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteMenuInput) GetId() string { return v.Id }
 
 // __DeleteMetafieldDefinitionInput is used internally by genqlient
 type __DeleteMetafieldDefinitionInput struct {
@@ -3369,6 +4492,14 @@ type __DeleteMetaobjectDefinitionInput struct {
 
 // GetId returns __DeleteMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteMetaobjectDefinitionInput) GetId() string { return v.Id }
+
+// __GetMenuInput is used internally by genqlient
+type __GetMenuInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetMenuInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetMenuInput) GetId() string { return v.Id }
 
 // __GetMetafieldDefinitionInput is used internally by genqlient
 type __GetMetafieldDefinitionInput struct {
@@ -3396,6 +4527,34 @@ type __GetMetaobjectDefinitionInput struct {
 // GetId returns __GetMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetMetaobjectDefinitionInput) GetId() string { return v.Id }
 
+// __ListMenusInput is used internally by genqlient
+type __ListMenusInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListMenusInput.After, and is useful for accessing the field via an interface.
+func (v *__ListMenusInput) GetAfter() *string { return v.After }
+
+// __UpdateMenuInput is used internally by genqlient
+type __UpdateMenuInput struct {
+	Id     string                `json:"id"`
+	Title  string                `json:"title"`
+	Handle *string               `json:"handle,omitempty"`
+	Items  []MenuItemUpdateInput `json:"items"`
+}
+
+// GetId returns __UpdateMenuInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateMenuInput) GetId() string { return v.Id }
+
+// GetTitle returns __UpdateMenuInput.Title, and is useful for accessing the field via an interface.
+func (v *__UpdateMenuInput) GetTitle() string { return v.Title }
+
+// GetHandle returns __UpdateMenuInput.Handle, and is useful for accessing the field via an interface.
+func (v *__UpdateMenuInput) GetHandle() *string { return v.Handle }
+
+// GetItems returns __UpdateMenuInput.Items, and is useful for accessing the field via an interface.
+func (v *__UpdateMenuInput) GetItems() []MenuItemUpdateInput { return v.Items }
+
 // __UpdateMetafieldDefinitionInput is used internally by genqlient
 type __UpdateMetafieldDefinitionInput struct {
 	Definition MetafieldDefinitionUpdateInput `json:"definition"`
@@ -3418,6 +4577,72 @@ func (v *__UpdateMetaobjectDefinitionInput) GetId() string { return v.Id }
 // GetDefinition returns __UpdateMetaobjectDefinitionInput.Definition, and is useful for accessing the field via an interface.
 func (v *__UpdateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinitionUpdateInput {
 	return v.Definition
+}
+
+// The mutation executed by CreateMenu.
+const CreateMenu_Operation = `
+mutation CreateMenu ($title: String!, $handle: String!, $items: [MenuItemCreateInput!]!) {
+	menuCreate(title: $title, handle: $handle, items: $items) {
+		menu {
+			... MenuFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment MenuFields on Menu {
+	id
+	handle
+	title
+	isDefault
+	items {
+		... MenuItemFields
+		items {
+			... MenuItemFields
+			items {
+				... MenuItemFields
+			}
+		}
+	}
+}
+fragment MenuItemFields on MenuItem {
+	title
+	type
+	resourceId
+	url
+	tags
+}
+`
+
+func CreateMenu(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	title string,
+	handle string,
+	items []MenuItemCreateInput,
+) (data_ *CreateMenuResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateMenu",
+		Query:  CreateMenu_Operation,
+		Variables: &__CreateMenuInput{
+			Title:  title,
+			Handle: handle,
+			Items:  items,
+		},
+	}
+
+	data_ = &CreateMenuResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
 }
 
 // The mutation executed by CreateMetafieldDefinition.
@@ -3564,6 +4789,44 @@ func CreateMetaobjectDefinition(
 	return data_, err_
 }
 
+// The mutation executed by DeleteMenu.
+const DeleteMenu_Operation = `
+mutation DeleteMenu ($id: ID!) {
+	menuDelete(id: $id) {
+		deletedMenuId
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DeleteMenu(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteMenuResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteMenu",
+		Query:  DeleteMenu_Operation,
+		Variables: &__DeleteMenuInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteMenuResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by DeleteMetafieldDefinition.
 const DeleteMetafieldDefinition_Operation = `
 mutation DeleteMetafieldDefinition ($id: ID!, $deleteAllAssociatedMetafields: Boolean!) {
@@ -3631,6 +4894,62 @@ func DeleteMetaobjectDefinition(
 	}
 
 	data_ = &DeleteMetaobjectDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetMenu.
+const GetMenu_Operation = `
+query GetMenu ($id: ID!) {
+	menu(id: $id) {
+		... MenuFields
+	}
+}
+fragment MenuFields on Menu {
+	id
+	handle
+	title
+	isDefault
+	items {
+		... MenuItemFields
+		items {
+			... MenuItemFields
+			items {
+				... MenuItemFields
+			}
+		}
+	}
+}
+fragment MenuItemFields on MenuItem {
+	title
+	type
+	resourceId
+	url
+	tags
+}
+`
+
+func GetMenu(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetMenuResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetMenu",
+		Query:  GetMenu_Operation,
+		Variables: &__GetMenuInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetMenuResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -3872,6 +5191,137 @@ func GetShop(
 	}
 
 	data_ = &GetShopResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListMenus.
+const ListMenus_Operation = `
+query ListMenus ($after: String) {
+	menus(first: 250, after: $after) {
+		nodes {
+			... MenuFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment MenuFields on Menu {
+	id
+	handle
+	title
+	isDefault
+	items {
+		... MenuItemFields
+		items {
+			... MenuItemFields
+			items {
+				... MenuItemFields
+			}
+		}
+	}
+}
+fragment MenuItemFields on MenuItem {
+	title
+	type
+	resourceId
+	url
+	tags
+}
+`
+
+// menus(query:) can't filter by handle, so lookups by handle page through all menus.
+func ListMenus(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListMenusResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListMenus",
+		Query:  ListMenus_Operation,
+		Variables: &__ListMenusInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListMenusResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateMenu.
+const UpdateMenu_Operation = `
+mutation UpdateMenu ($id: ID!, $title: String!, $handle: String, $items: [MenuItemUpdateInput!]!) {
+	menuUpdate(id: $id, title: $title, handle: $handle, items: $items) {
+		menu {
+			... MenuFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment MenuFields on Menu {
+	id
+	handle
+	title
+	isDefault
+	items {
+		... MenuItemFields
+		items {
+			... MenuItemFields
+			items {
+				... MenuItemFields
+			}
+		}
+	}
+}
+fragment MenuItemFields on MenuItem {
+	title
+	type
+	resourceId
+	url
+	tags
+}
+`
+
+func UpdateMenu(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	title string,
+	handle *string,
+	items []MenuItemUpdateInput,
+) (data_ *UpdateMenuResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateMenu",
+		Query:  UpdateMenu_Operation,
+		Variables: &__UpdateMenuInput{
+			Id:     id,
+			Title:  title,
+			Handle: handle,
+			Items:  items,
+		},
+	}
+
+	data_ = &UpdateMenuResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

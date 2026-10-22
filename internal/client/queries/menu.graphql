@@ -1,0 +1,101 @@
+fragment MenuItemFields on MenuItem {
+  title
+  type
+  resourceId
+  url
+  tags
+}
+
+fragment MenuFields on Menu {
+  id
+  handle
+  title
+  isDefault
+  items {
+    ...MenuItemFields
+    items {
+      ...MenuItemFields
+      items {
+        ...MenuItemFields
+      }
+    }
+  }
+}
+
+query GetMenu(
+  $id: ID!
+) {
+  menu(id: $id) {
+    ...MenuFields
+  }
+}
+
+# menus(query:) can't filter by handle, so lookups by handle page through all menus.
+query ListMenus(
+  $after: String
+) {
+  menus(first: 250, after: $after) {
+    nodes {
+      ...MenuFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# @genqlient(for: "MenuItemCreateInput.resourceId", omitempty: true)
+# @genqlient(for: "MenuItemCreateInput.url", omitempty: true)
+# @genqlient(for: "MenuItemCreateInput.tags", omitempty: true)
+# @genqlient(for: "MenuItemCreateInput.items", omitempty: true)
+mutation CreateMenu(
+  $title: String!
+  $handle: String!
+  $items: [MenuItemCreateInput!]!
+) {
+  menuCreate(title: $title, handle: $handle, items: $items) {
+    menu {
+      ...MenuFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# @genqlient(for: "MenuItemUpdateInput.resourceId", omitempty: true)
+# @genqlient(for: "MenuItemUpdateInput.url", omitempty: true)
+# @genqlient(for: "MenuItemUpdateInput.tags", omitempty: true)
+# @genqlient(for: "MenuItemUpdateInput.id", omitempty: true)
+# @genqlient(for: "MenuItemUpdateInput.items", omitempty: true)
+mutation UpdateMenu(
+  $id: ID!
+  $title: String!
+  # @genqlient(omitempty: true)
+  $handle: String
+  $items: [MenuItemUpdateInput!]!
+) {
+  menuUpdate(id: $id, title: $title, handle: $handle, items: $items) {
+    menu {
+      ...MenuFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeleteMenu(
+  $id: ID!
+) {
+  menuDelete(id: $id) {
+    deletedMenuId
+    userErrors {
+      field
+      message
+    }
+  }
+}

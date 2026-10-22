@@ -93,3 +93,22 @@ func ConfiguredBool(v types.Bool) *bool {
 	}
 	return v.ValueBoolPointer()
 }
+
+// AdoptExistingAttribute is the Pattern A opt-in: Create takes over an existing object instead of failing.
+func AdoptExistingAttribute(what string) schema.BoolAttribute {
+	return schema.BoolAttribute{
+		MarkdownDescription: fmt.Sprintf("Take over an existing %s with the same natural key instead of failing. "+
+			"Destroy then only removes it from state. Defaults to `false`.", what),
+		Optional: true,
+		Computed: true,
+		Default:  booldefault.StaticBool(false),
+	}
+}
+
+// WarnRemovedFromStateOnly is the Pattern A delete: the object stays in Shopify.
+func WarnRemovedFromStateOnly(diags *diag.Diagnostics, what, reason string) {
+	diags.AddWarning(
+		fmt.Sprintf("The %s was only removed from Terraform state", what),
+		fmt.Sprintf("It still exists in Shopify because %s. Remove or reset it in the admin if needed.", reason),
+	)
+}

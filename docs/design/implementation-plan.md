@@ -48,7 +48,7 @@ This plan follows the implementation order in section 12 of the resource model, 
 - The plugin framework has no recursive schemas, so the 3 levels of menu items are written as 3 nested block levels.
 - Delete has two behaviours. An adopted menu is removed from state only, with a warning. An ordinary menu is deleted for real.
 - Validate `resource_id` against `url` per item type.
-- ⚠ to check: the full item type enum, and whether update replaces the whole item tree.
+- ⚠ items resolved in resource model §9.
 
 **Location**
 - Activate, deactivate and edit.
