@@ -170,7 +170,9 @@ func (p *ShopifyProvider) Resources(ctx context.Context) []func() resource.Resou
 }
 
 func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListResource {
-	return []func() list.ListResource{}
+	return []func() list.ListResource{
+		metafielddefinition.NewListResource,
+	}
 }
 
 func (p *ShopifyProvider) DataSources(ctx context.Context) []func() datasource.DataSource {

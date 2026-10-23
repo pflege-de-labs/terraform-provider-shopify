@@ -12,6 +12,7 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 // DefaultAPIVersion is the Admin API version the generated code is built against.
@@ -139,6 +140,20 @@ func retryWait(err error, resp *graphql.Response, attempt int) (time.Duration, b
 		}
 	}
 	return 0, false
+}
+
+// IsAccessDenied reports whether Shopify rejected the request for a missing access scope.
+func IsAccessDenied(err error) bool {
+	var errs gqlerror.List
+	if !errors.As(err, &errs) {
+		return false
+	}
+	for _, e := range errs {
+		if e.Extensions["code"] == "ACCESS_DENIED" {
+			return true
+		}
+	}
+	return false
 }
 
 func backoff(attempt int) time.Duration {

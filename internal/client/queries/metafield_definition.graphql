@@ -110,3 +110,17 @@ mutation DeleteMetafieldDefinition($id: ID!, $deleteAllAssociatedMetafields: Boo
     }
   }
 }
+
+# 100 per page keeps the requested cost under Shopify's 1000-point single-query limit.
+query ListMetafieldDefinitions($ownerType: MetafieldOwnerType!, $after: String) {
+  metafieldDefinitions(ownerType: $ownerType, first: 100, after: $after) {
+    # @genqlient(flatten: true)
+    nodes {
+      ...MetafieldDefinitionFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

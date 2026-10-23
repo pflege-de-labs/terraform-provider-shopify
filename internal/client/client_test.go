@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -160,6 +161,12 @@ func TestMakeRequest_DoesNotRetrySemanticErrors(t *testing.T) {
 	}
 	if n := f.gqlCalls.Load(); n != 1 {
 		t.Errorf("got %d calls, want 1", n)
+	}
+	if !IsAccessDenied(err) {
+		t.Errorf("IsAccessDenied(%v) = false", err)
+	}
+	if IsAccessDenied(errors.New("Access denied")) {
+		t.Error("IsAccessDenied matched a plain error")
 	}
 }
 

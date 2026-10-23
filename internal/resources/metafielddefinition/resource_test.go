@@ -168,18 +168,24 @@ func TestAccMetafieldDefinition_deletionGuard(t *testing.T) {
 	})
 }
 
-func checkDestroyed(t *testing.T, ns string) resource.TestCheckFunc {
+// checkDestroyed checks PRODUCT definitions in ns; keys defaults to care_level.
+func checkDestroyed(t *testing.T, ns string, keys ...string) resource.TestCheckFunc {
+	if len(keys) == 0 {
+		keys = []string{"care_level"}
+	}
 	return func(*terraform.State) error {
-		res, err := client.GetMetafieldDefinition(context.Background(), acctest.Client(t), client.MetafieldDefinitionIdentifierInput{
-			OwnerType: client.MetafieldOwnerTypeProduct,
-			Namespace: &ns,
-			Key:       "care_level",
-		})
-		if err != nil {
-			return err
-		}
-		if res.MetafieldDefinition != nil {
-			return fmt.Errorf("metafield definition %s/care_level still exists", ns)
+		for _, key := range keys {
+			res, err := client.GetMetafieldDefinition(context.Background(), acctest.Client(t), client.MetafieldDefinitionIdentifierInput{
+				OwnerType: client.MetafieldOwnerTypeProduct,
+				Namespace: &ns,
+				Key:       key,
+			})
+			if err != nil {
+				return err
+			}
+			if res.MetafieldDefinition != nil {
+				return fmt.Errorf("metafield definition %s/%s still exists", ns, key)
+			}
 		}
 		return nil
 	}

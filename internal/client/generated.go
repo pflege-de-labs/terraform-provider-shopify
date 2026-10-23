@@ -6486,6 +6486,61 @@ type ListMenusResponse struct {
 // GetMenus returns ListMenusResponse.Menus, and is useful for accessing the field via an interface.
 func (v *ListMenusResponse) GetMenus() ListMenusMenusMenuConnection { return v.Menus }
 
+// ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnection includes the requested fields of the GraphQL type MetafieldDefinitionConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple MetafieldDefinitions.
+type ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnection struct {
+	// A list of nodes that are contained in MetafieldDefinitionEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []MetafieldDefinitionFields `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnection) GetNodes() []MetafieldDefinitionFields {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnection) GetPageInfo() ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// ListMetafieldDefinitionsResponse is returned by ListMetafieldDefinitions on success.
+type ListMetafieldDefinitionsResponse struct {
+	// Returns a list of metafield definitions.
+	MetafieldDefinitions ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnection `json:"metafieldDefinitions"`
+}
+
+// GetMetafieldDefinitions returns ListMetafieldDefinitionsResponse.MetafieldDefinitions, and is useful for accessing the field via an interface.
+func (v *ListMetafieldDefinitionsResponse) GetMetafieldDefinitions() ListMetafieldDefinitionsMetafieldDefinitionsMetafieldDefinitionConnection {
+	return v.MetafieldDefinitions
+}
+
 // The input fields to use to specify the address while adding a location.
 type LocationAddAddressInput struct {
 	// The first line of the address.
@@ -10620,6 +10675,18 @@ type __ListMenusInput struct {
 // GetAfter returns __ListMenusInput.After, and is useful for accessing the field via an interface.
 func (v *__ListMenusInput) GetAfter() *string { return v.After }
 
+// __ListMetafieldDefinitionsInput is used internally by genqlient
+type __ListMetafieldDefinitionsInput struct {
+	OwnerType MetafieldOwnerType `json:"ownerType"`
+	After     *string            `json:"after"`
+}
+
+// GetOwnerType returns __ListMetafieldDefinitionsInput.OwnerType, and is useful for accessing the field via an interface.
+func (v *__ListMetafieldDefinitionsInput) GetOwnerType() MetafieldOwnerType { return v.OwnerType }
+
+// GetAfter returns __ListMetafieldDefinitionsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListMetafieldDefinitionsInput) GetAfter() *string { return v.After }
+
 // __UpdateDeliveryProfileInput is used internally by genqlient
 type __UpdateDeliveryProfileInput struct {
 	Id      string               `json:"id"`
@@ -12194,6 +12261,75 @@ func ListMenus(
 	}
 
 	data_ = &ListMenusResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListMetafieldDefinitions.
+const ListMetafieldDefinitions_Operation = `
+query ListMetafieldDefinitions ($ownerType: MetafieldOwnerType!, $after: String) {
+	metafieldDefinitions(ownerType: $ownerType, first: 100, after: $after) {
+		nodes {
+			... MetafieldDefinitionFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment MetafieldDefinitionFields on MetafieldDefinition {
+	id
+	ownerType
+	namespace
+	key
+	name
+	description
+	type {
+		name
+	}
+	validations {
+		name
+		value
+	}
+	access {
+		admin
+		storefront
+		customerAccount
+	}
+	pinnedPosition
+	capabilities {
+		smartCollectionCondition {
+			enabled
+		}
+	}
+}
+`
+
+// 100 per page keeps the requested cost under Shopify's 1000-point single-query limit.
+func ListMetafieldDefinitions(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	ownerType MetafieldOwnerType,
+	after *string,
+) (data_ *ListMetafieldDefinitionsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListMetafieldDefinitions",
+		Query:  ListMetafieldDefinitions_Operation,
+		Variables: &__ListMetafieldDefinitionsInput{
+			OwnerType: ownerType,
+			After:     after,
+		},
+	}
+
+	data_ = &ListMetafieldDefinitionsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
