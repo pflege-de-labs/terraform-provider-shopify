@@ -77,7 +77,7 @@ This plan follows the implementation order in section 12 of the resource model, 
 1. **Location deletion:** both. `deletion_policy = deactivate|delete` (default `deactivate`); `allow_data_deletion` guards only `delete`.
 2. **Location import key:** `<name>`, with the numeric `legacyResourceId` accepted as fallback. Why:
    - The GID is `gid://shopify/Location/<legacyResourceId>`, so both IDs change together when a location is recreated. The numeric ID is no more stable than the GID.
-   - Location has no `handle`. Names are unique per shop: confirmed on the dev store (`TAKEN`). ⚠ Not yet checked for deactivated locations.
+   - Location has no `handle`. Names are unique per shop: confirmed on the dev store (`TAKEN`), but only among active locations: a deactivated one does not block the name.
    - Names are portable across stores; numeric IDs are not, so they are the fallback only (e.g. for duplicate or unknown names).
 3. **Market links:** `web_presence_ids` and `catalog_ids` take plain IDs. `shopify_market_web_presence` is deferred.
 4. **Provider address:** `registry.terraform.io/pflege-de-labs/shopify`, Go module `github.com/pflege-de-labs/terraform-provider-shopify`.
