@@ -306,7 +306,7 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	}
 	if !deleting {
 		resp.Diagnostics.AddWarning("The location was deactivated, not deleted",
-			"deletion_policy is \"deactivate\", so the location stays in Shopify as inactive. Creating a location with the same name will fail until it is deleted in the admin.")
+			"deletion_policy is \"deactivate\", so the location stays in Shopify as inactive. A new location may reuse the name, but importing by that name is then ambiguous.")
 		return
 	}
 

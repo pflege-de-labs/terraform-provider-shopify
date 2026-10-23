@@ -30,7 +30,7 @@ provider "shopify" {
 - `access_token`: static token, used as is. For tokens obtained elsewhere.
 - Exactly one of the two modes must be set (plan-time validation; env vars count). Both credentials and the token are `Sensitive`.
 - Only works when the app and the store belong to the same Shopify organization; otherwise Shopify returns `shop_not_permitted`. Dev stores must be created from the Dev Dashboard for this reason.
-- Scopes come from the released app version, not from the token request. Missing-scope errors from the API are reported clearly, naming the scope where the API gives it ⚠.
+- Scopes come from the released app version, not from the token request. Missing-scope errors from the API are reported clearly, naming the scope where the API gives it. Checked 2026-10-23: `ACCESS_DENIED` says only "Access denied for orders field." plus a docs link, no scope name; the message is passed through as is.
 - Source: [Get API access tokens for Dev Dashboard apps](https://shopify.dev/docs/apps/build/dev-dashboard/get-api-access-tokens)
 
 - One provider instance is one store. Use provider aliases for multiple stores.
@@ -49,7 +49,7 @@ provider "shopify" {
 | `shopify_metafield_definition` | `<OWNER_TYPE>/<namespace>/<key>`, e.g. `PRODUCT/custom/material` |
 | `shopify_metaobject_definition` | `<type>`, e.g. `care_level` |
 | `shopify_market` | `<handle>` |
-| `shopify_location` | `<name>` (no handle exists; unique per shop ⚠). A numeric `legacyResourceId` is accepted as fallback |
+| `shopify_location` | `<name>` (no handle exists; unique among active locations, see §7). A numeric `legacyResourceId` is accepted as fallback |
 | `shopify_delivery_profile` | `<name>`, or `default` for the general profile |
 | `shopify_menu` | `<handle>` |
 
@@ -61,7 +61,7 @@ provider "shopify" {
 - Optional attributes left unset are **not managed**. The provider doesn't overwrite admin edits to them. This reduces drift noise.
 
 ### Pattern A: "adopt" for objects that exist once per store
-Some objects already exist on every store and can't be created or deleted (the shop, the general delivery profile, default menus such as `main-menu`/`footer` ⚠).
+Some objects already exist on every store and can't be created or deleted (the shop, the general delivery profile, default menus such as `main-menu`/`footer`: the schema marks them `isDefault`, "can't be deleted").
 - **Create** = find by natural key, then update to the desired state.
 - **Delete** = remove from state only, plus a warning diagnostic.
 - Normal resources get the same behaviour through an `adopt_existing = true` flag. Without it, Create fails if the natural key already exists, which prevents silently taking over objects someone else manages.
@@ -75,7 +75,7 @@ Resources whose deletion destroys data (metafield and metaobject definitions, lo
 ### Error handling
 - GraphQL `userErrors` (returned inside HTTP 200) → Terraform diagnostics, mapped to the attribute path from `userErrors.field` where possible.
 - Throttling (`THROTTLED` / `extensions.cost.throttleStatus`) → wait until enough points are restored, then retry.
-- Async operations (e.g. metaobject definition deletion ⚠) → poll the returned job until done, with a timeout set via the `timeouts` block.
+- Async operations (e.g. none in phase 1: `metaobjectDefinitionDelete` returns only `deletedId`, no job) → poll the returned job until done, with a timeout set via the `timeouts` block.
 
 ---
 
@@ -270,9 +270,9 @@ resource "shopify_location" "warehouse_hamburg" {
 
 Mutations: `locationAdd`, `locationEdit`, `locationActivate`, `locationDeactivate`, `locationDelete`. Activate and deactivate require an `@idempotent(key:)` directive since 2026-04; the provider sends a random key per call, which retries reuse.
 
-**Lookup:** Read uses `location(id:)`, falling back to `locations(query: "name:\"…\"", includeInactive: true)` with an exact-name match. Import accepts the name or the numeric `legacyResourceId`. The search lags a few seconds behind writes. Names are unique per shop: `locationAdd` returns `TAKEN` ("You already have a location with this name"), confirmed against an active location; ⚠ not checked against a deactivated one.
+**Lookup:** Read uses `location(id:)`, falling back to `locations(query: "name:\"…\"", includeInactive: true)` with an exact-name match. Import accepts the name or the numeric `legacyResourceId`. The search lags a few seconds behind writes. Names are unique per shop: `locationAdd` returns `TAKEN` ("You already have a location with this name"), confirmed against an active location. A deactivated location does **not** block the name (checked on the dev store 2026-10-23), so after a `deactivate` destroy and re-create two locations share a name; name lookup then fails as ambiguous and import needs the numeric ID.
 
-Watch out: the location limit depends on the plan, and deactivating a location that holds inventory needs a destination for that inventory ⚠. That is a reason to default to `deactivate` and treat deletion as rare.
+Watch out: the location limit depends on the plan, and deactivating a location that holds inventory needs a destination for that inventory: without `destinationLocationId`, `locationDeactivate` fails with `HAS_ACTIVE_INVENTORY_ERROR` (schema). The provider passes no destination, so the error is reported and nothing moves. That is a reason to default to `deactivate` and treat deletion as rare.
 
 ---
 
