@@ -1,6 +1,6 @@
 # Bootstrapping: Shopify App and Credentials
 
-**Last updated:** 2026-10-22 · **Related:** [[shopify-infra-automation-approach]] (Bootstrapping and auth), [[terraform-provider-resource-model]] §1
+**Last updated:** 2026-10-23 · **Related:** [[shopify-infra-automation-approach]] (Bootstrapping and auth), [[terraform-provider-resource-model]] §1
 
 The provider authenticates as a Dev Dashboard app installed on the target store. This is the manual "step 0" for each store. It can't be automated.
 
@@ -28,17 +28,44 @@ shopify app deploy        # releases a new version with the TOML's config
 
 Scopes:
 
-| Scope | Needed for |
-|---|---|
-| none | `shopify_shop` data source |
-| `write_products` | `shopify_metafield_definition` with owner type `PRODUCT` (other owner types may need more ⚠) |
-| `write_metaobject_definitions` | `shopify_metaobject_definition` |
-| `write_online_store_navigation` | `shopify_menu` |
-| `write_locations` | `shopify_location` |
-| `write_markets` | `shopify_market` |
-| `write_shipping` | `shopify_delivery_profile` |
+The provider aims to cover every store object the Admin API lets you manage. Grant only the scopes for the resource types your configuration uses: every extra write scope widens what a leaked secret can change. The reference configs in [`app/`](../app) list the full set.
 
-Grant nothing else. In particular, don't grant theme, page or content scopes: the provider doesn't manage them, and a leaked secret would allow changes to the live theme.
+Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usage/access-scopes) (checked 2026-10-23). "Fit" says whether the objects are stable configuration (good) or change often through the admin or other systems (volatile): volatile types can be managed, but Terraform will often show drift.
+
+| Scope | Resource types | Status | Fit |
+|---|---|---|---|
+| none | `shopify_shop` data source | ✅ | |
+| `write_products` | `shopify_metafield_definition` (owner types `PRODUCT`, `PRODUCTVARIANT`, `COLLECTION`), catalogs, price lists, selling plan groups; products and collections | ✅ definitions (`PRODUCT`), rest planned | definitions good; products, collections volatile |
+| `write_metaobject_definitions` | `shopify_metaobject_definition` | ✅ | good |
+| `write_online_store_navigation` | `shopify_menu`, URL redirects | ✅ menus, redirects planned | menus good; redirects volatile |
+| `write_locations` | `shopify_location` | ✅ | good |
+| `write_markets` | `shopify_market`, web presences | ✅ markets, web presences planned | good |
+| `write_shipping` | `shopify_delivery_profile` (general; custom profiles planned), carrier services | ✅ general profile | good; carrier services are app-owned |
+| `write_locales` | shop locales; web presence locales (needed to read them) | planned | good |
+| `write_legal_policies` | shop policies | planned | good |
+| `write_privacy_settings` | privacy settings, cookie banner | planned | good |
+| `write_checkout_and_accounts_configurations` | checkout and accounts configuration | planned | good |
+| `write_checkout_branding_settings` | checkout branding | planned | good |
+| `write_translations` | translations, market localizations | planned | volatile (follows content) |
+| `write_publications` | publications, publishing to channels | planned | volatile |
+| `write_customers` | customer segments; metafield definitions for `CUSTOMER` ⚠ | planned | segments volatile |
+| `write_companies` | metafield definitions for `COMPANY`, `COMPANY_LOCATION` ⚠ (B2B stores only; not in the reference configs) | planned | good |
+| `write_orders`, `write_draft_orders` | metafield definitions for `ORDER`, `DRAFTORDER` ⚠ | planned | good |
+| `write_content` | pages, blogs, articles; their metafield definitions ⚠ | planned | volatile (content) |
+| `write_discounts` | discounts; metafield definitions for `DISCOUNT` ⚠ | planned | volatile (content) |
+| `write_metaobjects` | metaobject entries | planned | volatile (content) |
+| `write_files` | files and media | planned | volatile (content) |
+| `write_inventory` | inventory levels | planned | volatile |
+| `write_fulfillments` | fulfillment services | planned | app-owned (callback URL) |
+| `write_payment_customizations`, `write_delivery_customizations`, `write_validations`, `write_cart_transforms`, `write_fulfillment_constraint_rules` | Function-backed customizations (need a Function from an installed app) | planned | good once the Function exists |
+
+⚠ Which scope a metafield definition needs per owner type is not documented by Shopify. Without it, listing returns an empty result instead of an error (checked on the dev store). Verify each mapping when its owner type is implemented.
+
+Not covered, because another tool owns them or they are records, not configuration:
+- Themes (`write_themes`): theme tooling (GitHub integration, `shopify theme push`).
+- App webhooks, web pixels, script tags, app proxy, extensions: the app's `shopify.app.toml`.
+- Orders, returns, fulfillment orders, gift cards, store credit, payments, marketing events, reports: transactional records.
+- Taxes (`read_taxes`/`write_taxes`) and staff (`read_users`): need Shopify approval.
 
 ## 3. Install on the store
 
@@ -85,14 +112,14 @@ To avoid this, create **two apps per store**:
 
 | App | Scopes | Used by |
 |---|---|---|
-| Plan | the `read_*` counterparts of the scopes in step 2: `read_products`, `read_metaobject_definitions`, `read_online_store_navigation`, `read_locations`, `read_markets`, `read_shipping` | `terraform plan` on PRs and branches |
+| Plan | the `read_*` counterparts of the write scopes you grant in step 2 | `terraform plan` on PRs and branches |
 | Apply | the `write_*` scopes from step 2 | `terraform apply` on the main branch only |
 
 `terraform plan` only reads, so the plan app is enough for it. Keep the apply app's secret where only main-branch jobs can read it, e.g. a GitHub environment whose deployment branches are limited to `main`. Then a PR can leak at most a read-only token. Each app has its own `shopify.app.toml` (`--config <name>`) and is installed on the store separately.
 
 The plan app's config is [`app/shopify.app.readonly.toml`](../app/shopify.app.readonly.toml). Create it as a second app (step 1), then from `app/` run `shopify app config link --config readonly` and `shopify app deploy --config readonly`, and install it on each store (step 3). Inside the plan job, use the same env var names as in step 4. An apply with these credentials fails with `ACCESS_DENIED` and changes nothing.
 
-⚠ Not yet tested: whether the read scopes cover every nested field the market and delivery profile queries read (catalogs, web presences, zone locations). Check with `terraform plan` against the dev store.
+The read scopes cover the nested fields of markets and the delivery profile: PR plans with the plan app passed on staging and production (2026-10-23).
 
 Running PR plans with the write app is a valid shortcut while there are only trusted contributors, but treat it as a known risk.
 

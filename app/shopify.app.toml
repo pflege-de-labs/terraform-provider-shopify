@@ -5,8 +5,8 @@ application_url = "https://shopify.dev/apps/default-app-home" # provider has no 
 embedded = false
 
 [access_scopes]
-# Keep in sync with the scope table in docs/bootstrapping.md and the read scopes in shopify.app.readonly.toml.
-scopes = "write_locations,write_markets,write_metaobject_definitions,write_online_store_navigation,write_products,write_shipping"
+# Full set for every resource type the provider covers; trim to what you manage. Keep in sync with docs/bootstrapping.md and shopify.app.readonly.toml.
+scopes = "write_cart_transforms,write_checkout_and_accounts_configurations,write_checkout_branding_settings,write_content,write_customers,write_delivery_customizations,write_discounts,write_draft_orders,write_files,write_fulfillment_constraint_rules,write_fulfillments,write_inventory,write_legal_policies,write_locales,write_locations,write_markets,write_metaobject_definitions,write_metaobjects,write_online_store_navigation,write_orders,write_payment_customizations,write_privacy_settings,write_products,write_publications,write_shipping,write_translations,write_validations"
 use_legacy_install_flow = false
 
 [auth]
