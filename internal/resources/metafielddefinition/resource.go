@@ -361,6 +361,7 @@ func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequ
 			return
 		}
 		parts = []string{string(d.OwnerType), d.Namespace, d.Key}
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, id)...)
 	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("owner_type"), parts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("namespace"), parts[1])...)

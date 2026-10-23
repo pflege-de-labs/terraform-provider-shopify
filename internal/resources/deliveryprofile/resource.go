@@ -270,6 +270,15 @@ func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequ
 		if resp.Diagnostics.HasError() {
 			return
 		}
+		general, err := r.generalProfileID(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to find the general "+what, err.Error())
+			return
+		}
+		if id.ID.ValueString() != general {
+			resp.Diagnostics.AddError("Unsupported delivery profile", "Only the general profile is supported; "+id.ID.ValueString()+" is not it.")
+			return
+		}
 		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id.ID)...)
 		resp.Diagnostics.Append(resp.Identity.Set(ctx, id)...)
 		return
