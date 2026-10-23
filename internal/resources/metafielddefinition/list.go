@@ -33,7 +33,7 @@ func (r *ListResource) ListResourceConfigSchema(ctx context.Context, req list.Li
 		MarkdownDescription: "Lists the metafield definitions of one owner type.",
 		Attributes: map[string]listschema.Attribute{
 			"owner_type": listschema.StringAttribute{
-				MarkdownDescription: "Owner resource type, e.g. `PRODUCT`. Without the app's read scope for that type the list can come back empty.",
+				MarkdownDescription: "Owner resource type, e.g. `PRODUCT`. For an owner type the app has no read scope for, Shopify returns an empty list, not an error.",
 				Required:            true,
 			},
 		},
@@ -55,10 +55,7 @@ func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *l
 				return nil, nil, err
 			}
 			conn := res.MetafieldDefinitions
-			if !conn.PageInfo.HasNextPage {
-				return conn.Nodes, nil, nil
-			}
-			return conn.Nodes, conn.PageInfo.EndCursor, nil
+			return conn.Nodes, patterns.NextCursor(conn.PageInfo.HasNextPage, conn.PageInfo.EndCursor), nil
 		}
 		err := patterns.Paginate(ctx, req.Limit, page, func(d client.MetafieldDefinitionFields) bool {
 			return push(listResult(ctx, req, &d))

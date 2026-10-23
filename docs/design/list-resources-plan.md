@@ -34,7 +34,7 @@
 1. **Generated config round-trip:** `terraform query -generate-config-out` followed by `plan` must show only imports, no updates. The listed resource is the full model Read produces; the risk is attributes that don't survive API → model → HCL → plan (menu non-HTTP `url`, market region sets, delivery profile method matching). Owned by each list task, step 5 (round-trip).
 2. **Existing state without identity:** Read must set identity when state has none (state written by the current provider). Owned by each identity task, test `ExpectIdentity` after a plain refresh step.
 3. **Pagination and limit:** stores with more objects than one page (default page size 50), and `limit` smaller than one page. Owned by Task 3 (`patterns.Paginate` unit test).
-4. **Missing scope for an owner type:** a `list` block for an owner type the app can't read must fail with an error naming the owner type, not an opaque GraphQL message. Owned by Task 4.
+4. **Missing scope for an owner type:** a `list` block for an owner type the app can't read must fail with an error naming the owner type, not an opaque GraphQL message. Owned by Task 4. Finding (dev store, 2026-10-23): for owner types without a read scope (e.g. `CUSTOMER`, `ORDER`) `metafieldDefinitions` returns an empty list, not `ACCESS_DENIED`. The error path stays in case the API changes.
 5. **Pattern A objects in lists:** default menus and the general delivery profile appear in list results; importing them must not trigger Create (adopt) or Delete. Owned by Tasks 6 and 8.
 
 ---

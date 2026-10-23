@@ -135,11 +135,24 @@ func TestAccMetafieldDefinition_deletionGuard(t *testing.T) {
 				RefreshState: true,
 			},
 			{
+				// Refresh steps can't carry state checks; this no-op step checks identity survives the refresh.
+				Config:            guarded,
+				ConfigStateChecks: []statecheck.StateCheck{expectIdentity},
+			},
+			{
 				// Here, not in _basic: its allow_data_deletion = true would turn the import into an update.
 				Config:          guarded,
 				ResourceName:    addr,
 				ImportState:     true,
 				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+			},
+			{
+				// Generated config must pass validation; the default admin access PUBLIC_READ_WRITE can't be set.
+				Config:          guarded,
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+				GenerateConfig:  true,
 			},
 			{
 				Config:      guarded,

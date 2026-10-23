@@ -21,6 +21,14 @@ func IDIdentitySchema() identityschema.Schema {
 	}
 }
 
+// NextCursor returns the cursor for the next page, or nil on the last page.
+func NextCursor(hasNextPage bool, endCursor *string) *string {
+	if !hasNextPage {
+		return nil
+	}
+	return endCursor
+}
+
 // Paginate pulls pages until limit (0 = none), push returns false, or there is no next cursor.
 func Paginate[T any](ctx context.Context, limit int64, page func(after *string) ([]T, *string, error), push func(T) bool) error {
 	var after *string

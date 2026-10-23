@@ -6,6 +6,16 @@ import (
 	"testing"
 )
 
+func TestNextCursor(t *testing.T) {
+	c := "c"
+	if NextCursor(false, &c) != nil {
+		t.Error("last page returned a cursor")
+	}
+	if got := NextCursor(true, &c); got != &c {
+		t.Errorf("got %v", got)
+	}
+}
+
 func TestPaginate(t *testing.T) {
 	pages := [][]int{{1, 2}, {3, 4}, {5, 6}}
 	pager := func(calls *int) func(*string) ([]int, *string, error) {

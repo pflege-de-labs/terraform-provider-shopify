@@ -141,7 +141,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				PlanModifiers:       []planmodifier.Object{objectplanmodifier.UseStateForUnknown()},
 				Attributes: map[string]schema.Attribute{
 					"admin": schema.StringAttribute{
-						MarkdownDescription: "`MERCHANT_READ` or `MERCHANT_READ_WRITE`.",
+						MarkdownDescription: "`MERCHANT_READ` or `MERCHANT_READ_WRITE`. Null when Shopify reports a value that can't be set, e.g. the default `PUBLIC_READ_WRITE`.",
 						Optional:            true,
 						Computed:            true,
 						PlanModifiers:       keepString,
@@ -253,8 +253,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 		return
 	}
 
-	// Lookup is by natural key only: genqlient can't generate node(id:) for this schema, and the key is immutable,
-	// so a definition recreated in the admin is found the same way. See resource model §4.
+	// Lookup is by natural key: it is immutable, so a definition recreated in the admin is still found. See resource model §4.
 	res, err := client.GetMetafieldDefinition(ctx, r.client, client.MetafieldDefinitionIdentifierInput{
 		OwnerType: client.MetafieldOwnerType(state.OwnerType.ValueString()),
 		Namespace: state.Namespace.ValueStringPointer(),
@@ -407,7 +406,7 @@ func setFromAPI(ctx context.Context, m *model, d *client.MetafieldDefinitionFiel
 	diags.Append(dd...)
 
 	access := accessModel{
-		Admin:           types.StringPointerValue((*string)(d.Access.Admin)),
+		Admin:           adminAccess(d.Access.Admin),
 		Storefront:      types.StringPointerValue((*string)(d.Access.Storefront)),
 		CustomerAccount: types.StringValue(string(d.Access.CustomerAccount)),
 	}
@@ -417,6 +416,14 @@ func setFromAPI(ctx context.Context, m *model, d *client.MetafieldDefinitionFiel
 	m.Pin = types.BoolValue(d.PinnedPosition != nil)
 	m.UseAsCollectionCondition = types.BoolValue(d.Capabilities.SmartCollectionCondition.Enabled)
 	return diags
+}
+
+// adminAccess keeps only values the input accepts, so generated config passes validation.
+func adminAccess(a *client.MetafieldAdminAccess) types.String {
+	if a == nil || (*a != client.MetafieldAdminAccessMerchantRead && *a != client.MetafieldAdminAccessMerchantReadWrite) {
+		return types.StringNull()
+	}
+	return types.StringValue(string(*a))
 }
 
 // validationsInput always returns a non-nil slice so an empty map clears validations instead of sending null.

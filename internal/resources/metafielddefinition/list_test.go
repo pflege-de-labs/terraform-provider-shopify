@@ -72,6 +72,8 @@ resource "shopify_metafield_definition" "b" {
 							{Path: tfjsonpath.New("type"), KnownValue: knownvalue.StringExact("number_integer")},
 							{Path: tfjsonpath.New("name"), KnownValue: knownvalue.StringExact("Care level")},
 							{Path: tfjsonpath.New("allow_data_deletion"), KnownValue: knownvalue.Bool(false)},
+							// Shopify reports the default PUBLIC_READ_WRITE, which the input can't set.
+							{Path: tfjsonpath.New("access").AtMapKey("admin"), KnownValue: knownvalue.Null()},
 						}),
 				},
 			},

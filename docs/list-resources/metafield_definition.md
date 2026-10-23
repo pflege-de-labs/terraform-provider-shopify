@@ -27,4 +27,4 @@ list "shopify_metafield_definition" "product" {
 
 ### Required
 
-- `owner_type` (String) Owner resource type, e.g. `PRODUCT`. Without the app's read scope for that type the list can come back empty.
+- `owner_type` (String) Owner resource type, e.g. `PRODUCT`. For an owner type the app has no read scope for, Shopify returns an empty list, not an error.
