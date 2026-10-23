@@ -176,6 +176,7 @@ func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListR
 		menu.NewListResource,
 		location.NewListResource,
 		deliveryprofile.NewListResource,
+		market.NewListResource,
 	}
 }
 
