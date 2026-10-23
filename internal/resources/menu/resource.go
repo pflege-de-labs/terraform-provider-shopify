@@ -27,6 +27,7 @@ var itemTypes = []string{"FRONTPAGE", "COLLECTION", "COLLECTIONS", "PRODUCT", "C
 var (
 	_ resource.ResourceWithConfigure      = &Resource{}
 	_ resource.ResourceWithImportState    = &Resource{}
+	_ resource.ResourceWithIdentity       = &Resource{}
 	_ resource.ResourceWithValidateConfig = &Resource{}
 )
 
@@ -50,6 +51,10 @@ type model struct {
 
 func (r *Resource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_menu"
+}
+
+func (r *Resource) IdentitySchema(ctx context.Context, req resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = patterns.IDIdentitySchema()
 }
 
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -173,6 +178,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		plan.ID = types.StringValue(existing.Id)
 		r.update(ctx, &plan, &resp.Diagnostics)
 		resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 		return
 	}
 
@@ -195,6 +201,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	}
 	setFromAPI(&plan, &res.MenuCreate.Menu.MenuFields)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
 
 func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -233,6 +240,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	}
 	setFromAPI(&state, menu)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: state.ID})...)
 }
 
 func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -246,6 +254,7 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 		return
 	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
 
 func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -271,8 +280,20 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	resp.Diagnostics.Append(client.UserErrorDiags("Failed to delete "+what, res.MenuDelete.UserErrors)...)
 }
 
+// ImportState takes the handle from `terraform import`, or the GID from an import block with identity.
 func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("handle"), req, resp)
+	if req.ID != "" {
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("handle"), req.ID)...)
+		return
+	}
+	var id patterns.IDIdentity
+	resp.Diagnostics.Append(req.Identity.Get(ctx, &id)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	// Read looks up by GID first, so the handle is filled in there.
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id.ID)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, id)...)
 }
 
 func (r *Resource) update(ctx context.Context, plan *model, diags *diag.Diagnostics) {
