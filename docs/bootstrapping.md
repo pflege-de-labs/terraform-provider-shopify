@@ -77,6 +77,21 @@ Expected: `scope` matches the list in step 2, and `expires_in` is `86399` (24h).
 
 Releasing alone did **not** update the scopes on a store that already had the app installed, even though the docs suggest it should for apps owned by your organization. Run the step 5 check afterwards.
 
+## Recommended: separate plan and apply apps
+
+A pipeline that plans on pull requests hands the plan job the app's credentials. With write scopes, anyone who can open a PR in the repo could edit the workflow, or add a data source that runs at plan time, and use the write token on the store. No state backend access is needed for that.
+
+To avoid this, create **two apps per store**:
+
+| App | Scopes | Used by |
+|---|---|---|
+| Plan | the `read_*` counterparts of the scopes in step 2: `read_products`, `read_metaobject_definitions`, `read_online_store_navigation`, `read_locations`, `read_markets`, `read_shipping` | `terraform plan` on PRs and branches |
+| Apply | the `write_*` scopes from step 2 | `terraform apply` on the main branch only |
+
+`terraform plan` only reads, so the plan app is enough for it. Keep the apply app's secret where only main-branch jobs can read it, e.g. a GitHub environment whose deployment branches are limited to `main`. Then a PR can leak at most a read-only token. Each app has its own `shopify.app.toml` (`--config <name>`) and is installed on the store separately.
+
+Running PR plans with the write app is a valid shortcut while there are only trusted contributors, but treat it as a known risk.
+
 ## Troubleshooting
 
 | Symptom | Cause |
