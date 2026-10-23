@@ -6173,6 +6173,160 @@ func (v *ListDeliveryProfilesResponse) GetDeliveryProfiles() ListDeliveryProfile
 	return v.DeliveryProfiles
 }
 
+// ListLocationsLocationsLocationConnection includes the requested fields of the GraphQL type LocationConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Locations.
+type ListLocationsLocationsLocationConnection struct {
+	// A list of nodes that are contained in LocationEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListLocationsLocationsLocationConnectionNodesLocation `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListLocationsLocationsLocationConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListLocationsLocationsLocationConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListLocationsLocationsLocationConnection) GetNodes() []ListLocationsLocationsLocationConnectionNodesLocation {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListLocationsLocationsLocationConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListLocationsLocationsLocationConnection) GetPageInfo() ListLocationsLocationsLocationConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListLocationsLocationsLocationConnectionNodesLocation includes the requested fields of the GraphQL type Location.
+// The GraphQL type's documentation follows.
+//
+// A physical location where merchants store and fulfill inventory. Locations include retail stores, warehouses, popups, dropshippers, or other places where inventory is managed or stocked.
+//
+// Active locations can fulfill online orders when configured with shipping rates, local pickup, or local delivery options. Locations track inventory quantities for [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and process [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order) fulfillment. Third-party apps using [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) can create and manage their own locations.
+type ListLocationsLocationsLocationConnectionNodesLocation struct {
+	LocationFields `json:"-"`
+}
+
+// GetId returns ListLocationsLocationsLocationConnectionNodesLocation.Id, and is useful for accessing the field via an interface.
+func (v *ListLocationsLocationsLocationConnectionNodesLocation) GetId() string {
+	return v.LocationFields.Id
+}
+
+// GetLegacyResourceId returns ListLocationsLocationsLocationConnectionNodesLocation.LegacyResourceId, and is useful for accessing the field via an interface.
+func (v *ListLocationsLocationsLocationConnectionNodesLocation) GetLegacyResourceId() string {
+	return v.LocationFields.LegacyResourceId
+}
+
+// GetName returns ListLocationsLocationsLocationConnectionNodesLocation.Name, and is useful for accessing the field via an interface.
+func (v *ListLocationsLocationsLocationConnectionNodesLocation) GetName() string {
+	return v.LocationFields.Name
+}
+
+// GetIsActive returns ListLocationsLocationsLocationConnectionNodesLocation.IsActive, and is useful for accessing the field via an interface.
+func (v *ListLocationsLocationsLocationConnectionNodesLocation) GetIsActive() bool {
+	return v.LocationFields.IsActive
+}
+
+// GetFulfillsOnlineOrders returns ListLocationsLocationsLocationConnectionNodesLocation.FulfillsOnlineOrders, and is useful for accessing the field via an interface.
+func (v *ListLocationsLocationsLocationConnectionNodesLocation) GetFulfillsOnlineOrders() bool {
+	return v.LocationFields.FulfillsOnlineOrders
+}
+
+// GetAddress returns ListLocationsLocationsLocationConnectionNodesLocation.Address, and is useful for accessing the field via an interface.
+func (v *ListLocationsLocationsLocationConnectionNodesLocation) GetAddress() LocationFieldsAddressLocationAddress {
+	return v.LocationFields.Address
+}
+
+func (v *ListLocationsLocationsLocationConnectionNodesLocation) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListLocationsLocationsLocationConnectionNodesLocation
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListLocationsLocationsLocationConnectionNodesLocation = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.LocationFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListLocationsLocationsLocationConnectionNodesLocation struct {
+	Id string `json:"id"`
+
+	LegacyResourceId string `json:"legacyResourceId"`
+
+	Name string `json:"name"`
+
+	IsActive bool `json:"isActive"`
+
+	FulfillsOnlineOrders bool `json:"fulfillsOnlineOrders"`
+
+	Address LocationFieldsAddressLocationAddress `json:"address"`
+}
+
+func (v *ListLocationsLocationsLocationConnectionNodesLocation) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListLocationsLocationsLocationConnectionNodesLocation) __premarshalJSON() (*__premarshalListLocationsLocationsLocationConnectionNodesLocation, error) {
+	var retval __premarshalListLocationsLocationsLocationConnectionNodesLocation
+
+	retval.Id = v.LocationFields.Id
+	retval.LegacyResourceId = v.LocationFields.LegacyResourceId
+	retval.Name = v.LocationFields.Name
+	retval.IsActive = v.LocationFields.IsActive
+	retval.FulfillsOnlineOrders = v.LocationFields.FulfillsOnlineOrders
+	retval.Address = v.LocationFields.Address
+	return &retval, nil
+}
+
+// ListLocationsLocationsLocationConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListLocationsLocationsLocationConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListLocationsLocationsLocationConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListLocationsLocationsLocationConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ListLocationsLocationsLocationConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListLocationsLocationsLocationConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
+
+// ListLocationsResponse is returned by ListLocations on success.
+type ListLocationsResponse struct {
+	// A paginated list of inventory locations where merchants can stock [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) items and fulfill [`Order`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order) items.
+	//
+	// Returns only active locations by default. Use the [`includeInactive`](https://shopify.dev/docs/api/admin-graphql/latest/queries/locations#arguments-includeInactive) argument to retrieve deactivated locations that can no longer stock inventory or fulfill orders. Use the [`includeLegacy`](https://shopify.dev/docs/api/admin-graphql/latest/queries/locations#arguments-includeLegacy) argument to include locations that [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) apps manage. Use the [`query`](https://shopify.dev/docs/api/admin-graphql/latest/queries/locations#arguments-query) argument to filter by location attributes like name, address, and whether local pickup is enabled.
+	Locations ListLocationsLocationsLocationConnection `json:"locations"`
+}
+
+// GetLocations returns ListLocationsResponse.Locations, and is useful for accessing the field via an interface.
+func (v *ListLocationsResponse) GetLocations() ListLocationsLocationsLocationConnection {
+	return v.Locations
+}
+
 // ListMarketsMarketsMarketConnection includes the requested fields of the GraphQL type MarketConnection.
 // The GraphQL type's documentation follows.
 //
@@ -10716,6 +10870,18 @@ type __GetMetaobjectDefinitionInput struct {
 // GetId returns __GetMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetMetaobjectDefinitionInput) GetId() string { return v.Id }
 
+// __ListLocationsInput is used internally by genqlient
+type __ListLocationsInput struct {
+	IncludeInactive bool    `json:"includeInactive"`
+	After           *string `json:"after"`
+}
+
+// GetIncludeInactive returns __ListLocationsInput.IncludeInactive, and is useful for accessing the field via an interface.
+func (v *__ListLocationsInput) GetIncludeInactive() bool { return v.IncludeInactive }
+
+// GetAfter returns __ListLocationsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListLocationsInput) GetAfter() *string { return v.After }
+
 // __ListMarketsInput is used internally by genqlient
 type __ListMarketsInput struct {
 	After *string `json:"after"`
@@ -12188,6 +12354,64 @@ func ListDeliveryProfiles(
 	}
 
 	data_ = &ListDeliveryProfilesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListLocations.
+const ListLocations_Operation = `
+query ListLocations ($includeInactive: Boolean!, $after: String) {
+	locations(first: 250, after: $after, includeInactive: $includeInactive, includeLegacy: false) {
+		nodes {
+			... LocationFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment LocationFields on Location {
+	id
+	legacyResourceId
+	name
+	isActive
+	fulfillsOnlineOrders
+	address {
+		address1
+		address2
+		city
+		zip
+		provinceCode
+		countryCode
+		phone
+	}
+}
+`
+
+func ListLocations(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	includeInactive bool,
+	after *string,
+) (data_ *ListLocationsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListLocations",
+		Query:  ListLocations_Operation,
+		Variables: &__ListLocationsInput{
+			IncludeInactive: includeInactive,
+			After:           after,
+		},
+	}
+
+	data_ = &ListLocationsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
