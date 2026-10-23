@@ -370,15 +370,16 @@ Notes:
 
 ---
 
-## 10. Out of scope (for now)
+## 10. Not covered
+
+Since 2026-10-23 the provider aims to cover every store object the Admin API can manage; remaining types are planned in [[implementation-plan]] Phase 2. Not covered:
 
 | Item | Reason / where it lives |
 |---|---|
-| App config, extensions, Functions, app webhooks | `shopify.app.toml` + `shopify app deploy` |
+| App config, extensions, Functions, app webhooks, web pixels, script tags | `shopify.app.toml` + `shopify app deploy` (resources may reference a Function by ID) |
 | Theme | GitHub integration / `shopify theme push` |
-| Products, collections, pages, metaobject entries, discounts | Content: product data system or sync jobs |
-| Shop settings, checkout and branding, policies | Phase 3 candidates. Need Pattern A and API coverage checks |
-| Store creation, plan, billing, payments, domains, staff | Manual runbook |
+| Orders, returns, fulfillment orders, gift cards, store credit, payments | Transactional records, not configuration |
+| Store creation, plan, billing, domains, staff, taxes | Manual runbook; taxes and staff scopes need Shopify approval |
 
 ---
 
@@ -418,6 +419,7 @@ terraform-provider-shopify/
 4. `shopify_menu`, `shopify_location`.
 5. `shopify_market`.
 6. `shopify_delivery_profile` (general profile only).
+7. Further types: [[implementation-plan]] Phase 2.
 
 ## Open questions
 

@@ -1,6 +1,6 @@
 # Terraform Provider for Shopify: Implementation Plan
 
-**Status:** Draft, no open points · **Owner:** Jens Hausherr · **Last updated:** 2026-10-22
+**Status:** Phase 1 done, Phase 2 planned · **Owner:** Jens Hausherr · **Last updated:** 2026-10-23
 **Related:** [[shopify-infra-automation-approach]], [[terraform-provider-resource-model]]
 
 This plan follows the implementation order in section 12 of the resource model, with a Step 0 added for template cleanup.
@@ -84,3 +84,23 @@ This plan follows the implementation order in section 12 of the resource model, 
 5. **No `adopt_default` flag:** phase 1 supports only the general delivery profile, so adopting it is implicit. `adopt_existing` (natural-key takeover) is a different concern and stays. Revisit when custom profiles are added.
 6. **Authentication:** client credentials grant (`client_id` / `client_secret`) is the main mode, because Dev Dashboard tokens expire after 24h. A static `access_token` stays as alternative. See resource model §1.
 7. **Schema source:** `internal/client/schema/admin-2026-10.graphql`, introspected from Shopify's public proxy (`https://shopify.dev/admin-graphql-direct-proxy/<version>`) with `schema/fetch-schema.js`. No store token needed. `make generate` only runs genqlient on the committed file; refetch only when bumping the version. Dev store: see [bootstrapping](../bootstrapping.md).
+
+## Phase 2: every manageable resource type (decided 2026-10-23)
+
+Goal: the provider covers every store object the Admin API can manage. Volatile types are implemented too; their docs mark them as a poor fit. What stays uncovered is listed in CLAUDE.md (Scope).
+
+Working rules, in addition to the ones above:
+- Each step starts with a section in the resource model (schema, import key, Pattern A/B, fit, ⚠ checked against the 2026-10 schema).
+- Every resource gets identity and a list resource from the start ([[list-resources-plan]] Tasks 4–9 are the template).
+- A step needing a new scope waits until the user has granted it on the dev store (`docs/bootstrapping.md`); record the scope in its table and in `app/*.toml`.
+- The docs of a volatile type say so in the resource description.
+
+| Step | Resource types | Scopes (write) | Fit | Notes |
+|---|---|---|---|---|
+| 7 | `shopify_web_presence` | `markets`, `locales` | good | design in resource model §9a |
+| 8 | Shop-level singletons: shop locales, shop policies, privacy settings, checkout and accounts configuration, checkout branding | `locales`, `legal_policies`, `privacy_settings`, `checkout_and_accounts_configurations`, `checkout_branding_settings` | good | Pattern A; use non-deprecated checkout APIs |
+| 9 | `shopify_metafield_definition` for all owner types | per owner type ⚠ | good | find the scope per owner type; unscoped types list as empty |
+| 10 | Custom delivery profiles, carrier services, fulfillment services | `shipping`, `fulfillments` | good; carrier/fulfillment services app-owned | extends `shopify_delivery_profile` or a new type, decide in the model |
+| 11 | URL redirects, publications, catalogs, price lists, selling plan groups | `online_store_navigation`, `publications`, `products` | volatile | |
+| 12 | Payment and delivery customizations, validations, cart transforms, fulfillment constraint rules | matching `*_customizations`, `validations`, `cart_transforms`, `fulfillment_constraint_rules` | good | reference a Function by ID; the Function ships with an app |
+| 13 | Products, collections, pages, blogs, articles, discounts, metaobject entries, files, translations, market localizations, customer segments, inventory levels | `products`, `content`, `discounts`, `metaobjects`, `files`, `translations`, `customers`, `inventory` | volatile | content; large schemas, split per type when planned in detail |
