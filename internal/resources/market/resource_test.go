@@ -21,6 +21,10 @@ import (
 
 const addr = "shopify_market.test"
 
+var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check{
+	"id": knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/Market/\d+$`)),
+})
+
 // testHandle keeps test markets apart from real ones; only these are ever deleted by tests.
 func testHandle() string {
 	return "tfacc-" + strings.ToLower(sdkacctest.RandStringFromCharSet(8, sdkacctest.CharSetAlpha))
@@ -57,6 +61,7 @@ func TestAccMarket_basic(t *testing.T) {
   conditions = { regions = ["IS", "LI"] }
 `),
 				ConfigStateChecks: []statecheck.StateCheck{
+					expectIdentity,
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("id"), knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/Market/\d+$`))),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("enabled"), knownvalue.Bool(false)),
 					regions("IS", "LI"),
@@ -90,12 +95,49 @@ func TestAccMarket_basic(t *testing.T) {
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("currency_settings").AtMapKey("local_currencies"), knownvalue.Bool(false)),
 				},
 			},
+			{RefreshState: true},
+			{
+				// Refresh steps can't carry state checks; this no-op step checks identity survives the refresh.
+				Config: config(handle, `
+  name              = "Nordics (test, updated)"
+  enabled           = true
+  conditions        = { regions = ["IS", "NO"] }
+  currency_settings = { base_currency = "EUR", local_currencies = false }
+`),
+				ConfigStateChecks: []statecheck.StateCheck{expectIdentity},
+			},
 			{
 				ResourceName:                         addr,
 				ImportState:                          true,
 				ImportStateId:                        handle,
 				ImportStateVerify:                    true,
 				ImportStateVerifyIdentifierAttribute: "handle",
+			},
+		},
+	})
+}
+
+func TestAccMarket_identityImport(t *testing.T) {
+	handle := testHandle()
+	cfg := config(handle, `
+  name       = "Identity (test)"
+  enabled    = false
+  conditions = { regions = ["IS", "LI"] }
+`)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkDestroyed(t, handle),
+		Steps: []resource.TestStep{
+			{Config: cfg, ConfigStateChecks: []statecheck.StateCheck{expectIdentity}},
+			{Config: cfg, ResourceName: addr, ImportState: true, ImportStateKind: resource.ImportBlockWithResourceIdentity},
+			{
+				// Generated config must pass validation and plan as import-only.
+				Config:          cfg,
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+				GenerateConfig:  true,
 			},
 		},
 	})
