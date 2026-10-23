@@ -25,6 +25,10 @@ func testNamespace() string {
 	return "tfacc_" + sdkacctest.RandStringFromCharSet(8, sdkacctest.CharSetAlpha)
 }
 
+var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check{
+	"id": knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/MetafieldDefinition/\d+$`)),
+})
+
 func config(ns, body string) string {
 	return fmt.Sprintf(`
 resource "shopify_metafield_definition" "test" {
@@ -53,6 +57,7 @@ func TestAccMetafieldDefinition_basic(t *testing.T) {
   allow_data_deletion = true
 `),
 				ConfigStateChecks: []statecheck.StateCheck{
+					expectIdentity,
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("id"), knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/MetafieldDefinition/\d+$`))),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("pin"), knownvalue.Bool(true)),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("validations"), knownvalue.MapExact(map[string]knownvalue.Check{
@@ -76,6 +81,7 @@ func TestAccMetafieldDefinition_basic(t *testing.T) {
 					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(addr, plancheck.ResourceActionUpdate)},
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
+					expectIdentity,
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("name"), knownvalue.StringExact("Care level (updated)")),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("pin"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("validations"), knownvalue.MapExact(map[string]knownvalue.Check{
@@ -121,8 +127,19 @@ func TestAccMetafieldDefinition_deletionGuard(t *testing.T) {
 			{
 				Config: guarded,
 				ConfigStateChecks: []statecheck.StateCheck{
+					expectIdentity,
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("allow_data_deletion"), knownvalue.Bool(false)),
 				},
+			},
+			{
+				RefreshState: true,
+			},
+			{
+				// Here, not in _basic: its allow_data_deletion = true would turn the import into an update.
+				Config:          guarded,
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
 			},
 			{
 				Config:      guarded,

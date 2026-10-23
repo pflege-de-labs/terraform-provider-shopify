@@ -31,6 +31,16 @@ query GetMetafieldDefinition($identifier: MetafieldDefinitionIdentifierInput!) {
   }
 }
 
+# Bound to raw JSON: genqlient can't generate the Node interface (it has interface implementations).
+query GetMetafieldDefinitionByID($id: ID!) {
+  # @genqlient(bind: "encoding/json.RawMessage")
+  node(id: $id) {
+    ... on MetafieldDefinition {
+      ...MetafieldDefinitionFields
+    }
+  }
+}
+
 # Unset optional inputs must be omitted, not sent as null, so admin edits to unmanaged attributes survive.
 # @genqlient(for: "MetafieldDefinitionInput.namespace", omitempty: true)
 # @genqlient(for: "MetafieldDefinitionInput.description", omitempty: true)

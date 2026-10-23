@@ -5582,6 +5582,19 @@ type GetMenuResponse struct {
 // GetMenu returns GetMenuResponse.Menu, and is useful for accessing the field via an interface.
 func (v *GetMenuResponse) GetMenu() *GetMenuMenu { return v.Menu }
 
+// GetMetafieldDefinitionByIDResponse is returned by GetMetafieldDefinitionByID on success.
+type GetMetafieldDefinitionByIDResponse struct {
+	// Returns a specific node (any object that implements the
+	// [Node](https://shopify.dev/api/admin-graphql/latest/interfaces/Node)
+	// interface) by ID, in accordance with the
+	// [Relay specification](https://relay.dev/docs/guides/graphql-server-specification/#object-identification).
+	// This field is commonly used for refetching an object.
+	Node json.RawMessage `json:"node"`
+}
+
+// GetNode returns GetMetafieldDefinitionByIDResponse.Node, and is useful for accessing the field via an interface.
+func (v *GetMetafieldDefinitionByIDResponse) GetNode() json.RawMessage { return v.Node }
+
 // GetMetafieldDefinitionMetafieldDefinition includes the requested fields of the GraphQL type MetafieldDefinition.
 // The GraphQL type's documentation follows.
 //
@@ -10557,6 +10570,14 @@ type __GetMenuInput struct {
 // GetId returns __GetMenuInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetMenuInput) GetId() string { return v.Id }
 
+// __GetMetafieldDefinitionByIDInput is used internally by genqlient
+type __GetMetafieldDefinitionByIDInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetMetafieldDefinitionByIDInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetMetafieldDefinitionByIDInput) GetId() string { return v.Id }
+
 // __GetMetafieldDefinitionInput is used internally by genqlient
 type __GetMetafieldDefinitionInput struct {
 	Identifier MetafieldDefinitionIdentifierInput `json:"identifier"`
@@ -11757,6 +11778,70 @@ func GetMetafieldDefinition(
 	}
 
 	data_ = &GetMetafieldDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetMetafieldDefinitionByID.
+const GetMetafieldDefinitionByID_Operation = `
+query GetMetafieldDefinitionByID ($id: ID!) {
+	node(id: $id) {
+		__typename
+		... on MetafieldDefinition {
+			... MetafieldDefinitionFields
+		}
+	}
+}
+fragment MetafieldDefinitionFields on MetafieldDefinition {
+	id
+	ownerType
+	namespace
+	key
+	name
+	description
+	type {
+		name
+	}
+	validations {
+		name
+		value
+	}
+	access {
+		admin
+		storefront
+		customerAccount
+	}
+	pinnedPosition
+	capabilities {
+		smartCollectionCondition {
+			enabled
+		}
+	}
+}
+`
+
+// Bound to raw JSON: genqlient can't generate the Node interface (it has interface implementations).
+func GetMetafieldDefinitionByID(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetMetafieldDefinitionByIDResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetMetafieldDefinitionByID",
+		Query:  GetMetafieldDefinitionByID_Operation,
+		Variables: &__GetMetafieldDefinitionByIDInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetMetafieldDefinitionByIDResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
