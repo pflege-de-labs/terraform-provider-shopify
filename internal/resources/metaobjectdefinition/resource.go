@@ -100,6 +100,8 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			Validators: []validator.String{stringvalidator.OneOf(values...)},
 		}
 	}
+	admin := optionalString("`MERCHANT_READ` or `MERCHANT_READ_WRITE`. Null when Shopify reports a value that can't be set, e.g. the default `PUBLIC_READ_WRITE`.", "MERCHANT_READ", "MERCHANT_READ_WRITE")
+	admin.PlanModifiers = []planmodifier.String{patterns.UseStateForUnknownIncludingNull()}
 	optionalBool := func(desc string) schema.BoolAttribute {
 		return schema.BoolAttribute{MarkdownDescription: desc, Optional: true, Computed: true, PlanModifiers: keepBool}
 	}
@@ -140,7 +142,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				Computed:            true,
 				PlanModifiers:       []planmodifier.Object{objectplanmodifier.UseStateForUnknown()},
 				Attributes: map[string]schema.Attribute{
-					"admin":            optionalString("`MERCHANT_READ` or `MERCHANT_READ_WRITE`. Null when Shopify reports a value that can't be set, e.g. the default `PUBLIC_READ_WRITE`.", "MERCHANT_READ", "MERCHANT_READ_WRITE"),
+					"admin":            admin,
 					"storefront":       optionalString("`PUBLIC_READ` or `NONE`.", "PUBLIC_READ", "NONE"),
 					"customer_account": optionalString("`READ_WRITE`, `READ` or `NONE`.", "READ_WRITE", "READ", "NONE"),
 				},
@@ -476,7 +478,7 @@ func setFromAPI(ctx context.Context, m *model, d *client.MetaobjectDefinitionFie
 	m.DisplayNameKey = types.StringValue(deref(d.DisplayNameKey))
 
 	m.Access, dd = types.ObjectValueFrom(ctx, accessAttrTypes, accessModel{
-		Admin:           adminAccess(d.Access.Admin),
+		Admin:           patterns.AdminAccess(string(d.Access.Admin)),
 		Storefront:      types.StringValue(string(d.Access.Storefront)),
 		CustomerAccount: types.StringValue(string(d.Access.CustomerAccount)),
 	})
@@ -591,14 +593,6 @@ func capabilitiesInput(ctx context.Context, o types.Object, diags *diag.Diagnost
 		in.Renderable = &client.MetaobjectCapabilityRenderableInput{Enabled: *b}
 	}
 	return in
-}
-
-// adminAccess keeps only values the input accepts, so generated config passes validation.
-func adminAccess(a client.MetaobjectAdminAccess) types.String {
-	if a != client.MetaobjectAdminAccess(client.MetaobjectAdminAccessInputMerchantRead) && a != client.MetaobjectAdminAccess(client.MetaobjectAdminAccessInputMerchantReadWrite) {
-		return types.StringNull()
-	}
-	return types.StringValue(string(a))
 }
 
 func deref(s *string) string {

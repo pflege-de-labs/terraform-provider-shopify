@@ -144,7 +144,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 						MarkdownDescription: "`MERCHANT_READ` or `MERCHANT_READ_WRITE`. Null when Shopify reports a value that can't be set, e.g. the default `PUBLIC_READ_WRITE`.",
 						Optional:            true,
 						Computed:            true,
-						PlanModifiers:       keepString,
+						PlanModifiers:       []planmodifier.String{patterns.UseStateForUnknownIncludingNull()},
 						Validators:          []validator.String{stringvalidator.OneOf("MERCHANT_READ", "MERCHANT_READ_WRITE")},
 					},
 					"storefront": schema.StringAttribute{
@@ -406,7 +406,7 @@ func setFromAPI(ctx context.Context, m *model, d *client.MetafieldDefinitionFiel
 	diags.Append(dd...)
 
 	access := accessModel{
-		Admin:           adminAccess(d.Access.Admin),
+		Admin:           adminAccessPtr(d.Access.Admin),
 		Storefront:      types.StringPointerValue((*string)(d.Access.Storefront)),
 		CustomerAccount: types.StringValue(string(d.Access.CustomerAccount)),
 	}
@@ -416,14 +416,6 @@ func setFromAPI(ctx context.Context, m *model, d *client.MetafieldDefinitionFiel
 	m.Pin = types.BoolValue(d.PinnedPosition != nil)
 	m.UseAsCollectionCondition = types.BoolValue(d.Capabilities.SmartCollectionCondition.Enabled)
 	return diags
-}
-
-// adminAccess keeps only values the input accepts, so generated config passes validation.
-func adminAccess(a *client.MetafieldAdminAccess) types.String {
-	if a == nil || (*a != client.MetafieldAdminAccessMerchantRead && *a != client.MetafieldAdminAccessMerchantReadWrite) {
-		return types.StringNull()
-	}
-	return types.StringValue(string(*a))
 }
 
 // validationsInput always returns a non-nil slice so an empty map clears validations instead of sending null.
@@ -466,4 +458,11 @@ func accessFromConfig(ctx context.Context, o types.Object) (*accessInput, diag.D
 		in.customerAccount = &v
 	}
 	return in, diags
+}
+
+func adminAccessPtr(a *client.MetafieldAdminAccess) types.String {
+	if a == nil {
+		return types.StringNull()
+	}
+	return patterns.AdminAccess(string(*a))
 }

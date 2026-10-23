@@ -68,6 +68,23 @@ func TestAccMetafieldDefinition_basic(t *testing.T) {
 				},
 			},
 			{
+				// Shopify reports an admin access that maps to null; an update must plan it as null, not "known after apply".
+				Config: config(ns, `
+  type                = "number_integer"
+  name                = "Care level (renamed)"
+  validations         = { min = "1", max = "5" }
+  access              = { storefront = "PUBLIC_READ" }
+  pin                 = true
+  allow_data_deletion = true
+`),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(addr, plancheck.ResourceActionUpdate),
+						plancheck.ExpectKnownValue(addr, tfjsonpath.New("access").AtMapKey("admin"), knownvalue.Null()),
+					},
+				},
+			},
+			{
 				// Dropping max shows whether an update replaces the validation list or merges into it.
 				Config: config(ns, `
   type                = "number_integer"
