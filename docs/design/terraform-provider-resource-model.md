@@ -55,6 +55,13 @@ provider "shopify" {
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
+### Resource identity and list resources
+- Every resource also has Terraform resource identity: a single attribute `id` (the GID). `import { to = ...  identity = { id = "gid://..." } }` needs Terraform >= 1.12; the string `terraform import` keeps taking the natural key.
+- Identity import looks the object up with `node(id:)` (bound to `json.RawMessage`; genqlient generates it).
+- Each resource has a list resource (`list "shopify_<name>" ...` in a `.tfquery.hcl` file). `terraform query -generate-config-out=<file>` turns the results into resource and `import` blocks, which bootstraps an existing store. Needs Terraform >= 1.14.
+- tfplugindocs renders list resources to `docs/list-resources/` from `examples/list-resources/<type>/list-resource.tfquery.hcl`.
+- `access.admin` on metafield/metaobject definitions is null when Shopify reports an output-only value (`PRIVATE`, `PUBLIC_READ`, `PUBLIC_READ_WRITE`), so generated config doesn't carry it.
+
 ### Attribute behaviour
 - **RequiresReplace** only where the API forbids an in-place change (e.g. metafield `owner_type`/`namespace`/`key`).
 - **Computed + UseStateForUnknown** for server-generated values (GIDs, timestamps).
@@ -140,7 +147,9 @@ resource "shopify_metafield_definition" "care_level" {
 
 Mutations: `metafieldDefinitionCreate`, `metafieldDefinitionUpdate`, `metafieldDefinitionDelete`.
 
-**Read** uses `metafieldDefinition(identifier:)` with the natural key only. The query has no `id` argument, and genqlient can't generate `node(id:)` (the schema has interfaces implementing `Node`). Owner type, namespace and key can't change, so this finds a definition recreated in the admin just like GID-first with fallback would.
+**Read** uses `metafieldDefinition(identifier:)` with the natural key only. The query has no `id` argument, so GID-first lookup isn't possible here (identity import uses `node(id:)`, which genqlient can generate). Owner type, namespace and key can't change, so this finds a definition recreated in the admin just like GID-first with fallback would.
+
+**List:** `owner_type` (Required). An owner type the app can't read returns an empty list, not `ACCESS_DENIED`.
 
 ---
 
@@ -199,6 +208,8 @@ resource "shopify_metaobject_definition" "faq" {
 
 Entries (metaobjects) are content and stay **out of scope**.
 
+**List:** no config.
+
 ---
 
 ## 6. Resource: `shopify_market`
@@ -237,6 +248,8 @@ Notes:
 - Regions, web presences and catalogs are updated with add/delete lists, diffed between state and plan. `markets(query:)` can't filter by handle, so lookups by handle page through all markets.
 - Follow-up resource: `shopify_web_presence`, see section 9a (blocked on scope).
 
+**List:** no config. Non-region markets are skipped with a warning.
+
 ---
 
 ## 7. Resource: `shopify_location`
@@ -273,6 +286,8 @@ Mutations: `locationAdd`, `locationEdit`, `locationActivate`, `locationDeactivat
 **Lookup:** Read uses `location(id:)`, falling back to `locations(query: "name:\"…\"", includeInactive: true)` with an exact-name match. Import accepts the name or the numeric `legacyResourceId`. The search lags a few seconds behind writes. Names are unique per shop: `locationAdd` returns `TAKEN` ("You already have a location with this name"), confirmed against an active location. A deactivated location does **not** block the name (checked on the dev store 2026-10-23), so after a `deactivate` destroy and re-create two locations share a name; name lookup then fails as ambiguous and import needs the numeric ID.
 
 Watch out: the location limit depends on the plan, and deactivating a location that holds inventory needs a destination for that inventory: without `destinationLocationId`, `locationDeactivate` fails with `HAS_ACTIVE_INVENTORY_ERROR` (schema). The provider passes no destination, so the error is reported and nothing moves. That is a reason to default to `deactivate` and treat deletion as rare.
+
+**List:** `include_inactive` (Optional, default `false`); `includeLegacy` is always false.
 
 ---
 
@@ -324,6 +339,8 @@ Phase 1 implements the general profile only:
 
 Mutations: `deliveryProfileUpdate` only (create/remove are for custom profiles, out of scope).
 
+**List:** no config. Lists the general profile only.
+
 ---
 
 ## 9. Resource: `shopify_menu`
@@ -367,6 +384,8 @@ Notes:
 - Menu items point at collections and pages, which are content. Referencing them by GID makes configs specific to one store. Option: allow `resource_handle` plus `type`, and resolve it to a GID at apply time.
 - Validation: `url` is required for HTTP and not allowed for other types (Shopify derives it, so it is only stored for HTTP items). `resource_id` is required for COLLECTION, PRODUCT, PAGE, BLOG, ARTICLE, METAOBJECT, SHOP_POLICY and CUSTOMER_ACCOUNT_PAGE. Checked on the dev store (2026-10-23): without it `menuCreate` returns "shop_policy not found" / "customer_account_page not found"; CATALOG needs none (Shopify sets `/collections/all`). Full enum: FRONTPAGE, COLLECTION, COLLECTIONS, PRODUCT, CATALOG, PAGE, BLOG, ARTICLE, SEARCH, SHOP_POLICY, HTTP, METAOBJECT, CUSTOMER_ACCOUNT_PAGE.
 - **Lookup by handle:** `menus(query:)` can't filter by handle, so the provider pages through all menus. The list lags a few seconds behind writes (search index), so a menu created moments ago may not be found yet by import or adopt. Shopify suffixes a taken handle (`-1`) instead of failing, so Create also checks the returned handle, removes the duplicate and fails.
+
+**List:** no config. Default menus are included.
 
 ---
 
