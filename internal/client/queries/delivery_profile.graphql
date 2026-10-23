@@ -80,11 +80,15 @@ query GetDeliveryProfile(
   }
 }
 
-query ListDeliveryProfiles {
-  deliveryProfiles(first: 50) {
+query ListDeliveryProfiles($after: String) {
+  deliveryProfiles(first: 50, after: $after, merchantOwnedOnly: true) {
     nodes {
       id
       default
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }

@@ -6126,11 +6126,18 @@ var AllInclusiveTaxPricingStrategy = []InclusiveTaxPricingStrategy{
 type ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection struct {
 	// A list of nodes that are contained in DeliveryProfileEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
 	Nodes []ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionPageInfo `json:"pageInfo"`
 }
 
 // GetNodes returns ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection.Nodes, and is useful for accessing the field via an interface.
 func (v *ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection) GetNodes() []ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile {
 	return v.Nodes
+}
+
+// GetPageInfo returns ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection) GetPageInfo() ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionPageInfo {
+	return v.PageInfo
 }
 
 // ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile includes the requested fields of the GraphQL type DeliveryProfile.
@@ -6156,6 +6163,29 @@ func (v *ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliv
 // GetDefault returns ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile.Default, and is useful for accessing the field via an interface.
 func (v *ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile) GetDefault() bool {
 	return v.Default
+}
+
+// ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
 }
 
 // ListDeliveryProfilesResponse is returned by ListDeliveryProfiles on success.
@@ -10870,6 +10900,14 @@ type __GetMetaobjectDefinitionInput struct {
 // GetId returns __GetMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetMetaobjectDefinitionInput) GetId() string { return v.Id }
 
+// __ListDeliveryProfilesInput is used internally by genqlient
+type __ListDeliveryProfilesInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListDeliveryProfilesInput.After, and is useful for accessing the field via an interface.
+func (v *__ListDeliveryProfilesInput) GetAfter() *string { return v.After }
+
 // __ListLocationsInput is used internally by genqlient
 type __ListLocationsInput struct {
 	IncludeInactive bool    `json:"includeInactive"`
@@ -12334,11 +12372,15 @@ func GetShop(
 
 // The query executed by ListDeliveryProfiles.
 const ListDeliveryProfiles_Operation = `
-query ListDeliveryProfiles {
-	deliveryProfiles(first: 50) {
+query ListDeliveryProfiles ($after: String) {
+	deliveryProfiles(first: 50, after: $after, merchantOwnedOnly: true) {
 		nodes {
 			id
 			default
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
 		}
 	}
 }
@@ -12347,10 +12389,14 @@ query ListDeliveryProfiles {
 func ListDeliveryProfiles(
 	ctx_ context.Context,
 	client_ graphql.Client,
+	after *string,
 ) (data_ *ListDeliveryProfilesResponse, err_ error) {
 	req_ := &graphql.Request{
 		OpName: "ListDeliveryProfiles",
 		Query:  ListDeliveryProfiles_Operation,
+		Variables: &__ListDeliveryProfilesInput{
+			After: after,
+		},
 	}
 
 	data_ = &ListDeliveryProfilesResponse{}

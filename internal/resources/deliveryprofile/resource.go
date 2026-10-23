@@ -324,16 +324,35 @@ func (r *Resource) read(ctx context.Context, m *model, diags *diag.Diagnostics) 
 }
 
 func (r *Resource) generalProfileID(ctx context.Context) (string, error) {
-	res, err := client.ListDeliveryProfiles(ctx, r.client)
+	var id string
+	err := r.eachProfile(ctx, 0, func(p profileNode) bool {
+		if p.Default {
+			id = p.Id
+		}
+		return !p.Default
+	})
 	if err != nil {
 		return "", err
 	}
-	for _, p := range res.DeliveryProfiles.Nodes {
-		if p.Default {
-			return p.Id, nil
-		}
+	if id == "" {
+		return "", fmt.Errorf("no default delivery profile found")
 	}
-	return "", fmt.Errorf("no default delivery profile found")
+	return id, nil
+}
+
+type profileNode = client.ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile
+
+// eachProfile pages through the merchant-owned profiles until push returns false.
+func (r *Resource) eachProfile(ctx context.Context, limit int64, push func(profileNode) bool) error {
+	page := func(after *string) ([]profileNode, *string, error) {
+		res, err := client.ListDeliveryProfiles(ctx, r.client, after)
+		if err != nil {
+			return nil, nil, err
+		}
+		conn := res.DeliveryProfiles
+		return conn.Nodes, patterns.NextCursor(conn.PageInfo.HasNextPage, conn.PageInfo.EndCursor), nil
+	}
+	return patterns.Paginate(ctx, limit, page, push)
 }
 
 // fetch reads the profile tree; it errors on truncated lists rather than manage part of the profile.

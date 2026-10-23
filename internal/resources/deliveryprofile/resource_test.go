@@ -102,7 +102,7 @@ func snapshot(t *testing.T) string {
 	t.Helper()
 	ctx := context.Background()
 	c := acctest.Client(t)
-	list, err := client.ListDeliveryProfiles(ctx, c)
+	list, err := client.ListDeliveryProfiles(ctx, c, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -171,7 +171,7 @@ func snapshot(t *testing.T) string {
 func removeTestZones(t *testing.T) {
 	ctx := context.Background()
 	c := acctest.Client(t)
-	list, err := client.ListDeliveryProfiles(ctx, c)
+	list, err := client.ListDeliveryProfiles(ctx, c, nil)
 	if err != nil {
 		t.Error(err)
 		return
