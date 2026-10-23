@@ -30,3 +30,6 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 1: implemented 1285792..0eacac2 (cherry-pick of 9df4e42 + phase 2 specs); review: spec ❌ (deprecated checkout roots), 2 Important, 3 Minor
 - Ruling T1-1: discovery uses `checkoutAndAccountsConfiguration`, not the deprecated `checkoutProfiles`/`checkoutBranding` the plan text names — implementation-plan step 8 requires non-deprecated checkout APIs — costs one row's semantics if the replacement doesn't map 1:1.
 - Task 1: fix round 1/5 dispatched (findings: deprecated checkout roots, partial counts on error, returnPolicyProfiles keys, consentPolicy label)
+- Task 1: fix round 1/5 (5 addressed, 0 open; commits 0eacac2..00eaf32)
+- Task 1: minor (deferred): `checkoutBranding` row counts non-null `branding` per configuration; page size 250 untested for `checkoutAndAccountsConfigurations`
+- Task 1: complete (commits 2cca99c..00eaf32 on feat/discover-phase2, review clean)
