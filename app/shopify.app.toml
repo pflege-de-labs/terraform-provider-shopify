@@ -5,7 +5,7 @@ application_url = "https://shopify.dev/apps/default-app-home" # provider has no 
 embedded = false
 
 [access_scopes]
-# Keep in sync with the scope table in docs/bootstrapping.md.
+# Keep in sync with the scope table in docs/bootstrapping.md and the read scopes in shopify.app.readonly.toml.
 scopes = "write_locations,write_markets,write_metaobject_definitions,write_online_store_navigation,write_products,write_shipping"
 use_legacy_install_flow = false
 
