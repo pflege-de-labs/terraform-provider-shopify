@@ -72,6 +72,8 @@ No official Shopify Terraform provider exists, and Shopify only partly fits the 
 - Shipping profiles
 - Navigation menus
 
+Update 2026-10-23: beyond this first scope, the provider is to cover every store object the Admin API can manage; see CLAUDE.md (Scope) and [[implementation-plan]] Phase 2.
+
 Put a manual runbook in the same repo for the settings the API doesn't cover.
 
 ## Open questions

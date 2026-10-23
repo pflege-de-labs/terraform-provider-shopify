@@ -1,20 +1,30 @@
 # terraform-provider-shopify
 
-Custom Terraform provider for **Shopify store configuration and schema** (Admin GraphQL API).
+Custom Terraform provider for **Shopify store objects** that the Admin GraphQL API can manage: configuration and schema first, content too (marked as volatile).
 Repo started from HashiCorp's `terraform-provider-scaffolding-framework` template.
 
 ## Read first
 
 - `docs/design/shopify-infra-automation-approach.md`: why a hybrid approach, what is in/out of scope, pitfalls.
 - `docs/design/terraform-provider-resource-model.md`: resource schemas, import keys, Patterns A/B, implementation order.
+- `docs/design/implementation-plan.md`: steps done and planned (Phase 2: remaining resource types).
+- `docs/bootstrapping.md`: app setup and the scope each resource type needs.
 
 Read the relevant sections before implementing or changing any resource. If code and design docs disagree, stop and ask; don't silently pick one.
 
 ## Scope
 
-In scope (first phase): `shopify_shop` data source, `shopify_metafield_definition`, `shopify_metaobject_definition`, `shopify_menu`, `shopify_location`, `shopify_market`, `shopify_delivery_profile` (general profile only).
+Goal (decided 2026-10-23): cover every store object the Admin API can manage, even if a given project won't use it. Volatile types (content, or objects often edited in the admin or by other systems) are implemented too, but their docs say they are a poor fit for Terraform; the choice is the user's.
 
-Out of scope, do not add: app config/extensions/Functions (`shopify.app.toml` + Shopify CLI), themes, products/collections/pages/discounts/metaobject entries (content), store creation, plan, billing, payments, domains, staff.
+Implemented: `shopify_shop` data source, `shopify_metafield_definition`, `shopify_metaobject_definition`, `shopify_menu`, `shopify_location`, `shopify_market`, `shopify_delivery_profile` (general profile only). Planned: Phase 2 in `docs/design/implementation-plan.md`, scopes per type in `docs/bootstrapping.md`.
+
+Not covered, do not add:
+- App config, extensions, Functions themselves, app webhooks, web pixels, script tags: `shopify.app.toml` + Shopify CLI. Resources may reference a Function by ID.
+- Themes: theme tooling (GitHub integration, `shopify theme push`).
+- Transactional records: orders, returns, fulfillment orders, gift cards, store credit, payments.
+- Store creation, plan, billing, domains, staff; anything whose scope needs Shopify approval (taxes, users).
+
+A new resource type that needs a new scope: add it to the scope table in `docs/bootstrapping.md` and to `app/*.toml`. Granting it on a store needs the user (app redeploy + reinstall).
 
 ## Stack
 
@@ -54,6 +64,7 @@ Before declaring a task done: `make fmt lint test` must pass, and `make generate
 **Identity and import**
 - `id` in state = Shopify GID. `terraform import` takes a natural key, never a GID (e.g. `PRODUCT/custom/material`, `<handle>`, `<type>`). Every resource supports import from the start.
 - Read looks up by GID first, then falls back to the natural key.
+- Every resource has a resource identity (`id` = GID, `MutableIdentity` when Read can re-adopt by natural key) and a list resource for `terraform query`. Listed resources must produce config that passes the resource's own validators and plans as import-only.
 
 **Attributes**
 - RequiresReplace only where the API forbids in-place change.
