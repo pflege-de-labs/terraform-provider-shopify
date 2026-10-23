@@ -21,6 +21,10 @@ import (
 
 const addr = "shopify_delivery_profile.test"
 
+var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check{
+	"id": knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/DeliveryProfile/\d+$`)),
+})
+
 // The test changes the store's real general profile, so it snapshots it as HCL first and re-applies that at the end.
 func TestAccDeliveryProfile_general(t *testing.T) {
 	if os.Getenv("TF_ACC") == "" {
@@ -61,6 +65,7 @@ func TestAccDeliveryProfile_general(t *testing.T) {
 				Config: with(testZone("4.95", "0.00", "49.00", `"IS"`))(),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("id"), knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/DeliveryProfile/\d+$`))),
+					expectIdentity,
 				},
 			},
 			{
@@ -75,10 +80,17 @@ func TestAccDeliveryProfile_general(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
+				Config:          with(testZone("5.49", "0.0", "55.0", `"IS", "LI"`))(),
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+			},
+			{
 				// Back to the original profile: the test zone is deleted, everything else stays untouched.
 				Config: with("")(),
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("name"), knownvalue.NotNull()),
+					expectIdentity,
 				},
 			},
 		},
