@@ -55,6 +55,14 @@ provider "shopify" {
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
+### Resource identity and list resources
+- Every resource also has Terraform resource identity: a single attribute `id` (the GID). `import { to = ...  identity = { id = "gid://..." } }` needs Terraform >= 1.12; the string `terraform import` keeps taking the natural key.
+- Identity import looks the object up by GID with its typed by-ID query. Only `shopify_metafield_definition` uses `node(id:)`, bound to `json.RawMessage` because genqlient can't generate the `Node` interface.
+- Identity is the GID and follows natural-key re-adoption: Read falls back to the natural key when the GID is gone, so all resources with that fallback set `MutableIdentity` and the new GID becomes the identity.
+- Each resource has a list resource (`list "shopify_<name>" ...` in a `.tfquery.hcl` file). `terraform query -generate-config-out=<file>` turns the results into resource and `import` blocks, which bootstraps an existing store. Needs Terraform >= 1.14.
+- tfplugindocs renders list resources to `docs/list-resources/` from `examples/list-resources/<type>/list-resource.tfquery.hcl`.
+- `access.admin` on metafield/metaobject definitions is null when Shopify reports an output-only value (`PRIVATE`, `PUBLIC_READ`, `PUBLIC_READ_WRITE`), so generated config doesn't carry it.
+
 ### Attribute behaviour
 - **RequiresReplace** only where the API forbids an in-place change (e.g. metafield `owner_type`/`namespace`/`key`).
 - **Computed + UseStateForUnknown** for server-generated values (GIDs, timestamps).
@@ -140,7 +148,9 @@ resource "shopify_metafield_definition" "care_level" {
 
 Mutations: `metafieldDefinitionCreate`, `metafieldDefinitionUpdate`, `metafieldDefinitionDelete`.
 
-**Read** uses `metafieldDefinition(identifier:)` with the natural key only. The query has no `id` argument, and genqlient can't generate `node(id:)` (the schema has interfaces implementing `Node`). Owner type, namespace and key can't change, so this finds a definition recreated in the admin just like GID-first with fallback would.
+**Read** uses `metafieldDefinition(identifier:)` with the natural key only. The query has no `id` argument, so GID-first lookup isn't possible here (identity import uses `node(id:)` bound to `json.RawMessage`, since genqlient can't generate the `Node` interface). Owner type, namespace and key can't change, so this finds a definition recreated in the admin just like GID-first with fallback would.
+
+**List:** `owner_type` (Required). An owner type the app can't read returns an empty list, not `ACCESS_DENIED`.
 
 ---
 
@@ -199,6 +209,8 @@ resource "shopify_metaobject_definition" "faq" {
 
 Entries (metaobjects) are content and stay **out of scope**.
 
+**List:** no config.
+
 ---
 
 ## 6. Resource: `shopify_market`
@@ -229,13 +241,15 @@ resource "shopify_market" "dach" {
 | `enabled` | bool | Maps to `status` (`ACTIVE` / `DRAFT`); the API's `enabled` field is deprecated |
 | `conditions.regions` | set(string) | Country codes. B2B (`company_location_ids`) and POS (`location_ids`) conditions come later; they are dev preview |
 | `currency_settings` | object | `base_currency`, `local_currencies` |
-| `catalog_ids`, `web_presence_ids` | set(string) | Links only, as plain IDs. Catalogs and price lists are content and stay out of scope. No `shopify_market_web_presence` resource yet; revisit later |
+| `catalog_ids`, `web_presence_ids` | set(string) | Links only, as plain IDs. Catalogs and price lists are content and stay out of scope. Web presences themselves: `shopify_web_presence` (section 9a) |
 
 Notes:
 - Uses the **2025+ Markets model** (conditions-based `marketCreate` / `marketUpdate`), not the legacy region mutations.
 - **Overlap is allowed** (checked on the dev store): a country can be in several markets. Only two active markets with exactly the same region set conflict (`DUPLICATE_REGION_MARKET` "There is an existing region market with the same regions", plus `DUPLICATE_UNIQUE_MARKET`). Draft markets don't conflict. So moving countries between markets needs no update order; the error is reported as is and not retried.
 - Regions, web presences and catalogs are updated with add/delete lists, diffed between state and plan. `markets(query:)` can't filter by handle, so lookups by handle page through all markets.
-- Possible follow-up resource: `shopify_market_web_presence` (domain or subfolder suffix, default and alternate locales).
+- Follow-up resource: `shopify_web_presence`, see section 9a (blocked on scope).
+
+**List:** no config. Non-region markets are skipped with a warning.
 
 ---
 
@@ -273,6 +287,8 @@ Mutations: `locationAdd`, `locationEdit`, `locationActivate`, `locationDeactivat
 **Lookup:** Read uses `location(id:)`, falling back to `locations(query: "name:\"…\"", includeInactive: true)` with an exact-name match. Import accepts the name or the numeric `legacyResourceId`. The search lags a few seconds behind writes. Names are unique per shop: `locationAdd` returns `TAKEN` ("You already have a location with this name"), confirmed against an active location. A deactivated location does **not** block the name (checked on the dev store 2026-10-23), so after a `deactivate` destroy and re-create two locations share a name; name lookup then fails as ambiguous and import needs the numeric ID.
 
 Watch out: the location limit depends on the plan, and deactivating a location that holds inventory needs a destination for that inventory: without `destinationLocationId`, `locationDeactivate` fails with `HAS_ACTIVE_INVENTORY_ERROR` (schema). The provider passes no destination, so the error is reported and nothing moves. That is a reason to default to `deactivate` and treat deletion as rare.
+
+**List:** `include_inactive` (Optional, default `false`); `includeLegacy` is always false.
 
 ---
 
@@ -324,6 +340,8 @@ Phase 1 implements the general profile only:
 
 Mutations: `deliveryProfileUpdate` only (create/remove are for custom profiles, out of scope).
 
+**List:** no config. Lists the general profile only.
+
 ---
 
 ## 9. Resource: `shopify_menu`
@@ -367,6 +385,50 @@ Notes:
 - Menu items point at collections and pages, which are content. Referencing them by GID makes configs specific to one store. Option: allow `resource_handle` plus `type`, and resolve it to a GID at apply time.
 - Validation: `url` is required for HTTP and not allowed for other types (Shopify derives it, so it is only stored for HTTP items). `resource_id` is required for COLLECTION, PRODUCT, PAGE, BLOG, ARTICLE, METAOBJECT, SHOP_POLICY and CUSTOMER_ACCOUNT_PAGE. Checked on the dev store (2026-10-23): without it `menuCreate` returns "shop_policy not found" / "customer_account_page not found"; CATALOG needs none (Shopify sets `/collections/all`). Full enum: FRONTPAGE, COLLECTION, COLLECTIONS, PRODUCT, CATALOG, PAGE, BLOG, ARTICLE, SEARCH, SHOP_POLICY, HTTP, METAOBJECT, CUSTOMER_ACCOUNT_PAGE.
 - **Lookup by handle:** `menus(query:)` can't filter by handle, so the provider pages through all menus. The list lags a few seconds behind writes (search index), so a menu created moments ago may not be found yet by import or adopt. Shopify suffixes a taken handle (`-1`) instead of failing, so Create also checks the returned handle, removes the duplicate and fails.
+
+**List:** no config. Default menus are included.
+
+---
+
+## 9a. Resource: `shopify_web_presence`
+
+> **Blocked: needs `read_locales` (or `read_markets_home`), pending user decision.** The scope change requires an app redeploy plus a reinstall on the dev, staging and production stores. Nothing is implemented yet.
+
+```hcl
+resource "shopify_web_presence" "ch" {
+  subfolder_suffix  = "ch"         # or domain_id, exactly one
+  default_locale    = "de"
+  alternate_locales = ["fr", "it"] # optional, unset = unmanaged
+}
+
+resource "shopify_market" "dach" {
+  # ...
+  web_presence_ids = [shopify_web_presence.ch.id]
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `MarketWebPresence` GID. Computed, UseStateForUnknown |
+| `subfolder_suffix` | string | Optional; exactly one of this or `domain_id`. Updatable in place (confirmed on the dev store). Switching between a subfolder and a domain forces replace, because `WebPresenceUpdateInput.subfolderSuffix` "must be null if subfolder suffix is not already defined" |
+| `domain_id` | string | Optional. **RequiresReplace**: `WebPresenceUpdateInput` has no `domainId`. It only references an existing `Domain` GID; domains are never created or managed (out of scope) |
+| `default_locale` | string | Required. Updatable |
+| `alternate_locales` | set(string) | Optional + Computed, UseStateForUnknown; unset = unmanaged |
+| `root_urls` | map(string) | Computed, locale → URL. Informational |
+| `adopt_existing` | bool | Pattern A, see below |
+
+Import key: the subfolder suffix for subfolder presences, the domain host (e.g. `shop.example.ch`) for domain presences. A host contains dots and a suffix is ASCII letters only, so they can't be confused. Read looks up by GID first, then pages through `webPresences` and matches the key, because the query has no `query:` filter.
+
+Notes:
+- Uses `webPresenceCreate` / `webPresenceUpdate` / `webPresenceDelete` and the top-level `webPresences` query. The `marketWebPresence*` mutations are deprecated and not used. Linking to markets stays on `shopify_market.web_presence_ids`.
+- **Pattern A:** the shop's primary-domain presence can't be removed: the error code `SHOP_MUST_HAVE_PRIMARY_DOMAIN_WEB_PRESENCE` exists, and on the dev store a delete of it left it in place; the userError text was not captured. Adopting it (`adopt_existing = true`) updates it in place, and destroy only removes it from state with a warning. Every store has one such presence (dev: the myshopify domain, locale `en`, no markets). `CANNOT_DELETE_PRIMARY_MARKET_WEB_PRESENCE` is deprecated ("No longer used").
+- **No Pattern B:** deleting a presence removes routing/SEO configuration, not stored data.
+- Errors are reported as returned and not retried: `CANNOT_HAVE_SUBFOLDER_AND_DOMAIN`, `REQUIRES_DOMAIN_OR_SUBFOLDER`, `SUBFOLDER_SUFFIX_MUST_BE_AT_LEAST_2_LETTERS`, `SUBFOLDER_SUFFIX_CANNOT_BE_SCRIPT_CODE`, `DISABLED_LANGUAGE`, `REGION_SPECIFIC_LANGUAGE`, `DOMAIN_NOT_FOUND`, `CANNOT_ADD_CUSTOMER_DOMAIN`.
+- No enum-typed attributes, so there's no output-only enum mapping.
+- **Scopes observed on the dev store (2026-10-23):**
+  - `read_markets`: `webPresences { id subfolderSuffix domain { id host } rootUrls { locale url } markets }` works.
+  - `write_markets`: `webPresenceCreate`, `webPresenceUpdate` (subfolder suffix change) and `webPresenceDelete` all work.
+  - `read_locales` or `read_markets_home`: needed for `defaultLocale` and `alternateLocales` (type `ShopLocale`) and for top-level `shopLocales`. With `read_markets` only, these return "Access denied … Required access: `read_locales` access scope or `read_markets_home` access scope". `rootUrls[].locale` lists the locales but doesn't mark the default, so it can't stand in for them.
 
 ---
 

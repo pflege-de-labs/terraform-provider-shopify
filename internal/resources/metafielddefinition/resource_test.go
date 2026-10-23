@@ -25,6 +25,10 @@ func testNamespace() string {
 	return "tfacc_" + sdkacctest.RandStringFromCharSet(8, sdkacctest.CharSetAlpha)
 }
 
+var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check{
+	"id": knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/MetafieldDefinition/\d+$`)),
+})
+
 func config(ns, body string) string {
 	return fmt.Sprintf(`
 resource "shopify_metafield_definition" "test" {
@@ -53,6 +57,7 @@ func TestAccMetafieldDefinition_basic(t *testing.T) {
   allow_data_deletion = true
 `),
 				ConfigStateChecks: []statecheck.StateCheck{
+					expectIdentity,
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("id"), knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/MetafieldDefinition/\d+$`))),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("pin"), knownvalue.Bool(true)),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("validations"), knownvalue.MapExact(map[string]knownvalue.Check{
@@ -60,6 +65,23 @@ func TestAccMetafieldDefinition_basic(t *testing.T) {
 						"max": knownvalue.StringExact("5"),
 					})),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("access").AtMapKey("storefront"), knownvalue.StringExact("PUBLIC_READ")),
+				},
+			},
+			{
+				// Shopify reports an admin access that maps to null; an update must plan it as null, not "known after apply".
+				Config: config(ns, `
+  type                = "number_integer"
+  name                = "Care level (renamed)"
+  validations         = { min = "1", max = "5" }
+  access              = { storefront = "PUBLIC_READ" }
+  pin                 = true
+  allow_data_deletion = true
+`),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction(addr, plancheck.ResourceActionUpdate),
+						plancheck.ExpectKnownValue(addr, tfjsonpath.New("access").AtMapKey("admin"), knownvalue.Null()),
+					},
 				},
 			},
 			{
@@ -76,6 +98,7 @@ func TestAccMetafieldDefinition_basic(t *testing.T) {
 					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(addr, plancheck.ResourceActionUpdate)},
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
+					expectIdentity,
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("name"), knownvalue.StringExact("Care level (updated)")),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("pin"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("validations"), knownvalue.MapExact(map[string]knownvalue.Check{
@@ -121,8 +144,32 @@ func TestAccMetafieldDefinition_deletionGuard(t *testing.T) {
 			{
 				Config: guarded,
 				ConfigStateChecks: []statecheck.StateCheck{
+					expectIdentity,
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("allow_data_deletion"), knownvalue.Bool(false)),
 				},
+			},
+			{
+				RefreshState: true,
+			},
+			{
+				// Refresh steps can't carry state checks; this no-op step checks identity survives the refresh.
+				Config:            guarded,
+				ConfigStateChecks: []statecheck.StateCheck{expectIdentity},
+			},
+			{
+				// Here, not in _basic: its allow_data_deletion = true would turn the import into an update.
+				Config:          guarded,
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+			},
+			{
+				// Generated config must pass validation; the default admin access PUBLIC_READ_WRITE can't be set.
+				Config:          guarded,
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+				GenerateConfig:  true,
 			},
 			{
 				Config:      guarded,
@@ -151,18 +198,24 @@ func TestAccMetafieldDefinition_deletionGuard(t *testing.T) {
 	})
 }
 
-func checkDestroyed(t *testing.T, ns string) resource.TestCheckFunc {
+// checkDestroyed checks PRODUCT definitions in ns; keys defaults to care_level.
+func checkDestroyed(t *testing.T, ns string, keys ...string) resource.TestCheckFunc {
+	if len(keys) == 0 {
+		keys = []string{"care_level"}
+	}
 	return func(*terraform.State) error {
-		res, err := client.GetMetafieldDefinition(context.Background(), acctest.Client(t), client.MetafieldDefinitionIdentifierInput{
-			OwnerType: client.MetafieldOwnerTypeProduct,
-			Namespace: &ns,
-			Key:       "care_level",
-		})
-		if err != nil {
-			return err
-		}
-		if res.MetafieldDefinition != nil {
-			return fmt.Errorf("metafield definition %s/care_level still exists", ns)
+		for _, key := range keys {
+			res, err := client.GetMetafieldDefinition(context.Background(), acctest.Client(t), client.MetafieldDefinitionIdentifierInput{
+				OwnerType: client.MetafieldOwnerTypeProduct,
+				Namespace: &ns,
+				Key:       key,
+			})
+			if err != nil {
+				return err
+			}
+			if res.MetafieldDefinition != nil {
+				return fmt.Errorf("metafield definition %s/%s still exists", ns, key)
+			}
 		}
 		return nil
 	}

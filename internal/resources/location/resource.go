@@ -30,6 +30,7 @@ const what = "location"
 var (
 	_ resource.ResourceWithConfigure   = &Resource{}
 	_ resource.ResourceWithImportState = &Resource{}
+	_ resource.ResourceWithIdentity    = &Resource{}
 )
 
 func NewResource() resource.Resource {
@@ -69,6 +70,12 @@ var addressAttrTypes = map[string]attr.Type{
 
 func (r *Resource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_location"
+	// Read re-adopts an object recreated outside Terraform by natural key, which yields a new GID.
+	resp.ResourceBehavior.MutableIdentity = true
+}
+
+func (r *Resource) IdentitySchema(ctx context.Context, req resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = patterns.IDIdentitySchema()
 }
 
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -185,6 +192,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	// Save the location before activation changes, so a failure there doesn't orphan it.
 	resp.Diagnostics.Append(setFromAPI(ctx, &plan, loc)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 
 	if want := patterns.ConfiguredBool(cfg.Active); want != nil && *want != loc.IsActive {
 		if loc = r.setActive(ctx, loc.Id, *want, &resp.Diagnostics); loc == nil {
@@ -235,6 +243,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	}
 	resp.Diagnostics.Append(setFromAPI(ctx, &state, loc)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: state.ID})...)
 }
 
 func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -282,6 +291,7 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 	}
 	resp.Diagnostics.Append(setFromAPI(ctx, &plan, loc)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
 
 func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -318,7 +328,19 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	resp.Diagnostics.Append(client.UserErrorDiags("Failed to delete "+what, res.LocationDelete.LocationDeleteUserErrors)...)
 }
 
+// ImportState takes a name or numeric ID from `terraform import`, or the GID from an import block with identity.
 func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	if req.ID == "" {
+		var id patterns.IDIdentity
+		resp.Diagnostics.Append(req.Identity.Get(ctx, &id)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		// Read looks up by GID first, so the remaining attributes are filled in there.
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id.ID)...)
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, id)...)
+		return
+	}
 	loc, diags := r.findByKey(ctx, req.ID)
 	resp.Diagnostics.Append(diags...)
 	if diags.HasError() {
@@ -330,6 +352,7 @@ func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequ
 	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), loc.Id)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), loc.Name)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: types.StringValue(loc.Id)})...)
 }
 
 // setActive activates or deactivates; it returns nil after adding an error.

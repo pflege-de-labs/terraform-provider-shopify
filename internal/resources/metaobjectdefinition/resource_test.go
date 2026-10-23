@@ -35,6 +35,10 @@ resource "shopify_metaobject_definition" "test" {
 `, typ, body)
 }
 
+var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check{
+	"id": knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/MetaobjectDefinition/\d+$`)),
+})
+
 func fieldKeys(keys ...string) statecheck.StateCheck {
 	checks := make([]knownvalue.Check, len(keys))
 	for i, k := range keys {
@@ -166,18 +170,43 @@ func TestAccMetaobjectDefinition_deletionGuard(t *testing.T) {
     type = "single_line_text_field"
   }
 `
+	guardedConfig := config(typ, `name = "Guarded"`+fields+fieldB)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
 		CheckDestroy:             checkDestroyed(t, typ),
 		Steps: []resource.TestStep{
-			{Config: config(typ, `name = "Guarded"`+fields+fieldB)},
+			{
+				Config:            guardedConfig,
+				ConfigStateChecks: []statecheck.StateCheck{expectIdentity},
+			},
+			{RefreshState: true},
+			{
+				// Refresh steps can't carry state checks; this no-op step checks identity survives the refresh.
+				Config:            guardedConfig,
+				ConfigStateChecks: []statecheck.StateCheck{expectIdentity},
+			},
+			{
+				// Here, not in _basic: its allow_data_deletion = true would turn the import into an update.
+				Config:          guardedConfig,
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+			},
+			{
+				// Generated config must pass validation; admin access can report values the input rejects.
+				Config:          guardedConfig,
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+				GenerateConfig:  true,
+			},
 			{
 				Config:      config(typ, `name = "Guarded"`+fields),
 				ExpectError: regexp.MustCompile(`allow_data_deletion = true`),
 			},
 			{
-				Config:      config(typ, `name = "Guarded"`+fields+fieldB),
+				Config:      guardedConfig,
 				Destroy:     true,
 				ExpectError: regexp.MustCompile(`allow_data_deletion = true`),
 			},
@@ -236,4 +265,62 @@ func checkDestroyed(t *testing.T, typ string) resource.TestCheckFunc {
 		}
 		return nil
 	}
+}
+
+func TestAccMetaobjectDefinition_recreatedOutOfBand(t *testing.T) {
+	typ := testType()
+	cfg := config(typ, `
+  name                = "Recreated"
+  allow_data_deletion = true
+
+  field {
+    key  = "aa"
+    name = "A"
+    type = "single_line_text_field"
+  }
+`)
+	var newID string
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkDestroyed(t, typ),
+		Steps: []resource.TestStep{
+			{Config: cfg, ConfigStateChecks: []statecheck.StateCheck{expectIdentity}},
+			{
+				// Read finds the recreated definition by type; its new GID must be accepted as the identity.
+				PreConfig: func() { newID = recreate(t, typ) },
+				Config:    cfg,
+				Check: func(s *terraform.State) error {
+					if got := s.RootModule().Resources[addr].Primary.ID; got != newID {
+						return fmt.Errorf("state id %q, want recreated %q", got, newID)
+					}
+					return nil
+				},
+				ConfigStateChecks: []statecheck.StateCheck{expectIdentity},
+			},
+		},
+	})
+}
+
+// recreate deletes and re-creates the definition behind the Terraform provider's back and returns the new GID.
+func recreate(t *testing.T, typ string) string {
+	t.Helper()
+	ctx, c := context.Background(), acctest.Client(t)
+	old, err := client.GetMetaobjectDefinitionByType(ctx, c, typ)
+	if err != nil || old.MetaobjectDefinitionByType == nil {
+		t.Fatalf("lookup %s: %v", typ, err)
+	}
+	del, err := client.DeleteMetaobjectDefinition(ctx, c, old.MetaobjectDefinitionByType.Id)
+	if err != nil || len(del.MetaobjectDefinitionDelete.UserErrors) > 0 {
+		t.Fatalf("delete: %v %v", err, del)
+	}
+	name, fname := "Recreated", "A"
+	res, err := client.CreateMetaobjectDefinition(ctx, c, client.MetaobjectDefinitionCreateInput{
+		Name: &name, Type: typ,
+		FieldDefinitions: []client.MetaobjectFieldDefinitionCreateInput{{Key: "aa", Name: &fname, Type: "single_line_text_field"}},
+	})
+	if err != nil || res.MetaobjectDefinitionCreate.MetaobjectDefinition == nil {
+		t.Fatalf("create: %v %v", err, res)
+	}
+	return res.MetaobjectDefinitionCreate.MetaobjectDefinition.Id
 }

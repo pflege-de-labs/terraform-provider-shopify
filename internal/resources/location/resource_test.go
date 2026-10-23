@@ -22,6 +22,10 @@ import (
 
 const addr = "shopify_location.test"
 
+var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check{
+	"id": knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/Location/\d+$`)),
+})
+
 // testName keeps test locations apart from real ones; only these are ever deleted by tests.
 func testName() string {
 	return "tfacc-" + strings.ToLower(sdkacctest.RandStringFromCharSet(8, sdkacctest.CharSetAlpha))
@@ -60,6 +64,7 @@ func TestAccLocation_basic(t *testing.T) {
   fulfills_online_orders = false
 `+deleteOnDestroy),
 				ConfigStateChecks: []statecheck.StateCheck{
+					expectIdentity,
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("id"), knownvalue.StringFunc(func(v string) error {
 						gid = v
 						if !regexp.MustCompile(`^gid://shopify/Location/\d+$`).MatchString(v) {
@@ -102,6 +107,17 @@ func TestAccLocation_basic(t *testing.T) {
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("active"), knownvalue.Bool(true)),
 				},
 			},
+			{RefreshState: true},
+			{
+				// Refresh steps can't carry state checks; this no-op step checks identity survives the refresh.
+				Config: config(name+"-renamed", `
+  address = {
+    city         = "Berlin"
+    country_code = "DE"
+  }
+`+deleteOnDestroy),
+				ConfigStateChecks: []statecheck.StateCheck{expectIdentity},
+			},
 			{
 				PreConfig:               func() { waitSearchable(t, name+"-renamed") },
 				ResourceName:            addr,
@@ -134,6 +150,43 @@ resource "shopify_location" "dup" {
 }
 `, name+"-renamed"),
 				ExpectError: regexp.MustCompile(`already have a location with this name`),
+			},
+		},
+	})
+}
+
+func TestAccLocation_identityImport(t *testing.T) {
+	name := testName()
+	var gid string
+	cfg := config(name, `
+  address = {
+    address1     = "Musterstrasse 1"
+    city         = "Hamburg"
+    zip          = "20095"
+    country_code = "DE"
+  }
+`)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		// Default policy only deactivates; the check confirms that and then deletes the location.
+		CheckDestroy: checkLocation(t, &gid, true),
+		Steps: []resource.TestStep{
+			{
+				Config: cfg,
+				ConfigStateChecks: []statecheck.StateCheck{
+					expectIdentity,
+					statecheck.ExpectKnownValue(addr, tfjsonpath.New("id"), knownvalue.StringFunc(func(v string) error { gid = v; return nil })),
+				},
+			},
+			{Config: cfg, ResourceName: addr, ImportState: true, ImportStateKind: resource.ImportBlockWithResourceIdentity},
+			{
+				// Generated config must pass validation and plan as import-only.
+				Config:          cfg,
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+				GenerateConfig:  true,
 			},
 		},
 	})

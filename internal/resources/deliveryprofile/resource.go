@@ -30,6 +30,7 @@ var (
 	_ resource.ResourceWithConfigure      = &Resource{}
 	_ resource.ResourceWithImportState    = &Resource{}
 	_ resource.ResourceWithValidateConfig = &Resource{}
+	_ resource.ResourceWithIdentity       = &Resource{}
 )
 
 func NewResource() resource.Resource {
@@ -78,6 +79,10 @@ var condAttrTypes = map[string]attr.Type{"field": types.StringType, "operator": 
 
 func (r *Resource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_delivery_profile"
+}
+
+func (r *Resource) IdentitySchema(ctx context.Context, req resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = patterns.IDIdentitySchema()
 }
 
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -214,6 +219,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		return
 	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
 
 func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -235,6 +241,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 		return
 	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: state.ID})...)
 }
 
 func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -248,13 +255,34 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 		return
 	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
 
 func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	patterns.WarnRemovedFromStateOnly(&resp.Diagnostics, "general "+what, "every store has exactly one and it can't be deleted")
 }
 
+// ImportState takes "default" from `terraform import`, or the GID from an import block with identity.
 func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	if req.ID == "" {
+		var id patterns.IDIdentity
+		resp.Diagnostics.Append(req.Identity.Get(ctx, &id)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		general, err := r.generalProfileID(ctx)
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to find the general "+what, err.Error())
+			return
+		}
+		if id.ID.ValueString() != general {
+			resp.Diagnostics.AddError("Unsupported delivery profile", "Only the general profile is supported; "+id.ID.ValueString()+" is not it.")
+			return
+		}
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id.ID)...)
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, id)...)
+		return
+	}
 	if req.ID != "default" {
 		resp.Diagnostics.AddError("Invalid import key", `Only the general profile is supported; import it with "default".`)
 		return
@@ -265,6 +293,7 @@ func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequ
 		return
 	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: types.StringValue(id)})...)
 }
 
 // apply diffs the plan against the profile as it is now, sends the changes, and reads the result back into plan.
@@ -304,16 +333,35 @@ func (r *Resource) read(ctx context.Context, m *model, diags *diag.Diagnostics) 
 }
 
 func (r *Resource) generalProfileID(ctx context.Context) (string, error) {
-	res, err := client.ListDeliveryProfiles(ctx, r.client)
+	var id string
+	err := r.eachProfile(ctx, 0, func(p profileNode) bool {
+		if p.Default {
+			id = p.Id
+		}
+		return !p.Default
+	})
 	if err != nil {
 		return "", err
 	}
-	for _, p := range res.DeliveryProfiles.Nodes {
-		if p.Default {
-			return p.Id, nil
-		}
+	if id == "" {
+		return "", fmt.Errorf("no default delivery profile found")
 	}
-	return "", fmt.Errorf("no default delivery profile found")
+	return id, nil
+}
+
+type profileNode = client.ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnectionNodesDeliveryProfile
+
+// eachProfile pages through the merchant-owned profiles until push returns false.
+func (r *Resource) eachProfile(ctx context.Context, limit int64, push func(profileNode) bool) error {
+	page := func(after *string) ([]profileNode, *string, error) {
+		res, err := client.ListDeliveryProfiles(ctx, r.client, after)
+		if err != nil {
+			return nil, nil, err
+		}
+		conn := res.DeliveryProfiles
+		return conn.Nodes, patterns.NextCursor(conn.PageInfo.HasNextPage, conn.PageInfo.EndCursor), nil
+	}
+	return patterns.Paginate(ctx, limit, page, push)
 }
 
 // fetch reads the profile tree; it errors on truncated lists rather than manage part of the profile.

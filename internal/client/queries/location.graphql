@@ -34,6 +34,21 @@ query FindLocations(
   }
 }
 
+query ListLocations(
+  $includeInactive: Boolean!
+  $after: String
+) {
+  locations(first: 250, after: $after, includeInactive: $includeInactive, includeLegacy: false) {
+    nodes {
+      ...LocationFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
 # @genqlient(for: "LocationAddInput.fulfillsOnlineOrders", omitempty: true)
 # @genqlient(for: "LocationAddInput.metafields", omitempty: true)
 # @genqlient(for: "LocationAddAddressInput.address1", omitempty: true)

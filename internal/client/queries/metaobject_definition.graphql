@@ -137,3 +137,17 @@ mutation DeleteMetaobjectDefinition(
     }
   }
 }
+
+# 100 per page keeps the requested cost under Shopify's 1000-point single-query limit.
+query ListMetaobjectDefinitions($after: String) {
+  metaobjectDefinitions(first: 100, after: $after) {
+    # @genqlient(flatten: true)
+    nodes {
+      ...MetaobjectDefinitionFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

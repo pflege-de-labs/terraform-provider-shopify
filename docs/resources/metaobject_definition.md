@@ -71,7 +71,7 @@ resource "shopify_metaobject_definition" "faq" {
 
 Optional:
 
-- `admin` (String) `MERCHANT_READ` or `MERCHANT_READ_WRITE`.
+- `admin` (String) `MERCHANT_READ` or `MERCHANT_READ_WRITE`. Null when Shopify reports a value that can't be set, e.g. the default `PUBLIC_READ_WRITE`.
 - `customer_account` (String) `READ_WRITE`, `READ` or `NONE`.
 - `storefront` (String) `PUBLIC_READ` or `NONE`.
 

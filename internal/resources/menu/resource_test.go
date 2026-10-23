@@ -44,8 +44,31 @@ func titles(p tfjsonpath.Path, want ...string) statecheck.StateCheck {
 	return statecheck.ExpectKnownValue(addr, p, knownvalue.ListExact(checks))
 }
 
+var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check{
+	"id": knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/Menu/\d+$`)),
+})
+
 func TestAccMenu_basic(t *testing.T) {
 	handle := testHandle()
+	updated := config(handle+"-renamed", `
+  title = "Test menu (updated)"
+
+  item {
+    title = "Help"
+    type  = "HTTP"
+    url   = "https://example.com/help"
+
+    item {
+      title = "FAQ"
+      type  = "HTTP"
+      url   = "https://example.com/faq"
+    }
+  }
+  item {
+    title = "Search"
+    type  = "SEARCH"
+  }
+`)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
@@ -78,6 +101,7 @@ func TestAccMenu_basic(t *testing.T) {
   }
 `),
 				ConfigStateChecks: []statecheck.StateCheck{
+					expectIdentity,
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("id"), knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/Menu/\d+$`))),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("is_default"), knownvalue.Bool(false)),
 					titles(tfjsonpath.New("item"), "Home", "Help"),
@@ -87,25 +111,7 @@ func TestAccMenu_basic(t *testing.T) {
 			},
 			{
 				// New title and handle, reordered items, a level dropped: the whole tree is replaced.
-				Config: config(handle+"-renamed", `
-  title = "Test menu (updated)"
-
-  item {
-    title = "Help"
-    type  = "HTTP"
-    url   = "https://example.com/help"
-
-    item {
-      title = "FAQ"
-      type  = "HTTP"
-      url   = "https://example.com/faq"
-    }
-  }
-  item {
-    title = "Search"
-    type  = "SEARCH"
-  }
-`),
+				Config: updated,
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(addr, plancheck.ResourceActionUpdate)},
 				},
@@ -114,6 +120,21 @@ func TestAccMenu_basic(t *testing.T) {
 					titles(tfjsonpath.New("item"), "Help", "Search"),
 					titles(tfjsonpath.New("item").AtSliceIndex(0).AtMapKey("item").AtSliceIndex(0).AtMapKey("item")),
 				},
+			},
+			{RefreshState: true},
+			{
+				// Refresh steps can't carry state checks; this no-op step checks identity survives the refresh.
+				Config:            updated,
+				ConfigStateChecks: []statecheck.StateCheck{expectIdentity},
+			},
+			{Config: updated, ResourceName: addr, ImportState: true, ImportStateKind: resource.ImportBlockWithResourceIdentity},
+			{
+				// Generated config must pass validation and plan as import-only, without adopt_existing.
+				Config:          updated,
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+				GenerateConfig:  true,
 			},
 			{
 				PreConfig:                            func() { waitListed(t, handle+"-renamed") },

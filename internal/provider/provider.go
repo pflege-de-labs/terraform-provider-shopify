@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
@@ -32,6 +33,7 @@ import (
 
 // Ensure ShopifyProvider satisfies various provider interfaces.
 var _ provider.Provider = &ShopifyProvider{}
+var _ provider.ProviderWithListResources = &ShopifyProvider{}
 
 // defaultMaxRetries applies when max_retries is unset.
 const defaultMaxRetries = 5
@@ -128,6 +130,7 @@ func (p *ShopifyProvider) Configure(ctx context.Context, req provider.ConfigureR
 	}
 	resp.DataSourceData = c
 	resp.ResourceData = c
+	resp.ListResourceData = c
 }
 
 // clientConfig merges provider config with env var fallbacks; config wins.
@@ -170,6 +173,17 @@ func (p *ShopifyProvider) Resources(ctx context.Context) []func() resource.Resou
 		location.NewResource,
 		market.NewResource,
 		deliveryprofile.NewResource,
+	}
+}
+
+func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListResource {
+	return []func() list.ListResource{
+		metafielddefinition.NewListResource,
+		metaobjectdefinition.NewListResource,
+		menu.NewListResource,
+		location.NewListResource,
+		deliveryprofile.NewListResource,
+		market.NewListResource,
 	}
 }
 

@@ -3,6 +3,7 @@ package metafielddefinition
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -36,6 +37,7 @@ var (
 	_ resource.ResourceWithConfigure   = &Resource{}
 	_ resource.ResourceWithImportState = &Resource{}
 	_ resource.ResourceWithModifyPlan  = &Resource{}
+	_ resource.ResourceWithIdentity    = &Resource{}
 )
 
 func NewResource() resource.Resource {
@@ -76,6 +78,12 @@ var accessAttrTypes = map[string]attr.Type{
 
 func (r *Resource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_metafield_definition"
+	// Read re-adopts an object recreated outside Terraform by natural key, which yields a new GID.
+	resp.ResourceBehavior.MutableIdentity = true
+}
+
+func (r *Resource) IdentitySchema(ctx context.Context, req resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = patterns.IDIdentitySchema()
 }
 
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -135,10 +143,10 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				PlanModifiers:       []planmodifier.Object{objectplanmodifier.UseStateForUnknown()},
 				Attributes: map[string]schema.Attribute{
 					"admin": schema.StringAttribute{
-						MarkdownDescription: "`MERCHANT_READ` or `MERCHANT_READ_WRITE`.",
+						MarkdownDescription: "`MERCHANT_READ` or `MERCHANT_READ_WRITE`. Null when Shopify reports a value that can't be set, e.g. the default `PUBLIC_READ_WRITE`.",
 						Optional:            true,
 						Computed:            true,
-						PlanModifiers:       keepString,
+						PlanModifiers:       []planmodifier.String{patterns.UseStateForUnknownIncludingNull()},
 						Validators:          []validator.String{stringvalidator.OneOf("MERCHANT_READ", "MERCHANT_READ_WRITE")},
 					},
 					"storefront": schema.StringAttribute{
@@ -237,6 +245,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	}
 	resp.Diagnostics.Append(setFromAPI(ctx, &plan, &res.MetafieldDefinitionCreate.CreatedDefinition.MetafieldDefinitionFields)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
 
 func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -246,8 +255,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 		return
 	}
 
-	// Lookup is by natural key only: genqlient can't generate node(id:) for this schema, and the key is immutable,
-	// so a definition recreated in the admin is found the same way. See resource model §4.
+	// Lookup is by natural key: it is immutable, so a definition recreated in the admin is still found. See resource model §4.
 	res, err := client.GetMetafieldDefinition(ctx, r.client, client.MetafieldDefinitionIdentifierInput{
 		OwnerType: client.MetafieldOwnerType(state.OwnerType.ValueString()),
 		Namespace: state.Namespace.ValueStringPointer(),
@@ -266,6 +274,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	}
 	resp.Diagnostics.Append(setFromAPI(ctx, &state, &res.MetafieldDefinition.MetafieldDefinitionFields)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: state.ID})...)
 }
 
 func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -311,6 +320,7 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 	}
 	resp.Diagnostics.Append(setFromAPI(ctx, &plan, &res.MetafieldDefinitionUpdate.UpdatedDefinition.MetafieldDefinitionFields)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
 
 func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -329,15 +339,49 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	resp.Diagnostics.Append(client.UserErrorDiags("Failed to delete "+what, res.MetafieldDefinitionDelete.UserErrors)...)
 }
 
+// ImportState takes the natural key from `terraform import`, or the GID from an import block with identity.
 func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	parts, err := patterns.SplitImportKey(req.ID, importKey)
-	if err != nil {
-		resp.Diagnostics.AddError("Invalid import key", err.Error())
-		return
+	var parts []string
+	if req.ID != "" {
+		var err error
+		if parts, err = patterns.SplitImportKey(req.ID, importKey); err != nil {
+			resp.Diagnostics.AddError("Invalid import key", err.Error())
+			return
+		}
+	} else {
+		var id patterns.IDIdentity
+		resp.Diagnostics.Append(req.Identity.Get(ctx, &id)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		// Read looks up by natural key, so resolve it from the GID once here.
+		d, err := getByID(ctx, r.client, id.ID.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to import "+what, err.Error())
+			return
+		}
+		parts = []string{string(d.OwnerType), d.Namespace, d.Key}
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, id)...)
 	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("owner_type"), parts[0])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("namespace"), parts[1])...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("key"), parts[2])...)
+}
+
+func getByID(ctx context.Context, c *client.Client, id string) (*client.MetafieldDefinitionFields, error) {
+	res, err := client.GetMetafieldDefinitionByID(ctx, c, id)
+	if err != nil {
+		return nil, err
+	}
+	var d client.MetafieldDefinitionFields
+	if err := json.Unmarshal(res.Node, &d); err != nil {
+		return nil, err
+	}
+	// A null node or a GID of another type decodes to an empty struct.
+	if d.Id == "" {
+		return nil, fmt.Errorf("no %s with ID %q", what, id)
+	}
+	return &d, nil
 }
 
 // setFromAPI copies server values into m; allow_data_deletion is provider-only and left as is.
@@ -365,7 +409,7 @@ func setFromAPI(ctx context.Context, m *model, d *client.MetafieldDefinitionFiel
 	diags.Append(dd...)
 
 	access := accessModel{
-		Admin:           types.StringPointerValue((*string)(d.Access.Admin)),
+		Admin:           adminAccessPtr(d.Access.Admin),
 		Storefront:      types.StringPointerValue((*string)(d.Access.Storefront)),
 		CustomerAccount: types.StringValue(string(d.Access.CustomerAccount)),
 	}
@@ -417,4 +461,11 @@ func accessFromConfig(ctx context.Context, o types.Object) (*accessInput, diag.D
 		in.customerAccount = &v
 	}
 	return in, diags
+}
+
+func adminAccessPtr(a *client.MetafieldAdminAccess) types.String {
+	if a == nil {
+		return types.StringNull()
+	}
+	return patterns.AdminAccess(string(*a))
 }
