@@ -156,3 +156,26 @@ Each follows the existing per-resource workflow ([[implementation-plan]] working
 - [ ] **Step 1:** Move generated resources into `<env>/*.tf` grouped by type, with `import` blocks; drop objects that should stay unmanaged (e.g. app-owned `$app:` definitions) and list them in the PR description.
 - [ ] **Step 2:** PR plan shows only `will be imported`, no updates/creates/destroys, for staging first.
 - [ ] **Step 3:** Merge → apply imports on staging. Repeat for production in a separate PR after `production` joins the apply matrix (needs the user's go-ahead: production is live).
+
+## Discovery 2026-10
+
+Run 2026-10-23 with the read-only apps (`cmd/discover` at `9df4e42`, CI run 39988346821). Rows not listed returned 0 with status ok, including all other metafield owner types, custom delivery profiles, URL redirects, carrier services and selling plan groups.
+
+| Type | Staging | Production | Notes |
+|---|---|---|---|
+| Metafield definitions, PRODUCT | 5 | 25 | production includes Shopify category definitions (`shopify.*`) |
+| Metafield definitions, SHOP | 0 | 1 | `checkoutblocks.blocks_list_checkout_custom_field`: owned by the Checkout Blocks app |
+| Metaobject definitions | 0 | 26 | Shopify category definitions (`shopify--*`) |
+| Menus | 3 (all default) | 4 (3 default + `fu-zeilenmen-hilfe-kontakt`) | |
+| Locations | 1 | 1 | |
+| Markets | 1 (`de`) | 1 (`de`) | |
+| Delivery profiles | general only | general only | |
+| Web presences | 2 | 3 | **in scope, not supported** → new resource |
+| Fulfillment services | 1 (`manual`) | 2 (`manual`, `test_fulfillmentservice_creation`) | out of scope: app-owned (callback URL) or Shopify built-in |
+| Shop locales, shop policies, segments, return policy profiles | no scope | no scope | read-only app lacks the scopes; unknown |
+
+Applying D3:
+- New resource: `shopify_web_presence` (Phase 3).
+- Out of scope, documented only: fulfillment services; the app-owned SHOP metafield definition (exclude from import).
+- Open for the user: shop locales and shop policies (phase 3 per docs) can't be counted without `read_locales` / `read_legal_policies`; segments are marketing content.
+- Import note: Shopify category definitions (`shopify.*`, `shopify--*`) are created by Shopify when a product category is set; decide in Task 12 whether to import or leave them unmanaged.
