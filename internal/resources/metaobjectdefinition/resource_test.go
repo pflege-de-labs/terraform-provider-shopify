@@ -266,3 +266,61 @@ func checkDestroyed(t *testing.T, typ string) resource.TestCheckFunc {
 		return nil
 	}
 }
+
+func TestAccMetaobjectDefinition_recreatedOutOfBand(t *testing.T) {
+	typ := testType()
+	cfg := config(typ, `
+  name                = "Recreated"
+  allow_data_deletion = true
+
+  field {
+    key  = "aa"
+    name = "A"
+    type = "single_line_text_field"
+  }
+`)
+	var newID string
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkDestroyed(t, typ),
+		Steps: []resource.TestStep{
+			{Config: cfg, ConfigStateChecks: []statecheck.StateCheck{expectIdentity}},
+			{
+				// Read finds the recreated definition by type; its new GID must be accepted as the identity.
+				PreConfig: func() { newID = recreate(t, typ) },
+				Config:    cfg,
+				Check: func(s *terraform.State) error {
+					if got := s.RootModule().Resources[addr].Primary.ID; got != newID {
+						return fmt.Errorf("state id %q, want recreated %q", got, newID)
+					}
+					return nil
+				},
+				ConfigStateChecks: []statecheck.StateCheck{expectIdentity},
+			},
+		},
+	})
+}
+
+// recreate deletes and re-creates the definition behind the Terraform provider's back and returns the new GID.
+func recreate(t *testing.T, typ string) string {
+	t.Helper()
+	ctx, c := context.Background(), acctest.Client(t)
+	old, err := client.GetMetaobjectDefinitionByType(ctx, c, typ)
+	if err != nil || old.MetaobjectDefinitionByType == nil {
+		t.Fatalf("lookup %s: %v", typ, err)
+	}
+	del, err := client.DeleteMetaobjectDefinition(ctx, c, old.MetaobjectDefinitionByType.Id)
+	if err != nil || len(del.MetaobjectDefinitionDelete.UserErrors) > 0 {
+		t.Fatalf("delete: %v %v", err, del)
+	}
+	name, fname := "Recreated", "A"
+	res, err := client.CreateMetaobjectDefinition(ctx, c, client.MetaobjectDefinitionCreateInput{
+		Name: &name, Type: typ,
+		FieldDefinitions: []client.MetaobjectFieldDefinitionCreateInput{{Key: "aa", Name: &fname, Type: "single_line_text_field"}},
+	})
+	if err != nil || res.MetaobjectDefinitionCreate.MetaobjectDefinition == nil {
+		t.Fatalf("create: %v %v", err, res)
+	}
+	return res.MetaobjectDefinitionCreate.MetaobjectDefinition.Id
+}

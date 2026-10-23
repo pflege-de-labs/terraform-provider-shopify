@@ -57,7 +57,8 @@ provider "shopify" {
 
 ### Resource identity and list resources
 - Every resource also has Terraform resource identity: a single attribute `id` (the GID). `import { to = ...  identity = { id = "gid://..." } }` needs Terraform >= 1.12; the string `terraform import` keeps taking the natural key.
-- Identity import looks the object up with `node(id:)` (bound to `json.RawMessage`; genqlient generates it).
+- Identity import looks the object up by GID with its typed by-ID query. Only `shopify_metafield_definition` uses `node(id:)`, bound to `json.RawMessage` because genqlient can't generate the `Node` interface.
+- Identity is the GID and follows natural-key re-adoption: Read falls back to the natural key when the GID is gone, so all resources with that fallback set `MutableIdentity` and the new GID becomes the identity.
 - Each resource has a list resource (`list "shopify_<name>" ...` in a `.tfquery.hcl` file). `terraform query -generate-config-out=<file>` turns the results into resource and `import` blocks, which bootstraps an existing store. Needs Terraform >= 1.14.
 - tfplugindocs renders list resources to `docs/list-resources/` from `examples/list-resources/<type>/list-resource.tfquery.hcl`.
 - `access.admin` on metafield/metaobject definitions is null when Shopify reports an output-only value (`PRIVATE`, `PUBLIC_READ`, `PUBLIC_READ_WRITE`), so generated config doesn't carry it.
@@ -147,7 +148,7 @@ resource "shopify_metafield_definition" "care_level" {
 
 Mutations: `metafieldDefinitionCreate`, `metafieldDefinitionUpdate`, `metafieldDefinitionDelete`.
 
-**Read** uses `metafieldDefinition(identifier:)` with the natural key only. The query has no `id` argument, so GID-first lookup isn't possible here (identity import uses `node(id:)`, which genqlient can generate). Owner type, namespace and key can't change, so this finds a definition recreated in the admin just like GID-first with fallback would.
+**Read** uses `metafieldDefinition(identifier:)` with the natural key only. The query has no `id` argument, so GID-first lookup isn't possible here (identity import uses `node(id:)` bound to `json.RawMessage`, since genqlient can't generate the `Node` interface). Owner type, namespace and key can't change, so this finds a definition recreated in the admin just like GID-first with fallback would.
 
 **List:** `owner_type` (Required). An owner type the app can't read returns an empty list, not `ACCESS_DENIED`.
 

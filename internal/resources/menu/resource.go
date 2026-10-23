@@ -51,6 +51,8 @@ type model struct {
 
 func (r *Resource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_menu"
+	// Read re-adopts an object recreated outside Terraform by natural key, which yields a new GID.
+	resp.ResourceBehavior.MutableIdentity = true
 }
 
 func (r *Resource) IdentitySchema(ctx context.Context, req resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
