@@ -31,4 +31,4 @@ provider "shopify" {
 - `client_secret` (String, Sensitive) Client secret of the Dev Dashboard app. Env: `SHOPIFY_CLIENT_SECRET`.
 - `concurrency` (Number) Maximum in-flight API requests, regardless of Terraform parallelism. Defaults to `2`.
 - `max_retries` (Number) Retries for throttled and 429/5xx responses. Defaults to `5`.
-- `store_domain` (String) Store domain, e.g. `example.myshopify.com`. Env: `SHOPIFY_STORE_DOMAIN`.
+- `store_domain` (String) Store domain, `<handle>.myshopify.com` (not a custom domain). Env: `SHOPIFY_STORE_DOMAIN`.

@@ -5,7 +5,9 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -66,7 +68,7 @@ func (p *ShopifyProvider) Schema(ctx context.Context, req provider.SchemaRequest
 			"Authenticate with `client_id` and `client_secret` (client credentials grant, preferred) or a static `access_token`.",
 		Attributes: map[string]schema.Attribute{
 			"store_domain": schema.StringAttribute{
-				MarkdownDescription: "Store domain, e.g. `example.myshopify.com`. Env: `SHOPIFY_STORE_DOMAIN`.",
+				MarkdownDescription: "Store domain, `<handle>.myshopify.com` (not a custom domain). Env: `SHOPIFY_STORE_DOMAIN`.",
 				Optional:            true,
 			},
 			"client_id": schema.StringAttribute{
@@ -151,6 +153,11 @@ func clientConfig(data ShopifyProviderModel, getenv func(string) string) (client
 	}
 	if !data.MaxRetries.IsNull() {
 		cfg.MaxRetries = int(data.MaxRetries.ValueInt64())
+	}
+	// Custom domains answer the token request with an HTML page, which surfaces as an opaque decode error.
+	if d := cfg.StoreDomain; d != "" && (!strings.HasSuffix(d, ".myshopify.com") || strings.Contains(d, "/")) {
+		diags.AddAttributeError(path.Root("store_domain"), "Invalid store domain",
+			fmt.Sprintf("%q must be the store's bare <handle>.myshopify.com domain (admin: Settings → Domains), not a custom domain or URL. Set via store_domain or SHOPIFY_STORE_DOMAIN.", d))
 	}
 	return cfg, diags
 }
