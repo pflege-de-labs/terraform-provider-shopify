@@ -20,6 +20,9 @@ func TestCheckItem(t *testing.T) {
 		{"PAGE", true, true, true},
 		{"FRONTPAGE", false, false, false},
 		{"SEARCH", false, true, true},
+		{"SHOP_POLICY", false, false, true},
+		{"CUSTOMER_ACCOUNT_PAGE", false, false, true},
+		{"CATALOG", false, false, false},
 	}
 	for _, tc := range cases {
 		err := checkItem(tc.typ, tc.resourceID, tc.url)
