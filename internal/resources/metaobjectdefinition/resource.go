@@ -32,6 +32,7 @@ var (
 	_ resource.ResourceWithConfigure      = &Resource{}
 	_ resource.ResourceWithImportState    = &Resource{}
 	_ resource.ResourceWithModifyPlan     = &Resource{}
+	_ resource.ResourceWithIdentity       = &Resource{}
 	_ resource.ResourceWithValidateConfig = &Resource{}
 )
 
@@ -86,6 +87,10 @@ func (r *Resource) Metadata(ctx context.Context, req resource.MetadataRequest, r
 	resp.TypeName = req.ProviderTypeName + "_metaobject_definition"
 }
 
+func (r *Resource) IdentitySchema(ctx context.Context, req resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = patterns.IDIdentitySchema()
+}
+
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	keepString := []planmodifier.String{stringplanmodifier.UseStateForUnknown()}
 	keepBool := []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()}
@@ -135,7 +140,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				Computed:            true,
 				PlanModifiers:       []planmodifier.Object{objectplanmodifier.UseStateForUnknown()},
 				Attributes: map[string]schema.Attribute{
-					"admin":            optionalString("`MERCHANT_READ` or `MERCHANT_READ_WRITE`.", "MERCHANT_READ", "MERCHANT_READ_WRITE"),
+					"admin":            optionalString("`MERCHANT_READ` or `MERCHANT_READ_WRITE`. Null when Shopify reports a value that can't be set, e.g. the default `PUBLIC_READ_WRITE`.", "MERCHANT_READ", "MERCHANT_READ_WRITE"),
 					"storefront":       optionalString("`PUBLIC_READ` or `NONE`.", "PUBLIC_READ", "NONE"),
 					"customer_account": optionalString("`READ_WRITE`, `READ` or `NONE`.", "READ_WRITE", "READ", "NONE"),
 				},
@@ -290,6 +295,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	}
 	resp.Diagnostics.Append(setFromAPI(ctx, &plan, &res.MetaobjectDefinitionCreate.MetaobjectDefinition.MetaobjectDefinitionFields)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
 
 func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -329,6 +335,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	}
 	resp.Diagnostics.Append(setFromAPI(ctx, &state, def)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: state.ID})...)
 }
 
 func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
@@ -415,6 +422,7 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 	}
 	resp.Diagnostics.Append(setFromAPI(ctx, &plan, &res.MetaobjectDefinitionUpdate.MetaobjectDefinition.MetaobjectDefinitionFields)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
 
 func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -434,8 +442,29 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	resp.Diagnostics.Append(client.UserErrorDiags("Failed to delete "+what, res.MetaobjectDefinitionDelete.UserErrors)...)
 }
 
+// ImportState takes the type from `terraform import`, or the GID from an import block with identity.
 func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("type"), req, resp)
+	typ := req.ID
+	if typ == "" {
+		var id patterns.IDIdentity
+		resp.Diagnostics.Append(req.Identity.Get(ctx, &id)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		// Read falls back to the type, so resolve it from the GID once here.
+		res, err := client.GetMetaobjectDefinition(ctx, r.client, id.ID.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to import "+what, err.Error())
+			return
+		}
+		if res.MetaobjectDefinition == nil {
+			resp.Diagnostics.AddError("Failed to import "+what, fmt.Sprintf("no %s with ID %q", what, id.ID.ValueString()))
+			return
+		}
+		typ = res.MetaobjectDefinition.Type
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, id)...)
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("type"), typ)...)
 }
 
 func setFromAPI(ctx context.Context, m *model, d *client.MetaobjectDefinitionFields) diag.Diagnostics {
@@ -447,7 +476,7 @@ func setFromAPI(ctx context.Context, m *model, d *client.MetaobjectDefinitionFie
 	m.DisplayNameKey = types.StringValue(deref(d.DisplayNameKey))
 
 	m.Access, dd = types.ObjectValueFrom(ctx, accessAttrTypes, accessModel{
-		Admin:           types.StringValue(string(d.Access.Admin)),
+		Admin:           adminAccess(d.Access.Admin),
 		Storefront:      types.StringValue(string(d.Access.Storefront)),
 		CustomerAccount: types.StringValue(string(d.Access.CustomerAccount)),
 	})
@@ -562,6 +591,14 @@ func capabilitiesInput(ctx context.Context, o types.Object, diags *diag.Diagnost
 		in.Renderable = &client.MetaobjectCapabilityRenderableInput{Enabled: *b}
 	}
 	return in
+}
+
+// adminAccess keeps only values the input accepts, so generated config passes validation.
+func adminAccess(a client.MetaobjectAdminAccess) types.String {
+	if a != client.MetaobjectAdminAccess(client.MetaobjectAdminAccessInputMerchantRead) && a != client.MetaobjectAdminAccess(client.MetaobjectAdminAccessInputMerchantReadWrite) {
+		return types.StringNull()
+	}
+	return types.StringValue(string(a))
 }
 
 func deref(s *string) string {

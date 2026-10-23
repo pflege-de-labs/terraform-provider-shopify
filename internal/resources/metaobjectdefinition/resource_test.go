@@ -35,6 +35,10 @@ resource "shopify_metaobject_definition" "test" {
 `, typ, body)
 }
 
+var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check{
+	"id": knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/MetaobjectDefinition/\d+$`)),
+})
+
 func fieldKeys(keys ...string) statecheck.StateCheck {
 	checks := make([]knownvalue.Check, len(keys))
 	for i, k := range keys {
@@ -166,18 +170,43 @@ func TestAccMetaobjectDefinition_deletionGuard(t *testing.T) {
     type = "single_line_text_field"
   }
 `
+	guardedConfig := config(typ, `name = "Guarded"`+fields+fieldB)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
 		CheckDestroy:             checkDestroyed(t, typ),
 		Steps: []resource.TestStep{
-			{Config: config(typ, `name = "Guarded"`+fields+fieldB)},
+			{
+				Config:            guardedConfig,
+				ConfigStateChecks: []statecheck.StateCheck{expectIdentity},
+			},
+			{RefreshState: true},
+			{
+				// Refresh steps can't carry state checks; this no-op step checks identity survives the refresh.
+				Config:            guardedConfig,
+				ConfigStateChecks: []statecheck.StateCheck{expectIdentity},
+			},
+			{
+				// Here, not in _basic: its allow_data_deletion = true would turn the import into an update.
+				Config:          guardedConfig,
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+			},
+			{
+				// Generated config must pass validation; admin access can report values the input rejects.
+				Config:          guardedConfig,
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+				GenerateConfig:  true,
+			},
 			{
 				Config:      config(typ, `name = "Guarded"`+fields),
 				ExpectError: regexp.MustCompile(`allow_data_deletion = true`),
 			},
 			{
-				Config:      config(typ, `name = "Guarded"`+fields+fieldB),
+				Config:      guardedConfig,
 				Destroy:     true,
 				ExpectError: regexp.MustCompile(`allow_data_deletion = true`),
 			},
