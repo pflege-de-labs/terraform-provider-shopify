@@ -1,0 +1,139 @@
+fragment MetaobjectDefinitionFields on MetaobjectDefinition {
+  id
+  type
+  name
+  description
+  displayNameKey
+  access {
+    admin
+    storefront
+    customerAccount
+  }
+  capabilities {
+    publishable {
+      enabled
+    }
+    translatable {
+      enabled
+    }
+    renderable {
+      enabled
+    }
+  }
+  fieldDefinitions {
+    key
+    name
+    description
+    required
+    type {
+      name
+    }
+    validations {
+      name
+      value
+    }
+  }
+}
+
+query GetMetaobjectDefinition(
+  $id: ID!
+) {
+  metaobjectDefinition(id: $id) {
+    ...MetaobjectDefinitionFields
+  }
+}
+
+query GetMetaobjectDefinitionByType(
+  $definitionType: String!
+) {
+  metaobjectDefinitionByType(type: $definitionType) {
+    ...MetaobjectDefinitionFields
+  }
+}
+
+# Unset optional inputs must be omitted, not sent as null, so admin edits to unmanaged attributes survive.
+# @genqlient(for: "MetaobjectDefinitionCreateInput.name", omitempty: true)
+# @genqlient(for: "MetaobjectDefinitionCreateInput.description", omitempty: true)
+# @genqlient(for: "MetaobjectDefinitionCreateInput.fieldDefinitions", omitempty: true)
+# @genqlient(for: "MetaobjectDefinitionCreateInput.access", omitempty: true)
+# @genqlient(for: "MetaobjectDefinitionCreateInput.displayNameKey", omitempty: true)
+# @genqlient(for: "MetaobjectDefinitionCreateInput.capabilities", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionCreateInput.name", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionCreateInput.description", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionCreateInput.required", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionCreateInput.validations", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionCreateInput.capabilities", omitempty: true)
+# @genqlient(for: "MetaobjectAccessInput.admin", omitempty: true)
+# @genqlient(for: "MetaobjectAccessInput.storefront", omitempty: true)
+# @genqlient(for: "MetaobjectAccessInput.customerAccount", omitempty: true)
+# @genqlient(for: "MetaobjectCapabilityCreateInput.publishable", omitempty: true)
+# @genqlient(for: "MetaobjectCapabilityCreateInput.translatable", omitempty: true)
+# @genqlient(for: "MetaobjectCapabilityCreateInput.renderable", omitempty: true)
+# @genqlient(for: "MetaobjectCapabilityCreateInput.onlineStore", omitempty: true)
+mutation CreateMetaobjectDefinition(
+  $definition: MetaobjectDefinitionCreateInput!
+) {
+  metaobjectDefinitionCreate(definition: $definition) {
+    metaobjectDefinition {
+      ...MetaobjectDefinitionFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# Field validations are always sent as a list on update, so an empty one clears them.
+# @genqlient(for: "MetaobjectDefinitionUpdateInput.name", omitempty: true)
+# @genqlient(for: "MetaobjectDefinitionUpdateInput.description", omitempty: true)
+# @genqlient(for: "MetaobjectDefinitionUpdateInput.fieldDefinitions", omitempty: true)
+# @genqlient(for: "MetaobjectDefinitionUpdateInput.access", omitempty: true)
+# @genqlient(for: "MetaobjectDefinitionUpdateInput.displayNameKey", omitempty: true)
+# @genqlient(for: "MetaobjectDefinitionUpdateInput.resetFieldOrder", omitempty: true)
+# @genqlient(for: "MetaobjectDefinitionUpdateInput.capabilities", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionOperationInput.create", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionOperationInput.update", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionOperationInput.delete", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionCreateInput.name", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionCreateInput.description", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionCreateInput.required", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionCreateInput.validations", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionCreateInput.capabilities", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionUpdateInput.name", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionUpdateInput.description", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionUpdateInput.required", omitempty: true)
+# @genqlient(for: "MetaobjectFieldDefinitionUpdateInput.capabilities", omitempty: true)
+# @genqlient(for: "MetaobjectAccessInput.admin", omitempty: true)
+# @genqlient(for: "MetaobjectAccessInput.storefront", omitempty: true)
+# @genqlient(for: "MetaobjectAccessInput.customerAccount", omitempty: true)
+# @genqlient(for: "MetaobjectCapabilityUpdateInput.publishable", omitempty: true)
+# @genqlient(for: "MetaobjectCapabilityUpdateInput.translatable", omitempty: true)
+# @genqlient(for: "MetaobjectCapabilityUpdateInput.renderable", omitempty: true)
+# @genqlient(for: "MetaobjectCapabilityUpdateInput.onlineStore", omitempty: true)
+mutation UpdateMetaobjectDefinition(
+  $id: ID!
+  $definition: MetaobjectDefinitionUpdateInput!
+) {
+  metaobjectDefinitionUpdate(id: $id, definition: $definition) {
+    metaobjectDefinition {
+      ...MetaobjectDefinitionFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeleteMetaobjectDefinition(
+  $id: ID!
+) {
+  metaobjectDefinitionDelete(id: $id) {
+    deletedId
+    userErrors {
+      field
+      message
+    }
+  }
+}

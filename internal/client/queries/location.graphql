@@ -1,0 +1,126 @@
+fragment LocationFields on Location {
+  id
+  legacyResourceId
+  name
+  isActive
+  fulfillsOnlineOrders
+  address {
+    address1
+    address2
+    city
+    zip
+    provinceCode
+    countryCode
+    phone
+  }
+}
+
+query GetLocation(
+  $id: ID!
+) {
+  location(id: $id) {
+    ...LocationFields
+  }
+}
+
+# Search-backed, so it can lag behind writes; used only for import and the Read fallback.
+query FindLocations(
+  $query: String!
+) {
+  locations(first: 50, query: $query, includeInactive: true) {
+    nodes {
+      ...LocationFields
+    }
+  }
+}
+
+# @genqlient(for: "LocationAddInput.fulfillsOnlineOrders", omitempty: true)
+# @genqlient(for: "LocationAddInput.metafields", omitempty: true)
+# @genqlient(for: "LocationAddAddressInput.address1", omitempty: true)
+# @genqlient(for: "LocationAddAddressInput.address2", omitempty: true)
+# @genqlient(for: "LocationAddAddressInput.city", omitempty: true)
+# @genqlient(for: "LocationAddAddressInput.phone", omitempty: true)
+# @genqlient(for: "LocationAddAddressInput.zip", omitempty: true)
+# @genqlient(for: "LocationAddAddressInput.provinceCode", omitempty: true)
+mutation AddLocation(
+  $input: LocationAddInput!
+) {
+  locationAdd(input: $input) {
+    location {
+      ...LocationFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# @genqlient(for: "LocationEditInput.name", omitempty: true)
+# @genqlient(for: "LocationEditInput.address", omitempty: true)
+# @genqlient(for: "LocationEditInput.fulfillsOnlineOrders", omitempty: true)
+# @genqlient(for: "LocationEditInput.metafields", omitempty: true)
+# @genqlient(for: "LocationEditAddressInput.address1", omitempty: true)
+# @genqlient(for: "LocationEditAddressInput.address2", omitempty: true)
+# @genqlient(for: "LocationEditAddressInput.city", omitempty: true)
+# @genqlient(for: "LocationEditAddressInput.phone", omitempty: true)
+# @genqlient(for: "LocationEditAddressInput.zip", omitempty: true)
+# @genqlient(for: "LocationEditAddressInput.countryCode", omitempty: true)
+# @genqlient(for: "LocationEditAddressInput.provinceCode", omitempty: true)
+mutation EditLocation(
+  $id: ID!
+  $input: LocationEditInput!
+) {
+  locationEdit(id: $id, input: $input) {
+    location {
+      ...LocationFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# The idempotency key is required since 2026-04; a retry of the same request reuses it.
+mutation ActivateLocation(
+  $locationId: ID!
+  $idempotencyKey: String!
+) {
+  locationActivate(locationId: $locationId) @idempotent(key: $idempotencyKey) {
+    location {
+      ...LocationFields
+    }
+    locationActivateUserErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeactivateLocation(
+  $locationId: ID!
+  $idempotencyKey: String!
+) {
+  locationDeactivate(locationId: $locationId) @idempotent(key: $idempotencyKey) {
+    location {
+      ...LocationFields
+    }
+    locationDeactivateUserErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeleteLocation(
+  $locationId: ID!
+) {
+  locationDelete(locationId: $locationId) {
+    deletedLocationId
+    locationDeleteUserErrors {
+      field
+      message
+    }
+  }
+}

@@ -5,17 +5,34 @@ package provider
 
 import (
 	"context"
-	"net/http"
+	"os"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/shop"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/deliveryprofile"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/location"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/market"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/menu"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/metafielddefinition"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/metaobjectdefinition"
 )
 
 // Ensure ShopifyProvider satisfies various provider interfaces.
 var _ provider.Provider = &ShopifyProvider{}
+
+// defaultMaxRetries applies when max_retries is unset.
+const defaultMaxRetries = 5
 
 // ShopifyProvider defines the provider implementation.
 type ShopifyProvider struct {
@@ -27,7 +44,13 @@ type ShopifyProvider struct {
 
 // ShopifyProviderModel describes the provider data model.
 type ShopifyProviderModel struct {
-	Endpoint types.String `tfsdk:"endpoint"`
+	StoreDomain  types.String `tfsdk:"store_domain"`
+	ClientID     types.String `tfsdk:"client_id"`
+	ClientSecret types.String `tfsdk:"client_secret"`
+	AccessToken  types.String `tfsdk:"access_token"`
+	APIVersion   types.String `tfsdk:"api_version"`
+	MaxRetries   types.Int64  `tfsdk:"max_retries"`
+	Concurrency  types.Int64  `tfsdk:"concurrency"`
 }
 
 func (p *ShopifyProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -36,11 +59,46 @@ func (p *ShopifyProvider) Metadata(ctx context.Context, req provider.MetadataReq
 }
 
 func (p *ShopifyProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
+	// Only ConflictsWith here: an exactly-one check on config would reject credentials set via env vars.
+	conflictsWithToken := []validator.String{stringvalidator.ConflictsWith(path.MatchRoot("access_token"))}
 	resp.Schema = schema.Schema{
+		MarkdownDescription: "Manages Shopify store configuration through the Admin GraphQL API. " +
+			"Authenticate with `client_id` and `client_secret` (client credentials grant, preferred) or a static `access_token`.",
 		Attributes: map[string]schema.Attribute{
-			"endpoint": schema.StringAttribute{
-				MarkdownDescription: "Example provider attribute",
+			"store_domain": schema.StringAttribute{
+				MarkdownDescription: "Store domain, e.g. `example.myshopify.com`. Env: `SHOPIFY_STORE_DOMAIN`.",
 				Optional:            true,
+			},
+			"client_id": schema.StringAttribute{
+				MarkdownDescription: "Client ID of the Dev Dashboard app. Env: `SHOPIFY_CLIENT_ID`.",
+				Optional:            true,
+				Sensitive:           true,
+				Validators:          conflictsWithToken,
+			},
+			"client_secret": schema.StringAttribute{
+				MarkdownDescription: "Client secret of the Dev Dashboard app. Env: `SHOPIFY_CLIENT_SECRET`.",
+				Optional:            true,
+				Sensitive:           true,
+				Validators:          conflictsWithToken,
+			},
+			"access_token": schema.StringAttribute{
+				MarkdownDescription: "Static Admin API access token, instead of client credentials. Env: `SHOPIFY_ACCESS_TOKEN`.",
+				Optional:            true,
+				Sensitive:           true,
+			},
+			"api_version": schema.StringAttribute{
+				MarkdownDescription: "Admin API version. Defaults to `" + client.DefaultAPIVersion + "`, the version the provider is built against.",
+				Optional:            true,
+			},
+			"max_retries": schema.Int64Attribute{
+				MarkdownDescription: "Retries for throttled and 429/5xx responses. Defaults to `5`.",
+				Optional:            true,
+				Validators:          []validator.Int64{int64validator.AtLeast(0)},
+			},
+			"concurrency": schema.Int64Attribute{
+				MarkdownDescription: "Maximum in-flight API requests, regardless of Terraform parallelism. Defaults to `2`.",
+				Optional:            true,
+				Validators:          []validator.Int64{int64validator.AtLeast(1)},
 			},
 		},
 	}
@@ -55,24 +113,62 @@ func (p *ShopifyProvider) Configure(ctx context.Context, req provider.ConfigureR
 		return
 	}
 
-	// Configuration values are now available.
-	// if data.Endpoint.IsNull() { /* ... */ }
+	cfg, diags := clientConfig(data, os.Getenv)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
-	// Example client configuration for data sources and resources
-	client := http.DefaultClient
-	resp.DataSourceData = client
-	resp.ResourceData = client
+	c, err := client.New(cfg)
+	if err != nil {
+		resp.Diagnostics.AddError("Invalid Shopify provider configuration", err.Error()+" (directly or via SHOPIFY_* environment variables)")
+		return
+	}
+	resp.DataSourceData = c
+	resp.ResourceData = c
+}
+
+// clientConfig merges provider config with env var fallbacks; config wins.
+func clientConfig(data ShopifyProviderModel, getenv func(string) string) (client.Config, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	str := func(v types.String, attr, env string) string {
+		if v.IsUnknown() {
+			diags.AddAttributeError(path.Root(attr), "Unknown provider value", attr+" must be known at plan time.")
+		}
+		if v.IsNull() {
+			return getenv(env)
+		}
+		return v.ValueString()
+	}
+	cfg := client.Config{
+		StoreDomain:  str(data.StoreDomain, "store_domain", "SHOPIFY_STORE_DOMAIN"),
+		ClientID:     str(data.ClientID, "client_id", "SHOPIFY_CLIENT_ID"),
+		ClientSecret: str(data.ClientSecret, "client_secret", "SHOPIFY_CLIENT_SECRET"),
+		AccessToken:  str(data.AccessToken, "access_token", "SHOPIFY_ACCESS_TOKEN"),
+		APIVersion:   data.APIVersion.ValueString(),
+		MaxRetries:   defaultMaxRetries,
+		Concurrency:  int(data.Concurrency.ValueInt64()),
+	}
+	if !data.MaxRetries.IsNull() {
+		cfg.MaxRetries = int(data.MaxRetries.ValueInt64())
+	}
+	return cfg, diags
 }
 
 func (p *ShopifyProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		NewExampleResource,
+		metafielddefinition.NewResource,
+		metaobjectdefinition.NewResource,
+		menu.NewResource,
+		location.NewResource,
+		market.NewResource,
+		deliveryprofile.NewResource,
 	}
 }
 
 func (p *ShopifyProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		NewExampleDataSource,
+		shop.NewDataSource,
 	}
 }
 

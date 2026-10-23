@@ -1,0 +1,152 @@
+fragment MarketFields on Market {
+  id
+  handle
+  name
+  status
+  conditions {
+    regionsCondition {
+      regions(first: 250) {
+        nodes {
+          ... on MarketRegionCountry {
+            code
+          }
+        }
+      }
+    }
+  }
+  currencySettings {
+    baseCurrency {
+      currencyCode
+    }
+    localCurrencies
+  }
+  webPresences(first: 250) {
+    nodes {
+      id
+    }
+  }
+  catalogs(first: 250) {
+    nodes {
+      id
+    }
+  }
+}
+
+query GetMarket(
+  $id: ID!
+) {
+  market(id: $id) {
+    ...MarketFields
+  }
+}
+
+# markets(query:) can't filter by handle, so lookups by handle page through all markets.
+query ListMarkets(
+  $after: String
+) {
+  markets(first: 250, after: $after) {
+    nodes {
+      ...MarketFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# @genqlient(for: "MarketCreateInput.handle", omitempty: true)
+# @genqlient(for: "MarketCreateInput.conditions", omitempty: true)
+# @genqlient(for: "MarketCreateInput.catalogs", omitempty: true)
+# @genqlient(for: "MarketCreateInput.makeDuplicateUniqueMarketsDraft", omitempty: true)
+# @genqlient(for: "MarketCreateInput.status", omitempty: true)
+# @genqlient(for: "MarketCreateInput.webPresences", omitempty: true)
+# @genqlient(for: "MarketCreateInput.currencySettings", omitempty: true)
+# @genqlient(for: "MarketCreateInput.priceInclusions", omitempty: true)
+# @genqlient(for: "MarketCreateInput.discounts", omitempty: true)
+# @genqlient(for: "MarketCreateInput.delivery", omitempty: true)
+# @genqlient(for: "MarketCreateInput.returnPolicyProfileId", omitempty: true)
+# @genqlient(for: "MarketConditionsInput.companyLocationsCondition", omitempty: true)
+# @genqlient(for: "MarketConditionsInput.locationsCondition", omitempty: true)
+# @genqlient(for: "MarketConditionsInput.regionsCondition", omitempty: true)
+# @genqlient(for: "MarketConditionsInput.channelsCondition", omitempty: true)
+# @genqlient(for: "MarketConditionsRegionsInput.regionIds", omitempty: true)
+# @genqlient(for: "MarketConditionsRegionsInput.regions", omitempty: true)
+# @genqlient(for: "MarketConditionsRegionsInput.applicationLevel", omitempty: true)
+# @genqlient(for: "MarketConditionsRegionInput.subdivision", omitempty: true)
+# @genqlient(for: "MarketCurrencySettingsUpdateInput.baseCurrency", omitempty: true)
+# @genqlient(for: "MarketCurrencySettingsUpdateInput.baseCurrencyManualRate", omitempty: true)
+# @genqlient(for: "MarketCurrencySettingsUpdateInput.localCurrencies", omitempty: true)
+# @genqlient(for: "MarketCurrencySettingsUpdateInput.roundingEnabled", omitempty: true)
+mutation CreateMarket(
+  $input: MarketCreateInput!
+) {
+  marketCreate(input: $input) {
+    market {
+      ...MarketFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# @genqlient(for: "MarketUpdateInput.name", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.handle", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.conditions", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.catalogsToAdd", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.catalogsToDelete", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.webPresencesToAdd", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.webPresencesToDelete", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.discountsToAdd", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.discountsToDelete", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.makeDuplicateUniqueMarketsDraft", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.status", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.currencySettings", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.removeCurrencySettings", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.removePriceInclusions", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.priceInclusions", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.delivery", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.returnPolicyProfileId", omitempty: true)
+# @genqlient(for: "MarketUpdateInput.removeReturnPolicyProfile", omitempty: true)
+# @genqlient(for: "MarketConditionsUpdateInput.conditionsToAdd", omitempty: true)
+# @genqlient(for: "MarketConditionsUpdateInput.conditionsToDelete", omitempty: true)
+# @genqlient(for: "MarketConditionsInput.companyLocationsCondition", omitempty: true)
+# @genqlient(for: "MarketConditionsInput.locationsCondition", omitempty: true)
+# @genqlient(for: "MarketConditionsInput.regionsCondition", omitempty: true)
+# @genqlient(for: "MarketConditionsInput.channelsCondition", omitempty: true)
+# @genqlient(for: "MarketConditionsRegionsInput.regionIds", omitempty: true)
+# @genqlient(for: "MarketConditionsRegionsInput.regions", omitempty: true)
+# @genqlient(for: "MarketConditionsRegionsInput.applicationLevel", omitempty: true)
+# @genqlient(for: "MarketConditionsRegionInput.subdivision", omitempty: true)
+# @genqlient(for: "MarketCurrencySettingsUpdateInput.baseCurrency", omitempty: true)
+# @genqlient(for: "MarketCurrencySettingsUpdateInput.baseCurrencyManualRate", omitempty: true)
+# @genqlient(for: "MarketCurrencySettingsUpdateInput.localCurrencies", omitempty: true)
+# @genqlient(for: "MarketCurrencySettingsUpdateInput.roundingEnabled", omitempty: true)
+mutation UpdateMarket(
+  $id: ID!
+  $input: MarketUpdateInput!
+) {
+  marketUpdate(id: $id, input: $input) {
+    market {
+      ...MarketFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeleteMarket(
+  $id: ID!
+) {
+  marketDelete(id: $id) {
+    deletedId
+    userErrors {
+      field
+      message
+    }
+  }
+}

@@ -130,15 +130,17 @@ resource "shopify_metafield_definition" "care_level" {
 | `owner_type` | string | Required, RequiresReplace |
 | `namespace` | string | Required, RequiresReplace |
 | `key` | string | Required, RequiresReplace |
-| `type` | string | Required, RequiresReplace ⚠ (check whether some type migrations are allowed in place) |
+| `type` | string | Required, RequiresReplace. Confirmed: `MetafieldDefinitionUpdateInput` has no `type` field |
 | `name`, `description` | string | Updatable |
-| `validations` | map(string) | Updatable. Values are strings, as in the API. JSON-shaped validations (e.g. `metaobject_definition_id`) are passed as JSON strings |
-| `access` | object | `admin`, `storefront`, `customer_account` ⚠ |
-| `pin` | bool | Maps to the pin/unpin mutations |
-| `use_as_collection_condition` | bool | Delete is blocked by Shopify while in use as a collection rule |
-| `allow_data_deletion` | bool | Pattern B. When true, delete calls `metafieldDefinitionDelete` with `deleteAllAssociatedMetafields: true` ⚠ |
+| `validations` | map(string) | Updatable. Values are strings, as in the API. JSON-shaped validations (e.g. `metaobject_definition_id`) are passed as JSON strings. Update replaces the whole list (verified by acceptance test), so the provider always sends it in full |
+| `access` | object | `admin` (`MERCHANT_READ`, `MERCHANT_READ_WRITE`), `storefront` (`PUBLIC_READ`, `NONE`), `customer_account` (`READ_WRITE`, `READ`, `NONE`). Reads can return admin values that aren't valid input (e.g. `PUBLIC_READ_WRITE`), so only configured fields are sent |
+| `pin` | bool | `pin` field on create/update input; read from `pinnedPosition` |
+| `use_as_collection_condition` | bool | `capabilities.smartCollectionCondition.enabled`. Delete is blocked by Shopify while in use as a collection rule |
+| `allow_data_deletion` | bool | Pattern B. When true, delete calls `metafieldDefinitionDelete` with `deleteAllAssociatedMetafields: true` (confirmed; the values are deleted asynchronously) |
 
-Mutations: `metafieldDefinitionCreate`, `metafieldDefinitionUpdate`, `metafieldDefinitionDelete`, `metafieldDefinitionPin`/`Unpin`.
+Mutations: `metafieldDefinitionCreate`, `metafieldDefinitionUpdate`, `metafieldDefinitionDelete`.
+
+**Read** uses `metafieldDefinition(identifier:)` with the natural key only. The query has no `id` argument, and genqlient can't generate `node(id:)` (the schema has interfaces implementing `Node`). Owner type, namespace and key can't change, so this finds a definition recreated in the admin just like GID-first with fallback would.
 
 ---
 
@@ -182,15 +184,18 @@ resource "shopify_metaobject_definition" "faq" {
 | `type` | string | Required, RequiresReplace, import key |
 | `name`, `description`, `display_name_key` | string | Updatable |
 | `access` | object | `admin`, `storefront` |
-| `capabilities` | object | `publishable`, `translatable`, `renderable`, `online_store` ⚠ |
-| `field` | ordered list of blocks | `key`, `name`, `type`, `description`, `required`, `validations` |
-| `allow_data_deletion` | bool | Pattern B. Deleting the definition removes all its entries ⚠ |
+| `capabilities` | object | `publishable`, `translatable`, `renderable` (bools). `online_store` needs a `urlHandle` and is deferred |
+| `field` | ordered list of blocks | `key`, `name`, `type`, `description`, `required`, `validations`. Fully managed: the list in config is the field list |
+| `allow_data_deletion` | bool | Pattern B. Confirmed: `metaobjectDefinitionDelete` removes the definition at once and its entries, metafield definitions and metafields asynchronously. For field removal or type change, the planned value counts (it's an update) |
 
-**Field diffing.** Update translates the block list into the update mutation's per-field `create` / `update` / `delete` operations ⚠, matched by `key`:
+**Field diffing.** Update translates the block list into the update mutation's per-field `create` / `update` / `delete` operations (`MetaobjectFieldDefinitionOperationInput`, confirmed), matched by `key`:
 - A new key → `create`.
 - A changed name, description, required flag or validations → `update`.
 - A removed key, or a changed field `type` (delete + create) → **destroys the data in that field**. Blocked unless `allow_data_deletion = true`, with a plan-time warning.
-- A changed order → reorder (field order matters in the admin UI).
+- A changed order → reorder (field order matters in the admin UI). Every kept field is sent as an update in config order with `resetFieldOrder: true`.
+- Shopify rejects a delete and a create of the same key in one call ("duplicates other inputs"), so deletes are sent in a first call, the rest in a second. Not atomic: if the second call fails, the next apply recreates the missing fields.
+
+**Read** uses `metaobjectDefinition(id:)`, falling back to `metaobjectDefinitionByType`.
 
 Entries (metaobjects) are content and stay **out of scope**.
 
@@ -219,16 +224,17 @@ resource "shopify_market" "dach" {
 
 | Attribute | Type | Behaviour |
 |---|---|---|
-| `handle` | string | Required, import key |
+| `handle` | string | Required, import key. Updatable. A taken handle fails with `TAKEN` |
 | `name` | string | Required |
-| `enabled` | bool | |
+| `enabled` | bool | Maps to `status` (`ACTIVE` / `DRAFT`); the API's `enabled` field is deprecated |
 | `conditions.regions` | set(string) | Country codes. B2B (`company_location_ids`) and POS (`location_ids`) conditions come later; they are dev preview |
 | `currency_settings` | object | `base_currency`, `local_currencies` |
 | `catalog_ids`, `web_presence_ids` | set(string) | Links only, as plain IDs. Catalogs and price lists are content and stay out of scope. No `shopify_market_web_presence` resource yet; revisit later |
 
 Notes:
 - Uses the **2025+ Markets model** (conditions-based `marketCreate` / `marketUpdate`), not the legacy region mutations.
-- A country can belong to only one region market ⚠. Moving a country between two Terraform-managed markets needs a careful update order (remove from A, then add to B). The provider should report the Shopify error clearly rather than retry.
+- **Overlap is allowed** (checked on the dev store): a country can be in several markets. Only two active markets with exactly the same region set conflict (`DUPLICATE_REGION_MARKET` "There is an existing region market with the same regions", plus `DUPLICATE_UNIQUE_MARKET`). Draft markets don't conflict. So moving countries between markets needs no update order; the error is reported as is and not retried.
+- Regions, web presences and catalogs are updated with add/delete lists, diffed between state and plan. `markets(query:)` can't filter by handle, so lookups by handle page through all markets.
 - Possible follow-up resource: `shopify_market_web_presence` (domain or subfolder suffix, default and alternate locales).
 
 ---
@@ -255,14 +261,16 @@ resource "shopify_location" "warehouse_hamburg" {
 
 | Attribute | Type | Behaviour |
 |---|---|---|
-| `name` | string | Required, import key |
+| `name` | string | Required, import key (numeric ID as fallback) |
 | `address` | object | Updatable via `locationEdit` |
 | `fulfills_online_orders` | bool | |
 | `active` | bool | `locationActivate` / `locationDeactivate` |
-| `deletion_policy` | string | `deactivate` (default) or `delete`. Delete requires deactivating first. Shopify may refuse deletion for locations with inventory or history ⚠ |
+| `deletion_policy` | string | `deactivate` (default) or `delete`. Delete requires deactivating first. Shopify refuses deletion with `LOCATION_HAS_INVENTORY` / `LOCATION_HAS_PENDING_ORDERS` (from the error enum; not exercised) |
 | `allow_data_deletion` | bool | Pattern B. Guards only `deletion_policy = "delete"`; deactivation is never blocked |
 
-Mutations: `locationAdd`, `locationEdit`, `locationActivate`, `locationDeactivate`, `locationDelete`.
+Mutations: `locationAdd`, `locationEdit`, `locationActivate`, `locationDeactivate`, `locationDelete`. Activate and deactivate require an `@idempotent(key:)` directive since 2026-04; the provider sends a random key per call, which retries reuse.
+
+**Lookup:** Read uses `location(id:)`, falling back to `locations(query: "name:\"…\"", includeInactive: true)` with an exact-name match. Import accepts the name or the numeric `legacyResourceId`. The search lags a few seconds behind writes. Names are unique per shop: `locationAdd` returns `TAKEN` ("You already have a location with this name"), confirmed against an active location; ⚠ not checked against a deactivated one.
 
 Watch out: the location limit depends on the plan, and deactivating a location that holds inventory needs a destination for that inventory ⚠. That is a reason to default to `deactivate` and treat deletion as rare.
 
@@ -304,12 +312,17 @@ resource "shopify_delivery_profile" "general" {
 }
 ```
 
-Recommendation: **phase 2.**
-- Start with the general profile only (adopted implicitly, no flag), with flat rates and price- or weight-based conditions.
-- Product-to-profile assignment is catalog work and stays out of scope; the general profile covers everything by default.
-- Update is complicated: the update input uses separate lists for create, update and delete at each level ⚠. Matching is by zone name and method name. Write good unit tests for the diff logic before shipping.
+Phase 1 implements the general profile only:
+- Adopted implicitly (no flag): create takes it over, destroy only removes it from state. Import key `default`.
+- Flat rates with optional price or weight conditions. Carrier-calculated rates are read past and never touched. Product-to-profile assignment stays out of scope.
+- **Diff against the live tree.** Update fetches the current profile and diffs config against it, so no nested IDs live in state. Location groups match by position, zones by name, rates by **name plus condition**: real profiles repeat rate names (a flat "Standard" and a free "Standard" over €55 in the same zone), so name alone isn't unique. Validators require unique zone names per group and unique name + condition per zone.
+- The update input has create/update lists per level and profile-level delete lists by ID (confirmed). Flat rates update in place via the rate definition ID. Conditional rates come back with synthetic IDs (`DeliveryRateDefinition/0?source=RateRangeCondition…`), so any change to one is a delete + create.
+- Amounts come back reformatted (`"55.00"` → `"55.0"`); they are compared numerically and state keeps the configured string.
+- A rate with both a minimum and a maximum comes back as two conditions sharing one base ID (`…DeliveryCondition/<n>?operator=…`). The provider models one condition per rate, so it fails on such rates rather than drop a bound. Follow-up: model `condition` as `{ field, min, max, unit }`.
+- Zone countries are sent only when the set changes, with all provinces included. Province subsets are not modeled: changing a zone's countries widens partial-province selections in that zone. `*` stands for the rest of the world.
+- The full tree can exceed Shopify's single-query cost limit (1000). The provider reads ≤ 50 locations per group, ≤ 25 zones per group and ≤ 25 rates per zone, and fails on larger profiles instead of managing part of one.
 
-Mutations: `deliveryProfileCreate`, `deliveryProfileUpdate`, `deliveryProfileRemove`.
+Mutations: `deliveryProfileUpdate` only (create/remove are for custom profiles, out of scope).
 
 ---
 
@@ -343,15 +356,17 @@ resource "shopify_menu" "main" {
 
 | Attribute | Type | Behaviour |
 |---|---|---|
-| `handle` | string | Required, import key |
+| `handle` | string | Required, import key. Updatable, except for default menus |
 | `title` | string | Required |
 | `item` | nested blocks (≤ 3 levels) | `title`, `type`, `resource_id` or `url`, `tags` |
-| `adopt_existing` | bool | Pattern A for default menus |
+| `is_default` | bool | Computed. Default menus are never deleted, only removed from state |
+| `adopt_existing` | bool | Pattern A. With `true`, destroy only removes the menu from state |
 
 Notes:
-- **Terraform owns the whole tree.** Update sends the complete item list, which replaces the menu ⚠. Any item a merchant adds in the admin will be removed on the next apply. If merchants need to edit a menu, keep that menu out of Terraform.
+- **Terraform owns the whole tree.** Update sends the complete item list without item IDs, which replaces all items (confirmed by acceptance test). Any item a merchant adds in the admin will be removed on the next apply. If merchants need to edit a menu, keep that menu out of Terraform.
 - Menu items point at collections and pages, which are content. Referencing them by GID makes configs specific to one store. Option: allow `resource_handle` plus `type`, and resolve it to a GID at apply time.
-- Validation: `resource_id` is required for COLLECTION, PRODUCT and PAGE; `url` for HTTP ⚠ (check the full type enum).
+- Validation: `url` is required for HTTP and not allowed for other types (Shopify derives it, so it is only stored for HTTP items). `resource_id` is required for COLLECTION, PRODUCT, PAGE, BLOG, ARTICLE and METAOBJECT. ⚠ Unverified whether SHOP_POLICY, CATALOG and CUSTOMER_ACCOUNT_PAGE need one. Full enum: FRONTPAGE, COLLECTION, COLLECTIONS, PRODUCT, CATALOG, PAGE, BLOG, ARTICLE, SEARCH, SHOP_POLICY, HTTP, METAOBJECT, CUSTOMER_ACCOUNT_PAGE.
+- **Lookup by handle:** `menus(query:)` can't filter by handle, so the provider pages through all menus. The list lags a few seconds behind writes (search index), so a menu created moments ago may not be found yet by import or adopt. Shopify suffixes a taken handle (`-1`) instead of failing, so Create also checks the returned handle, removes the duplicate and fails.
 
 ---
 

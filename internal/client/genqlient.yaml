@@ -1,0 +1,13 @@
+schema: schema/admin-2026-10.graphql
+operations:
+  - queries/*.graphql
+generated: generated.go
+package: client
+optional: pointer
+bindings:
+  # Shopify serializes UnsignedInt64 as a JSON string.
+  UnsignedInt64:
+    type: string
+  # Decimal is a JSON string; kept as string to avoid float rounding.
+  Decimal:
+    type: string
