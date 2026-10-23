@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strings"
 	"testing"
 
+	"github.com/Khan/genqlient/graphql"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
@@ -65,12 +67,34 @@ func TestSpecsCoverPhase2(t *testing.T) {
 	for _, s := range specs() {
 		got[s.typ] = true
 	}
-	for _, want := range strings.Fields(`webPresences shopLocales shopPolicies privacySettings consentPolicy checkoutProfiles
+	for _, want := range strings.Fields(`webPresences shopLocales shopPolicies privacySettings consentPolicy checkoutAndAccountsConfigurations
 		metafieldDefinitions deliveryProfiles carrierServices fulfillmentServices urlRedirects publications catalogs priceLists
 		sellingPlanGroups paymentCustomizations deliveryCustomizations validations cartTransforms fulfillmentConstraintRules
 		products collections pages blogs articles discountNodes metaobjectDefinitions files segments returnPolicyProfiles`) {
 		if !got[want] {
 			t.Errorf("no spec for %s", want)
+		}
+	}
+}
+
+type failSecondPage struct{ calls int }
+
+func (f *failSecondPage) MakeRequest(_ context.Context, _ *graphql.Request, resp *graphql.Response) error {
+	f.calls++
+	if f.calls > 1 {
+		return errors.New("net down")
+	}
+	*resp.Data.(*map[string]any) = map[string]any{"products": map[string]any{
+		"nodes":    []any{map[string]any{"id": "1"}},
+		"pageInfo": map[string]any{"hasNextPage": true, "endCursor": "c"},
+	}}
+	return nil
+}
+
+func TestRunDropsPartialCountOnError(t *testing.T) {
+	for _, r := range run(context.Background(), &failSecondPage{}) {
+		if r.Type == "products" && (r.Count != 0 || !strings.HasPrefix(r.Status, "error")) {
+			t.Errorf("got count %d status %q", r.Count, r.Status)
 		}
 	}
 }

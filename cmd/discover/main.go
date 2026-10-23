@@ -79,8 +79,8 @@ func specs() []spec {
 		spec{typ: "shopLocales", filter: "-", root: "shopLocales", fields: "locale", key: str("locale")},
 		spec{typ: "shopPolicies", filter: "-", root: "shop.shopPolicies", fields: "type", key: str("type")},
 		spec{typ: "privacySettings", filter: "-", root: "privacySettings", fields: "__typename"},
-		spec{typ: "consentPolicy", filter: "-", root: "consentPolicy", fields: "id"},
-		spec{typ: "checkoutProfiles", filter: "-", root: "checkoutProfiles", fields: "id name", key: str("name"), extra: brandings},
+		spec{typ: "consentPolicy", filter: "per region", root: "consentPolicy", fields: "id"},
+		spec{typ: "checkoutAndAccountsConfigurations", filter: "-", root: "checkoutAndAccountsConfigurations", fields: "name branding { __typename }", key: str("name"), extra: brandings},
 		spec{typ: "urlRedirects", filter: "-", root: "urlRedirects", fields: "id"},
 		spec{typ: "publications", filter: "-", root: "publications", fields: "name", key: str("name")},
 		spec{typ: "catalogs", filter: "-", root: "catalogs", fields: "id"},
@@ -104,7 +104,7 @@ func specs() []spec {
 		spec{typ: "fulfillmentServices", filter: "-", root: "shop.fulfillmentServices", fields: "handle", key: str("handle")},
 		spec{typ: "sellingPlanGroups", filter: "-", root: "sellingPlanGroups", fields: "id"},
 		spec{typ: "segments", filter: "-", root: "segments", fields: "id"},
-		spec{typ: "returnPolicyProfiles", filter: "-", root: "returnPolicyProfiles", fields: "name", key: str("name")},
+		spec{typ: "returnPolicyProfiles", filter: "-", root: "returnPolicyProfiles", fields: "id"},
 	)
 }
 
@@ -211,6 +211,9 @@ func run(ctx context.Context, c gql) []row {
 	var rows []row
 	for _, s := range specs() {
 		nodes, err := collect(ctx, c, s)
+		if err != nil {
+			nodes = nil // a partial page set next to an error status would read as a real count
+		}
 		r := row{Type: s.typ, Filter: s.filter, Status: classify(err)}
 		for _, n := range nodes {
 			if s.keep != nil && !s.keep(n) {
@@ -229,21 +232,14 @@ func run(ctx context.Context, c gql) []row {
 	return rows
 }
 
-// brandings counts profiles that have checkout branding; the root needs a profile ID.
-func brandings(ctx context.Context, c gql, profiles []map[string]any) []row {
-	r := row{Type: "checkoutBranding", Filter: "per profile"}
-	var err error
-	for _, p := range profiles {
-		d, e := query(ctx, c, "query Discover($id: ID!) { checkoutBranding(checkoutProfileId: $id) { __typename } }", map[string]any{"id": str("id")(p)})
-		if e != nil {
-			err = e
-			break
-		}
-		if d["checkoutBranding"] != nil {
+// brandings counts configurations that carry checkout branding (the per-profile deprecated root is avoided).
+func brandings(_ context.Context, _ gql, configs []map[string]any) []row {
+	r := row{Type: "checkoutBranding", Filter: "per configuration", Status: "ok"}
+	for _, n := range configs {
+		if n["branding"] != nil {
 			r.Count++
 		}
 	}
-	r.Status = classify(err)
 	return []row{r}
 }
 
