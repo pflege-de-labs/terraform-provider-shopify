@@ -6,7 +6,7 @@ embedded = false
 
 [access_scopes]
 # Read counterparts of shopify.app.toml; keep in sync with docs/bootstrapping.md.
-scopes = "read_locations,read_markets,read_metaobject_definitions,read_online_store_navigation,read_products,read_shipping"
+scopes = "read_cart_transforms,read_checkout_and_accounts_configurations,read_checkout_branding_settings,read_content,read_customers,read_delivery_customizations,read_discounts,read_draft_orders,read_files,read_fulfillment_constraint_rules,read_fulfillments,read_inventory,read_legal_policies,read_locales,read_locations,read_markets,read_metaobject_definitions,read_metaobjects,read_online_store_navigation,read_orders,read_payment_customizations,read_privacy_settings,read_products,read_publications,read_shipping,read_translations,read_validations"
 use_legacy_install_flow = false
 
 [auth]
