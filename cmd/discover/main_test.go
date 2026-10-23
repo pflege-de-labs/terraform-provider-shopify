@@ -84,7 +84,8 @@ func (f *failSecondPage) MakeRequest(_ context.Context, _ *graphql.Request, resp
 	if f.calls > 1 {
 		return errors.New("net down")
 	}
-	*resp.Data.(*map[string]any) = map[string]any{"products": map[string]any{
+	data, _ := resp.Data.(*map[string]any)
+	*data = map[string]any{"products": map[string]any{
 		"nodes":    []any{map[string]any{"id": "1"}},
 		"pageInfo": map[string]any{"hasNextPage": true, "endCursor": "c"},
 	}}
