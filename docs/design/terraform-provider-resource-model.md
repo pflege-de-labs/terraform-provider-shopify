@@ -229,13 +229,13 @@ resource "shopify_market" "dach" {
 | `enabled` | bool | Maps to `status` (`ACTIVE` / `DRAFT`); the API's `enabled` field is deprecated |
 | `conditions.regions` | set(string) | Country codes. B2B (`company_location_ids`) and POS (`location_ids`) conditions come later; they are dev preview |
 | `currency_settings` | object | `base_currency`, `local_currencies` |
-| `catalog_ids`, `web_presence_ids` | set(string) | Links only, as plain IDs. Catalogs and price lists are content and stay out of scope. No `shopify_market_web_presence` resource yet; revisit later |
+| `catalog_ids`, `web_presence_ids` | set(string) | Links only, as plain IDs. Catalogs and price lists are content and stay out of scope. Web presences themselves: `shopify_web_presence` (section 9a) |
 
 Notes:
 - Uses the **2025+ Markets model** (conditions-based `marketCreate` / `marketUpdate`), not the legacy region mutations.
 - **Overlap is allowed** (checked on the dev store): a country can be in several markets. Only two active markets with exactly the same region set conflict (`DUPLICATE_REGION_MARKET` "There is an existing region market with the same regions", plus `DUPLICATE_UNIQUE_MARKET`). Draft markets don't conflict. So moving countries between markets needs no update order; the error is reported as is and not retried.
 - Regions, web presences and catalogs are updated with add/delete lists, diffed between state and plan. `markets(query:)` can't filter by handle, so lookups by handle page through all markets.
-- Possible follow-up resource: `shopify_market_web_presence` (domain or subfolder suffix, default and alternate locales).
+- Follow-up resource: `shopify_web_presence`, see section 9a (blocked on scope).
 
 ---
 
@@ -367,6 +367,48 @@ Notes:
 - Menu items point at collections and pages, which are content. Referencing them by GID makes configs specific to one store. Option: allow `resource_handle` plus `type`, and resolve it to a GID at apply time.
 - Validation: `url` is required for HTTP and not allowed for other types (Shopify derives it, so it is only stored for HTTP items). `resource_id` is required for COLLECTION, PRODUCT, PAGE, BLOG, ARTICLE, METAOBJECT, SHOP_POLICY and CUSTOMER_ACCOUNT_PAGE. Checked on the dev store (2026-10-23): without it `menuCreate` returns "shop_policy not found" / "customer_account_page not found"; CATALOG needs none (Shopify sets `/collections/all`). Full enum: FRONTPAGE, COLLECTION, COLLECTIONS, PRODUCT, CATALOG, PAGE, BLOG, ARTICLE, SEARCH, SHOP_POLICY, HTTP, METAOBJECT, CUSTOMER_ACCOUNT_PAGE.
 - **Lookup by handle:** `menus(query:)` can't filter by handle, so the provider pages through all menus. The list lags a few seconds behind writes (search index), so a menu created moments ago may not be found yet by import or adopt. Shopify suffixes a taken handle (`-1`) instead of failing, so Create also checks the returned handle, removes the duplicate and fails.
+
+---
+
+## 9a. Resource: `shopify_web_presence`
+
+> **Blocked: needs `read_locales` (or `read_markets_home`), pending user decision.** The scope change requires an app redeploy plus a reinstall on the dev, staging and production stores. Nothing is implemented yet.
+
+```hcl
+resource "shopify_web_presence" "ch" {
+  subfolder_suffix  = "ch"         # or domain_id, exactly one
+  default_locale    = "de"
+  alternate_locales = ["fr", "it"] # optional, unset = unmanaged
+}
+
+resource "shopify_market" "dach" {
+  # ...
+  web_presence_ids = [shopify_web_presence.ch.id]
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `MarketWebPresence` GID. Computed, UseStateForUnknown |
+| `subfolder_suffix` | string | Optional; exactly one of this or `domain_id`. Updatable in place (confirmed on the dev store). Switching between a subfolder and a domain forces replace, because `WebPresenceUpdateInput.subfolderSuffix` "must be null if subfolder suffix is not already defined" |
+| `domain_id` | string | Optional. **RequiresReplace**: `WebPresenceUpdateInput` has no `domainId`. It only references an existing `Domain` GID; domains are never created or managed (out of scope) |
+| `default_locale` | string | Required. Updatable |
+| `alternate_locales` | set(string) | Optional + Computed, UseStateForUnknown; unset = unmanaged |
+| `root_urls` | map(string) | Computed, locale → URL. Informational |
+| `adopt_existing` | bool | Pattern A, see below |
+
+Import key: the subfolder suffix for subfolder presences, the domain host (e.g. `shop.example.ch`) for domain presences. A host contains dots and a suffix is ASCII letters only, so they can't be confused. Read looks up by GID first, then pages through `webPresences` and matches the key, because the query has no `query:` filter.
+
+Notes:
+- Uses `webPresenceCreate` / `webPresenceUpdate` / `webPresenceDelete` and the top-level `webPresences` query. The `marketWebPresence*` mutations are deprecated and not used. Linking to markets stays on `shopify_market.web_presence_ids`.
+- **Pattern A:** the shop's primary-domain presence can't be removed: the error code `SHOP_MUST_HAVE_PRIMARY_DOMAIN_WEB_PRESENCE` exists, and on the dev store a delete of it left it in place; the userError text was not captured. Adopting it (`adopt_existing = true`) updates it in place, and destroy only removes it from state with a warning. Every store has one such presence (dev: the myshopify domain, locale `en`, no markets). `CANNOT_DELETE_PRIMARY_MARKET_WEB_PRESENCE` is deprecated ("No longer used").
+- **No Pattern B:** deleting a presence removes routing/SEO configuration, not stored data.
+- Errors are reported as returned and not retried: `CANNOT_HAVE_SUBFOLDER_AND_DOMAIN`, `REQUIRES_DOMAIN_OR_SUBFOLDER`, `SUBFOLDER_SUFFIX_MUST_BE_AT_LEAST_2_LETTERS`, `SUBFOLDER_SUFFIX_CANNOT_BE_SCRIPT_CODE`, `DISABLED_LANGUAGE`, `REGION_SPECIFIC_LANGUAGE`, `DOMAIN_NOT_FOUND`, `CANNOT_ADD_CUSTOMER_DOMAIN`.
+- No enum-typed attributes, so there's no output-only enum mapping.
+- **Scopes observed on the dev store (2026-10-23):**
+  - `read_markets`: `webPresences { id subfolderSuffix domain { id host } rootUrls { locale url } markets }` works.
+  - `write_markets`: `webPresenceCreate`, `webPresenceUpdate` (subfolder suffix change) and `webPresenceDelete` all work.
+  - `read_locales` or `read_markets_home`: needed for `defaultLocale` and `alternateLocales` (type `ShopLocale`) and for top-level `shopLocales`. With `read_markets` only, these return "Access denied … Required access: `read_locales` access scope or `read_markets_home` access scope". `rootUrls[].locale` lists the locales but doesn't mark the default, so it can't stand in for them.
 
 ---
 
