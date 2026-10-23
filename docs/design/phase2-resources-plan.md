@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Status:** Draft, waiting for review · **Owner:** Jens Hausherr · **Last updated:** 2026-10-23
+**Status:** In progress, D2/D3 decided, D1 pending · **Owner:** Jens Hausherr · **Last updated:** 2026-10-23
 **Related:** [[implementation-plan]] (Phase 2 table), [[terraform-provider-resource-model]], [[list-resources-plan]], [bootstrapping](../bootstrapping.md)
 
 **Goal:** Find out, with the wider scopes, which store objects exist on staging and production that the provider can't manage yet, and implement those resource types (resource, identity, list resource, docs, acceptance tests).
@@ -38,8 +38,8 @@ The last run lost its ledger because it was git-ignored inside a worktree. This 
 ## Decisions needed before execution
 
 - **D1: dev store scopes.** The dev store token has only the six original scopes (checked 2026-10-23: `write_locations, write_markets, write_metaobject_definitions, write_online_store_navigation, write_products, write_shipping`). Acceptance tests for new types need the full set from `app/shopify.app.toml`: deploy it to the dev app and reinstall on the dev store ([[dev-store-scope-reinstall]]). Without it, only discovery (Phase A) can run.
-- **D2: which types to build.** Proposal: every in-scope type with a count > 0 on staging or production, in Phase 2 step order. Types with count 0 stay in the Phase 2 table for later. Alternative: all Phase 2 types regardless of counts (roughly 35 types; several weeks of work).
-- **D3: Shopify-owned and app-owned objects** (category definitions, `$app:` definitions, fulfillment services of other apps): excluded from import as before; the list resource still lists them.
+- **D2: which types to build. Decided 2026-10-23:** every in-scope type with a count > 0 on staging or production, in Phase 2 step order. The rest stays on the roadmap: the wrap-up task marks them in the Phase 2 table of [[implementation-plan]].
+- **D3: Shopify-owned and app-owned objects. Decided 2026-10-23:** category definitions, `$app:` definitions and fulfillment services of other apps are excluded from import as before; the list resource still lists them.
 
 ## Review Focus
 
@@ -123,4 +123,4 @@ Type-specific notes the design step must settle:
 ### Task N+1: Wrap-up
 
 - [ ] Final whole-branch review by a fresh reviewer on the most capable model.
-- [ ] Report in `docs/reports/2026-10-<dd>-phase2-resources.md`: PRs, types built, types skipped and why, rulings, decisions needed. Remove the ledger, update CLAUDE.md "Implemented" and the Phase 2 table in [[implementation-plan]]. **Commit**, push, open the remaining PRs. No merge, no apply on staging or production.
+- [ ] Report in `docs/reports/2026-10-<dd>-phase2-resources.md`: PRs, types built, types skipped and why, rulings, decisions needed. Remove the ledger, update CLAUDE.md "Implemented" and the Phase 2 table in [[implementation-plan]]: built types ✅, the rest marked as roadmap with their discovery counts. **Commit**, push, open the remaining PRs. No merge, no apply on staging or production.
