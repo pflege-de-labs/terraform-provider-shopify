@@ -90,6 +90,10 @@ To avoid this, create **two apps per store**:
 
 `terraform plan` only reads, so the plan app is enough for it. Keep the apply app's secret where only main-branch jobs can read it, e.g. a GitHub environment whose deployment branches are limited to `main`. Then a PR can leak at most a read-only token. Each app has its own `shopify.app.toml` (`--config <name>`) and is installed on the store separately.
 
+The plan app's config is [`app/shopify.app.readonly.toml`](../app/shopify.app.readonly.toml). Create it as a second app (step 1), then from `app/` run `shopify app config link --config readonly` and `shopify app deploy --config readonly`, and install it on each store (step 3). Inside the plan job, use the same env var names as in step 4. An apply with these credentials fails with `ACCESS_DENIED` and changes nothing.
+
+⚠ Not yet tested: whether the read scopes cover every nested field the market and delivery profile queries read (catalogs, web presences, zone locations). Check with `terraform plan` against the dev store.
+
 Running PR plans with the write app is a valid shortcut while there are only trusted contributors, but treat it as a known risk.
 
 ## Troubleshooting
@@ -100,6 +104,7 @@ Running PR plans with the write app is a valid shortcut while there are only tru
 | Non-JSON response or 404 | App not installed, or wrong domain (must be the `.myshopify.com` domain) |
 | `invalid_client` | Wrong client ID/secret, or stray quotes or whitespace in `.envrc` |
 | `scope` doesn't match the version | Store still has the old installation: reinstall |
+| `ACCESS_DENIED` during plan | Plan app lacks a scope: add it to `shopify.app.readonly.toml` and redeploy |
 
 ## Sources
 

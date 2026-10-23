@@ -1,0 +1,16 @@
+# Read-only app for `terraform plan` (CI plan jobs). Deploy with `shopify app deploy --config readonly`; see docs/bootstrapping.md.
+client_id = "<client-id>" # not a secret; replace via `shopify app config link --config readonly`
+name = "Terraform (read-only)"
+application_url = "https://shopify.dev/apps/default-app-home" # provider has no UI
+embedded = false
+
+[access_scopes]
+# Read counterparts of shopify.app.toml; keep in sync with docs/bootstrapping.md.
+scopes = "read_locations,read_markets,read_metaobject_definitions,read_online_store_navigation,read_products,read_shipping"
+use_legacy_install_flow = false
+
+[auth]
+redirect_urls = ["https://shopify.dev/apps/default-app-home"]
+
+[webhooks]
+api_version = "2026-10"
