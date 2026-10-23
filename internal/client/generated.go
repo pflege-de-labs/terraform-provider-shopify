@@ -6541,6 +6541,63 @@ func (v *ListMetafieldDefinitionsResponse) GetMetafieldDefinitions() ListMetafie
 	return v.MetafieldDefinitions
 }
 
+// ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnection includes the requested fields of the GraphQL type MetaobjectDefinitionConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple MetaobjectDefinitions.
+type ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnection struct {
+	// A list of nodes that are contained in MetaobjectDefinitionEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []MetaobjectDefinitionFields `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnection) GetNodes() []MetaobjectDefinitionFields {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnection) GetPageInfo() ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// ListMetaobjectDefinitionsResponse is returned by ListMetaobjectDefinitions on success.
+type ListMetaobjectDefinitionsResponse struct {
+	// Returns a paginated list of all [`MetaobjectDefinition`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectDefinition) objects configured for the store. Metaobject definitions provide the schema for creating custom data structures composed of individual fields. Each definition specifies the field types, access permissions, and capabilities for [`Metaobject`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metaobject) entries of that type. Use this query to discover available metaobject types before creating or querying metaobject entries.
+	//
+	// Learn more about [managing metaobjects](https://shopify.dev/docs/apps/build/custom-data/metaobjects/manage-metaobjects).
+	MetaobjectDefinitions ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnection `json:"metaobjectDefinitions"`
+}
+
+// GetMetaobjectDefinitions returns ListMetaobjectDefinitionsResponse.MetaobjectDefinitions, and is useful for accessing the field via an interface.
+func (v *ListMetaobjectDefinitionsResponse) GetMetaobjectDefinitions() ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnection {
+	return v.MetaobjectDefinitions
+}
+
 // The input fields to use to specify the address while adding a location.
 type LocationAddAddressInput struct {
 	// The first line of the address.
@@ -10687,6 +10744,14 @@ func (v *__ListMetafieldDefinitionsInput) GetOwnerType() MetafieldOwnerType { re
 // GetAfter returns __ListMetafieldDefinitionsInput.After, and is useful for accessing the field via an interface.
 func (v *__ListMetafieldDefinitionsInput) GetAfter() *string { return v.After }
 
+// __ListMetaobjectDefinitionsInput is used internally by genqlient
+type __ListMetaobjectDefinitionsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListMetaobjectDefinitionsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListMetaobjectDefinitionsInput) GetAfter() *string { return v.After }
+
 // __UpdateDeliveryProfileInput is used internally by genqlient
 type __UpdateDeliveryProfileInput struct {
 	Id      string               `json:"id"`
@@ -12330,6 +12395,83 @@ func ListMetafieldDefinitions(
 	}
 
 	data_ = &ListMetafieldDefinitionsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListMetaobjectDefinitions.
+const ListMetaobjectDefinitions_Operation = `
+query ListMetaobjectDefinitions ($after: String) {
+	metaobjectDefinitions(first: 100, after: $after) {
+		nodes {
+			... MetaobjectDefinitionFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment MetaobjectDefinitionFields on MetaobjectDefinition {
+	id
+	type
+	name
+	description
+	displayNameKey
+	access {
+		admin
+		storefront
+		customerAccount
+	}
+	capabilities {
+		publishable {
+			enabled
+		}
+		translatable {
+			enabled
+		}
+		renderable {
+			enabled
+		}
+	}
+	fieldDefinitions {
+		key
+		name
+		description
+		required
+		type {
+			name
+		}
+		validations {
+			name
+			value
+		}
+	}
+}
+`
+
+// 100 per page keeps the requested cost under Shopify's 1000-point single-query limit.
+func ListMetaobjectDefinitions(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListMetaobjectDefinitionsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListMetaobjectDefinitions",
+		Query:  ListMetaobjectDefinitions_Operation,
+		Variables: &__ListMetaobjectDefinitionsInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListMetaobjectDefinitionsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
