@@ -59,3 +59,18 @@ func TestRender(t *testing.T) {
 		t.Errorf("keys not truncated:\n%s", out)
 	}
 }
+
+func TestSpecsCoverPhase2(t *testing.T) {
+	got := map[string]bool{}
+	for _, s := range specs() {
+		got[s.typ] = true
+	}
+	for _, want := range strings.Fields(`webPresences shopLocales shopPolicies privacySettings consentPolicy checkoutProfiles
+		metafieldDefinitions deliveryProfiles carrierServices fulfillmentServices urlRedirects publications catalogs priceLists
+		sellingPlanGroups paymentCustomizations deliveryCustomizations validations cartTransforms fulfillmentConstraintRules
+		products collections pages blogs articles discountNodes metaobjectDefinitions files segments returnPolicyProfiles`) {
+		if !got[want] {
+			t.Errorf("no spec for %s", want)
+		}
+	}
+}
