@@ -31,10 +31,10 @@
 
 ## Review Focus
 
-1. **Generated config round-trip:** `terraform query -generate-config-out` followed by `plan` must show only imports, no updates. Unmanaged optional attributes must stay null in the listed resource, or the first apply would overwrite admin edits. Owned by each list task, step "round-trip test".
+1. **Generated config round-trip:** `terraform query -generate-config-out` followed by `plan` must show only imports, no updates. The listed resource is the full model Read produces; the risk is attributes that don't survive API → model → HCL → plan (menu non-HTTP `url`, market region sets, delivery profile method matching). Owned by each list task, step 5 (round-trip).
 2. **Existing state without identity:** Read must set identity when state has none (state written by the current provider). Owned by each identity task, test `ExpectIdentity` after a plain refresh step.
 3. **Pagination and limit:** stores with more objects than one page (default page size 50), and `limit` smaller than one page. Owned by Task 3 (`patterns.Paginate` unit test).
-4. **Partial access:** one metafield owner type returns `ACCESS_DENIED`; listing must continue with a warning, not fail. Owned by Task 4.
+4. **Missing scope for an owner type:** a `list` block for an owner type the app can't read must fail with an error naming the owner type, not an opaque GraphQL message. Owned by Task 4.
 5. **Pattern A objects in lists:** default menus and the general delivery profile appear in list results; importing them must not trigger Create (adopt) or Delete. Owned by Tasks 6 and 8.
 
 ---
@@ -59,7 +59,7 @@
   - candidates: `webPresences`, `shopLocales`, `shop.shopPolicies`, `urlRedirects` (count only), `carrierServices`, `shop.fulfillmentServices`, `sellingPlanGroups` (count only), `segments` (count only), `returnPolicyProfiles`
   - keys only for types whose import key is a handle, name or type; never values.
 - [ ] **Step 4:** `go test ./cmd/discover/` passes; run against the dev store with `direnv exec . go run ./cmd/discover` and check the table is plausible.
-- [ ] **Step 5: Commit** on branch `feat/discover`: `feat: add temporary discovery command`. Open a PR; merge so the CI job can pin a `main` SHA.
+- [ ] **Step 5: Commit** on branch `feat/discover`: `feat: add temporary discovery command`. Push the branch, don't merge: `go run …@<sha>` works with any pushed commit.
 
 ### Task 2: Run discovery on staging and production (CI, read-only)
 
@@ -69,7 +69,7 @@
 - [ ] **Step 1:** Workflow on `pull_request`, matrix `[staging, production]`, `environment: <env>-plan`, `actions/setup-go`, then `go run …/cmd/discover@<sha> >> "$GITHUB_STEP_SUMMARY"`. No AWS role, no Terraform.
 - [ ] **Step 2:** Open a draft PR; both jobs pass; copy both summaries.
 - [ ] **Step 3:** Record the results (counts, scope gaps) as a new section "Discovery 2026-10" in this document; commit in the provider repo. Close the draft PR and delete its branch.
-- [ ] **Step 4: Gate.** Present the counts with D2/D3 to the user; continue only with their choices recorded under "Decisions".
+- [ ] **Step 4: Gate.** Present the counts with D2/D3 to the user; continue only with their choices recorded under "Decisions". Say which rows came back "no scope" (expected with the six read scopes: `shopLocales`, `shopPolicies`, `fulfillmentServices`, `sellingPlanGroups`, `segments`, probably `returnPolicyProfiles`, and most metafield owner types): D3 for those is a decision without data, unless the user grants a temporary wider-scope read app.
 
 ## Phase 2: Identity and list resources (existing types)
 
@@ -97,7 +97,7 @@ Same shape for every resource: identity first (own commit), then the list resour
 
 | Task | Resource | List query (add to `internal/client/queries/<name>.graphql`) | List config attributes | Notes |
 |---|---|---|---|---|
-| 4 | `shopify_metafield_definition` | `metafieldDefinitions(ownerType:, first:, after:)` | `owner_type` (Optional; unset = all 26 owner types) | `ACCESS_DENIED` for one owner type → warning diagnostic on the stream, continue (Review Focus 4) |
+| 4 | `shopify_metafield_definition` | `metafieldDefinitions(ownerType:, first:, after:)` | `owner_type` (Required, like the API) | one `list` block per owner type; `ACCESS_DENIED` → error naming the owner type (Review Focus 4) |
 | 5 | `shopify_metaobject_definition` | `metaobjectDefinitions(first:, after:)` | none | |
 | 6 | `shopify_menu` | existing `ListMenus`, add paging args if missing | none | default menus included; round-trip must not set `adopt_existing` |
 | 7 | `shopify_location` | existing `FindLocations` with `includeInactive: true`, `includeLegacy: false` | `include_inactive` (Optional, default false) | duplicates by name are fine: identity is the GID |
@@ -120,7 +120,7 @@ Same shape for every resource: identity first (own commit), then the list resour
 - [ ] **Step 4:** Acceptance test passes. **Commit** `feat(<pkg>): add resource identity`.
 - [ ] **Step 5: Failing query test.** New `TestAccList<Type>` (`SkipBelow 1.14.0`): step 1 creates two objects; step 2 `Query: true` with `list "<type>" "all" { provider = shopify }` and `querycheck.ExpectLengthAtLeast("<type>.all", 2)`, `querycheck.ExpectIdentity` for one created GID; step 3 (round-trip, Review Focus 1) `Query: true, GenerateConfig: true`, then a plan step on the generated config expecting only the import (`plancheck.ExpectResourceAction(..., plancheck.ResourceActionNoop)`). `TODO(verify)`: how `GenerateConfig` output is fed to the next step in terraform-plugin-testing v1.16.0; if unsupported, cover the round-trip in Task 12 step 2 instead.
 - [ ] **Step 6:** Fails (list type unknown).
-- [ ] **Step 7: Implement `list.go`:** `Metadata` (same type name as the resource), `ListResourceConfigSchema` (attributes from the table), `Configure`, `List` using `patterns.Paginate` with `req.Limit`; for each item `res := req.NewListResult(ctx)`, set identity, `DisplayName` = natural key, and if `req.IncludeResource` fill `res.Resource` via `setFromAPI` with unmanaged optionals left null. Register in `provider.ListResources`.
+- [ ] **Step 7: Implement `list.go`:** `Metadata` (same type name as the resource), `ListResourceConfigSchema` (attributes from the table), `Configure`, `List` using `patterns.Paginate` with `req.Limit`; for each item `res := req.NewListResult(ctx)`, set identity, `DisplayName` = natural key, and if `req.IncludeResource` fill `res.Resource` via `setFromAPI` with the full model, as Read would for a fully specified config. Pruning attributes that should stay unmanaged happens in Task 12 step 1. Register in `provider.ListResources`.
 - [ ] **Step 8:** `make fmt lint test`, query acceptance test passes on the dev store.
 - [ ] **Step 9: Commit** `feat(<pkg>): add list resource`; PR per resource.
 
@@ -145,7 +145,7 @@ Each follows the existing per-resource workflow ([[implementation-plan]] working
 **Files (shopify-provisioning):**
 - Create: `staging/discover.tfquery.hcl`, `production/discover.tfquery.hcl` (one `list` block per supported type; metafield definitions only for owner types the read-only app can read)
 - Modify: `.github/workflows/terraform-plan.yml`: bump `SHOPIFY_PROVIDER_REF`; Terraform image must be ≥ 1.14 (currently 1.16)
-- Create: `.github/workflows/terraform-query.yml` (`workflow_dispatch` and `pull_request` on `**.tfquery.hcl`): `terraform init`, `terraform query -generate-config-out=generated.tf`, upload `generated.tf` as artifact; `environment: <env>-plan`
+- Create: `.github/workflows/terraform-query.yml` (`workflow_dispatch` and `pull_request` on `**.tfquery.hcl`), `environment: <env>-plan`, same container image as `terraform-plan.yml`: `./.github/actions/shopify-provider`, `configure-aws-credentials` with the plan role (init needs the S3 backend), `terraform init`, `terraform query -generate-config-out=generated.tf`, upload `generated.tf` as artifact
 
 - [ ] **Step 1:** Add the files; `actionlint` passes.
 - [ ] **Step 2:** PR; both env jobs pass; download both artifacts.
@@ -156,4 +156,3 @@ Each follows the existing per-resource workflow ([[implementation-plan]] working
 - [ ] **Step 1:** Move generated resources into `<env>/*.tf` grouped by type, with `import` blocks; drop objects that should stay unmanaged (e.g. app-owned `$app:` definitions) and list them in the PR description.
 - [ ] **Step 2:** PR plan shows only `will be imported`, no updates/creates/destroys, for staging first.
 - [ ] **Step 3:** Merge → apply imports on staging. Repeat for production in a separate PR after `production` joins the apply matrix (needs the user's go-ahead: production is live).
-- [ ] **Step 4:** Remove `cmd/discover` from the provider repo (`chore: remove discovery command`).
