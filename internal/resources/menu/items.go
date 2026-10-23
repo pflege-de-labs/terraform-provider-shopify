@@ -34,8 +34,8 @@ type level3 struct {
 	itemFields
 }
 
-// resourceTypes need resource_id. TODO(verify): whether SHOP_POLICY, CATALOG and CUSTOMER_ACCOUNT_PAGE need one too.
-var resourceTypes = []string{"COLLECTION", "PRODUCT", "PAGE", "BLOG", "ARTICLE", "METAOBJECT"}
+// resourceTypes need resource_id; menuCreate fails with "<type> not found" without one.
+var resourceTypes = []string{"COLLECTION", "PRODUCT", "PAGE", "BLOG", "ARTICLE", "METAOBJECT", "SHOP_POLICY", "CUSTOMER_ACCOUNT_PAGE"}
 
 // checkItem enforces url for HTTP only (Shopify computes it for other types) and resource_id where one is needed.
 func checkItem(typ string, hasResourceID, hasURL bool) error {
