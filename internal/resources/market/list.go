@@ -43,13 +43,12 @@ func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *l
 			}
 			return nodes, patterns.NextCursor(conn.PageInfo.HasNextPage, conn.PageInfo.EndCursor), nil
 		}
-		err := patterns.Paginate(ctx, req.Limit, page, func(m client.MarketFields) bool {
-			if !isRegionMarket(&m) {
-				var diags diag.Diagnostics
-				diags.AddWarning("Skipping market "+m.Handle, "The market has no region condition and can't be managed by shopify_market.")
-				return push(list.ListResult{Diagnostics: diags})
-			}
-			return push(listResult(ctx, req, &m))
+		err := eachRegionMarket(ctx, req.Limit, page, func(m *client.MarketFields) bool {
+			return push(listResult(ctx, req, m))
+		}, func(m *client.MarketFields) bool {
+			var diags diag.Diagnostics
+			diags.AddWarning("Skipping market "+m.Handle, "The market has no region condition and can't be managed by shopify_market.")
+			return push(list.ListResult{Diagnostics: diags})
 		})
 		if err != nil {
 			var diags diag.Diagnostics
@@ -57,6 +56,21 @@ func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *l
 			push(list.ListResult{Diagnostics: diags})
 		}
 	}
+}
+
+// eachRegionMarket applies limit to region markets only, so skipped ones don't use up the caller's limit.
+func eachRegionMarket(ctx context.Context, limit int64, page func(*string) ([]client.MarketFields, *string, error), push, skip func(*client.MarketFields) bool) error {
+	var n int64
+	return patterns.Paginate(ctx, 0, page, func(m client.MarketFields) bool {
+		if !isRegionMarket(&m) {
+			return skip(&m)
+		}
+		if !push(&m) {
+			return false
+		}
+		n++
+		return limit <= 0 || n < limit
+	})
 }
 
 // isRegionMarket is false for location, company-location and channel markets, which would fail the regions validator.
