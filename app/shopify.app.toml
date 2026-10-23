@@ -1,0 +1,16 @@
+# App the provider authenticates as. Deploy with `shopify app deploy` from this directory; see docs/bootstrapping.md.
+client_id = "<client-id>" # not a secret; replace via `shopify app config link`
+name = "Terraform"
+application_url = "https://shopify.dev/apps/default-app-home" # provider has no UI
+embedded = false
+
+[access_scopes]
+# Keep in sync with the scope table in docs/bootstrapping.md.
+scopes = "write_locations,write_markets,write_metaobject_definitions,write_online_store_navigation,write_products,write_shipping"
+use_legacy_install_flow = false
+
+[auth]
+redirect_urls = ["https://shopify.dev/apps/default-app-home"]
+
+[webhooks]
+api_version = "2026-10"

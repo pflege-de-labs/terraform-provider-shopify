@@ -12,25 +12,21 @@ The provider authenticates as a Dev Dashboard app installed on the target store.
 
 ## 1. Create the app
 
-In the Dev Dashboard, create a new app. Don't base it on a template or create it with Shopify CLI. A CLI-managed app takes its scopes from `shopify.app.toml`, and any `shopify app deploy` overwrites what is set in the dashboard.
+Once per organization, not per store. In the Dev Dashboard, create a new app without a template.
 
 ## 2. Release a version
 
-Under **Versions**:
+The app config lives in [`app/shopify.app.toml`](../app/shopify.app.toml) (scopes, app URL, webhooks API version `2026-10`). It is deployed with [Shopify CLI](https://shopify.dev/docs/api/shopify-cli):
 
-| Field | Value |
-|---|---|
-| App URL | `https://shopify.dev/apps/default-app-home` (the provider has no UI) |
-| Webhooks API version | `2026-10`, the pinned Admin API version |
-| Scopes | see below |
-
-Then click **Release**. Saving without releasing changes nothing.
-
-Scopes (copy as is):
-
+```sh
+cd app
+shopify app config link   # once: pick the app, fills in client_id
+shopify app deploy        # releases a new version with the TOML's config
 ```
-write_locations,write_markets,write_metaobject_definitions,write_online_store_navigation,write_products,write_shipping
-```
+
+`shopify app deploy` overwrites whatever is set in the dashboard, so change scopes in the TOML only. Separate staging and production apps each get their own `shopify.app.<env>.toml` (`--config <env>`).
+
+Scopes:
 
 | Scope | Needed for |
 |---|---|
@@ -46,7 +42,7 @@ Grant nothing else. In particular, don't grant theme, page or content scopes: th
 
 ## 3. Install on the store
 
-On the app's **Home** page, click **Install app**, select the store, then click **Install**.
+Repeat for every store Terraform configures. Shopify CLI can't install an app on a store (`shopify app dev` only previews on dev stores), so this stays a manual step: on the app's **Home** page, click **Install app**, select the store, then click **Install**.
 
 ## 4. Credentials
 
@@ -76,7 +72,7 @@ Expected: `scope` matches the list in step 2, and `expires_in` is `86399` (24h).
 
 ## Changing scopes
 
-1. Release a new version with the changed scope list.
+1. Change `scopes` in `app/shopify.app.toml` and the table in step 2, then run `shopify app deploy`.
 2. **Uninstall the app** in the store admin (**Settings → Apps**) and install it again (step 3).
 
 Releasing alone did **not** update the scopes on a store that already had the app installed, even though the docs suggest it should for apps owned by your organization. Run the step 5 check afterwards.
@@ -94,4 +90,5 @@ Releasing alone did **not** update the scopes on a store that already had the ap
 
 - [Get API access tokens for Dev Dashboard apps](https://shopify.dev/docs/apps/build/dev-dashboard/get-api-access-tokens)
 - [Create apps using the Dev Dashboard](https://shopify.dev/docs/apps/build/dev-dashboard/create-apps-using-dev-dashboard)
+- [App configuration (`shopify.app.toml`)](https://shopify.dev/docs/apps/build/cli-for-apps/app-configuration)
 - [Manage access scopes](https://shopify.dev/docs/apps/build/authentication-authorization/manage-access-scopes)
