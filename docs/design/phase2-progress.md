@@ -26,3 +26,4 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - D1: open. Dev store token has the six original scopes only.
 
 ## Tasks
+- Task 1: dispatched (base 2cca99c, branch feat/discover-phase2, worktree ~/src/worktrees/terraform-provider-shopify/discover)
