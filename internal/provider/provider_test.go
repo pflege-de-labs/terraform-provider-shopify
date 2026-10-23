@@ -46,3 +46,18 @@ func TestClientConfig(t *testing.T) {
 		t.Error("unknown access_token must be an error")
 	}
 }
+
+func TestClientConfig_StoreDomain(t *testing.T) {
+	for domain, wantErr := range map[string]bool{
+		"shop.myshopify.com":         false,
+		"":                           false, // reported by client.New
+		"shop.staging.p4e.io":        true,
+		"https://shop.myshopify.com": true,
+	} {
+		data := ShopifyProviderModel{StoreDomain: types.StringValue(domain), ClientID: types.StringNull(), ClientSecret: types.StringNull(), AccessToken: types.StringNull(), MaxRetries: types.Int64Null()}
+		_, diags := clientConfig(data, func(string) string { return "" })
+		if diags.HasError() != wantErr {
+			t.Errorf("%q: error = %v, want %v", domain, diags.HasError(), wantErr)
+		}
+	}
+}
