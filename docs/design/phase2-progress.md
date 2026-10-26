@@ -207,3 +207,8 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 15: minor (deferred): match_type with empty membership errors only at apply; diffIDs O(n·m); multi-line comments (model.go:100, logic.go:123, collection.graphql:12); TestUserErrorDiagsBy uses a metafield error type; example references shopify_product.bettschutz; import without conditions plans a spurious update
 - Task 15: fix round 1/5 dispatched (resume implementer)
 - Task 15: fix round 1 implemented 728d957..4088b77 (all 5 findings + S13-9 + stale §9l text; 5 collection acc tests incl. _unsupportedAdopt, _becomesUnsupported; product acc green; list warning has no automated test). Controller re-ran checks: exit 0, 0 issues, no generate diff. Re-review dispatched (opus).
+- Task 15: fix round 1/5 (5 addressed, 0 open; commits 728d957..4088b77)
+- Task 15: minor (deferred): admin edit to an unset attribute between plan and apply now yields "inconsistent result" instead of a silent revert (safer, but surprising)
+- Task 15: minor (deferred): ModifyPlan unsupported-membership text always names the sources cause; S13-9 refusal and match_type error appear at apply, not plan
+- Task 15: complete (commits 2c95080..4088b77, review clean after 1 fix round)
+- Task 14c (publishing on product + collection): dispatched (model sonnet)
