@@ -419,6 +419,1940 @@ var AllCheckoutAndAccountsConfigurationUserErrorCode = []CheckoutAndAccountsConf
 	CheckoutAndAccountsConfigurationUserErrorCodeTransient,
 }
 
+// Specifies whether products must match any or all conditions to be included in the collection.
+type CollectionConditionMatchType string
+
+const (
+	// Products match if they satisfy one or more of the conditions.
+	CollectionConditionMatchTypeAny CollectionConditionMatchType = "ANY"
+	// Products match only if they satisfy all of the conditions.
+	CollectionConditionMatchTypeAll CollectionConditionMatchType = "ALL"
+)
+
+var AllCollectionConditionMatchType = []CollectionConditionMatchType{
+	CollectionConditionMatchTypeAny,
+	CollectionConditionMatchTypeAll,
+}
+
+// The input fields required to create a collection source.
+type CollectionCreateConditionsSourceInput struct {
+	// The title of the source.
+	Title string `json:"title"`
+	// An optional description of the source.
+	Description *string `json:"description,omitempty"`
+	// The inclusion rules for the source.
+	Inclusion *CollectionCreateSourceInclusionInput `json:"inclusion,omitempty"`
+	// The exclusion rules for the source.
+	Exclusion *CollectionCreateSourceExclusionInput `json:"exclusion,omitempty"`
+	// What granularity this source operates at. Defaults to PRODUCTS.
+	TargetType *CollectionSourceTargetType `json:"targetType,omitempty"`
+}
+
+// GetTitle returns CollectionCreateConditionsSourceInput.Title, and is useful for accessing the field via an interface.
+func (v *CollectionCreateConditionsSourceInput) GetTitle() string { return v.Title }
+
+// GetDescription returns CollectionCreateConditionsSourceInput.Description, and is useful for accessing the field via an interface.
+func (v *CollectionCreateConditionsSourceInput) GetDescription() *string { return v.Description }
+
+// GetInclusion returns CollectionCreateConditionsSourceInput.Inclusion, and is useful for accessing the field via an interface.
+func (v *CollectionCreateConditionsSourceInput) GetInclusion() *CollectionCreateSourceInclusionInput {
+	return v.Inclusion
+}
+
+// GetExclusion returns CollectionCreateConditionsSourceInput.Exclusion, and is useful for accessing the field via an interface.
+func (v *CollectionCreateConditionsSourceInput) GetExclusion() *CollectionCreateSourceExclusionInput {
+	return v.Exclusion
+}
+
+// GetTargetType returns CollectionCreateConditionsSourceInput.TargetType, and is useful for accessing the field via an interface.
+func (v *CollectionCreateConditionsSourceInput) GetTargetType() *CollectionSourceTargetType {
+	return v.TargetType
+}
+
+// The input fields required to create a collection.
+type CollectionCreateInput struct {
+	// The description of the collection, in HTML format.
+	DescriptionHtml *string `json:"descriptionHtml,omitempty"`
+	// A unique human-friendly string for the collection. Automatically generated from the collection's title.
+	Handle *string `json:"handle,omitempty"`
+	// The image associated with the collection.
+	Image *ImageInput `json:"image,omitempty"`
+	// The theme template used when viewing the collection in a store.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// The order in which the collection's products are sorted.
+	SortOrder *CollectionSortOrder `json:"sortOrder,omitempty"`
+	// The title of the collection.
+	Title string `json:"title"`
+	// The metafields to associate with the collection.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// SEO information for the collection.
+	Seo *SEOInput `json:"seo,omitempty"`
+	// The sources to create for the collection.
+	Sources []CollectionCreateSourceTargetInput `json:"sources,omitempty"`
+}
+
+// GetDescriptionHtml returns CollectionCreateInput.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetDescriptionHtml() *string { return v.DescriptionHtml }
+
+// GetHandle returns CollectionCreateInput.Handle, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetHandle() *string { return v.Handle }
+
+// GetImage returns CollectionCreateInput.Image, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetImage() *ImageInput { return v.Image }
+
+// GetTemplateSuffix returns CollectionCreateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetSortOrder returns CollectionCreateInput.SortOrder, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetSortOrder() *CollectionSortOrder { return v.SortOrder }
+
+// GetTitle returns CollectionCreateInput.Title, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetTitle() string { return v.Title }
+
+// GetMetafields returns CollectionCreateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetSeo returns CollectionCreateInput.Seo, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetSeo() *SEOInput { return v.Seo }
+
+// GetSources returns CollectionCreateInput.Sources, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetSources() []CollectionCreateSourceTargetInput { return v.Sources }
+
+// The input fields for creating exclusion rules for a collection source.
+type CollectionCreateSourceExclusionInput struct {
+	// Whether products must match all or any of the conditions to be excluded.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+	// The conditions that products must match to be excluded from the collection.
+	Conditions []CollectionSourceExclusionConditionInput `json:"conditions"`
+	// The products to explicitly exclude from the collection.
+	Selections []CollectionExclusionProductSelectionInput `json:"selections"`
+}
+
+// GetMatchType returns CollectionCreateSourceExclusionInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceExclusionInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// GetConditions returns CollectionCreateSourceExclusionInput.Conditions, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceExclusionInput) GetConditions() []CollectionSourceExclusionConditionInput {
+	return v.Conditions
+}
+
+// GetSelections returns CollectionCreateSourceExclusionInput.Selections, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceExclusionInput) GetSelections() []CollectionExclusionProductSelectionInput {
+	return v.Selections
+}
+
+// The input fields for creating inclusion rules for a collection source.
+type CollectionCreateSourceInclusionInput struct {
+	// Whether products must match all or any of the conditions.
+	MatchType *CollectionConditionMatchType `json:"matchType,omitempty"`
+	// The conditions that products must match to be included in the collection.
+	Conditions json.RawMessage `json:"conditions,omitempty"`
+	// The products to explicitly include in the collection.
+	Selections []CollectionInclusionProductSelectionInput `json:"selections,omitempty"`
+}
+
+// GetMatchType returns CollectionCreateSourceInclusionInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceInclusionInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// GetConditions returns CollectionCreateSourceInclusionInput.Conditions, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceInclusionInput) GetConditions() json.RawMessage { return v.Conditions }
+
+// GetSelections returns CollectionCreateSourceInclusionInput.Selections, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceInclusionInput) GetSelections() []CollectionInclusionProductSelectionInput {
+	return v.Selections
+}
+
+// The input fields for adding a source to a collection — provide exactly one field that represents the type of source to create.
+type CollectionCreateSourceTargetInput struct {
+	// Net new conditions-based source (target_type products or variants) to create — must belong to one collection.
+	Source *CollectionCreateConditionsSourceInput `json:"source,omitempty"`
+	// Net new sub-collection source (target_type collections) whose membership comes from one or more referenced collections.
+	SubCollections *CollectionCreateSubCollectionsSourceInput `json:"subCollections,omitempty"`
+	// An existing shareable source to link to the collection.
+	ShareableSource *CollectionShareableSourceInput `json:"shareableSource,omitempty"`
+}
+
+// GetSource returns CollectionCreateSourceTargetInput.Source, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceTargetInput) GetSource() *CollectionCreateConditionsSourceInput {
+	return v.Source
+}
+
+// GetSubCollections returns CollectionCreateSourceTargetInput.SubCollections, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceTargetInput) GetSubCollections() *CollectionCreateSubCollectionsSourceInput {
+	return v.SubCollections
+}
+
+// GetShareableSource returns CollectionCreateSourceTargetInput.ShareableSource, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceTargetInput) GetShareableSource() *CollectionShareableSourceInput {
+	return v.ShareableSource
+}
+
+// The input fields required to create a sub-collection source — a source whose membership comes from one or more referenced collections.
+type CollectionCreateSubCollectionsSourceInput struct {
+	// The title of the source.
+	Title string `json:"title"`
+	// An optional description of the source.
+	Description *string `json:"description"`
+	// The global IDs of the sub-collections whose products supply this source.
+	CollectionIds []string `json:"collectionIds"`
+}
+
+// GetTitle returns CollectionCreateSubCollectionsSourceInput.Title, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSubCollectionsSourceInput) GetTitle() string { return v.Title }
+
+// GetDescription returns CollectionCreateSubCollectionsSourceInput.Description, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSubCollectionsSourceInput) GetDescription() *string { return v.Description }
+
+// GetCollectionIds returns CollectionCreateSubCollectionsSourceInput.CollectionIds, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSubCollectionsSourceInput) GetCollectionIds() []string {
+	return v.CollectionIds
+}
+
+// The input fields for selecting specific products to exclude from a collection.
+type CollectionExclusionProductSelectionInput struct {
+	// The ID of the product to exclude from the collection.
+	ProductId string `json:"productId"`
+}
+
+// GetProductId returns CollectionExclusionProductSelectionInput.ProductId, and is useful for accessing the field via an interface.
+func (v *CollectionExclusionProductSelectionInput) GetProductId() string { return v.ProductId }
+
+// CollectionFields includes the GraphQL fields of Collection requested by the fragment CollectionFields.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type CollectionFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A unique string that identifies the collection. If a handle isn't specified when a collection is created, it's automatically generated from the collection's original title, and typically includes words from the title separated by hyphens. For example, a collection that was created with the title `Summer Catalog 2022` might have the handle `summer-catalog-2022`.
+	//
+	// If the title is changed, the handle doesn't automatically change.
+	//
+	// The handle can be used in themes by the Liquid templating language to refer to the collection, but using the ID is preferred because it never changes.
+	Handle string `json:"handle"`
+	// The name of the collection. It's displayed in the Shopify admin and is typically displayed in sales channels, such as an online store.
+	Title string `json:"title"`
+	// The description of the collection, including any HTML tags and formatting. This content is typically displayed to customers, such as on an online store, depending on the theme.
+	DescriptionHtml string `json:"descriptionHtml"`
+	// The order in which the products in the collection are displayed by default in the Shopify admin and in sales channels, such as an online store.
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+	// The suffix of the Liquid template being used to show the collection in an online store. For example, if the value is `custom`, then the collection is using the `collection.custom.liquid` template. If the value is `null`, then the collection is using the default `collection.liquid` template.
+	TemplateSuffix *string `json:"templateSuffix"`
+	// If the default SEO fields for page title and description have been modified, contains the modified information.
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+	// The sources that provide products for this collection. Each source represents a way products are included in the collection, such as through conditions and rules.
+	Sources json.RawMessage `json:"sources"`
+}
+
+// GetId returns CollectionFields.Id, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetId() string { return v.Id }
+
+// GetHandle returns CollectionFields.Handle, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetHandle() string { return v.Handle }
+
+// GetTitle returns CollectionFields.Title, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetTitle() string { return v.Title }
+
+// GetDescriptionHtml returns CollectionFields.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetDescriptionHtml() string { return v.DescriptionHtml }
+
+// GetSortOrder returns CollectionFields.SortOrder, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetSortOrder() CollectionSortOrder { return v.SortOrder }
+
+// GetTemplateSuffix returns CollectionFields.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetSeo returns CollectionFields.Seo, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetSeo() CollectionFieldsSeoSEO { return v.Seo }
+
+// GetSources returns CollectionFields.Sources, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetSources() json.RawMessage { return v.Sources }
+
+// CollectionFieldsSeoSEO includes the requested fields of the GraphQL type SEO.
+// The GraphQL type's documentation follows.
+//
+// SEO information.
+type CollectionFieldsSeoSEO struct {
+	// SEO Title.
+	Title *string `json:"title"`
+	// SEO Description.
+	Description *string `json:"description"`
+}
+
+// GetTitle returns CollectionFieldsSeoSEO.Title, and is useful for accessing the field via an interface.
+func (v *CollectionFieldsSeoSEO) GetTitle() *string { return v.Title }
+
+// GetDescription returns CollectionFieldsSeoSEO.Description, and is useful for accessing the field via an interface.
+func (v *CollectionFieldsSeoSEO) GetDescription() *string { return v.Description }
+
+// The input fields for selecting specific products to include in a collection.
+type CollectionInclusionProductSelectionInput struct {
+	// The ID of the product to include in the collection.
+	ProductId string `json:"productId"`
+	// The IDs of the product variants to include in the collection.
+	VariantIds []string `json:"variantIds,omitempty"`
+}
+
+// GetProductId returns CollectionInclusionProductSelectionInput.ProductId, and is useful for accessing the field via an interface.
+func (v *CollectionInclusionProductSelectionInput) GetProductId() string { return v.ProductId }
+
+// GetVariantIds returns CollectionInclusionProductSelectionInput.VariantIds, and is useful for accessing the field via an interface.
+func (v *CollectionInclusionProductSelectionInput) GetVariantIds() []string { return v.VariantIds }
+
+// The input fields for linking an existing shareable source to a collection.
+type CollectionShareableSourceInput struct {
+	// The ID of an existing shareable source to link to the collection.
+	SourceId string `json:"sourceId"`
+}
+
+// GetSourceId returns CollectionShareableSourceInput.SourceId, and is useful for accessing the field via an interface.
+func (v *CollectionShareableSourceInput) GetSourceId() string { return v.SourceId }
+
+// Specifies the sort order for the products in the collection.
+type CollectionSortOrder string
+
+const (
+	// Alphabetically, in ascending order (A - Z).
+	CollectionSortOrderAlphaAsc CollectionSortOrder = "ALPHA_ASC"
+	// Alphabetically, in descending order (Z - A).
+	CollectionSortOrderAlphaDesc CollectionSortOrder = "ALPHA_DESC"
+	// By best-selling products.
+	CollectionSortOrderBestSelling CollectionSortOrder = "BEST_SELLING"
+	// By most relevant products.
+	CollectionSortOrderMostRelevant CollectionSortOrder = "MOST_RELEVANT"
+	// By date created, in ascending order (oldest - newest).
+	CollectionSortOrderCreated CollectionSortOrder = "CREATED"
+	// By date created, in descending order (newest - oldest).
+	CollectionSortOrderCreatedDesc CollectionSortOrder = "CREATED_DESC"
+	// In the order set manually by the merchant.
+	CollectionSortOrderManual CollectionSortOrder = "MANUAL"
+	// By price, in ascending order (lowest - highest).
+	CollectionSortOrderPriceAsc CollectionSortOrder = "PRICE_ASC"
+	// By price, in descending order (highest - lowest).
+	CollectionSortOrderPriceDesc CollectionSortOrder = "PRICE_DESC"
+)
+
+var AllCollectionSortOrder = []CollectionSortOrder{
+	CollectionSortOrderAlphaAsc,
+	CollectionSortOrderAlphaDesc,
+	CollectionSortOrderBestSelling,
+	CollectionSortOrderMostRelevant,
+	CollectionSortOrderCreated,
+	CollectionSortOrderCreatedDesc,
+	CollectionSortOrderManual,
+	CollectionSortOrderPriceAsc,
+	CollectionSortOrderPriceDesc,
+}
+
+// The input fields for an exclusion condition based on collections.
+type CollectionSourceExclusionConditionCollectionInput struct {
+	// The collection IDs whose products are excluded.
+	Values []string `json:"values"`
+}
+
+// GetValues returns CollectionSourceExclusionConditionCollectionInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionCollectionInput) GetValues() []string { return v.Values }
+
+// The input fields for a condition that determines which products are excluded from a collection. Exactly one condition type must be provided.
+type CollectionSourceExclusionConditionInput struct {
+	// A condition based on product tags.
+	ProductTag *CollectionSourceExclusionConditionProductTagInput `json:"productTag"`
+	// A condition based on product types.
+	ProductType *CollectionSourceExclusionConditionProductTypeInput `json:"productType"`
+	// A condition based on product vendors.
+	ProductVendor *CollectionSourceExclusionConditionProductVendorInput `json:"productVendor"`
+	// A condition based on product categories.
+	ProductCategory *CollectionSourceExclusionConditionProductCategoryInput `json:"productCategory"`
+	// A condition based on collections.
+	Collection *CollectionSourceExclusionConditionCollectionInput `json:"collection"`
+}
+
+// GetProductTag returns CollectionSourceExclusionConditionInput.ProductTag, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionInput) GetProductTag() *CollectionSourceExclusionConditionProductTagInput {
+	return v.ProductTag
+}
+
+// GetProductType returns CollectionSourceExclusionConditionInput.ProductType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionInput) GetProductType() *CollectionSourceExclusionConditionProductTypeInput {
+	return v.ProductType
+}
+
+// GetProductVendor returns CollectionSourceExclusionConditionInput.ProductVendor, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionInput) GetProductVendor() *CollectionSourceExclusionConditionProductVendorInput {
+	return v.ProductVendor
+}
+
+// GetProductCategory returns CollectionSourceExclusionConditionInput.ProductCategory, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionInput) GetProductCategory() *CollectionSourceExclusionConditionProductCategoryInput {
+	return v.ProductCategory
+}
+
+// GetCollection returns CollectionSourceExclusionConditionInput.Collection, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionInput) GetCollection() *CollectionSourceExclusionConditionCollectionInput {
+	return v.Collection
+}
+
+// The input fields for an exclusion condition based on product categories.
+type CollectionSourceExclusionConditionProductCategoryInput struct {
+	// The relationship between the product category and the condition values.
+	Relation CollectionSourceExclusionConditionProductCategoryRelation `json:"relation"`
+	// The product category values to match against.
+	Values []CollectionSourceExclusionConditionProductCategoryValueInput `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionProductCategoryInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductCategoryInput) GetRelation() CollectionSourceExclusionConditionProductCategoryRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionProductCategoryInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductCategoryInput) GetValues() []CollectionSourceExclusionConditionProductCategoryValueInput {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceExclusionConditionProductCategoryInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductCategoryInput) GetMatchType() CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The relation for comparing product categories in exclusion conditions.
+type CollectionSourceExclusionConditionProductCategoryRelation string
+
+const (
+	// The product category equals the specified value.
+	CollectionSourceExclusionConditionProductCategoryRelationEquals CollectionSourceExclusionConditionProductCategoryRelation = "EQUALS"
+)
+
+var AllCollectionSourceExclusionConditionProductCategoryRelation = []CollectionSourceExclusionConditionProductCategoryRelation{
+	CollectionSourceExclusionConditionProductCategoryRelationEquals,
+}
+
+// The input fields for a product category value in an exclusion condition.
+type CollectionSourceExclusionConditionProductCategoryValueInput struct {
+	// The ID of the product category.
+	CategoryId string `json:"categoryId"`
+	// Whether to include descendants of the product category.
+	IncludeDescendants *bool `json:"includeDescendants"`
+}
+
+// GetCategoryId returns CollectionSourceExclusionConditionProductCategoryValueInput.CategoryId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductCategoryValueInput) GetCategoryId() string {
+	return v.CategoryId
+}
+
+// GetIncludeDescendants returns CollectionSourceExclusionConditionProductCategoryValueInput.IncludeDescendants, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductCategoryValueInput) GetIncludeDescendants() *bool {
+	return v.IncludeDescendants
+}
+
+// The input fields for an exclusion condition based on product tags.
+type CollectionSourceExclusionConditionProductTagInput struct {
+	// The relationship between the product tag and the condition values.
+	Relation CollectionSourceExclusionConditionProductTagRelation `json:"relation"`
+	// The tag values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionProductTagInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductTagInput) GetRelation() CollectionSourceExclusionConditionProductTagRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionProductTagInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductTagInput) GetValues() []string { return v.Values }
+
+// GetMatchType returns CollectionSourceExclusionConditionProductTagInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductTagInput) GetMatchType() CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The relationship between the product tag and the condition values.
+type CollectionSourceExclusionConditionProductTagRelation string
+
+const (
+	// The product is tagged with the specified value.
+	CollectionSourceExclusionConditionProductTagRelationTaggedWith CollectionSourceExclusionConditionProductTagRelation = "TAGGED_WITH"
+)
+
+var AllCollectionSourceExclusionConditionProductTagRelation = []CollectionSourceExclusionConditionProductTagRelation{
+	CollectionSourceExclusionConditionProductTagRelationTaggedWith,
+}
+
+// The input fields for an exclusion condition based on product types.
+type CollectionSourceExclusionConditionProductTypeInput struct {
+	// The relationship between the product type and the condition values.
+	Relation CollectionSourceExclusionConditionProductTypeRelation `json:"relation"`
+	// The product type values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionProductTypeInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductTypeInput) GetRelation() CollectionSourceExclusionConditionProductTypeRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionProductTypeInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductTypeInput) GetValues() []string { return v.Values }
+
+// GetMatchType returns CollectionSourceExclusionConditionProductTypeInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductTypeInput) GetMatchType() CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The relation for comparing product types in exclusion conditions.
+type CollectionSourceExclusionConditionProductTypeRelation string
+
+const (
+	// The product type equals the specified value.
+	CollectionSourceExclusionConditionProductTypeRelationEquals CollectionSourceExclusionConditionProductTypeRelation = "EQUALS"
+	// The product type contains the specified value.
+	CollectionSourceExclusionConditionProductTypeRelationContains CollectionSourceExclusionConditionProductTypeRelation = "CONTAINS"
+)
+
+var AllCollectionSourceExclusionConditionProductTypeRelation = []CollectionSourceExclusionConditionProductTypeRelation{
+	CollectionSourceExclusionConditionProductTypeRelationEquals,
+	CollectionSourceExclusionConditionProductTypeRelationContains,
+}
+
+// The input fields for an exclusion condition based on product vendors.
+type CollectionSourceExclusionConditionProductVendorInput struct {
+	// The relationship between the product vendor and the condition values.
+	Relation CollectionSourceExclusionConditionProductVendorRelation `json:"relation"`
+	// The product vendor values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionProductVendorInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductVendorInput) GetRelation() CollectionSourceExclusionConditionProductVendorRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionProductVendorInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductVendorInput) GetValues() []string { return v.Values }
+
+// GetMatchType returns CollectionSourceExclusionConditionProductVendorInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductVendorInput) GetMatchType() CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The relation for comparing product vendors in exclusion conditions.
+type CollectionSourceExclusionConditionProductVendorRelation string
+
+const (
+	// The product vendor equals the specified value.
+	CollectionSourceExclusionConditionProductVendorRelationEquals CollectionSourceExclusionConditionProductVendorRelation = "EQUALS"
+	// The product vendor contains the specified value.
+	CollectionSourceExclusionConditionProductVendorRelationContains CollectionSourceExclusionConditionProductVendorRelation = "CONTAINS"
+)
+
+var AllCollectionSourceExclusionConditionProductVendorRelation = []CollectionSourceExclusionConditionProductVendorRelation{
+	CollectionSourceExclusionConditionProductVendorRelationEquals,
+	CollectionSourceExclusionConditionProductVendorRelationContains,
+}
+
+// The input fields for updating an exclusion condition based on collections.
+type CollectionSourceExclusionConditionUpdateCollectionInput struct {
+	// The collection IDs whose products are excluded.
+	Values []string `json:"values"`
+}
+
+// GetValues returns CollectionSourceExclusionConditionUpdateCollectionInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateCollectionInput) GetValues() []string {
+	return v.Values
+}
+
+// The input fields for updating a condition that determines which products are excluded from a collection. Exactly one condition type must be provided.
+type CollectionSourceExclusionConditionUpdateInput struct {
+	// An update to an exclusion condition based on product tags.
+	ProductTag *CollectionSourceExclusionConditionUpdateProductTagInput `json:"productTag"`
+	// An update to an exclusion condition based on product types.
+	ProductType *CollectionSourceExclusionConditionUpdateProductTypeInput `json:"productType"`
+	// An update to an exclusion condition based on product vendors.
+	ProductVendor *CollectionSourceExclusionConditionUpdateProductVendorInput `json:"productVendor"`
+	// An update to an exclusion condition based on product categories.
+	ProductCategory *CollectionSourceExclusionConditionUpdateProductCategoryInput `json:"productCategory"`
+	// An update to an exclusion condition based on collections.
+	Collection *CollectionSourceExclusionConditionUpdateCollectionInput `json:"collection"`
+}
+
+// GetProductTag returns CollectionSourceExclusionConditionUpdateInput.ProductTag, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateInput) GetProductTag() *CollectionSourceExclusionConditionUpdateProductTagInput {
+	return v.ProductTag
+}
+
+// GetProductType returns CollectionSourceExclusionConditionUpdateInput.ProductType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateInput) GetProductType() *CollectionSourceExclusionConditionUpdateProductTypeInput {
+	return v.ProductType
+}
+
+// GetProductVendor returns CollectionSourceExclusionConditionUpdateInput.ProductVendor, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateInput) GetProductVendor() *CollectionSourceExclusionConditionUpdateProductVendorInput {
+	return v.ProductVendor
+}
+
+// GetProductCategory returns CollectionSourceExclusionConditionUpdateInput.ProductCategory, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateInput) GetProductCategory() *CollectionSourceExclusionConditionUpdateProductCategoryInput {
+	return v.ProductCategory
+}
+
+// GetCollection returns CollectionSourceExclusionConditionUpdateInput.Collection, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateInput) GetCollection() *CollectionSourceExclusionConditionUpdateCollectionInput {
+	return v.Collection
+}
+
+// The input fields for updating an exclusion condition based on product categories.
+type CollectionSourceExclusionConditionUpdateProductCategoryInput struct {
+	// The relationship between the product category and the condition values.
+	Relation *CollectionSourceExclusionConditionProductCategoryRelation `json:"relation"`
+	// The product category values to match against.
+	Values []CollectionSourceExclusionConditionProductCategoryValueInput `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionUpdateProductCategoryInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductCategoryInput) GetRelation() *CollectionSourceExclusionConditionProductCategoryRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionUpdateProductCategoryInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductCategoryInput) GetValues() []CollectionSourceExclusionConditionProductCategoryValueInput {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceExclusionConditionUpdateProductCategoryInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductCategoryInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating an exclusion condition based on product tags.
+type CollectionSourceExclusionConditionUpdateProductTagInput struct {
+	// The relationship between the product tag and the condition values.
+	Relation *CollectionSourceExclusionConditionProductTagRelation `json:"relation"`
+	// The tag values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionUpdateProductTagInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductTagInput) GetRelation() *CollectionSourceExclusionConditionProductTagRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionUpdateProductTagInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductTagInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceExclusionConditionUpdateProductTagInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductTagInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating an exclusion condition based on product types.
+type CollectionSourceExclusionConditionUpdateProductTypeInput struct {
+	// The relationship between the product type and the condition values.
+	Relation *CollectionSourceExclusionConditionProductTypeRelation `json:"relation"`
+	// The product type values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionUpdateProductTypeInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductTypeInput) GetRelation() *CollectionSourceExclusionConditionProductTypeRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionUpdateProductTypeInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductTypeInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceExclusionConditionUpdateProductTypeInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductTypeInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating an exclusion condition based on product vendors.
+type CollectionSourceExclusionConditionUpdateProductVendorInput struct {
+	// The relationship between the product vendor and the condition values.
+	Relation *CollectionSourceExclusionConditionProductVendorRelation `json:"relation"`
+	// The product vendor values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionUpdateProductVendorInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductVendorInput) GetRelation() *CollectionSourceExclusionConditionProductVendorRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionUpdateProductVendorInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductVendorInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceExclusionConditionUpdateProductVendorInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductVendorInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The relation for comparing boolean metafield values.
+type CollectionSourceInclusionConditionMetafieldBooleanRelation string
+
+const (
+	// The metafield value equals the condition value.
+	CollectionSourceInclusionConditionMetafieldBooleanRelationEquals CollectionSourceInclusionConditionMetafieldBooleanRelation = "EQUALS"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldBooleanRelation = []CollectionSourceInclusionConditionMetafieldBooleanRelation{
+	CollectionSourceInclusionConditionMetafieldBooleanRelationEquals,
+}
+
+// The relation for comparing decimal metafield values.
+type CollectionSourceInclusionConditionMetafieldDecimalRelation string
+
+const (
+	// The metafield value equals the specified value.
+	CollectionSourceInclusionConditionMetafieldDecimalRelationEquals CollectionSourceInclusionConditionMetafieldDecimalRelation = "EQUALS"
+	// The metafield value is greater than the specified value.
+	CollectionSourceInclusionConditionMetafieldDecimalRelationGreaterThan CollectionSourceInclusionConditionMetafieldDecimalRelation = "GREATER_THAN"
+	// The metafield value is less than the specified value.
+	CollectionSourceInclusionConditionMetafieldDecimalRelationLessThan CollectionSourceInclusionConditionMetafieldDecimalRelation = "LESS_THAN"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldDecimalRelation = []CollectionSourceInclusionConditionMetafieldDecimalRelation{
+	CollectionSourceInclusionConditionMetafieldDecimalRelationEquals,
+	CollectionSourceInclusionConditionMetafieldDecimalRelationGreaterThan,
+	CollectionSourceInclusionConditionMetafieldDecimalRelationLessThan,
+}
+
+// The relation for comparing integer metafield values.
+type CollectionSourceInclusionConditionMetafieldIntRelation string
+
+const (
+	// The metafield value equals the specified value.
+	CollectionSourceInclusionConditionMetafieldIntRelationEquals CollectionSourceInclusionConditionMetafieldIntRelation = "EQUALS"
+	// The metafield value is greater than the specified value.
+	CollectionSourceInclusionConditionMetafieldIntRelationGreaterThan CollectionSourceInclusionConditionMetafieldIntRelation = "GREATER_THAN"
+	// The metafield value is less than the specified value.
+	CollectionSourceInclusionConditionMetafieldIntRelationLessThan CollectionSourceInclusionConditionMetafieldIntRelation = "LESS_THAN"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldIntRelation = []CollectionSourceInclusionConditionMetafieldIntRelation{
+	CollectionSourceInclusionConditionMetafieldIntRelationEquals,
+	CollectionSourceInclusionConditionMetafieldIntRelationGreaterThan,
+	CollectionSourceInclusionConditionMetafieldIntRelationLessThan,
+}
+
+// The relationship between the metaobject value and the condition values.
+type CollectionSourceInclusionConditionMetafieldMetaobjectListRelation string
+
+const (
+	// Matches if the supplied metaobject value is equal to one or more of the values in the metafield's metaobject list.
+	CollectionSourceInclusionConditionMetafieldMetaobjectListRelationIncludes CollectionSourceInclusionConditionMetafieldMetaobjectListRelation = "INCLUDES"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldMetaobjectListRelation = []CollectionSourceInclusionConditionMetafieldMetaobjectListRelation{
+	CollectionSourceInclusionConditionMetafieldMetaobjectListRelationIncludes,
+}
+
+// The relation for comparing metaobject metafield values.
+type CollectionSourceInclusionConditionMetafieldMetaobjectRelation string
+
+const (
+	// The metaobject value equals the condition value.
+	CollectionSourceInclusionConditionMetafieldMetaobjectRelationEquals CollectionSourceInclusionConditionMetafieldMetaobjectRelation = "EQUALS"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldMetaobjectRelation = []CollectionSourceInclusionConditionMetafieldMetaobjectRelation{
+	CollectionSourceInclusionConditionMetafieldMetaobjectRelationEquals,
+}
+
+// The relationship between the metafield value and the condition values.
+type CollectionSourceInclusionConditionMetafieldStringListRelation string
+
+const (
+	// The metafield value includes the specified value.
+	CollectionSourceInclusionConditionMetafieldStringListRelationIncludes CollectionSourceInclusionConditionMetafieldStringListRelation = "INCLUDES"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldStringListRelation = []CollectionSourceInclusionConditionMetafieldStringListRelation{
+	CollectionSourceInclusionConditionMetafieldStringListRelationIncludes,
+}
+
+// The relationship between the metafield value and the condition values.
+type CollectionSourceInclusionConditionMetafieldStringRelation string
+
+const (
+	// The metafield value equals the specified value.
+	CollectionSourceInclusionConditionMetafieldStringRelationEquals CollectionSourceInclusionConditionMetafieldStringRelation = "EQUALS"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldStringRelation = []CollectionSourceInclusionConditionMetafieldStringRelation{
+	CollectionSourceInclusionConditionMetafieldStringRelationEquals,
+}
+
+// The relation for comparing product category IDs.
+type CollectionSourceInclusionConditionProductCategoryRelation string
+
+const (
+	// The product category ID equals the specified value.
+	CollectionSourceInclusionConditionProductCategoryRelationEquals CollectionSourceInclusionConditionProductCategoryRelation = "EQUALS"
+	// The product category ID does not equal the specified value.
+	CollectionSourceInclusionConditionProductCategoryRelationNotEquals CollectionSourceInclusionConditionProductCategoryRelation = "NOT_EQUALS"
+)
+
+var AllCollectionSourceInclusionConditionProductCategoryRelation = []CollectionSourceInclusionConditionProductCategoryRelation{
+	CollectionSourceInclusionConditionProductCategoryRelationEquals,
+	CollectionSourceInclusionConditionProductCategoryRelationNotEquals,
+}
+
+// The input fields for a product category value in a collection condition.
+type CollectionSourceInclusionConditionProductCategoryValueInput struct {
+	// The ID of the product category.
+	CategoryId string `json:"categoryId"`
+	// Whether to include descendants of the product category.
+	IncludeDescendants bool `json:"includeDescendants"`
+}
+
+// GetCategoryId returns CollectionSourceInclusionConditionProductCategoryValueInput.CategoryId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionProductCategoryValueInput) GetCategoryId() string {
+	return v.CategoryId
+}
+
+// GetIncludeDescendants returns CollectionSourceInclusionConditionProductCategoryValueInput.IncludeDescendants, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionProductCategoryValueInput) GetIncludeDescendants() bool {
+	return v.IncludeDescendants
+}
+
+// The relation for comparing product status.
+type CollectionSourceInclusionConditionProductStatusRelation string
+
+const (
+	// The product status equals the specified value.
+	CollectionSourceInclusionConditionProductStatusRelationEquals CollectionSourceInclusionConditionProductStatusRelation = "EQUALS"
+	// The product status does not equal the specified value.
+	CollectionSourceInclusionConditionProductStatusRelationNotEquals CollectionSourceInclusionConditionProductStatusRelation = "NOT_EQUALS"
+)
+
+var AllCollectionSourceInclusionConditionProductStatusRelation = []CollectionSourceInclusionConditionProductStatusRelation{
+	CollectionSourceInclusionConditionProductStatusRelationEquals,
+	CollectionSourceInclusionConditionProductStatusRelationNotEquals,
+}
+
+// The relationship between the product tag and the condition values.
+type CollectionSourceInclusionConditionProductTagRelation string
+
+const (
+	// The product is tagged with the specified value.
+	CollectionSourceInclusionConditionProductTagRelationTaggedWith CollectionSourceInclusionConditionProductTagRelation = "TAGGED_WITH"
+	// The product is not tagged with the specified value.
+	CollectionSourceInclusionConditionProductTagRelationNotTaggedWith CollectionSourceInclusionConditionProductTagRelation = "NOT_TAGGED_WITH"
+)
+
+var AllCollectionSourceInclusionConditionProductTagRelation = []CollectionSourceInclusionConditionProductTagRelation{
+	CollectionSourceInclusionConditionProductTagRelationTaggedWith,
+	CollectionSourceInclusionConditionProductTagRelationNotTaggedWith,
+}
+
+// The relationship between the product title and the condition values.
+type CollectionSourceInclusionConditionProductTitleRelation string
+
+const (
+	// The product title equals the specified value.
+	CollectionSourceInclusionConditionProductTitleRelationEquals CollectionSourceInclusionConditionProductTitleRelation = "EQUALS"
+	// The product title does not equal the specified value.
+	CollectionSourceInclusionConditionProductTitleRelationNotEquals CollectionSourceInclusionConditionProductTitleRelation = "NOT_EQUALS"
+	// The product title contains the specified value.
+	CollectionSourceInclusionConditionProductTitleRelationContains CollectionSourceInclusionConditionProductTitleRelation = "CONTAINS"
+	// The product title does not contain the specified value.
+	CollectionSourceInclusionConditionProductTitleRelationDoesNotContain CollectionSourceInclusionConditionProductTitleRelation = "DOES_NOT_CONTAIN"
+	// The product title starts with the specified value.
+	CollectionSourceInclusionConditionProductTitleRelationStartsWith CollectionSourceInclusionConditionProductTitleRelation = "STARTS_WITH"
+	// The product title ends with the specified value.
+	CollectionSourceInclusionConditionProductTitleRelationEndsWith CollectionSourceInclusionConditionProductTitleRelation = "ENDS_WITH"
+)
+
+var AllCollectionSourceInclusionConditionProductTitleRelation = []CollectionSourceInclusionConditionProductTitleRelation{
+	CollectionSourceInclusionConditionProductTitleRelationEquals,
+	CollectionSourceInclusionConditionProductTitleRelationNotEquals,
+	CollectionSourceInclusionConditionProductTitleRelationContains,
+	CollectionSourceInclusionConditionProductTitleRelationDoesNotContain,
+	CollectionSourceInclusionConditionProductTitleRelationStartsWith,
+	CollectionSourceInclusionConditionProductTitleRelationEndsWith,
+}
+
+// The relation for comparing product types.
+type CollectionSourceInclusionConditionProductTypeRelation string
+
+const (
+	// The product type equals the specified value.
+	CollectionSourceInclusionConditionProductTypeRelationEquals CollectionSourceInclusionConditionProductTypeRelation = "EQUALS"
+	// The product type does not equal the specified value.
+	CollectionSourceInclusionConditionProductTypeRelationNotEquals CollectionSourceInclusionConditionProductTypeRelation = "NOT_EQUALS"
+	// The product type starts with the specified value.
+	CollectionSourceInclusionConditionProductTypeRelationStartsWith CollectionSourceInclusionConditionProductTypeRelation = "STARTS_WITH"
+	// The product type ends with the specified value.
+	CollectionSourceInclusionConditionProductTypeRelationEndsWith CollectionSourceInclusionConditionProductTypeRelation = "ENDS_WITH"
+	// The product type contains the specified value.
+	CollectionSourceInclusionConditionProductTypeRelationContains CollectionSourceInclusionConditionProductTypeRelation = "CONTAINS"
+	// The product type does not contain the specified value.
+	CollectionSourceInclusionConditionProductTypeRelationDoesNotContain CollectionSourceInclusionConditionProductTypeRelation = "DOES_NOT_CONTAIN"
+)
+
+var AllCollectionSourceInclusionConditionProductTypeRelation = []CollectionSourceInclusionConditionProductTypeRelation{
+	CollectionSourceInclusionConditionProductTypeRelationEquals,
+	CollectionSourceInclusionConditionProductTypeRelationNotEquals,
+	CollectionSourceInclusionConditionProductTypeRelationStartsWith,
+	CollectionSourceInclusionConditionProductTypeRelationEndsWith,
+	CollectionSourceInclusionConditionProductTypeRelationContains,
+	CollectionSourceInclusionConditionProductTypeRelationDoesNotContain,
+}
+
+// The relation for comparing product vendors.
+type CollectionSourceInclusionConditionProductVendorRelation string
+
+const (
+	// The product vendor equals the specified value.
+	CollectionSourceInclusionConditionProductVendorRelationEquals CollectionSourceInclusionConditionProductVendorRelation = "EQUALS"
+	// The product vendor does not equal the specified value.
+	CollectionSourceInclusionConditionProductVendorRelationNotEquals CollectionSourceInclusionConditionProductVendorRelation = "NOT_EQUALS"
+	// The product vendor starts with the specified value.
+	CollectionSourceInclusionConditionProductVendorRelationStartsWith CollectionSourceInclusionConditionProductVendorRelation = "STARTS_WITH"
+	// The product vendor ends with the specified value.
+	CollectionSourceInclusionConditionProductVendorRelationEndsWith CollectionSourceInclusionConditionProductVendorRelation = "ENDS_WITH"
+	// The product vendor contains the specified value.
+	CollectionSourceInclusionConditionProductVendorRelationContains CollectionSourceInclusionConditionProductVendorRelation = "CONTAINS"
+	// The product vendor does not contain the specified value.
+	CollectionSourceInclusionConditionProductVendorRelationDoesNotContain CollectionSourceInclusionConditionProductVendorRelation = "DOES_NOT_CONTAIN"
+)
+
+var AllCollectionSourceInclusionConditionProductVendorRelation = []CollectionSourceInclusionConditionProductVendorRelation{
+	CollectionSourceInclusionConditionProductVendorRelationEquals,
+	CollectionSourceInclusionConditionProductVendorRelationNotEquals,
+	CollectionSourceInclusionConditionProductVendorRelationStartsWith,
+	CollectionSourceInclusionConditionProductVendorRelationEndsWith,
+	CollectionSourceInclusionConditionProductVendorRelationContains,
+	CollectionSourceInclusionConditionProductVendorRelationDoesNotContain,
+}
+
+// The input fields for updating a condition that determines which products are included in a collection. Exactly one condition type must be provided.
+type CollectionSourceInclusionConditionUpdateInput struct {
+	// An update to a condition based on product tags.
+	ProductTag *CollectionSourceInclusionConditionUpdateProductTagInput `json:"productTag"`
+	// An update to a condition based on product titles.
+	ProductTitle *CollectionSourceInclusionConditionUpdateProductTitleInput `json:"productTitle"`
+	// An update to a condition based on product categories.
+	ProductCategory *CollectionSourceInclusionConditionUpdateProductCategoryInput `json:"productCategory"`
+	// An update to a condition based on product types.
+	ProductType *CollectionSourceInclusionConditionUpdateProductTypeInput `json:"productType"`
+	// An update to a condition based on product vendors.
+	ProductVendor *CollectionSourceInclusionConditionUpdateProductVendorInput `json:"productVendor"`
+	// An update to a condition based on product status.
+	ProductStatus *CollectionSourceInclusionConditionUpdateProductStatusInput `json:"productStatus"`
+	// An update to a condition based on variant titles.
+	VariantTitle *CollectionSourceInclusionConditionUpdateVariantTitleInput `json:"variantTitle"`
+	// An update to a condition based on variant prices.
+	VariantPrice *CollectionSourceInclusionConditionUpdateVariantPriceInput `json:"variantPrice"`
+	// An update to a condition based on variant compare at prices.
+	VariantCompareAtPrice *CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput `json:"variantCompareAtPrice"`
+	// An update to a condition based on variant inventory quantities.
+	VariantInventory *CollectionSourceInclusionConditionUpdateVariantInventoryInput `json:"variantInventory"`
+	// An update to a condition based on variant weights.
+	VariantWeight *CollectionSourceInclusionConditionUpdateVariantWeightInput `json:"variantWeight"`
+	// An update to a condition based on boolean metafield values.
+	MetafieldBoolean *CollectionSourceInclusionConditionUpdateMetafieldBooleanInput `json:"metafieldBoolean"`
+	// An update to a condition based on integer metafield values.
+	MetafieldInt *CollectionSourceInclusionConditionUpdateMetafieldIntInput `json:"metafieldInt"`
+	// An update to a condition based on decimal metafield values.
+	MetafieldDecimal *CollectionSourceInclusionConditionUpdateMetafieldDecimalInput `json:"metafieldDecimal"`
+	// An update to a condition based on string metafield values.
+	MetafieldString *CollectionSourceInclusionConditionUpdateMetafieldStringInput `json:"metafieldString"`
+	// An update to a condition based on string list metafield values.
+	MetafieldStringList *CollectionSourceInclusionConditionUpdateMetafieldStringListInput `json:"metafieldStringList"`
+	// An update to a condition based on single metaobject reference metafield values.
+	MetafieldMetaobject *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput `json:"metafieldMetaobject"`
+	// An update to a condition based on metaobject list reference metafield values.
+	MetafieldMetaobjectList *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput `json:"metafieldMetaobjectList"`
+}
+
+// GetProductTag returns CollectionSourceInclusionConditionUpdateInput.ProductTag, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetProductTag() *CollectionSourceInclusionConditionUpdateProductTagInput {
+	return v.ProductTag
+}
+
+// GetProductTitle returns CollectionSourceInclusionConditionUpdateInput.ProductTitle, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetProductTitle() *CollectionSourceInclusionConditionUpdateProductTitleInput {
+	return v.ProductTitle
+}
+
+// GetProductCategory returns CollectionSourceInclusionConditionUpdateInput.ProductCategory, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetProductCategory() *CollectionSourceInclusionConditionUpdateProductCategoryInput {
+	return v.ProductCategory
+}
+
+// GetProductType returns CollectionSourceInclusionConditionUpdateInput.ProductType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetProductType() *CollectionSourceInclusionConditionUpdateProductTypeInput {
+	return v.ProductType
+}
+
+// GetProductVendor returns CollectionSourceInclusionConditionUpdateInput.ProductVendor, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetProductVendor() *CollectionSourceInclusionConditionUpdateProductVendorInput {
+	return v.ProductVendor
+}
+
+// GetProductStatus returns CollectionSourceInclusionConditionUpdateInput.ProductStatus, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetProductStatus() *CollectionSourceInclusionConditionUpdateProductStatusInput {
+	return v.ProductStatus
+}
+
+// GetVariantTitle returns CollectionSourceInclusionConditionUpdateInput.VariantTitle, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetVariantTitle() *CollectionSourceInclusionConditionUpdateVariantTitleInput {
+	return v.VariantTitle
+}
+
+// GetVariantPrice returns CollectionSourceInclusionConditionUpdateInput.VariantPrice, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetVariantPrice() *CollectionSourceInclusionConditionUpdateVariantPriceInput {
+	return v.VariantPrice
+}
+
+// GetVariantCompareAtPrice returns CollectionSourceInclusionConditionUpdateInput.VariantCompareAtPrice, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetVariantCompareAtPrice() *CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput {
+	return v.VariantCompareAtPrice
+}
+
+// GetVariantInventory returns CollectionSourceInclusionConditionUpdateInput.VariantInventory, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetVariantInventory() *CollectionSourceInclusionConditionUpdateVariantInventoryInput {
+	return v.VariantInventory
+}
+
+// GetVariantWeight returns CollectionSourceInclusionConditionUpdateInput.VariantWeight, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetVariantWeight() *CollectionSourceInclusionConditionUpdateVariantWeightInput {
+	return v.VariantWeight
+}
+
+// GetMetafieldBoolean returns CollectionSourceInclusionConditionUpdateInput.MetafieldBoolean, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldBoolean() *CollectionSourceInclusionConditionUpdateMetafieldBooleanInput {
+	return v.MetafieldBoolean
+}
+
+// GetMetafieldInt returns CollectionSourceInclusionConditionUpdateInput.MetafieldInt, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldInt() *CollectionSourceInclusionConditionUpdateMetafieldIntInput {
+	return v.MetafieldInt
+}
+
+// GetMetafieldDecimal returns CollectionSourceInclusionConditionUpdateInput.MetafieldDecimal, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldDecimal() *CollectionSourceInclusionConditionUpdateMetafieldDecimalInput {
+	return v.MetafieldDecimal
+}
+
+// GetMetafieldString returns CollectionSourceInclusionConditionUpdateInput.MetafieldString, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldString() *CollectionSourceInclusionConditionUpdateMetafieldStringInput {
+	return v.MetafieldString
+}
+
+// GetMetafieldStringList returns CollectionSourceInclusionConditionUpdateInput.MetafieldStringList, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldStringList() *CollectionSourceInclusionConditionUpdateMetafieldStringListInput {
+	return v.MetafieldStringList
+}
+
+// GetMetafieldMetaobject returns CollectionSourceInclusionConditionUpdateInput.MetafieldMetaobject, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldMetaobject() *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput {
+	return v.MetafieldMetaobject
+}
+
+// GetMetafieldMetaobjectList returns CollectionSourceInclusionConditionUpdateInput.MetafieldMetaobjectList, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldMetaobjectList() *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput {
+	return v.MetafieldMetaobjectList
+}
+
+// The input fields for updating a condition based on boolean metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldBooleanInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition value.
+	Relation *CollectionSourceInclusionConditionMetafieldBooleanRelation `json:"relation"`
+	// The boolean value to match against.
+	Value *bool `json:"value"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldBooleanInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldBooleanInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldBooleanInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldBooleanInput) GetRelation() *CollectionSourceInclusionConditionMetafieldBooleanRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateMetafieldBooleanInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldBooleanInput) GetValue() *bool {
+	return v.Value
+}
+
+// The input fields for updating a condition based on decimal metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldDecimalInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition value.
+	Relation *CollectionSourceInclusionConditionMetafieldDecimalRelation `json:"relation"`
+	// The decimal value to match against.
+	Value *string `json:"value"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldDecimalInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldDecimalInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldDecimalInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldDecimalInput) GetRelation() *CollectionSourceInclusionConditionMetafieldDecimalRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateMetafieldDecimalInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldDecimalInput) GetValue() *string {
+	return v.Value
+}
+
+// The input fields for updating a condition based on integer metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldIntInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition value.
+	Relation *CollectionSourceInclusionConditionMetafieldIntRelation `json:"relation"`
+	// The integer value to match against, as a string.
+	Value *string `json:"value"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldIntInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldIntInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldIntInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldIntInput) GetRelation() *CollectionSourceInclusionConditionMetafieldIntRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateMetafieldIntInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldIntInput) GetValue() *string {
+	return v.Value
+}
+
+// The input fields for updating a condition based on single metaobject reference metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition value.
+	Relation *CollectionSourceInclusionConditionMetafieldMetaobjectRelation `json:"relation"`
+	// The metaobject ID to match against.
+	Value *string `json:"value"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput) GetRelation() *CollectionSourceInclusionConditionMetafieldMetaobjectRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput) GetValue() *string {
+	return v.Value
+}
+
+// The input fields for updating a condition based on metaobject list reference metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition values.
+	Relation *CollectionSourceInclusionConditionMetafieldMetaobjectListRelation `json:"relation"`
+	// The metaobject IDs to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput) GetRelation() *CollectionSourceInclusionConditionMetafieldMetaobjectListRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on string metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldStringInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition values.
+	Relation *CollectionSourceInclusionConditionMetafieldStringRelation `json:"relation"`
+	// The string values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldStringInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldStringInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringInput) GetRelation() *CollectionSourceInclusionConditionMetafieldStringRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateMetafieldStringInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateMetafieldStringInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on string list metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldStringListInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition values.
+	Relation *CollectionSourceInclusionConditionMetafieldStringListRelation `json:"relation"`
+	// The string values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldStringListInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringListInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldStringListInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringListInput) GetRelation() *CollectionSourceInclusionConditionMetafieldStringListRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateMetafieldStringListInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringListInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateMetafieldStringListInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringListInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on product categories.
+type CollectionSourceInclusionConditionUpdateProductCategoryInput struct {
+	// The relationship between the product category and the condition values.
+	Relation *CollectionSourceInclusionConditionProductCategoryRelation `json:"relation"`
+	// The product category values to match against.
+	Values []CollectionSourceInclusionConditionProductCategoryValueInput `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateProductCategoryInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductCategoryInput) GetRelation() *CollectionSourceInclusionConditionProductCategoryRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateProductCategoryInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductCategoryInput) GetValues() []CollectionSourceInclusionConditionProductCategoryValueInput {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateProductCategoryInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductCategoryInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on product status.
+type CollectionSourceInclusionConditionUpdateProductStatusInput struct {
+	// The relationship between the product status and the condition values.
+	Relation *CollectionSourceInclusionConditionProductStatusRelation `json:"relation"`
+	// The product status values to match against.
+	Values []ProductStatus `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateProductStatusInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductStatusInput) GetRelation() *CollectionSourceInclusionConditionProductStatusRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateProductStatusInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductStatusInput) GetValues() []ProductStatus {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateProductStatusInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductStatusInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on product tags.
+type CollectionSourceInclusionConditionUpdateProductTagInput struct {
+	// The relationship between the product tag and the condition values.
+	Relation *CollectionSourceInclusionConditionProductTagRelation `json:"relation"`
+	// The tag values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateProductTagInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTagInput) GetRelation() *CollectionSourceInclusionConditionProductTagRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateProductTagInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTagInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateProductTagInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTagInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on product titles.
+type CollectionSourceInclusionConditionUpdateProductTitleInput struct {
+	// The relationship between the product title and the condition values.
+	Relation *CollectionSourceInclusionConditionProductTitleRelation `json:"relation"`
+	// The title values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateProductTitleInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTitleInput) GetRelation() *CollectionSourceInclusionConditionProductTitleRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateProductTitleInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTitleInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateProductTitleInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTitleInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on product types.
+type CollectionSourceInclusionConditionUpdateProductTypeInput struct {
+	// The relationship between the product type and the condition values.
+	Relation *CollectionSourceInclusionConditionProductTypeRelation `json:"relation"`
+	// The product type values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateProductTypeInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTypeInput) GetRelation() *CollectionSourceInclusionConditionProductTypeRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateProductTypeInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTypeInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateProductTypeInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTypeInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on product vendors.
+type CollectionSourceInclusionConditionUpdateProductVendorInput struct {
+	// The relationship between the product vendor and the condition values.
+	Relation *CollectionSourceInclusionConditionProductVendorRelation `json:"relation"`
+	// The product vendor values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateProductVendorInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductVendorInput) GetRelation() *CollectionSourceInclusionConditionProductVendorRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateProductVendorInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductVendorInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateProductVendorInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductVendorInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on variant compare at prices.
+type CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput struct {
+	// The relationship between the variant compare at price and the condition value.
+	Relation *CollectionSourceInclusionConditionVariantCompareAtPriceRelation `json:"relation"`
+	// The variant compare at price to match against. Required for numeric relations and must be absent for IS_SET or IS_NOT_SET.
+	Value *MoneyInput `json:"value"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput) GetRelation() *CollectionSourceInclusionConditionVariantCompareAtPriceRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput) GetValue() *MoneyInput {
+	return v.Value
+}
+
+// The input fields for updating a condition based on variant inventory quantities.
+type CollectionSourceInclusionConditionUpdateVariantInventoryInput struct {
+	// The relationship between the variant inventory and the condition value.
+	Relation *CollectionSourceInclusionConditionVariantInventoryRelation `json:"relation"`
+	// The variant inventory quantity to match against.
+	Value *int `json:"value"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateVariantInventoryInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantInventoryInput) GetRelation() *CollectionSourceInclusionConditionVariantInventoryRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateVariantInventoryInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantInventoryInput) GetValue() *int {
+	return v.Value
+}
+
+// The input fields for updating a condition based on variant prices.
+type CollectionSourceInclusionConditionUpdateVariantPriceInput struct {
+	// The relationship between the variant price and the condition value.
+	Relation *CollectionSourceInclusionConditionVariantPriceRelation `json:"relation"`
+	// The variant price to match against.
+	Value *MoneyInput `json:"value"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateVariantPriceInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantPriceInput) GetRelation() *CollectionSourceInclusionConditionVariantPriceRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateVariantPriceInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantPriceInput) GetValue() *MoneyInput {
+	return v.Value
+}
+
+// The input fields for updating a condition based on variant titles.
+type CollectionSourceInclusionConditionUpdateVariantTitleInput struct {
+	// The relationship between the variant title and the condition values.
+	Relation *CollectionSourceInclusionConditionVariantTitleRelation `json:"relation"`
+	// The variant title values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateVariantTitleInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantTitleInput) GetRelation() *CollectionSourceInclusionConditionVariantTitleRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateVariantTitleInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantTitleInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateVariantTitleInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantTitleInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on variant weights.
+type CollectionSourceInclusionConditionUpdateVariantWeightInput struct {
+	// The relationship between the variant weight and the condition value.
+	Relation *CollectionSourceInclusionConditionVariantWeightRelation `json:"relation"`
+	// The variant weight to match against.
+	Value *WeightInput `json:"value"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateVariantWeightInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantWeightInput) GetRelation() *CollectionSourceInclusionConditionVariantWeightRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateVariantWeightInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantWeightInput) GetValue() *WeightInput {
+	return v.Value
+}
+
+// The relation for comparing variant compare at prices.
+type CollectionSourceInclusionConditionVariantCompareAtPriceRelation string
+
+const (
+	// The variant compare at price equals the specified value.
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationEquals CollectionSourceInclusionConditionVariantCompareAtPriceRelation = "EQUALS"
+	// The variant compare at price does not equal the specified value.
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationNotEquals CollectionSourceInclusionConditionVariantCompareAtPriceRelation = "NOT_EQUALS"
+	// The variant compare at price is greater than the specified value.
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationGreaterThan CollectionSourceInclusionConditionVariantCompareAtPriceRelation = "GREATER_THAN"
+	// The variant compare at price is less than the specified value.
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationLessThan CollectionSourceInclusionConditionVariantCompareAtPriceRelation = "LESS_THAN"
+	// The variant has a compare at price set (indicating a price reduction).
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationIsSet CollectionSourceInclusionConditionVariantCompareAtPriceRelation = "IS_SET"
+	// The variant does not have a compare at price set.
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationIsNotSet CollectionSourceInclusionConditionVariantCompareAtPriceRelation = "IS_NOT_SET"
+)
+
+var AllCollectionSourceInclusionConditionVariantCompareAtPriceRelation = []CollectionSourceInclusionConditionVariantCompareAtPriceRelation{
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationEquals,
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationNotEquals,
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationGreaterThan,
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationLessThan,
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationIsSet,
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationIsNotSet,
+}
+
+// The relation for comparing variant inventory quantities.
+type CollectionSourceInclusionConditionVariantInventoryRelation string
+
+const (
+	// The variant inventory equals the specified value.
+	CollectionSourceInclusionConditionVariantInventoryRelationEquals CollectionSourceInclusionConditionVariantInventoryRelation = "EQUALS"
+	// The variant inventory is greater than the specified value.
+	CollectionSourceInclusionConditionVariantInventoryRelationGreaterThan CollectionSourceInclusionConditionVariantInventoryRelation = "GREATER_THAN"
+	// The variant inventory is less than the specified value.
+	CollectionSourceInclusionConditionVariantInventoryRelationLessThan CollectionSourceInclusionConditionVariantInventoryRelation = "LESS_THAN"
+)
+
+var AllCollectionSourceInclusionConditionVariantInventoryRelation = []CollectionSourceInclusionConditionVariantInventoryRelation{
+	CollectionSourceInclusionConditionVariantInventoryRelationEquals,
+	CollectionSourceInclusionConditionVariantInventoryRelationGreaterThan,
+	CollectionSourceInclusionConditionVariantInventoryRelationLessThan,
+}
+
+// The relation for comparing variant prices.
+type CollectionSourceInclusionConditionVariantPriceRelation string
+
+const (
+	// The variant price equals the specified value.
+	CollectionSourceInclusionConditionVariantPriceRelationEquals CollectionSourceInclusionConditionVariantPriceRelation = "EQUALS"
+	// The variant price does not equal the specified value.
+	CollectionSourceInclusionConditionVariantPriceRelationNotEquals CollectionSourceInclusionConditionVariantPriceRelation = "NOT_EQUALS"
+	// The variant price is greater than the specified value.
+	CollectionSourceInclusionConditionVariantPriceRelationGreaterThan CollectionSourceInclusionConditionVariantPriceRelation = "GREATER_THAN"
+	// The variant price is less than the specified value.
+	CollectionSourceInclusionConditionVariantPriceRelationLessThan CollectionSourceInclusionConditionVariantPriceRelation = "LESS_THAN"
+)
+
+var AllCollectionSourceInclusionConditionVariantPriceRelation = []CollectionSourceInclusionConditionVariantPriceRelation{
+	CollectionSourceInclusionConditionVariantPriceRelationEquals,
+	CollectionSourceInclusionConditionVariantPriceRelationNotEquals,
+	CollectionSourceInclusionConditionVariantPriceRelationGreaterThan,
+	CollectionSourceInclusionConditionVariantPriceRelationLessThan,
+}
+
+// The relation for comparing variant titles.
+type CollectionSourceInclusionConditionVariantTitleRelation string
+
+const (
+	// The variant title equals the specified value.
+	CollectionSourceInclusionConditionVariantTitleRelationEquals CollectionSourceInclusionConditionVariantTitleRelation = "EQUALS"
+	// The variant title does not equal the specified value.
+	CollectionSourceInclusionConditionVariantTitleRelationNotEquals CollectionSourceInclusionConditionVariantTitleRelation = "NOT_EQUALS"
+	// The variant title starts with the specified value.
+	CollectionSourceInclusionConditionVariantTitleRelationStartsWith CollectionSourceInclusionConditionVariantTitleRelation = "STARTS_WITH"
+	// The variant title ends with the specified value.
+	CollectionSourceInclusionConditionVariantTitleRelationEndsWith CollectionSourceInclusionConditionVariantTitleRelation = "ENDS_WITH"
+	// The variant title contains the specified value.
+	CollectionSourceInclusionConditionVariantTitleRelationContains CollectionSourceInclusionConditionVariantTitleRelation = "CONTAINS"
+	// The variant title does not contain the specified value.
+	CollectionSourceInclusionConditionVariantTitleRelationDoesNotContain CollectionSourceInclusionConditionVariantTitleRelation = "DOES_NOT_CONTAIN"
+)
+
+var AllCollectionSourceInclusionConditionVariantTitleRelation = []CollectionSourceInclusionConditionVariantTitleRelation{
+	CollectionSourceInclusionConditionVariantTitleRelationEquals,
+	CollectionSourceInclusionConditionVariantTitleRelationNotEquals,
+	CollectionSourceInclusionConditionVariantTitleRelationStartsWith,
+	CollectionSourceInclusionConditionVariantTitleRelationEndsWith,
+	CollectionSourceInclusionConditionVariantTitleRelationContains,
+	CollectionSourceInclusionConditionVariantTitleRelationDoesNotContain,
+}
+
+// The relation for comparing variant weights.
+type CollectionSourceInclusionConditionVariantWeightRelation string
+
+const (
+	// The variant weight equals the specified value.
+	CollectionSourceInclusionConditionVariantWeightRelationEquals CollectionSourceInclusionConditionVariantWeightRelation = "EQUALS"
+	// The variant weight does not equal the specified value.
+	CollectionSourceInclusionConditionVariantWeightRelationNotEquals CollectionSourceInclusionConditionVariantWeightRelation = "NOT_EQUALS"
+	// The variant weight is greater than the specified value.
+	CollectionSourceInclusionConditionVariantWeightRelationGreaterThan CollectionSourceInclusionConditionVariantWeightRelation = "GREATER_THAN"
+	// The variant weight is less than the specified value.
+	CollectionSourceInclusionConditionVariantWeightRelationLessThan CollectionSourceInclusionConditionVariantWeightRelation = "LESS_THAN"
+)
+
+var AllCollectionSourceInclusionConditionVariantWeightRelation = []CollectionSourceInclusionConditionVariantWeightRelation{
+	CollectionSourceInclusionConditionVariantWeightRelationEquals,
+	CollectionSourceInclusionConditionVariantWeightRelationNotEquals,
+	CollectionSourceInclusionConditionVariantWeightRelationGreaterThan,
+	CollectionSourceInclusionConditionVariantWeightRelationLessThan,
+}
+
+// Conditions that target variants cause either the entire product to be included when satisfied or only the matching variants.
+type CollectionSourceTargetType string
+
+const (
+	// The entire product is included if any variant satisfies the conditions.
+	CollectionSourceTargetTypeProducts CollectionSourceTargetType = "PRODUCTS"
+	// Individual variants are included if they satisfy the conditions.
+	CollectionSourceTargetTypeVariants CollectionSourceTargetType = "VARIANTS"
+)
+
+var AllCollectionSourceTargetType = []CollectionSourceTargetType{
+	CollectionSourceTargetTypeProducts,
+	CollectionSourceTargetTypeVariants,
+}
+
+// The input fields for updating a shareable collection source.
+type CollectionUpdateConditionsSourceInput struct {
+	// The ID of the source to update.
+	Id string `json:"id"`
+	// The title of the source.
+	Title *string `json:"title,omitempty"`
+	// An optional description of the source.
+	Description *string `json:"description,omitempty"`
+	// The inclusion rules for the source.
+	Inclusion *CollectionUpdateSourceInclusionInput `json:"inclusion,omitempty"`
+	// The exclusion rules for the source.
+	Exclusion *CollectionUpdateSourceExclusionInput `json:"exclusion,omitempty"`
+}
+
+// GetId returns CollectionUpdateConditionsSourceInput.Id, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateConditionsSourceInput) GetId() string { return v.Id }
+
+// GetTitle returns CollectionUpdateConditionsSourceInput.Title, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateConditionsSourceInput) GetTitle() *string { return v.Title }
+
+// GetDescription returns CollectionUpdateConditionsSourceInput.Description, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateConditionsSourceInput) GetDescription() *string { return v.Description }
+
+// GetInclusion returns CollectionUpdateConditionsSourceInput.Inclusion, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateConditionsSourceInput) GetInclusion() *CollectionUpdateSourceInclusionInput {
+	return v.Inclusion
+}
+
+// GetExclusion returns CollectionUpdateConditionsSourceInput.Exclusion, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateConditionsSourceInput) GetExclusion() *CollectionUpdateSourceExclusionInput {
+	return v.Exclusion
+}
+
+// The input fields required to update a collection.
+type CollectionUpdateInput struct {
+	// The description of the collection, in HTML format.
+	DescriptionHtml *string `json:"descriptionHtml,omitempty"`
+	// A unique human-friendly string for the collection. Automatically generated from the collection's title.
+	Handle *string `json:"handle,omitempty"`
+	// Specifies the collection to update.
+	Id *string `json:"id"`
+	// The image associated with the collection.
+	Image *ImageInput `json:"image,omitempty"`
+	// The theme template used when viewing the collection in a store.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// The order in which the collection's products are sorted.
+	SortOrder *CollectionSortOrder `json:"sortOrder,omitempty"`
+	// The title of the collection.
+	Title *string `json:"title,omitempty"`
+	// The metafields to associate with the collection.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// SEO information for the collection.
+	Seo *SEOInput `json:"seo,omitempty"`
+	// Indicates whether a redirect is required after a new handle has been provided.
+	// If true, then the old handle is redirected to the new one automatically.
+	RedirectNewHandle *bool `json:"redirectNewHandle,omitempty"`
+	// The IDs of the sources to delete from the collection.
+	SourcesToDelete []string `json:"sourcesToDelete,omitempty"`
+	// The sources to create for the collection.
+	SourcesToCreate []CollectionCreateSourceTargetInput `json:"sourcesToCreate,omitempty"`
+	// The sources to update for the collection.
+	SourcesToUpdate []CollectionUpdateSourceTargetInput `json:"sourcesToUpdate,omitempty"`
+}
+
+// GetDescriptionHtml returns CollectionUpdateInput.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetDescriptionHtml() *string { return v.DescriptionHtml }
+
+// GetHandle returns CollectionUpdateInput.Handle, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetHandle() *string { return v.Handle }
+
+// GetId returns CollectionUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetId() *string { return v.Id }
+
+// GetImage returns CollectionUpdateInput.Image, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetImage() *ImageInput { return v.Image }
+
+// GetTemplateSuffix returns CollectionUpdateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetSortOrder returns CollectionUpdateInput.SortOrder, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetSortOrder() *CollectionSortOrder { return v.SortOrder }
+
+// GetTitle returns CollectionUpdateInput.Title, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetTitle() *string { return v.Title }
+
+// GetMetafields returns CollectionUpdateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetSeo returns CollectionUpdateInput.Seo, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetSeo() *SEOInput { return v.Seo }
+
+// GetRedirectNewHandle returns CollectionUpdateInput.RedirectNewHandle, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetRedirectNewHandle() *bool { return v.RedirectNewHandle }
+
+// GetSourcesToDelete returns CollectionUpdateInput.SourcesToDelete, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetSourcesToDelete() []string { return v.SourcesToDelete }
+
+// GetSourcesToCreate returns CollectionUpdateInput.SourcesToCreate, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetSourcesToCreate() []CollectionCreateSourceTargetInput {
+	return v.SourcesToCreate
+}
+
+// GetSourcesToUpdate returns CollectionUpdateInput.SourcesToUpdate, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetSourcesToUpdate() []CollectionUpdateSourceTargetInput {
+	return v.SourcesToUpdate
+}
+
+// The input fields for updating an exclusion condition in a collection source.
+type CollectionUpdateSourceExclusionConditionInput struct {
+	// The ID of the exclusion condition to update.
+	Id string `json:"id"`
+	// The updated exclusion condition.
+	Condition CollectionSourceExclusionConditionUpdateInput `json:"condition"`
+}
+
+// GetId returns CollectionUpdateSourceExclusionConditionInput.Id, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionConditionInput) GetId() string { return v.Id }
+
+// GetCondition returns CollectionUpdateSourceExclusionConditionInput.Condition, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionConditionInput) GetCondition() CollectionSourceExclusionConditionUpdateInput {
+	return v.Condition
+}
+
+// The input fields for updating exclusion rules for a collection source.
+type CollectionUpdateSourceExclusionInput struct {
+	// Whether products must match all or any of the conditions to be excluded.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+	// The exclusion conditions to create for the source.
+	ConditionsToCreate []CollectionSourceExclusionConditionInput `json:"conditionsToCreate"`
+	// The IDs of the exclusion conditions to delete from the source.
+	ConditionsToDelete []string `json:"conditionsToDelete"`
+	// The exclusion conditions to update for the source.
+	ConditionsToUpdate []CollectionUpdateSourceExclusionConditionInput `json:"conditionsToUpdate"`
+	// The product selections to add to the source.
+	SelectionsToAdd []CollectionExclusionProductSelectionInput `json:"selectionsToAdd"`
+	// The product selections to remove from the source.
+	SelectionsToRemove []CollectionExclusionProductSelectionInput `json:"selectionsToRemove"`
+}
+
+// GetMatchType returns CollectionUpdateSourceExclusionInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// GetConditionsToCreate returns CollectionUpdateSourceExclusionInput.ConditionsToCreate, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionInput) GetConditionsToCreate() []CollectionSourceExclusionConditionInput {
+	return v.ConditionsToCreate
+}
+
+// GetConditionsToDelete returns CollectionUpdateSourceExclusionInput.ConditionsToDelete, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionInput) GetConditionsToDelete() []string {
+	return v.ConditionsToDelete
+}
+
+// GetConditionsToUpdate returns CollectionUpdateSourceExclusionInput.ConditionsToUpdate, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionInput) GetConditionsToUpdate() []CollectionUpdateSourceExclusionConditionInput {
+	return v.ConditionsToUpdate
+}
+
+// GetSelectionsToAdd returns CollectionUpdateSourceExclusionInput.SelectionsToAdd, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionInput) GetSelectionsToAdd() []CollectionExclusionProductSelectionInput {
+	return v.SelectionsToAdd
+}
+
+// GetSelectionsToRemove returns CollectionUpdateSourceExclusionInput.SelectionsToRemove, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionInput) GetSelectionsToRemove() []CollectionExclusionProductSelectionInput {
+	return v.SelectionsToRemove
+}
+
+// The input fields for updating a condition in a collection source.
+type CollectionUpdateSourceInclusionConditionInput struct {
+	// The ID of the condition to update.
+	Id string `json:"id"`
+	// The updated condition.
+	Condition CollectionSourceInclusionConditionUpdateInput `json:"condition"`
+}
+
+// GetId returns CollectionUpdateSourceInclusionConditionInput.Id, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionConditionInput) GetId() string { return v.Id }
+
+// GetCondition returns CollectionUpdateSourceInclusionConditionInput.Condition, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionConditionInput) GetCondition() CollectionSourceInclusionConditionUpdateInput {
+	return v.Condition
+}
+
+// The input fields for updating inclusion rules for a collection source.
+type CollectionUpdateSourceInclusionInput struct {
+	// Whether products must match all or any of the conditions.
+	MatchType *CollectionConditionMatchType `json:"matchType,omitempty"`
+	// The conditions to create for the source.
+	ConditionsToCreate json.RawMessage `json:"conditionsToCreate,omitempty"`
+	// The IDs of the conditions to delete from the source.
+	ConditionsToDelete []string `json:"conditionsToDelete,omitempty"`
+	// The conditions to update for the source.
+	ConditionsToUpdate []CollectionUpdateSourceInclusionConditionInput `json:"conditionsToUpdate,omitempty"`
+	// The product selections to add to the source.
+	SelectionsToAdd []CollectionInclusionProductSelectionInput `json:"selectionsToAdd,omitempty"`
+	// The product selections to remove from the source. For sources that target variants, omitting variant IDs will remove all for the product.
+	SelectionsToRemove []CollectionInclusionProductSelectionInput `json:"selectionsToRemove,omitempty"`
+}
+
+// GetMatchType returns CollectionUpdateSourceInclusionInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// GetConditionsToCreate returns CollectionUpdateSourceInclusionInput.ConditionsToCreate, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionInput) GetConditionsToCreate() json.RawMessage {
+	return v.ConditionsToCreate
+}
+
+// GetConditionsToDelete returns CollectionUpdateSourceInclusionInput.ConditionsToDelete, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionInput) GetConditionsToDelete() []string {
+	return v.ConditionsToDelete
+}
+
+// GetConditionsToUpdate returns CollectionUpdateSourceInclusionInput.ConditionsToUpdate, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionInput) GetConditionsToUpdate() []CollectionUpdateSourceInclusionConditionInput {
+	return v.ConditionsToUpdate
+}
+
+// GetSelectionsToAdd returns CollectionUpdateSourceInclusionInput.SelectionsToAdd, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionInput) GetSelectionsToAdd() []CollectionInclusionProductSelectionInput {
+	return v.SelectionsToAdd
+}
+
+// GetSelectionsToRemove returns CollectionUpdateSourceInclusionInput.SelectionsToRemove, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionInput) GetSelectionsToRemove() []CollectionInclusionProductSelectionInput {
+	return v.SelectionsToRemove
+}
+
+// The input fields for updating a collection source - provide the one field that represents the type of source to update.
+type CollectionUpdateSourceTargetInput struct {
+	// An update to a shareable conditions-based source.
+	Condition *CollectionUpdateConditionsSourceInput `json:"condition,omitempty"`
+	// An update to a sub-collection source whose membership comes from one or more referenced collections.
+	SubCollections *CollectionUpdateSubCollectionsSourceInput `json:"subCollections,omitempty"`
+}
+
+// GetCondition returns CollectionUpdateSourceTargetInput.Condition, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceTargetInput) GetCondition() *CollectionUpdateConditionsSourceInput {
+	return v.Condition
+}
+
+// GetSubCollections returns CollectionUpdateSourceTargetInput.SubCollections, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceTargetInput) GetSubCollections() *CollectionUpdateSubCollectionsSourceInput {
+	return v.SubCollections
+}
+
+// The input fields for updating a sub-collection source — a source whose membership comes from one or more referenced collections.
+type CollectionUpdateSubCollectionsSourceInput struct {
+	// The ID of the source to update.
+	Id string `json:"id"`
+	// The global IDs of the sub-collections whose products supply this source. When provided, it replaces the source's current referenced collections.
+	CollectionIds []string `json:"collectionIds"`
+	// The title of the source.
+	Title *string `json:"title"`
+	// An optional description of the source.
+	Description *string `json:"description"`
+}
+
+// GetId returns CollectionUpdateSubCollectionsSourceInput.Id, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSubCollectionsSourceInput) GetId() string { return v.Id }
+
+// GetCollectionIds returns CollectionUpdateSubCollectionsSourceInput.CollectionIds, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSubCollectionsSourceInput) GetCollectionIds() []string {
+	return v.CollectionIds
+}
+
+// GetTitle returns CollectionUpdateSubCollectionsSourceInput.Title, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSubCollectionsSourceInput) GetTitle() *string { return v.Title }
+
+// GetDescription returns CollectionUpdateSubCollectionsSourceInput.Description, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSubCollectionsSourceInput) GetDescription() *string { return v.Description }
+
 // The role of the combined listing.
 type CombinedListingsRole string
 
@@ -1277,6 +3211,230 @@ func (v *CountryHarmonizedSystemCodeInput) GetHarmonizedSystemCode() string {
 
 // GetCountryCode returns CountryHarmonizedSystemCodeInput.CountryCode, and is useful for accessing the field via an interface.
 func (v *CountryHarmonizedSystemCodeInput) GetCountryCode() *CountryCode { return v.CountryCode }
+
+// CreateCollectionCollectionCreateCollectionCreatePayload includes the requested fields of the GraphQL type CollectionCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `collectionCreate` mutation.
+type CreateCollectionCollectionCreateCollectionCreatePayload struct {
+	// The collection that has been created.
+	Collection *CreateCollectionCollectionCreateCollectionCreatePayloadCollection `json:"collection"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetCollection returns CreateCollectionCollectionCreateCollectionCreatePayload.Collection, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayload) GetCollection() *CreateCollectionCollectionCreateCollectionCreatePayloadCollection {
+	return v.Collection
+}
+
+// GetUserErrors returns CreateCollectionCollectionCreateCollectionCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayload) GetUserErrors() []CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// CreateCollectionCollectionCreateCollectionCreatePayloadCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type CreateCollectionCollectionCreateCollectionCreatePayloadCollection struct {
+	CollectionFields `json:"-"`
+}
+
+// GetId returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.Id, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetId() string {
+	return v.CollectionFields.Id
+}
+
+// GetHandle returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.Handle, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetHandle() string {
+	return v.CollectionFields.Handle
+}
+
+// GetTitle returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.Title, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetTitle() string {
+	return v.CollectionFields.Title
+}
+
+// GetDescriptionHtml returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetDescriptionHtml() string {
+	return v.CollectionFields.DescriptionHtml
+}
+
+// GetSortOrder returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.SortOrder, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetSortOrder() CollectionSortOrder {
+	return v.CollectionFields.SortOrder
+}
+
+// GetTemplateSuffix returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetTemplateSuffix() *string {
+	return v.CollectionFields.TemplateSuffix
+}
+
+// GetSeo returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.Seo, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetSeo() CollectionFieldsSeoSEO {
+	return v.CollectionFields.Seo
+}
+
+// GetSources returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.Sources, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetSources() json.RawMessage {
+	return v.CollectionFields.Sources
+}
+
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateCollectionCollectionCreateCollectionCreatePayloadCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateCollectionCollectionCreateCollectionCreatePayloadCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CollectionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateCollectionCollectionCreateCollectionCreatePayloadCollection struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+
+	Sources json.RawMessage `json:"sources"`
+}
+
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) __premarshalJSON() (*__premarshalCreateCollectionCollectionCreateCollectionCreatePayloadCollection, error) {
+	var retval __premarshalCreateCollectionCollectionCreateCollectionCreatePayloadCollection
+
+	retval.Id = v.CollectionFields.Id
+	retval.Handle = v.CollectionFields.Handle
+	retval.Title = v.CollectionFields.Title
+	retval.DescriptionHtml = v.CollectionFields.DescriptionHtml
+	retval.SortOrder = v.CollectionFields.SortOrder
+	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
+	retval.Seo = v.CollectionFields.Seo
+	retval.Sources = v.CollectionFields.Sources
+	return &retval, nil
+}
+
+// CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreateCollectionResponse is returned by CreateCollection on success.
+type CreateCollectionResponse struct {
+	// Creates a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection)
+	// to group [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) together
+	// in the [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	// For example, an athletics store might create different collections for running attire, shoes, and accessories.
+	//
+	// Use the `collectionCreate` mutation when you need to:
+	//
+	// - Create a new collection for a product launch or campaign
+	// - Organize products by category, season, or promotion
+	// - Automate product grouping using conditions (for example, by tag, type, or price)
+	//
+	// Collections can include products manually and can also include products automatically based on rules, sources,
+	// or conditions.
+	//
+	// **Defining a collection's membership**
+	//
+	// Define membership with `sources` on the `collection` argument
+	// ([`CollectionCreateInput`](https://shopify.dev/docs/api/admin-graphql/latest/input-objects/CollectionCreateInput)).
+	// Each source adds products through `conditions` (such as product tag, title, or metafield—see
+	// [`CollectionSourceInclusionConditionInput`](https://shopify.dev/docs/api/admin-graphql/latest/input-objects/CollectionSourceInclusionConditionInput)
+	// for the full list) and through manual `selections`.
+	//
+	// > Note:
+	// > The `input` argument and its `ruleSet` field are deprecated. Existing integrations should migrate to
+	// `collection` and `sources` — a `ruleSet` rule maps to an equivalent source `condition` (for example, a
+	// tag rule becomes a `productTag` condition). If both `collection` and `input` are provided, `collection`
+	// is used.
+	//
+	// > Note:
+	// > The created collection is unpublished by default. To make it available to customers,
+	// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+	// mutation after creation.
+	//
+	// Learn more about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+	CollectionCreate *CreateCollectionCollectionCreateCollectionCreatePayload `json:"collectionCreate"`
+}
+
+// GetCollectionCreate returns CreateCollectionResponse.CollectionCreate, and is useful for accessing the field via an interface.
+func (v *CreateCollectionResponse) GetCollectionCreate() *CreateCollectionCollectionCreateCollectionCreatePayload {
+	return v.CollectionCreate
+}
 
 // CreateMarketMarketCreateMarketCreatePayload includes the requested fields of the GraphQL type MarketCreatePayload.
 // The GraphQL type's documentation follows.
@@ -2794,6 +4952,70 @@ type DeactivateLocationResponse struct {
 // GetLocationDeactivate returns DeactivateLocationResponse.LocationDeactivate, and is useful for accessing the field via an interface.
 func (v *DeactivateLocationResponse) GetLocationDeactivate() *DeactivateLocationLocationDeactivateLocationDeactivatePayload {
 	return v.LocationDeactivate
+}
+
+// DeleteCollectionCollectionDeleteCollectionDeletePayload includes the requested fields of the GraphQL type CollectionDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `collectionDelete` mutation.
+type DeleteCollectionCollectionDeleteCollectionDeletePayload struct {
+	// The ID of the collection that was deleted. Returns `null` if the collection doesn't exist.
+	DeletedCollectionId *string `json:"deletedCollectionId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetDeletedCollectionId returns DeleteCollectionCollectionDeleteCollectionDeletePayload.DeletedCollectionId, and is useful for accessing the field via an interface.
+func (v *DeleteCollectionCollectionDeleteCollectionDeletePayload) GetDeletedCollectionId() *string {
+	return v.DeletedCollectionId
+}
+
+// GetUserErrors returns DeleteCollectionCollectionDeleteCollectionDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteCollectionCollectionDeleteCollectionDeletePayload) GetUserErrors() []DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// DeleteCollectionResponse is returned by DeleteCollection on success.
+type DeleteCollectionResponse struct {
+	// Deletes a collection and removes it permanently from the store. This operation cannot be undone and will remove the collection from all sales channels where it was published.
+	//
+	// For example, when merchants discontinue seasonal promotions or reorganize their catalog structure, they can delete outdated collections like "Back to School 2023" to keep their store organized.
+	//
+	// Use `CollectionDelete` to:
+	// - Remove outdated or unused collections from stores
+	// - Clean up collection structures during catalog reorganization
+	// - Implement collection management tools with deletion capabilities
+	//
+	// Products within the deleted collection remain in the store but are no longer grouped under that collection.
+	//
+	// Learn more about [collection management](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection).
+	CollectionDelete *DeleteCollectionCollectionDeleteCollectionDeletePayload `json:"collectionDelete"`
+}
+
+// GetCollectionDelete returns DeleteCollectionResponse.CollectionDelete, and is useful for accessing the field via an interface.
+func (v *DeleteCollectionResponse) GetCollectionDelete() *DeleteCollectionCollectionDeleteCollectionDeletePayload {
+	return v.CollectionDelete
 }
 
 // DeleteLocationLocationDeleteLocationDeletePayload includes the requested fields of the GraphQL type LocationDeletePayload.
@@ -5819,6 +8041,365 @@ func (v *GetCheckoutAndAccountsConfigurationResponse) GetCheckoutAndAccountsConf
 	return v.CheckoutAndAccountsConfiguration
 }
 
+// GetCollectionByHandleCollectionByIdentifierCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type GetCollectionByHandleCollectionByIdentifierCollection struct {
+	CollectionFields `json:"-"`
+}
+
+// GetId returns GetCollectionByHandleCollectionByIdentifierCollection.Id, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetId() string {
+	return v.CollectionFields.Id
+}
+
+// GetHandle returns GetCollectionByHandleCollectionByIdentifierCollection.Handle, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetHandle() string {
+	return v.CollectionFields.Handle
+}
+
+// GetTitle returns GetCollectionByHandleCollectionByIdentifierCollection.Title, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetTitle() string {
+	return v.CollectionFields.Title
+}
+
+// GetDescriptionHtml returns GetCollectionByHandleCollectionByIdentifierCollection.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetDescriptionHtml() string {
+	return v.CollectionFields.DescriptionHtml
+}
+
+// GetSortOrder returns GetCollectionByHandleCollectionByIdentifierCollection.SortOrder, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetSortOrder() CollectionSortOrder {
+	return v.CollectionFields.SortOrder
+}
+
+// GetTemplateSuffix returns GetCollectionByHandleCollectionByIdentifierCollection.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetTemplateSuffix() *string {
+	return v.CollectionFields.TemplateSuffix
+}
+
+// GetSeo returns GetCollectionByHandleCollectionByIdentifierCollection.Seo, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetSeo() CollectionFieldsSeoSEO {
+	return v.CollectionFields.Seo
+}
+
+// GetSources returns GetCollectionByHandleCollectionByIdentifierCollection.Sources, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetSources() json.RawMessage {
+	return v.CollectionFields.Sources
+}
+
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetCollectionByHandleCollectionByIdentifierCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetCollectionByHandleCollectionByIdentifierCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CollectionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetCollectionByHandleCollectionByIdentifierCollection struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+
+	Sources json.RawMessage `json:"sources"`
+}
+
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) __premarshalJSON() (*__premarshalGetCollectionByHandleCollectionByIdentifierCollection, error) {
+	var retval __premarshalGetCollectionByHandleCollectionByIdentifierCollection
+
+	retval.Id = v.CollectionFields.Id
+	retval.Handle = v.CollectionFields.Handle
+	retval.Title = v.CollectionFields.Title
+	retval.DescriptionHtml = v.CollectionFields.DescriptionHtml
+	retval.SortOrder = v.CollectionFields.SortOrder
+	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
+	retval.Seo = v.CollectionFields.Seo
+	retval.Sources = v.CollectionFields.Sources
+	return &retval, nil
+}
+
+// GetCollectionByHandleResponse is returned by GetCollectionByHandle on success.
+type GetCollectionByHandleResponse struct {
+	// Return a collection by an identifier.
+	CollectionByIdentifier *GetCollectionByHandleCollectionByIdentifierCollection `json:"collectionByIdentifier"`
+}
+
+// GetCollectionByIdentifier returns GetCollectionByHandleResponse.CollectionByIdentifier, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleResponse) GetCollectionByIdentifier() *GetCollectionByHandleCollectionByIdentifierCollection {
+	return v.CollectionByIdentifier
+}
+
+// GetCollectionCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type GetCollectionCollection struct {
+	CollectionFields `json:"-"`
+}
+
+// GetId returns GetCollectionCollection.Id, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetId() string { return v.CollectionFields.Id }
+
+// GetHandle returns GetCollectionCollection.Handle, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetHandle() string { return v.CollectionFields.Handle }
+
+// GetTitle returns GetCollectionCollection.Title, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetTitle() string { return v.CollectionFields.Title }
+
+// GetDescriptionHtml returns GetCollectionCollection.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetDescriptionHtml() string {
+	return v.CollectionFields.DescriptionHtml
+}
+
+// GetSortOrder returns GetCollectionCollection.SortOrder, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetSortOrder() CollectionSortOrder {
+	return v.CollectionFields.SortOrder
+}
+
+// GetTemplateSuffix returns GetCollectionCollection.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetTemplateSuffix() *string {
+	return v.CollectionFields.TemplateSuffix
+}
+
+// GetSeo returns GetCollectionCollection.Seo, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetSeo() CollectionFieldsSeoSEO { return v.CollectionFields.Seo }
+
+// GetSources returns GetCollectionCollection.Sources, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetSources() json.RawMessage { return v.CollectionFields.Sources }
+
+func (v *GetCollectionCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetCollectionCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetCollectionCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CollectionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetCollectionCollection struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+
+	Sources json.RawMessage `json:"sources"`
+}
+
+func (v *GetCollectionCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetCollectionCollection) __premarshalJSON() (*__premarshalGetCollectionCollection, error) {
+	var retval __premarshalGetCollectionCollection
+
+	retval.Id = v.CollectionFields.Id
+	retval.Handle = v.CollectionFields.Handle
+	retval.Title = v.CollectionFields.Title
+	retval.DescriptionHtml = v.CollectionFields.DescriptionHtml
+	retval.SortOrder = v.CollectionFields.SortOrder
+	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
+	retval.Seo = v.CollectionFields.Seo
+	retval.Sources = v.CollectionFields.Sources
+	return &retval, nil
+}
+
+// GetCollectionResponse is returned by GetCollection on success.
+type GetCollectionResponse struct {
+	// Retrieves a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) by its ID.
+	// A collection represents a grouping of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// that merchants can display and sell as a group in their [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	//
+	// Use the `collection` query when you need to:
+	//
+	// - Manage collection publishing across sales channels
+	// - Access collection metadata and SEO information
+	// - Work with collection conditions and product relationships
+	//
+	// A collection determines which products it includes through conditions that automatically include
+	// products that match, and through manual selections of individual products. Each collection has
+	// associated metadata including title, description, handle, image, and
+	// [metafields](https://shopify.dev/docs/apps/build/custom-data/metafields).
+	Collection *GetCollectionCollection `json:"collection"`
+}
+
+// GetCollection returns GetCollectionResponse.Collection, and is useful for accessing the field via an interface.
+func (v *GetCollectionResponse) GetCollection() *GetCollectionCollection { return v.Collection }
+
+// GetCollectionSelectionsCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type GetCollectionSelectionsCollection struct {
+	// The sources that provide products for this collection. Each source represents a way products are included in the collection, such as through conditions and rules.
+	Sources json.RawMessage `json:"sources"`
+}
+
+// GetSources returns GetCollectionSelectionsCollection.Sources, and is useful for accessing the field via an interface.
+func (v *GetCollectionSelectionsCollection) GetSources() json.RawMessage { return v.Sources }
+
+// GetCollectionSelectionsResponse is returned by GetCollectionSelections on success.
+type GetCollectionSelectionsResponse struct {
+	// Retrieves a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) by its ID.
+	// A collection represents a grouping of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// that merchants can display and sell as a group in their [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	//
+	// Use the `collection` query when you need to:
+	//
+	// - Manage collection publishing across sales channels
+	// - Access collection metadata and SEO information
+	// - Work with collection conditions and product relationships
+	//
+	// A collection determines which products it includes through conditions that automatically include
+	// products that match, and through manual selections of individual products. Each collection has
+	// associated metadata including title, description, handle, image, and
+	// [metafields](https://shopify.dev/docs/apps/build/custom-data/metafields).
+	Collection *GetCollectionSelectionsCollection `json:"collection"`
+}
+
+// GetCollection returns GetCollectionSelectionsResponse.Collection, and is useful for accessing the field via an interface.
+func (v *GetCollectionSelectionsResponse) GetCollection() *GetCollectionSelectionsCollection {
+	return v.Collection
+}
+
 // GetConsentPolicyByIDConsentPolicy includes the requested fields of the GraphQL type ConsentPolicy.
 // The GraphQL type's documentation follows.
 //
@@ -8143,6 +10724,25 @@ type GetWebPresenceResponse struct {
 // GetNode returns GetWebPresenceResponse.Node, and is useful for accessing the field via an interface.
 func (v *GetWebPresenceResponse) GetNode() json.RawMessage { return v.Node }
 
+// The input fields for an image.
+type ImageInput struct {
+	// A globally-unique ID.
+	Id *string `json:"id"`
+	// A word or phrase to share the nature or contents of an image.
+	AltText *string `json:"altText"`
+	// The URL of the image. May be a staged upload URL.
+	Src *string `json:"src"`
+}
+
+// GetId returns ImageInput.Id, and is useful for accessing the field via an interface.
+func (v *ImageInput) GetId() *string { return v.Id }
+
+// GetAltText returns ImageInput.AltText, and is useful for accessing the field via an interface.
+func (v *ImageInput) GetAltText() *string { return v.AltText }
+
+// GetSrc returns ImageInput.Src, and is useful for accessing the field via an interface.
+func (v *ImageInput) GetSrc() *string { return v.Src }
+
 // Answers the question if prices include duties and / or taxes.
 type InclusiveDutiesPricingStrategy string
 
@@ -8394,6 +10994,223 @@ type ListCheckoutAndAccountsConfigurationsResponse struct {
 // GetCheckoutAndAccountsConfigurations returns ListCheckoutAndAccountsConfigurationsResponse.CheckoutAndAccountsConfigurations, and is useful for accessing the field via an interface.
 func (v *ListCheckoutAndAccountsConfigurationsResponse) GetCheckoutAndAccountsConfigurations() *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection {
 	return v.CheckoutAndAccountsConfigurations
+}
+
+// ListCollectionsCollectionsCollectionConnection includes the requested fields of the GraphQL type CollectionConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Collections.
+type ListCollectionsCollectionsCollectionConnection struct {
+	// A list of nodes that are contained in CollectionEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListCollectionsCollectionsCollectionConnectionNodesCollection `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListCollectionsCollectionsCollectionConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListCollectionsCollectionsCollectionConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnection) GetNodes() []ListCollectionsCollectionsCollectionConnectionNodesCollection {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListCollectionsCollectionsCollectionConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnection) GetPageInfo() ListCollectionsCollectionsCollectionConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListCollectionsCollectionsCollectionConnectionNodesCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type ListCollectionsCollectionsCollectionConnectionNodesCollection struct {
+	CollectionFields `json:"-"`
+}
+
+// GetId returns ListCollectionsCollectionsCollectionConnectionNodesCollection.Id, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetId() string {
+	return v.CollectionFields.Id
+}
+
+// GetHandle returns ListCollectionsCollectionsCollectionConnectionNodesCollection.Handle, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetHandle() string {
+	return v.CollectionFields.Handle
+}
+
+// GetTitle returns ListCollectionsCollectionsCollectionConnectionNodesCollection.Title, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetTitle() string {
+	return v.CollectionFields.Title
+}
+
+// GetDescriptionHtml returns ListCollectionsCollectionsCollectionConnectionNodesCollection.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetDescriptionHtml() string {
+	return v.CollectionFields.DescriptionHtml
+}
+
+// GetSortOrder returns ListCollectionsCollectionsCollectionConnectionNodesCollection.SortOrder, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetSortOrder() CollectionSortOrder {
+	return v.CollectionFields.SortOrder
+}
+
+// GetTemplateSuffix returns ListCollectionsCollectionsCollectionConnectionNodesCollection.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetTemplateSuffix() *string {
+	return v.CollectionFields.TemplateSuffix
+}
+
+// GetSeo returns ListCollectionsCollectionsCollectionConnectionNodesCollection.Seo, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetSeo() CollectionFieldsSeoSEO {
+	return v.CollectionFields.Seo
+}
+
+// GetSources returns ListCollectionsCollectionsCollectionConnectionNodesCollection.Sources, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetSources() json.RawMessage {
+	return v.CollectionFields.Sources
+}
+
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListCollectionsCollectionsCollectionConnectionNodesCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListCollectionsCollectionsCollectionConnectionNodesCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CollectionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListCollectionsCollectionsCollectionConnectionNodesCollection struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+
+	Sources json.RawMessage `json:"sources"`
+}
+
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) __premarshalJSON() (*__premarshalListCollectionsCollectionsCollectionConnectionNodesCollection, error) {
+	var retval __premarshalListCollectionsCollectionsCollectionConnectionNodesCollection
+
+	retval.Id = v.CollectionFields.Id
+	retval.Handle = v.CollectionFields.Handle
+	retval.Title = v.CollectionFields.Title
+	retval.DescriptionHtml = v.CollectionFields.DescriptionHtml
+	retval.SortOrder = v.CollectionFields.SortOrder
+	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
+	retval.Seo = v.CollectionFields.Seo
+	retval.Sources = v.CollectionFields.Sources
+	return &retval, nil
+}
+
+// ListCollectionsCollectionsCollectionConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListCollectionsCollectionsCollectionConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListCollectionsCollectionsCollectionConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ListCollectionsCollectionsCollectionConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// ListCollectionsResponse is returned by ListCollections on success.
+type ListCollectionsResponse struct {
+	// Retrieves a list of [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection)
+	// in a store. Collections are groups of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// that merchants can organize for display in their [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	// For example, an athletics store might create different collections for running attire, shoes, and accessories.
+	//
+	// Use the `collections` query when you need to:
+	//
+	// - Build a browsing interface for a store's product groupings.
+	// - Create collection searching, sorting, and filtering experiences (for example, by title, type, or published status).
+	// - Sync collection data with external systems.
+	//
+	// The `collections` query supports [pagination](https://shopify.dev/docs/api/usage/pagination-graphql)
+	// for large catalogs and [saved searches](https://shopify.dev/docs/api/admin-graphql/latest/queries/collections#arguments-savedSearchId)
+	// for frequently used collection queries.
+	//
+	// The `collections` query returns collections with their associated metadata, including:
+	//
+	// - Basic collection information (title, description, handle, and type)
+	// - Collection image and SEO metadata
+	// - Product count and product relationships
+	// - Collection rules or conditions
+	// - Publishing status and publication details
+	// - Metafields and custom attributes
+	//
+	// Learn more about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+	Collections ListCollectionsCollectionsCollectionConnection `json:"collections"`
+}
+
+// GetCollections returns ListCollectionsResponse.Collections, and is useful for accessing the field via an interface.
+func (v *ListCollectionsResponse) GetCollections() ListCollectionsCollectionsCollectionConnection {
+	return v.Collections
 }
 
 // ListConsentPoliciesConsentPolicy includes the requested fields of the GraphQL type ConsentPolicy.
@@ -15984,6 +18801,218 @@ func (v *UpdateCheckoutAndAccountsConfigurationResponse) GetCheckoutAndAccountsC
 	return v.CheckoutAndAccountsConfigurationUpdate
 }
 
+// UpdateCollectionCollectionUpdateCollectionUpdatePayload includes the requested fields of the GraphQL type CollectionUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `collectionUpdate` mutation.
+type UpdateCollectionCollectionUpdateCollectionUpdatePayload struct {
+	// The updated collection.
+	Collection *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection `json:"collection"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetCollection returns UpdateCollectionCollectionUpdateCollectionUpdatePayload.Collection, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayload) GetCollection() *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection {
+	return v.Collection
+}
+
+// GetUserErrors returns UpdateCollectionCollectionUpdateCollectionUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayload) GetUserErrors() []UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection struct {
+	CollectionFields `json:"-"`
+}
+
+// GetId returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.Id, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetId() string {
+	return v.CollectionFields.Id
+}
+
+// GetHandle returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.Handle, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetHandle() string {
+	return v.CollectionFields.Handle
+}
+
+// GetTitle returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.Title, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetTitle() string {
+	return v.CollectionFields.Title
+}
+
+// GetDescriptionHtml returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetDescriptionHtml() string {
+	return v.CollectionFields.DescriptionHtml
+}
+
+// GetSortOrder returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.SortOrder, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetSortOrder() CollectionSortOrder {
+	return v.CollectionFields.SortOrder
+}
+
+// GetTemplateSuffix returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetTemplateSuffix() *string {
+	return v.CollectionFields.TemplateSuffix
+}
+
+// GetSeo returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.Seo, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetSeo() CollectionFieldsSeoSEO {
+	return v.CollectionFields.Seo
+}
+
+// GetSources returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.Sources, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetSources() json.RawMessage {
+	return v.CollectionFields.Sources
+}
+
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CollectionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+
+	Sources json.RawMessage `json:"sources"`
+}
+
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) __premarshalJSON() (*__premarshalUpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection, error) {
+	var retval __premarshalUpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection
+
+	retval.Id = v.CollectionFields.Id
+	retval.Handle = v.CollectionFields.Handle
+	retval.Title = v.CollectionFields.Title
+	retval.DescriptionHtml = v.CollectionFields.DescriptionHtml
+	retval.SortOrder = v.CollectionFields.SortOrder
+	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
+	retval.Seo = v.CollectionFields.Seo
+	retval.Sources = v.CollectionFields.Sources
+	return &retval, nil
+}
+
+// UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// UpdateCollectionResponse is returned by UpdateCollection on success.
+type UpdateCollectionResponse struct {
+	// Updates a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection),
+	// modifying its properties, products, or publication settings. Collections help organize
+	// [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) together
+	// in the [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	//
+	// Use the `collectionUpdate` mutation to programmatically modify collections in scenarios such as:
+	//
+	// - Updating collection details, like title, description, or image
+	// - Modifying SEO metadata for better search visibility
+	// - Changing which products are included in a collection by updating its rules, sources, or conditions
+	// - Updating custom data using [metafields](https://shopify.dev/docs/apps/build/custom-data/metafields)
+	//
+	// Collections can include products manually and can also include products automatically based on rules, sources,
+	// or conditions. When product membership is updated through rules, sources, or conditions, the operation might
+	// be processed asynchronously. In these cases, the mutation returns a [`job`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Job) object
+	// that you can use to track the progress of the update.
+	//
+	// To publish or unpublish collections to specific sales channels, use the dedicated
+	// [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish) and
+	// [`publishableUnpublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishableUnpublish) mutations.
+	//
+	// Learn more about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+	CollectionUpdate *UpdateCollectionCollectionUpdateCollectionUpdatePayload `json:"collectionUpdate"`
+}
+
+// GetCollectionUpdate returns UpdateCollectionResponse.CollectionUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionResponse) GetCollectionUpdate() *UpdateCollectionCollectionUpdateCollectionUpdatePayload {
+	return v.CollectionUpdate
+}
+
 // UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayload includes the requested fields of the GraphQL type ConsentPolicyUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -17789,6 +20818,14 @@ type __AddLocationInput struct {
 // GetInput returns __AddLocationInput.Input, and is useful for accessing the field via an interface.
 func (v *__AddLocationInput) GetInput() LocationAddInput { return v.Input }
 
+// __CreateCollectionInput is used internally by genqlient
+type __CreateCollectionInput struct {
+	Collection CollectionCreateInput `json:"collection"`
+}
+
+// GetCollection returns __CreateCollectionInput.Collection, and is useful for accessing the field via an interface.
+func (v *__CreateCollectionInput) GetCollection() CollectionCreateInput { return v.Collection }
+
 // __CreateMarketInput is used internally by genqlient
 type __CreateMarketInput struct {
 	Input MarketCreateInput `json:"input"`
@@ -17852,6 +20889,14 @@ func (v *__DeactivateLocationInput) GetLocationId() string { return v.LocationId
 
 // GetIdempotencyKey returns __DeactivateLocationInput.IdempotencyKey, and is useful for accessing the field via an interface.
 func (v *__DeactivateLocationInput) GetIdempotencyKey() string { return v.IdempotencyKey }
+
+// __DeleteCollectionInput is used internally by genqlient
+type __DeleteCollectionInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteCollectionInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteCollectionInput) GetId() string { return v.Id }
 
 // __DeleteLocationInput is used internally by genqlient
 type __DeleteLocationInput struct {
@@ -17966,6 +21011,34 @@ type __GetCheckoutAndAccountsConfigurationInput struct {
 
 // GetId returns __GetCheckoutAndAccountsConfigurationInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetCheckoutAndAccountsConfigurationInput) GetId() string { return v.Id }
+
+// __GetCollectionByHandleInput is used internally by genqlient
+type __GetCollectionByHandleInput struct {
+	Handle string `json:"handle"`
+}
+
+// GetHandle returns __GetCollectionByHandleInput.Handle, and is useful for accessing the field via an interface.
+func (v *__GetCollectionByHandleInput) GetHandle() string { return v.Handle }
+
+// __GetCollectionInput is used internally by genqlient
+type __GetCollectionInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetCollectionInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetCollectionInput) GetId() string { return v.Id }
+
+// __GetCollectionSelectionsInput is used internally by genqlient
+type __GetCollectionSelectionsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetCollectionSelectionsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetCollectionSelectionsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetCollectionSelectionsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetCollectionSelectionsInput) GetAfter() *string { return v.After }
 
 // __GetConsentPolicyByIDInput is used internally by genqlient
 type __GetConsentPolicyByIDInput struct {
@@ -18101,6 +21174,14 @@ func (v *__ListCheckoutAndAccountsConfigurationsInput) GetQuery() *string { retu
 // GetAfter returns __ListCheckoutAndAccountsConfigurationsInput.After, and is useful for accessing the field via an interface.
 func (v *__ListCheckoutAndAccountsConfigurationsInput) GetAfter() *string { return v.After }
 
+// __ListCollectionsInput is used internally by genqlient
+type __ListCollectionsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListCollectionsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListCollectionsInput) GetAfter() *string { return v.After }
+
 // __ListDeliveryProfilesInput is used internally by genqlient
 type __ListDeliveryProfilesInput struct {
 	After *string `json:"after"`
@@ -18206,6 +21287,14 @@ func (v *__UpdateCheckoutAndAccountsConfigurationInput) GetId() string { return 
 func (v *__UpdateCheckoutAndAccountsConfigurationInput) GetConfiguration() CheckoutAndAccountsConfigurationInput {
 	return v.Configuration
 }
+
+// __UpdateCollectionInput is used internally by genqlient
+type __UpdateCollectionInput struct {
+	Collection CollectionUpdateInput `json:"collection"`
+}
+
+// GetCollection returns __UpdateCollectionInput.Collection, and is useful for accessing the field via an interface.
+func (v *__UpdateCollectionInput) GetCollection() CollectionUpdateInput { return v.Collection }
 
 // __UpdateConsentPolicyInput is used internally by genqlient
 type __UpdateConsentPolicyInput struct {
@@ -18419,6 +21508,194 @@ func AddLocation(
 	}
 
 	data_ = &AddLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateCollection.
+const CreateCollection_Operation = `
+mutation CreateCollection ($collection: CollectionCreateInput!) {
+	collectionCreate(collection: $collection) {
+		collection {
+			... CollectionFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment CollectionFields on Collection {
+	id
+	handle
+	title
+	descriptionHtml
+	sortOrder
+	templateSuffix
+	seo {
+		title
+		description
+	}
+	sources {
+		__typename
+		id
+		app {
+			id
+		}
+		... on CollectionConditionsSource {
+			shareable
+			targetType
+			inclusion {
+				matchType
+				conditions {
+					__typename
+					id
+					... on CollectionSourceInclusionConditionMetafield {
+						definition {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionProductTag {
+						relation__ProductTag: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductTitle {
+						relation__ProductTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductType {
+						relation__ProductType: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductVendor {
+						relation__ProductVendor: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductStatus {
+						relation__ProductStatus: relation
+						values__ProductStatus: values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductCategory {
+						relation__ProductCategory: relation
+						values__ProductCategory: values {
+							category {
+								id
+							}
+							includeDescendants
+						}
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantTitle {
+						relation__VariantTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantPrice {
+						relation__VariantPrice: relation
+						value__VariantPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantCompareAtPrice {
+						relation__VariantCompareAtPrice: relation
+						value__VariantCompareAtPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantInventory {
+						relation__VariantInventory: relation
+						value__VariantInventory: value
+					}
+					... on CollectionSourceInclusionConditionVariantWeight {
+						relation__VariantWeight: relation
+						value__VariantWeight: value {
+							value
+							unit
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldBoolean {
+						relation__MetafieldBoolean: relation
+						value__MetafieldBoolean: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldInt {
+						relation__MetafieldInt: relation
+						value__MetafieldInt: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldDecimal {
+						relation__MetafieldDecimal: relation
+						value__MetafieldDecimal: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldString {
+						relation__MetafieldString: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldStringList {
+						relation__MetafieldStringList: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobject {
+						relation__MetafieldMetaobject: relation
+						value__MetafieldMetaobject: value {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobjectList {
+						relation__MetafieldMetaobjectList: relation
+						values__MetafieldMetaobjectList: values {
+							id
+						}
+						matchType
+					}
+				}
+				selections(first: 250) {
+					nodes {
+						product {
+							id
+						}
+						variantIds
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+// Omitted keys stay unchanged, so every optional field is omitempty; conditions are raw JSON in the input's own shape.
+func CreateCollection(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	collection CollectionCreateInput,
+) (data_ *CreateCollectionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateCollection",
+		Query:  CreateCollection_Operation,
+		Variables: &__CreateCollectionInput{
+			Collection: collection,
+		},
+	}
+
+	data_ = &CreateCollectionResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -18821,6 +22098,44 @@ func DeactivateLocation(
 	}
 
 	data_ = &DeactivateLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteCollection.
+const DeleteCollection_Operation = `
+mutation DeleteCollection ($id: ID!) {
+	collectionDelete(input: {id:$id}) {
+		deletedCollectionId
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DeleteCollection(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteCollectionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteCollection",
+		Query:  DeleteCollection_Operation,
+		Variables: &__DeleteCollectionInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteCollectionResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -20611,6 +23926,425 @@ func GetCheckoutAndAccountsConfiguration(
 	}
 
 	data_ = &GetCheckoutAndAccountsConfigurationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetCollection.
+const GetCollection_Operation = `
+query GetCollection ($id: ID!) {
+	collection(id: $id) {
+		... CollectionFields
+	}
+}
+fragment CollectionFields on Collection {
+	id
+	handle
+	title
+	descriptionHtml
+	sortOrder
+	templateSuffix
+	seo {
+		title
+		description
+	}
+	sources {
+		__typename
+		id
+		app {
+			id
+		}
+		... on CollectionConditionsSource {
+			shareable
+			targetType
+			inclusion {
+				matchType
+				conditions {
+					__typename
+					id
+					... on CollectionSourceInclusionConditionMetafield {
+						definition {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionProductTag {
+						relation__ProductTag: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductTitle {
+						relation__ProductTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductType {
+						relation__ProductType: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductVendor {
+						relation__ProductVendor: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductStatus {
+						relation__ProductStatus: relation
+						values__ProductStatus: values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductCategory {
+						relation__ProductCategory: relation
+						values__ProductCategory: values {
+							category {
+								id
+							}
+							includeDescendants
+						}
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantTitle {
+						relation__VariantTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantPrice {
+						relation__VariantPrice: relation
+						value__VariantPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantCompareAtPrice {
+						relation__VariantCompareAtPrice: relation
+						value__VariantCompareAtPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantInventory {
+						relation__VariantInventory: relation
+						value__VariantInventory: value
+					}
+					... on CollectionSourceInclusionConditionVariantWeight {
+						relation__VariantWeight: relation
+						value__VariantWeight: value {
+							value
+							unit
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldBoolean {
+						relation__MetafieldBoolean: relation
+						value__MetafieldBoolean: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldInt {
+						relation__MetafieldInt: relation
+						value__MetafieldInt: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldDecimal {
+						relation__MetafieldDecimal: relation
+						value__MetafieldDecimal: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldString {
+						relation__MetafieldString: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldStringList {
+						relation__MetafieldStringList: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobject {
+						relation__MetafieldMetaobject: relation
+						value__MetafieldMetaobject: value {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobjectList {
+						relation__MetafieldMetaobjectList: relation
+						values__MetafieldMetaobjectList: values {
+							id
+						}
+						matchType
+					}
+				}
+				selections(first: 250) {
+					nodes {
+						product {
+							id
+						}
+						variantIds
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+func GetCollection(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetCollectionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCollection",
+		Query:  GetCollection_Operation,
+		Variables: &__GetCollectionInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetCollectionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetCollectionByHandle.
+const GetCollectionByHandle_Operation = `
+query GetCollectionByHandle ($handle: String!) {
+	collectionByIdentifier(identifier: {handle:$handle}) {
+		... CollectionFields
+	}
+}
+fragment CollectionFields on Collection {
+	id
+	handle
+	title
+	descriptionHtml
+	sortOrder
+	templateSuffix
+	seo {
+		title
+		description
+	}
+	sources {
+		__typename
+		id
+		app {
+			id
+		}
+		... on CollectionConditionsSource {
+			shareable
+			targetType
+			inclusion {
+				matchType
+				conditions {
+					__typename
+					id
+					... on CollectionSourceInclusionConditionMetafield {
+						definition {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionProductTag {
+						relation__ProductTag: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductTitle {
+						relation__ProductTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductType {
+						relation__ProductType: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductVendor {
+						relation__ProductVendor: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductStatus {
+						relation__ProductStatus: relation
+						values__ProductStatus: values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductCategory {
+						relation__ProductCategory: relation
+						values__ProductCategory: values {
+							category {
+								id
+							}
+							includeDescendants
+						}
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantTitle {
+						relation__VariantTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantPrice {
+						relation__VariantPrice: relation
+						value__VariantPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantCompareAtPrice {
+						relation__VariantCompareAtPrice: relation
+						value__VariantCompareAtPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantInventory {
+						relation__VariantInventory: relation
+						value__VariantInventory: value
+					}
+					... on CollectionSourceInclusionConditionVariantWeight {
+						relation__VariantWeight: relation
+						value__VariantWeight: value {
+							value
+							unit
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldBoolean {
+						relation__MetafieldBoolean: relation
+						value__MetafieldBoolean: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldInt {
+						relation__MetafieldInt: relation
+						value__MetafieldInt: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldDecimal {
+						relation__MetafieldDecimal: relation
+						value__MetafieldDecimal: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldString {
+						relation__MetafieldString: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldStringList {
+						relation__MetafieldStringList: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobject {
+						relation__MetafieldMetaobject: relation
+						value__MetafieldMetaobject: value {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobjectList {
+						relation__MetafieldMetaobjectList: relation
+						values__MetafieldMetaobjectList: values {
+							id
+						}
+						matchType
+					}
+				}
+				selections(first: 250) {
+					nodes {
+						product {
+							id
+						}
+						variantIds
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+// collectionByHandle is deprecated, so this is the exact handle lookup.
+func GetCollectionByHandle(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	handle string,
+) (data_ *GetCollectionByHandleResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCollectionByHandle",
+		Query:  GetCollectionByHandle_Operation,
+		Variables: &__GetCollectionByHandleInput{
+			Handle: handle,
+		},
+	}
+
+	data_ = &GetCollectionByHandleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetCollectionSelections.
+const GetCollectionSelections_Operation = `
+query GetCollectionSelections ($id: ID!, $after: String) {
+	collection(id: $id) {
+		sources {
+			__typename
+			id
+			... on CollectionConditionsSource {
+				inclusion {
+					selections(first: 250, after: $after) {
+						nodes {
+							product {
+								id
+							}
+							variantIds
+						}
+						pageInfo {
+							hasNextPage
+							endCursor
+						}
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+// Pages selections after the first 250 that CollectionFields carries.
+func GetCollectionSelections(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetCollectionSelectionsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCollectionSelections",
+		Query:  GetCollectionSelections_Operation,
+		Variables: &__GetCollectionSelectionsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetCollectionSelectionsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -23011,6 +26745,194 @@ func ListCheckoutAndAccountsConfigurations(
 	return data_, err_
 }
 
+// The query executed by ListCollections.
+const ListCollections_Operation = `
+query ListCollections ($after: String) {
+	collections(first: 100, after: $after) {
+		nodes {
+			... CollectionFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment CollectionFields on Collection {
+	id
+	handle
+	title
+	descriptionHtml
+	sortOrder
+	templateSuffix
+	seo {
+		title
+		description
+	}
+	sources {
+		__typename
+		id
+		app {
+			id
+		}
+		... on CollectionConditionsSource {
+			shareable
+			targetType
+			inclusion {
+				matchType
+				conditions {
+					__typename
+					id
+					... on CollectionSourceInclusionConditionMetafield {
+						definition {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionProductTag {
+						relation__ProductTag: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductTitle {
+						relation__ProductTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductType {
+						relation__ProductType: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductVendor {
+						relation__ProductVendor: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductStatus {
+						relation__ProductStatus: relation
+						values__ProductStatus: values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductCategory {
+						relation__ProductCategory: relation
+						values__ProductCategory: values {
+							category {
+								id
+							}
+							includeDescendants
+						}
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantTitle {
+						relation__VariantTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantPrice {
+						relation__VariantPrice: relation
+						value__VariantPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantCompareAtPrice {
+						relation__VariantCompareAtPrice: relation
+						value__VariantCompareAtPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantInventory {
+						relation__VariantInventory: relation
+						value__VariantInventory: value
+					}
+					... on CollectionSourceInclusionConditionVariantWeight {
+						relation__VariantWeight: relation
+						value__VariantWeight: value {
+							value
+							unit
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldBoolean {
+						relation__MetafieldBoolean: relation
+						value__MetafieldBoolean: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldInt {
+						relation__MetafieldInt: relation
+						value__MetafieldInt: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldDecimal {
+						relation__MetafieldDecimal: relation
+						value__MetafieldDecimal: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldString {
+						relation__MetafieldString: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldStringList {
+						relation__MetafieldStringList: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobject {
+						relation__MetafieldMetaobject: relation
+						value__MetafieldMetaobject: value {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobjectList {
+						relation__MetafieldMetaobjectList: relation
+						values__MetafieldMetaobjectList: values {
+							id
+						}
+						matchType
+					}
+				}
+				selections(first: 250) {
+					nodes {
+						product {
+							id
+						}
+						variantIds
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+// Requested cost with sources and selections(first: 250) stays under the 1000-point limit at 100 collections.
+func ListCollections(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListCollectionsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListCollections",
+		Query:  ListCollections_Operation,
+		Variables: &__ListCollectionsInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListCollectionsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListConsentPolicies.
 const ListConsentPolicies_Operation = `
 query ListConsentPolicies {
@@ -25124,6 +29046,193 @@ func UpdateCheckoutAndAccountsConfiguration(
 	}
 
 	data_ = &UpdateCheckoutAndAccountsConfigurationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateCollection.
+const UpdateCollection_Operation = `
+mutation UpdateCollection ($collection: CollectionUpdateInput!) {
+	collectionUpdate(collection: $collection) {
+		collection {
+			... CollectionFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment CollectionFields on Collection {
+	id
+	handle
+	title
+	descriptionHtml
+	sortOrder
+	templateSuffix
+	seo {
+		title
+		description
+	}
+	sources {
+		__typename
+		id
+		app {
+			id
+		}
+		... on CollectionConditionsSource {
+			shareable
+			targetType
+			inclusion {
+				matchType
+				conditions {
+					__typename
+					id
+					... on CollectionSourceInclusionConditionMetafield {
+						definition {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionProductTag {
+						relation__ProductTag: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductTitle {
+						relation__ProductTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductType {
+						relation__ProductType: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductVendor {
+						relation__ProductVendor: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductStatus {
+						relation__ProductStatus: relation
+						values__ProductStatus: values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductCategory {
+						relation__ProductCategory: relation
+						values__ProductCategory: values {
+							category {
+								id
+							}
+							includeDescendants
+						}
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantTitle {
+						relation__VariantTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantPrice {
+						relation__VariantPrice: relation
+						value__VariantPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantCompareAtPrice {
+						relation__VariantCompareAtPrice: relation
+						value__VariantCompareAtPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantInventory {
+						relation__VariantInventory: relation
+						value__VariantInventory: value
+					}
+					... on CollectionSourceInclusionConditionVariantWeight {
+						relation__VariantWeight: relation
+						value__VariantWeight: value {
+							value
+							unit
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldBoolean {
+						relation__MetafieldBoolean: relation
+						value__MetafieldBoolean: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldInt {
+						relation__MetafieldInt: relation
+						value__MetafieldInt: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldDecimal {
+						relation__MetafieldDecimal: relation
+						value__MetafieldDecimal: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldString {
+						relation__MetafieldString: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldStringList {
+						relation__MetafieldStringList: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobject {
+						relation__MetafieldMetaobject: relation
+						value__MetafieldMetaobject: value {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobjectList {
+						relation__MetafieldMetaobjectList: relation
+						values__MetafieldMetaobjectList: values {
+							id
+						}
+						matchType
+					}
+				}
+				selections(first: 250) {
+					nodes {
+						product {
+							id
+						}
+						variantIds
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+func UpdateCollection(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	collection CollectionUpdateInput,
+) (data_ *UpdateCollectionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateCollection",
+		Query:  UpdateCollection_Operation,
+		Variables: &__UpdateCollectionInput{
+			Collection: collection,
+		},
+	}
+
+	data_ = &UpdateCollectionResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
