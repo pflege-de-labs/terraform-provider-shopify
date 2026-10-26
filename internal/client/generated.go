@@ -322,6 +322,87 @@ func (v *AddLocationResponse) GetLocationAdd() *AddLocationLocationAddLocationAd
 	return v.LocationAdd
 }
 
+// Possible error codes that can be returned by `ConsentPolicyError`.
+type ConsentPolicyErrorCode string
+
+const (
+	// Country code is required.
+	ConsentPolicyErrorCodeCountryCodeRequired ConsentPolicyErrorCode = "COUNTRY_CODE_REQUIRED"
+	// Region code is required for countries with existing regional policies.
+	ConsentPolicyErrorCodeRegionCodeRequired ConsentPolicyErrorCode = "REGION_CODE_REQUIRED"
+	// Region code must match the country code.
+	ConsentPolicyErrorCodeRegionCodeMustMatchCountryCode ConsentPolicyErrorCode = "REGION_CODE_MUST_MATCH_COUNTRY_CODE"
+	// Shopify's cookie banner must be disabled.
+	ConsentPolicyErrorCodeShopifyCookieBannerNotDisabled ConsentPolicyErrorCode = "SHOPIFY_COOKIE_BANNER_NOT_DISABLED"
+	// Unsupported consent policy.
+	ConsentPolicyErrorCodeUnsuportedConsentPolicy ConsentPolicyErrorCode = "UNSUPORTED_CONSENT_POLICY"
+)
+
+var AllConsentPolicyErrorCode = []ConsentPolicyErrorCode{
+	ConsentPolicyErrorCodeCountryCodeRequired,
+	ConsentPolicyErrorCodeRegionCodeRequired,
+	ConsentPolicyErrorCodeRegionCodeMustMatchCountryCode,
+	ConsentPolicyErrorCodeShopifyCookieBannerNotDisabled,
+	ConsentPolicyErrorCodeUnsuportedConsentPolicy,
+}
+
+// ConsentPolicyFields includes the GraphQL fields of ConsentPolicy requested by the fragment ConsentPolicyFields.
+// The GraphQL type's documentation follows.
+//
+// A consent policy describes the level of consent that the merchant requires from the user before actually
+// collecting and processing the data.
+type ConsentPolicyFields struct {
+	// The global ID of the consent policy. IDs prefixed with `SD-` are system default policies.
+	Id string `json:"id"`
+	// The `ISO 3166` country code for which the policy applies.
+	CountryCode *PrivacyCountryCode `json:"countryCode"`
+	// The `ISO 3166` region code for which the policy applies.
+	RegionCode *string `json:"regionCode"`
+	// Whether consent is required for the region.
+	ConsentRequired *bool `json:"consentRequired"`
+	// Whether data sale opt-out is required for the region.
+	DataSaleOptOutRequired *bool `json:"dataSaleOptOutRequired"`
+}
+
+// GetId returns ConsentPolicyFields.Id, and is useful for accessing the field via an interface.
+func (v *ConsentPolicyFields) GetId() string { return v.Id }
+
+// GetCountryCode returns ConsentPolicyFields.CountryCode, and is useful for accessing the field via an interface.
+func (v *ConsentPolicyFields) GetCountryCode() *PrivacyCountryCode { return v.CountryCode }
+
+// GetRegionCode returns ConsentPolicyFields.RegionCode, and is useful for accessing the field via an interface.
+func (v *ConsentPolicyFields) GetRegionCode() *string { return v.RegionCode }
+
+// GetConsentRequired returns ConsentPolicyFields.ConsentRequired, and is useful for accessing the field via an interface.
+func (v *ConsentPolicyFields) GetConsentRequired() *bool { return v.ConsentRequired }
+
+// GetDataSaleOptOutRequired returns ConsentPolicyFields.DataSaleOptOutRequired, and is useful for accessing the field via an interface.
+func (v *ConsentPolicyFields) GetDataSaleOptOutRequired() *bool { return v.DataSaleOptOutRequired }
+
+// The input fields for a consent policy to be updated or created.
+type ConsentPolicyInput struct {
+	// The `ISO 3166` country code for which the policy applies.
+	CountryCode *PrivacyCountryCode `json:"countryCode"`
+	// The `ISO 3166` region code for which the policy applies.
+	RegionCode *string `json:"regionCode,omitempty"`
+	// Whether consent is required for the region.
+	ConsentRequired *bool `json:"consentRequired,omitempty"`
+	// Whether data sale opt-out is required for the region.
+	DataSaleOptOutRequired *bool `json:"dataSaleOptOutRequired,omitempty"`
+}
+
+// GetCountryCode returns ConsentPolicyInput.CountryCode, and is useful for accessing the field via an interface.
+func (v *ConsentPolicyInput) GetCountryCode() *PrivacyCountryCode { return v.CountryCode }
+
+// GetRegionCode returns ConsentPolicyInput.RegionCode, and is useful for accessing the field via an interface.
+func (v *ConsentPolicyInput) GetRegionCode() *string { return v.RegionCode }
+
+// GetConsentRequired returns ConsentPolicyInput.ConsentRequired, and is useful for accessing the field via an interface.
+func (v *ConsentPolicyInput) GetConsentRequired() *bool { return v.ConsentRequired }
+
+// GetDataSaleOptOutRequired returns ConsentPolicyInput.DataSaleOptOutRequired, and is useful for accessing the field via an interface.
+func (v *ConsentPolicyInput) GetDataSaleOptOutRequired() *bool { return v.DataSaleOptOutRequired }
+
 // The code designating a country/region, which generally follows ISO 3166-1 alpha-2 guidelines.
 // If a territory doesn't have a country code value in the `CountryCode` enum, then it might be considered a subdivision
 // of another country. For example, the territories associated with Spain are represented by the country code `ES`,
@@ -4791,6 +4872,66 @@ func (v *DeliveryWeightConditionInput) GetCriteria() *WeightInput { return v.Cri
 // GetOperator returns DeliveryWeightConditionInput.Operator, and is useful for accessing the field via an interface.
 func (v *DeliveryWeightConditionInput) GetOperator() *DeliveryConditionOperator { return v.Operator }
 
+// DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayload includes the requested fields of the GraphQL type PrivacyFeaturesDisablePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `privacyFeaturesDisable` mutation.
+type DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayload struct {
+	// The privacy features that were disabled.
+	FeaturesDisabled []PrivacyFeaturesEnum `json:"featuresDisabled"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayloadUserErrorsPrivacyFeaturesDisableUserError `json:"userErrors"`
+}
+
+// GetFeaturesDisabled returns DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayload.FeaturesDisabled, and is useful for accessing the field via an interface.
+func (v *DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayload) GetFeaturesDisabled() []PrivacyFeaturesEnum {
+	return v.FeaturesDisabled
+}
+
+// GetUserErrors returns DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayload) GetUserErrors() []DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayloadUserErrorsPrivacyFeaturesDisableUserError {
+	return v.UserErrors
+}
+
+// DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayloadUserErrorsPrivacyFeaturesDisableUserError includes the requested fields of the GraphQL type PrivacyFeaturesDisableUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `PrivacyFeaturesDisable`.
+type DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayloadUserErrorsPrivacyFeaturesDisableUserError struct {
+	// The error code.
+	Code *PrivacyFeaturesDisableUserErrorCode `json:"code"`
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetCode returns DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayloadUserErrorsPrivacyFeaturesDisableUserError.Code, and is useful for accessing the field via an interface.
+func (v *DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayloadUserErrorsPrivacyFeaturesDisableUserError) GetCode() *PrivacyFeaturesDisableUserErrorCode {
+	return v.Code
+}
+
+// GetField returns DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayloadUserErrorsPrivacyFeaturesDisableUserError.Field, and is useful for accessing the field via an interface.
+func (v *DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayloadUserErrorsPrivacyFeaturesDisableUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayloadUserErrorsPrivacyFeaturesDisableUserError.Message, and is useful for accessing the field via an interface.
+func (v *DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayloadUserErrorsPrivacyFeaturesDisableUserError) GetMessage() string {
+	return v.Message
+}
+
+// DisablePrivacyFeaturesResponse is returned by DisablePrivacyFeatures on success.
+type DisablePrivacyFeaturesResponse struct {
+	// Disable a shop's privacy features.
+	PrivacyFeaturesDisable *DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayload `json:"privacyFeaturesDisable"`
+}
+
+// GetPrivacyFeaturesDisable returns DisablePrivacyFeaturesResponse.PrivacyFeaturesDisable, and is useful for accessing the field via an interface.
+func (v *DisablePrivacyFeaturesResponse) GetPrivacyFeaturesDisable() *DisablePrivacyFeaturesPrivacyFeaturesDisablePrivacyFeaturesDisablePayload {
+	return v.PrivacyFeaturesDisable
+}
+
 // DisableShopLocaleResponse is returned by DisableShopLocale on success.
 type DisableShopLocaleResponse struct {
 	// Deletes a locale for a shop. This also deletes all translations of this locale.
@@ -5261,6 +5402,204 @@ type FindLocationsResponse struct {
 // GetLocations returns FindLocationsResponse.Locations, and is useful for accessing the field via an interface.
 func (v *FindLocationsResponse) GetLocations() FindLocationsLocationsLocationConnection {
 	return v.Locations
+}
+
+// GetConsentPolicyByIDConsentPolicy includes the requested fields of the GraphQL type ConsentPolicy.
+// The GraphQL type's documentation follows.
+//
+// A consent policy describes the level of consent that the merchant requires from the user before actually
+// collecting and processing the data.
+type GetConsentPolicyByIDConsentPolicy struct {
+	ConsentPolicyFields `json:"-"`
+}
+
+// GetId returns GetConsentPolicyByIDConsentPolicy.Id, and is useful for accessing the field via an interface.
+func (v *GetConsentPolicyByIDConsentPolicy) GetId() string { return v.ConsentPolicyFields.Id }
+
+// GetCountryCode returns GetConsentPolicyByIDConsentPolicy.CountryCode, and is useful for accessing the field via an interface.
+func (v *GetConsentPolicyByIDConsentPolicy) GetCountryCode() *PrivacyCountryCode {
+	return v.ConsentPolicyFields.CountryCode
+}
+
+// GetRegionCode returns GetConsentPolicyByIDConsentPolicy.RegionCode, and is useful for accessing the field via an interface.
+func (v *GetConsentPolicyByIDConsentPolicy) GetRegionCode() *string {
+	return v.ConsentPolicyFields.RegionCode
+}
+
+// GetConsentRequired returns GetConsentPolicyByIDConsentPolicy.ConsentRequired, and is useful for accessing the field via an interface.
+func (v *GetConsentPolicyByIDConsentPolicy) GetConsentRequired() *bool {
+	return v.ConsentPolicyFields.ConsentRequired
+}
+
+// GetDataSaleOptOutRequired returns GetConsentPolicyByIDConsentPolicy.DataSaleOptOutRequired, and is useful for accessing the field via an interface.
+func (v *GetConsentPolicyByIDConsentPolicy) GetDataSaleOptOutRequired() *bool {
+	return v.ConsentPolicyFields.DataSaleOptOutRequired
+}
+
+func (v *GetConsentPolicyByIDConsentPolicy) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetConsentPolicyByIDConsentPolicy
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetConsentPolicyByIDConsentPolicy = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ConsentPolicyFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetConsentPolicyByIDConsentPolicy struct {
+	Id string `json:"id"`
+
+	CountryCode *PrivacyCountryCode `json:"countryCode"`
+
+	RegionCode *string `json:"regionCode"`
+
+	ConsentRequired *bool `json:"consentRequired"`
+
+	DataSaleOptOutRequired *bool `json:"dataSaleOptOutRequired"`
+}
+
+func (v *GetConsentPolicyByIDConsentPolicy) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetConsentPolicyByIDConsentPolicy) __premarshalJSON() (*__premarshalGetConsentPolicyByIDConsentPolicy, error) {
+	var retval __premarshalGetConsentPolicyByIDConsentPolicy
+
+	retval.Id = v.ConsentPolicyFields.Id
+	retval.CountryCode = v.ConsentPolicyFields.CountryCode
+	retval.RegionCode = v.ConsentPolicyFields.RegionCode
+	retval.ConsentRequired = v.ConsentPolicyFields.ConsentRequired
+	retval.DataSaleOptOutRequired = v.ConsentPolicyFields.DataSaleOptOutRequired
+	return &retval, nil
+}
+
+// GetConsentPolicyByIDResponse is returned by GetConsentPolicyByID on success.
+type GetConsentPolicyByIDResponse struct {
+	// Returns the customer privacy consent policies of a shop.
+	ConsentPolicy []GetConsentPolicyByIDConsentPolicy `json:"consentPolicy"`
+}
+
+// GetConsentPolicy returns GetConsentPolicyByIDResponse.ConsentPolicy, and is useful for accessing the field via an interface.
+func (v *GetConsentPolicyByIDResponse) GetConsentPolicy() []GetConsentPolicyByIDConsentPolicy {
+	return v.ConsentPolicy
+}
+
+// GetConsentPolicyByRegionConsentPolicy includes the requested fields of the GraphQL type ConsentPolicy.
+// The GraphQL type's documentation follows.
+//
+// A consent policy describes the level of consent that the merchant requires from the user before actually
+// collecting and processing the data.
+type GetConsentPolicyByRegionConsentPolicy struct {
+	ConsentPolicyFields `json:"-"`
+}
+
+// GetId returns GetConsentPolicyByRegionConsentPolicy.Id, and is useful for accessing the field via an interface.
+func (v *GetConsentPolicyByRegionConsentPolicy) GetId() string { return v.ConsentPolicyFields.Id }
+
+// GetCountryCode returns GetConsentPolicyByRegionConsentPolicy.CountryCode, and is useful for accessing the field via an interface.
+func (v *GetConsentPolicyByRegionConsentPolicy) GetCountryCode() *PrivacyCountryCode {
+	return v.ConsentPolicyFields.CountryCode
+}
+
+// GetRegionCode returns GetConsentPolicyByRegionConsentPolicy.RegionCode, and is useful for accessing the field via an interface.
+func (v *GetConsentPolicyByRegionConsentPolicy) GetRegionCode() *string {
+	return v.ConsentPolicyFields.RegionCode
+}
+
+// GetConsentRequired returns GetConsentPolicyByRegionConsentPolicy.ConsentRequired, and is useful for accessing the field via an interface.
+func (v *GetConsentPolicyByRegionConsentPolicy) GetConsentRequired() *bool {
+	return v.ConsentPolicyFields.ConsentRequired
+}
+
+// GetDataSaleOptOutRequired returns GetConsentPolicyByRegionConsentPolicy.DataSaleOptOutRequired, and is useful for accessing the field via an interface.
+func (v *GetConsentPolicyByRegionConsentPolicy) GetDataSaleOptOutRequired() *bool {
+	return v.ConsentPolicyFields.DataSaleOptOutRequired
+}
+
+func (v *GetConsentPolicyByRegionConsentPolicy) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetConsentPolicyByRegionConsentPolicy
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetConsentPolicyByRegionConsentPolicy = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ConsentPolicyFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetConsentPolicyByRegionConsentPolicy struct {
+	Id string `json:"id"`
+
+	CountryCode *PrivacyCountryCode `json:"countryCode"`
+
+	RegionCode *string `json:"regionCode"`
+
+	ConsentRequired *bool `json:"consentRequired"`
+
+	DataSaleOptOutRequired *bool `json:"dataSaleOptOutRequired"`
+}
+
+func (v *GetConsentPolicyByRegionConsentPolicy) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetConsentPolicyByRegionConsentPolicy) __premarshalJSON() (*__premarshalGetConsentPolicyByRegionConsentPolicy, error) {
+	var retval __premarshalGetConsentPolicyByRegionConsentPolicy
+
+	retval.Id = v.ConsentPolicyFields.Id
+	retval.CountryCode = v.ConsentPolicyFields.CountryCode
+	retval.RegionCode = v.ConsentPolicyFields.RegionCode
+	retval.ConsentRequired = v.ConsentPolicyFields.ConsentRequired
+	retval.DataSaleOptOutRequired = v.ConsentPolicyFields.DataSaleOptOutRequired
+	return &retval, nil
+}
+
+// GetConsentPolicyByRegionResponse is returned by GetConsentPolicyByRegion on success.
+type GetConsentPolicyByRegionResponse struct {
+	// Returns the customer privacy consent policies of a shop.
+	ConsentPolicy []GetConsentPolicyByRegionConsentPolicy `json:"consentPolicy"`
+}
+
+// GetConsentPolicy returns GetConsentPolicyByRegionResponse.ConsentPolicy, and is useful for accessing the field via an interface.
+func (v *GetConsentPolicyByRegionResponse) GetConsentPolicy() []GetConsentPolicyByRegionConsentPolicy {
+	return v.ConsentPolicy
 }
 
 // GetDeliveryProfileDeliveryProfile includes the requested fields of the GraphQL type DeliveryProfile.
@@ -6416,6 +6755,110 @@ func (v *GetMetaobjectDefinitionResponse) GetMetaobjectDefinition() *GetMetaobje
 	return v.MetaobjectDefinition
 }
 
+// GetPrivacySettingsPrivacySettings includes the requested fields of the GraphQL type PrivacySettings.
+// The GraphQL type's documentation follows.
+//
+// A shop's privacy settings.
+type GetPrivacySettingsPrivacySettings struct {
+	// Banner customizations for the 'cookie banner'.
+	Banner *GetPrivacySettingsPrivacySettingsBannerCookieBanner `json:"banner"`
+	// A shop's data sale opt out page (e.g. CCPA).
+	DataSaleOptOutPage *GetPrivacySettingsPrivacySettingsDataSaleOptOutPage `json:"dataSaleOptOutPage"`
+	// A shop's privacy policy settings.
+	PrivacyPolicy *GetPrivacySettingsPrivacySettingsPrivacyPolicy `json:"privacyPolicy"`
+}
+
+// GetBanner returns GetPrivacySettingsPrivacySettings.Banner, and is useful for accessing the field via an interface.
+func (v *GetPrivacySettingsPrivacySettings) GetBanner() *GetPrivacySettingsPrivacySettingsBannerCookieBanner {
+	return v.Banner
+}
+
+// GetDataSaleOptOutPage returns GetPrivacySettingsPrivacySettings.DataSaleOptOutPage, and is useful for accessing the field via an interface.
+func (v *GetPrivacySettingsPrivacySettings) GetDataSaleOptOutPage() *GetPrivacySettingsPrivacySettingsDataSaleOptOutPage {
+	return v.DataSaleOptOutPage
+}
+
+// GetPrivacyPolicy returns GetPrivacySettingsPrivacySettings.PrivacyPolicy, and is useful for accessing the field via an interface.
+func (v *GetPrivacySettingsPrivacySettings) GetPrivacyPolicy() *GetPrivacySettingsPrivacySettingsPrivacyPolicy {
+	return v.PrivacyPolicy
+}
+
+// GetPrivacySettingsPrivacySettingsBannerCookieBanner includes the requested fields of the GraphQL type CookieBanner.
+// The GraphQL type's documentation follows.
+//
+// A shop's banner settings.
+type GetPrivacySettingsPrivacySettingsBannerCookieBanner struct {
+	// Indicates if the banner is auto managed.
+	AutoManaged bool `json:"autoManaged"`
+	// Indicates if the banner is enabled.
+	Enabled bool `json:"enabled"`
+}
+
+// GetAutoManaged returns GetPrivacySettingsPrivacySettingsBannerCookieBanner.AutoManaged, and is useful for accessing the field via an interface.
+func (v *GetPrivacySettingsPrivacySettingsBannerCookieBanner) GetAutoManaged() bool {
+	return v.AutoManaged
+}
+
+// GetEnabled returns GetPrivacySettingsPrivacySettingsBannerCookieBanner.Enabled, and is useful for accessing the field via an interface.
+func (v *GetPrivacySettingsPrivacySettingsBannerCookieBanner) GetEnabled() bool { return v.Enabled }
+
+// GetPrivacySettingsPrivacySettingsDataSaleOptOutPage includes the requested fields of the GraphQL type DataSaleOptOutPage.
+// The GraphQL type's documentation follows.
+//
+// A shop's data sale opt out page.
+type GetPrivacySettingsPrivacySettingsDataSaleOptOutPage struct {
+	// If the data sale opt out page is auto managed.
+	AutoManaged bool `json:"autoManaged"`
+}
+
+// GetAutoManaged returns GetPrivacySettingsPrivacySettingsDataSaleOptOutPage.AutoManaged, and is useful for accessing the field via an interface.
+func (v *GetPrivacySettingsPrivacySettingsDataSaleOptOutPage) GetAutoManaged() bool {
+	return v.AutoManaged
+}
+
+// GetPrivacySettingsPrivacySettingsPrivacyPolicy includes the requested fields of the GraphQL type PrivacyPolicy.
+// The GraphQL type's documentation follows.
+//
+// A shop's privacy policy settings.
+type GetPrivacySettingsPrivacySettingsPrivacyPolicy struct {
+	// Whether the policy is auto managed.
+	AutoManaged bool `json:"autoManaged"`
+}
+
+// GetAutoManaged returns GetPrivacySettingsPrivacySettingsPrivacyPolicy.AutoManaged, and is useful for accessing the field via an interface.
+func (v *GetPrivacySettingsPrivacySettingsPrivacyPolicy) GetAutoManaged() bool { return v.AutoManaged }
+
+// GetPrivacySettingsResponse is returned by GetPrivacySettings on success.
+type GetPrivacySettingsResponse struct {
+	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
+	// business and store management settings for the shop.
+	Shop GetPrivacySettingsShop `json:"shop"`
+	// Privacy related settings for a shop.
+	PrivacySettings GetPrivacySettingsPrivacySettings `json:"privacySettings"`
+}
+
+// GetShop returns GetPrivacySettingsResponse.Shop, and is useful for accessing the field via an interface.
+func (v *GetPrivacySettingsResponse) GetShop() GetPrivacySettingsShop { return v.Shop }
+
+// GetPrivacySettings returns GetPrivacySettingsResponse.PrivacySettings, and is useful for accessing the field via an interface.
+func (v *GetPrivacySettingsResponse) GetPrivacySettings() GetPrivacySettingsPrivacySettings {
+	return v.PrivacySettings
+}
+
+// GetPrivacySettingsShop includes the requested fields of the GraphQL type Shop.
+// The GraphQL type's documentation follows.
+//
+// The central configuration and settings hub for a Shopify store. Access business information, operational preferences, feature availability, and store-wide settings that control how the shop operates.
+//
+// Includes core business details like the shop name, contact emails, billing address, and currency settings. The shop configuration determines customer account requirements, available sales channels, enabled features, payment settings, and policy documents. Also provides access to shop-level resources such as staff members, fulfillment services, navigation settings, and storefront access tokens.
+type GetPrivacySettingsShop struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns GetPrivacySettingsShop.Id, and is useful for accessing the field via an interface.
+func (v *GetPrivacySettingsShop) GetId() string { return v.Id }
+
 // GetShopResponse is returned by GetShop on success.
 type GetShopResponse struct {
 	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
@@ -6545,6 +6988,105 @@ var AllInclusiveTaxPricingStrategy = []InclusiveTaxPricingStrategy{
 	InclusiveTaxPricingStrategyAddTaxesAtCheckout,
 	InclusiveTaxPricingStrategyIncludesTaxesInPrice,
 	InclusiveTaxPricingStrategyIncludesTaxesInPriceBasedOnCountry,
+}
+
+// ListConsentPoliciesConsentPolicy includes the requested fields of the GraphQL type ConsentPolicy.
+// The GraphQL type's documentation follows.
+//
+// A consent policy describes the level of consent that the merchant requires from the user before actually
+// collecting and processing the data.
+type ListConsentPoliciesConsentPolicy struct {
+	ConsentPolicyFields `json:"-"`
+}
+
+// GetId returns ListConsentPoliciesConsentPolicy.Id, and is useful for accessing the field via an interface.
+func (v *ListConsentPoliciesConsentPolicy) GetId() string { return v.ConsentPolicyFields.Id }
+
+// GetCountryCode returns ListConsentPoliciesConsentPolicy.CountryCode, and is useful for accessing the field via an interface.
+func (v *ListConsentPoliciesConsentPolicy) GetCountryCode() *PrivacyCountryCode {
+	return v.ConsentPolicyFields.CountryCode
+}
+
+// GetRegionCode returns ListConsentPoliciesConsentPolicy.RegionCode, and is useful for accessing the field via an interface.
+func (v *ListConsentPoliciesConsentPolicy) GetRegionCode() *string {
+	return v.ConsentPolicyFields.RegionCode
+}
+
+// GetConsentRequired returns ListConsentPoliciesConsentPolicy.ConsentRequired, and is useful for accessing the field via an interface.
+func (v *ListConsentPoliciesConsentPolicy) GetConsentRequired() *bool {
+	return v.ConsentPolicyFields.ConsentRequired
+}
+
+// GetDataSaleOptOutRequired returns ListConsentPoliciesConsentPolicy.DataSaleOptOutRequired, and is useful for accessing the field via an interface.
+func (v *ListConsentPoliciesConsentPolicy) GetDataSaleOptOutRequired() *bool {
+	return v.ConsentPolicyFields.DataSaleOptOutRequired
+}
+
+func (v *ListConsentPoliciesConsentPolicy) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListConsentPoliciesConsentPolicy
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListConsentPoliciesConsentPolicy = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ConsentPolicyFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListConsentPoliciesConsentPolicy struct {
+	Id string `json:"id"`
+
+	CountryCode *PrivacyCountryCode `json:"countryCode"`
+
+	RegionCode *string `json:"regionCode"`
+
+	ConsentRequired *bool `json:"consentRequired"`
+
+	DataSaleOptOutRequired *bool `json:"dataSaleOptOutRequired"`
+}
+
+func (v *ListConsentPoliciesConsentPolicy) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListConsentPoliciesConsentPolicy) __premarshalJSON() (*__premarshalListConsentPoliciesConsentPolicy, error) {
+	var retval __premarshalListConsentPoliciesConsentPolicy
+
+	retval.Id = v.ConsentPolicyFields.Id
+	retval.CountryCode = v.ConsentPolicyFields.CountryCode
+	retval.RegionCode = v.ConsentPolicyFields.RegionCode
+	retval.ConsentRequired = v.ConsentPolicyFields.ConsentRequired
+	retval.DataSaleOptOutRequired = v.ConsentPolicyFields.DataSaleOptOutRequired
+	return &retval, nil
+}
+
+// ListConsentPoliciesResponse is returned by ListConsentPolicies on success.
+type ListConsentPoliciesResponse struct {
+	// Returns the customer privacy consent policies of a shop.
+	ConsentPolicy []ListConsentPoliciesConsentPolicy `json:"consentPolicy"`
+}
+
+// GetConsentPolicy returns ListConsentPoliciesResponse.ConsentPolicy, and is useful for accessing the field via an interface.
+func (v *ListConsentPoliciesResponse) GetConsentPolicy() []ListConsentPoliciesConsentPolicy {
+	return v.ConsentPolicy
 }
 
 // ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection includes the requested fields of the GraphQL type DeliveryProfileConnection.
@@ -10970,6 +11512,810 @@ func (v *MoneyInput) GetAmount() string { return v.Amount }
 // GetCurrencyCode returns MoneyInput.CurrencyCode, and is useful for accessing the field via an interface.
 func (v *MoneyInput) GetCurrencyCode() CurrencyCode { return v.CurrencyCode }
 
+// A country code from the `ISO 3166` standard. e.g. `CA` for Canada.
+type PrivacyCountryCode string
+
+const (
+	// The `ISO 3166` country code of `AN`.
+	PrivacyCountryCodeAn PrivacyCountryCode = "AN"
+	// The `ISO 3166` country code of `AC`.
+	PrivacyCountryCodeAc PrivacyCountryCode = "AC"
+	// The `ISO 3166` country code of `AD`.
+	PrivacyCountryCodeAd PrivacyCountryCode = "AD"
+	// The `ISO 3166` country code of `AE`.
+	PrivacyCountryCodeAe PrivacyCountryCode = "AE"
+	// The `ISO 3166` country code of `AF`.
+	PrivacyCountryCodeAf PrivacyCountryCode = "AF"
+	// The `ISO 3166` country code of `AG`.
+	PrivacyCountryCodeAg PrivacyCountryCode = "AG"
+	// The `ISO 3166` country code of `AI`.
+	PrivacyCountryCodeAi PrivacyCountryCode = "AI"
+	// The `ISO 3166` country code of `AL`.
+	PrivacyCountryCodeAl PrivacyCountryCode = "AL"
+	// The `ISO 3166` country code of `AM`.
+	PrivacyCountryCodeAm PrivacyCountryCode = "AM"
+	// The `ISO 3166` country code of `AO`.
+	PrivacyCountryCodeAo PrivacyCountryCode = "AO"
+	// The `ISO 3166` country code of `AQ`.
+	PrivacyCountryCodeAq PrivacyCountryCode = "AQ"
+	// The `ISO 3166` country code of `AR`.
+	PrivacyCountryCodeAr PrivacyCountryCode = "AR"
+	// The `ISO 3166` country code of `AS`.
+	PrivacyCountryCodeAs PrivacyCountryCode = "AS"
+	// The `ISO 3166` country code of `AT`.
+	PrivacyCountryCodeAt PrivacyCountryCode = "AT"
+	// The `ISO 3166` country code of `AU`.
+	PrivacyCountryCodeAu PrivacyCountryCode = "AU"
+	// The `ISO 3166` country code of `AW`.
+	PrivacyCountryCodeAw PrivacyCountryCode = "AW"
+	// The `ISO 3166` country code of `AX`.
+	PrivacyCountryCodeAx PrivacyCountryCode = "AX"
+	// The `ISO 3166` country code of `AZ`.
+	PrivacyCountryCodeAz PrivacyCountryCode = "AZ"
+	// The `ISO 3166` country code of `BA`.
+	PrivacyCountryCodeBa PrivacyCountryCode = "BA"
+	// The `ISO 3166` country code of `BB`.
+	PrivacyCountryCodeBb PrivacyCountryCode = "BB"
+	// The `ISO 3166` country code of `BD`.
+	PrivacyCountryCodeBd PrivacyCountryCode = "BD"
+	// The `ISO 3166` country code of `BE`.
+	PrivacyCountryCodeBe PrivacyCountryCode = "BE"
+	// The `ISO 3166` country code of `BF`.
+	PrivacyCountryCodeBf PrivacyCountryCode = "BF"
+	// The `ISO 3166` country code of `BG`.
+	PrivacyCountryCodeBg PrivacyCountryCode = "BG"
+	// The `ISO 3166` country code of `BH`.
+	PrivacyCountryCodeBh PrivacyCountryCode = "BH"
+	// The `ISO 3166` country code of `BI`.
+	PrivacyCountryCodeBi PrivacyCountryCode = "BI"
+	// The `ISO 3166` country code of `BJ`.
+	PrivacyCountryCodeBj PrivacyCountryCode = "BJ"
+	// The `ISO 3166` country code of `BL`.
+	PrivacyCountryCodeBl PrivacyCountryCode = "BL"
+	// The `ISO 3166` country code of `BM`.
+	PrivacyCountryCodeBm PrivacyCountryCode = "BM"
+	// The `ISO 3166` country code of `BN`.
+	PrivacyCountryCodeBn PrivacyCountryCode = "BN"
+	// The `ISO 3166` country code of `BO`.
+	PrivacyCountryCodeBo PrivacyCountryCode = "BO"
+	// The `ISO 3166` country code of `BQ`.
+	PrivacyCountryCodeBq PrivacyCountryCode = "BQ"
+	// The `ISO 3166` country code of `BR`.
+	PrivacyCountryCodeBr PrivacyCountryCode = "BR"
+	// The `ISO 3166` country code of `BS`.
+	PrivacyCountryCodeBs PrivacyCountryCode = "BS"
+	// The `ISO 3166` country code of `BT`.
+	PrivacyCountryCodeBt PrivacyCountryCode = "BT"
+	// The `ISO 3166` country code of `BV`.
+	PrivacyCountryCodeBv PrivacyCountryCode = "BV"
+	// The `ISO 3166` country code of `BW`.
+	PrivacyCountryCodeBw PrivacyCountryCode = "BW"
+	// The `ISO 3166` country code of `BY`.
+	PrivacyCountryCodeBy PrivacyCountryCode = "BY"
+	// The `ISO 3166` country code of `BZ`.
+	PrivacyCountryCodeBz PrivacyCountryCode = "BZ"
+	// The `ISO 3166` country code of `CA`.
+	PrivacyCountryCodeCa PrivacyCountryCode = "CA"
+	// The `ISO 3166` country code of `CC`.
+	PrivacyCountryCodeCc PrivacyCountryCode = "CC"
+	// The `ISO 3166` country code of `CD`.
+	PrivacyCountryCodeCd PrivacyCountryCode = "CD"
+	// The `ISO 3166` country code of `CF`.
+	PrivacyCountryCodeCf PrivacyCountryCode = "CF"
+	// The `ISO 3166` country code of `CG`.
+	PrivacyCountryCodeCg PrivacyCountryCode = "CG"
+	// The `ISO 3166` country code of `CH`.
+	PrivacyCountryCodeCh PrivacyCountryCode = "CH"
+	// The `ISO 3166` country code of `CI`.
+	PrivacyCountryCodeCi PrivacyCountryCode = "CI"
+	// The `ISO 3166` country code of `CK`.
+	PrivacyCountryCodeCk PrivacyCountryCode = "CK"
+	// The `ISO 3166` country code of `CL`.
+	PrivacyCountryCodeCl PrivacyCountryCode = "CL"
+	// The `ISO 3166` country code of `CM`.
+	PrivacyCountryCodeCm PrivacyCountryCode = "CM"
+	// The `ISO 3166` country code of `CN`.
+	PrivacyCountryCodeCn PrivacyCountryCode = "CN"
+	// The `ISO 3166` country code of `CO`.
+	PrivacyCountryCodeCo PrivacyCountryCode = "CO"
+	// The `ISO 3166` country code of `CR`.
+	PrivacyCountryCodeCr PrivacyCountryCode = "CR"
+	// The `ISO 3166` country code of `CU`.
+	PrivacyCountryCodeCu PrivacyCountryCode = "CU"
+	// The `ISO 3166` country code of `CV`.
+	PrivacyCountryCodeCv PrivacyCountryCode = "CV"
+	// The `ISO 3166` country code of `CW`.
+	PrivacyCountryCodeCw PrivacyCountryCode = "CW"
+	// The `ISO 3166` country code of `CX`.
+	PrivacyCountryCodeCx PrivacyCountryCode = "CX"
+	// The `ISO 3166` country code of `CY`.
+	PrivacyCountryCodeCy PrivacyCountryCode = "CY"
+	// The `ISO 3166` country code of `CZ`.
+	PrivacyCountryCodeCz PrivacyCountryCode = "CZ"
+	// The `ISO 3166` country code of `DE`.
+	PrivacyCountryCodeDe PrivacyCountryCode = "DE"
+	// The `ISO 3166` country code of `DJ`.
+	PrivacyCountryCodeDj PrivacyCountryCode = "DJ"
+	// The `ISO 3166` country code of `DK`.
+	PrivacyCountryCodeDk PrivacyCountryCode = "DK"
+	// The `ISO 3166` country code of `DM`.
+	PrivacyCountryCodeDm PrivacyCountryCode = "DM"
+	// The `ISO 3166` country code of `DO`.
+	PrivacyCountryCodeDo PrivacyCountryCode = "DO"
+	// The `ISO 3166` country code of `DZ`.
+	PrivacyCountryCodeDz PrivacyCountryCode = "DZ"
+	// The `ISO 3166` country code of `EC`.
+	PrivacyCountryCodeEc PrivacyCountryCode = "EC"
+	// The `ISO 3166` country code of `EE`.
+	PrivacyCountryCodeEe PrivacyCountryCode = "EE"
+	// The `ISO 3166` country code of `EG`.
+	PrivacyCountryCodeEg PrivacyCountryCode = "EG"
+	// The `ISO 3166` country code of `EH`.
+	PrivacyCountryCodeEh PrivacyCountryCode = "EH"
+	// The `ISO 3166` country code of `ER`.
+	PrivacyCountryCodeEr PrivacyCountryCode = "ER"
+	// The `ISO 3166` country code of `ES`.
+	PrivacyCountryCodeEs PrivacyCountryCode = "ES"
+	// The `ISO 3166` country code of `ET`.
+	PrivacyCountryCodeEt PrivacyCountryCode = "ET"
+	// The `ISO 3166` country code of `FI`.
+	PrivacyCountryCodeFi PrivacyCountryCode = "FI"
+	// The `ISO 3166` country code of `FJ`.
+	PrivacyCountryCodeFj PrivacyCountryCode = "FJ"
+	// The `ISO 3166` country code of `FK`.
+	PrivacyCountryCodeFk PrivacyCountryCode = "FK"
+	// The `ISO 3166` country code of `FM`.
+	PrivacyCountryCodeFm PrivacyCountryCode = "FM"
+	// The `ISO 3166` country code of `FO`.
+	PrivacyCountryCodeFo PrivacyCountryCode = "FO"
+	// The `ISO 3166` country code of `FR`.
+	PrivacyCountryCodeFr PrivacyCountryCode = "FR"
+	// The `ISO 3166` country code of `GA`.
+	PrivacyCountryCodeGa PrivacyCountryCode = "GA"
+	// The `ISO 3166` country code of `GB`.
+	PrivacyCountryCodeGb PrivacyCountryCode = "GB"
+	// The `ISO 3166` country code of `GD`.
+	PrivacyCountryCodeGd PrivacyCountryCode = "GD"
+	// The `ISO 3166` country code of `GE`.
+	PrivacyCountryCodeGe PrivacyCountryCode = "GE"
+	// The `ISO 3166` country code of `GF`.
+	PrivacyCountryCodeGf PrivacyCountryCode = "GF"
+	// The `ISO 3166` country code of `GG`.
+	PrivacyCountryCodeGg PrivacyCountryCode = "GG"
+	// The `ISO 3166` country code of `GH`.
+	PrivacyCountryCodeGh PrivacyCountryCode = "GH"
+	// The `ISO 3166` country code of `GI`.
+	PrivacyCountryCodeGi PrivacyCountryCode = "GI"
+	// The `ISO 3166` country code of `GL`.
+	PrivacyCountryCodeGl PrivacyCountryCode = "GL"
+	// The `ISO 3166` country code of `GM`.
+	PrivacyCountryCodeGm PrivacyCountryCode = "GM"
+	// The `ISO 3166` country code of `GN`.
+	PrivacyCountryCodeGn PrivacyCountryCode = "GN"
+	// The `ISO 3166` country code of `GP`.
+	PrivacyCountryCodeGp PrivacyCountryCode = "GP"
+	// The `ISO 3166` country code of `GQ`.
+	PrivacyCountryCodeGq PrivacyCountryCode = "GQ"
+	// The `ISO 3166` country code of `GR`.
+	PrivacyCountryCodeGr PrivacyCountryCode = "GR"
+	// The `ISO 3166` country code of `GS`.
+	PrivacyCountryCodeGs PrivacyCountryCode = "GS"
+	// The `ISO 3166` country code of `GT`.
+	PrivacyCountryCodeGt PrivacyCountryCode = "GT"
+	// The `ISO 3166` country code of `GU`.
+	PrivacyCountryCodeGu PrivacyCountryCode = "GU"
+	// The `ISO 3166` country code of `GW`.
+	PrivacyCountryCodeGw PrivacyCountryCode = "GW"
+	// The `ISO 3166` country code of `GY`.
+	PrivacyCountryCodeGy PrivacyCountryCode = "GY"
+	// The `ISO 3166` country code of `HK`.
+	PrivacyCountryCodeHk PrivacyCountryCode = "HK"
+	// The `ISO 3166` country code of `HM`.
+	PrivacyCountryCodeHm PrivacyCountryCode = "HM"
+	// The `ISO 3166` country code of `HN`.
+	PrivacyCountryCodeHn PrivacyCountryCode = "HN"
+	// The `ISO 3166` country code of `HR`.
+	PrivacyCountryCodeHr PrivacyCountryCode = "HR"
+	// The `ISO 3166` country code of `HT`.
+	PrivacyCountryCodeHt PrivacyCountryCode = "HT"
+	// The `ISO 3166` country code of `HU`.
+	PrivacyCountryCodeHu PrivacyCountryCode = "HU"
+	// The `ISO 3166` country code of `ID`.
+	PrivacyCountryCodeId PrivacyCountryCode = "ID"
+	// The `ISO 3166` country code of `IE`.
+	PrivacyCountryCodeIe PrivacyCountryCode = "IE"
+	// The `ISO 3166` country code of `IL`.
+	PrivacyCountryCodeIl PrivacyCountryCode = "IL"
+	// The `ISO 3166` country code of `IM`.
+	PrivacyCountryCodeIm PrivacyCountryCode = "IM"
+	// The `ISO 3166` country code of `IN`.
+	PrivacyCountryCodeIn PrivacyCountryCode = "IN"
+	// The `ISO 3166` country code of `IO`.
+	PrivacyCountryCodeIo PrivacyCountryCode = "IO"
+	// The `ISO 3166` country code of `IQ`.
+	PrivacyCountryCodeIq PrivacyCountryCode = "IQ"
+	// The `ISO 3166` country code of `IR`.
+	PrivacyCountryCodeIr PrivacyCountryCode = "IR"
+	// The `ISO 3166` country code of `IS`.
+	PrivacyCountryCodeIs PrivacyCountryCode = "IS"
+	// The `ISO 3166` country code of `IT`.
+	PrivacyCountryCodeIt PrivacyCountryCode = "IT"
+	// The `ISO 3166` country code of `JE`.
+	PrivacyCountryCodeJe PrivacyCountryCode = "JE"
+	// The `ISO 3166` country code of `JM`.
+	PrivacyCountryCodeJm PrivacyCountryCode = "JM"
+	// The `ISO 3166` country code of `JO`.
+	PrivacyCountryCodeJo PrivacyCountryCode = "JO"
+	// The `ISO 3166` country code of `JP`.
+	PrivacyCountryCodeJp PrivacyCountryCode = "JP"
+	// The `ISO 3166` country code of `KE`.
+	PrivacyCountryCodeKe PrivacyCountryCode = "KE"
+	// The `ISO 3166` country code of `KG`.
+	PrivacyCountryCodeKg PrivacyCountryCode = "KG"
+	// The `ISO 3166` country code of `KH`.
+	PrivacyCountryCodeKh PrivacyCountryCode = "KH"
+	// The `ISO 3166` country code of `KI`.
+	PrivacyCountryCodeKi PrivacyCountryCode = "KI"
+	// The `ISO 3166` country code of `KM`.
+	PrivacyCountryCodeKm PrivacyCountryCode = "KM"
+	// The `ISO 3166` country code of `KN`.
+	PrivacyCountryCodeKn PrivacyCountryCode = "KN"
+	// The `ISO 3166` country code of `KP`.
+	PrivacyCountryCodeKp PrivacyCountryCode = "KP"
+	// The `ISO 3166` country code of `KR`.
+	PrivacyCountryCodeKr PrivacyCountryCode = "KR"
+	// The `ISO 3166` country code of `KW`.
+	PrivacyCountryCodeKw PrivacyCountryCode = "KW"
+	// The `ISO 3166` country code of `KY`.
+	PrivacyCountryCodeKy PrivacyCountryCode = "KY"
+	// The `ISO 3166` country code of `KZ`.
+	PrivacyCountryCodeKz PrivacyCountryCode = "KZ"
+	// The `ISO 3166` country code of `LA`.
+	PrivacyCountryCodeLa PrivacyCountryCode = "LA"
+	// The `ISO 3166` country code of `LB`.
+	PrivacyCountryCodeLb PrivacyCountryCode = "LB"
+	// The `ISO 3166` country code of `LC`.
+	PrivacyCountryCodeLc PrivacyCountryCode = "LC"
+	// The `ISO 3166` country code of `LI`.
+	PrivacyCountryCodeLi PrivacyCountryCode = "LI"
+	// The `ISO 3166` country code of `LK`.
+	PrivacyCountryCodeLk PrivacyCountryCode = "LK"
+	// The `ISO 3166` country code of `LR`.
+	PrivacyCountryCodeLr PrivacyCountryCode = "LR"
+	// The `ISO 3166` country code of `LS`.
+	PrivacyCountryCodeLs PrivacyCountryCode = "LS"
+	// The `ISO 3166` country code of `LT`.
+	PrivacyCountryCodeLt PrivacyCountryCode = "LT"
+	// The `ISO 3166` country code of `LU`.
+	PrivacyCountryCodeLu PrivacyCountryCode = "LU"
+	// The `ISO 3166` country code of `LV`.
+	PrivacyCountryCodeLv PrivacyCountryCode = "LV"
+	// The `ISO 3166` country code of `LY`.
+	PrivacyCountryCodeLy PrivacyCountryCode = "LY"
+	// The `ISO 3166` country code of `MA`.
+	PrivacyCountryCodeMa PrivacyCountryCode = "MA"
+	// The `ISO 3166` country code of `MC`.
+	PrivacyCountryCodeMc PrivacyCountryCode = "MC"
+	// The `ISO 3166` country code of `MD`.
+	PrivacyCountryCodeMd PrivacyCountryCode = "MD"
+	// The `ISO 3166` country code of `ME`.
+	PrivacyCountryCodeMe PrivacyCountryCode = "ME"
+	// The `ISO 3166` country code of `MF`.
+	PrivacyCountryCodeMf PrivacyCountryCode = "MF"
+	// The `ISO 3166` country code of `MG`.
+	PrivacyCountryCodeMg PrivacyCountryCode = "MG"
+	// The `ISO 3166` country code of `MH`.
+	PrivacyCountryCodeMh PrivacyCountryCode = "MH"
+	// The `ISO 3166` country code of `MK`.
+	PrivacyCountryCodeMk PrivacyCountryCode = "MK"
+	// The `ISO 3166` country code of `ML`.
+	PrivacyCountryCodeMl PrivacyCountryCode = "ML"
+	// The `ISO 3166` country code of `MM`.
+	PrivacyCountryCodeMm PrivacyCountryCode = "MM"
+	// The `ISO 3166` country code of `MN`.
+	PrivacyCountryCodeMn PrivacyCountryCode = "MN"
+	// The `ISO 3166` country code of `MO`.
+	PrivacyCountryCodeMo PrivacyCountryCode = "MO"
+	// The `ISO 3166` country code of `MP`.
+	PrivacyCountryCodeMp PrivacyCountryCode = "MP"
+	// The `ISO 3166` country code of `MQ`.
+	PrivacyCountryCodeMq PrivacyCountryCode = "MQ"
+	// The `ISO 3166` country code of `MR`.
+	PrivacyCountryCodeMr PrivacyCountryCode = "MR"
+	// The `ISO 3166` country code of `MS`.
+	PrivacyCountryCodeMs PrivacyCountryCode = "MS"
+	// The `ISO 3166` country code of `MT`.
+	PrivacyCountryCodeMt PrivacyCountryCode = "MT"
+	// The `ISO 3166` country code of `MU`.
+	PrivacyCountryCodeMu PrivacyCountryCode = "MU"
+	// The `ISO 3166` country code of `MV`.
+	PrivacyCountryCodeMv PrivacyCountryCode = "MV"
+	// The `ISO 3166` country code of `MW`.
+	PrivacyCountryCodeMw PrivacyCountryCode = "MW"
+	// The `ISO 3166` country code of `MX`.
+	PrivacyCountryCodeMx PrivacyCountryCode = "MX"
+	// The `ISO 3166` country code of `MY`.
+	PrivacyCountryCodeMy PrivacyCountryCode = "MY"
+	// The `ISO 3166` country code of `MZ`.
+	PrivacyCountryCodeMz PrivacyCountryCode = "MZ"
+	// The `ISO 3166` country code of `NA`.
+	PrivacyCountryCodeNa PrivacyCountryCode = "NA"
+	// The `ISO 3166` country code of `NC`.
+	PrivacyCountryCodeNc PrivacyCountryCode = "NC"
+	// The `ISO 3166` country code of `NE`.
+	PrivacyCountryCodeNe PrivacyCountryCode = "NE"
+	// The `ISO 3166` country code of `NF`.
+	PrivacyCountryCodeNf PrivacyCountryCode = "NF"
+	// The `ISO 3166` country code of `NG`.
+	PrivacyCountryCodeNg PrivacyCountryCode = "NG"
+	// The `ISO 3166` country code of `NI`.
+	PrivacyCountryCodeNi PrivacyCountryCode = "NI"
+	// The `ISO 3166` country code of `NL`.
+	PrivacyCountryCodeNl PrivacyCountryCode = "NL"
+	// The `ISO 3166` country code of `NO`.
+	PrivacyCountryCodeNo PrivacyCountryCode = "NO"
+	// The `ISO 3166` country code of `NP`.
+	PrivacyCountryCodeNp PrivacyCountryCode = "NP"
+	// The `ISO 3166` country code of `NR`.
+	PrivacyCountryCodeNr PrivacyCountryCode = "NR"
+	// The `ISO 3166` country code of `NS`.
+	PrivacyCountryCodeNs PrivacyCountryCode = "NS"
+	// The `ISO 3166` country code of `NU`.
+	PrivacyCountryCodeNu PrivacyCountryCode = "NU"
+	// The `ISO 3166` country code of `NZ`.
+	PrivacyCountryCodeNz PrivacyCountryCode = "NZ"
+	// The `ISO 3166` country code of `OM`.
+	PrivacyCountryCodeOm PrivacyCountryCode = "OM"
+	// The `ISO 3166` country code of `PA`.
+	PrivacyCountryCodePa PrivacyCountryCode = "PA"
+	// The `ISO 3166` country code of `PE`.
+	PrivacyCountryCodePe PrivacyCountryCode = "PE"
+	// The `ISO 3166` country code of `PF`.
+	PrivacyCountryCodePf PrivacyCountryCode = "PF"
+	// The `ISO 3166` country code of `PG`.
+	PrivacyCountryCodePg PrivacyCountryCode = "PG"
+	// The `ISO 3166` country code of `PH`.
+	PrivacyCountryCodePh PrivacyCountryCode = "PH"
+	// The `ISO 3166` country code of `PK`.
+	PrivacyCountryCodePk PrivacyCountryCode = "PK"
+	// The `ISO 3166` country code of `PL`.
+	PrivacyCountryCodePl PrivacyCountryCode = "PL"
+	// The `ISO 3166` country code of `PM`.
+	PrivacyCountryCodePm PrivacyCountryCode = "PM"
+	// The `ISO 3166` country code of `PN`.
+	PrivacyCountryCodePn PrivacyCountryCode = "PN"
+	// The `ISO 3166` country code of `PR`.
+	PrivacyCountryCodePr PrivacyCountryCode = "PR"
+	// The `ISO 3166` country code of `PS`.
+	PrivacyCountryCodePs PrivacyCountryCode = "PS"
+	// The `ISO 3166` country code of `PT`.
+	PrivacyCountryCodePt PrivacyCountryCode = "PT"
+	// The `ISO 3166` country code of `PW`.
+	PrivacyCountryCodePw PrivacyCountryCode = "PW"
+	// The `ISO 3166` country code of `PY`.
+	PrivacyCountryCodePy PrivacyCountryCode = "PY"
+	// The `ISO 3166` country code of `QA`.
+	PrivacyCountryCodeQa PrivacyCountryCode = "QA"
+	// The `ISO 3166` country code of `RE`.
+	PrivacyCountryCodeRe PrivacyCountryCode = "RE"
+	// The `ISO 3166` country code of `RO`.
+	PrivacyCountryCodeRo PrivacyCountryCode = "RO"
+	// The `ISO 3166` country code of `RS`.
+	PrivacyCountryCodeRs PrivacyCountryCode = "RS"
+	// The `ISO 3166` country code of `RU`.
+	PrivacyCountryCodeRu PrivacyCountryCode = "RU"
+	// The `ISO 3166` country code of `RW`.
+	PrivacyCountryCodeRw PrivacyCountryCode = "RW"
+	// The `ISO 3166` country code of `SA`.
+	PrivacyCountryCodeSa PrivacyCountryCode = "SA"
+	// The `ISO 3166` country code of `SB`.
+	PrivacyCountryCodeSb PrivacyCountryCode = "SB"
+	// The `ISO 3166` country code of `SC`.
+	PrivacyCountryCodeSc PrivacyCountryCode = "SC"
+	// The `ISO 3166` country code of `SD`.
+	PrivacyCountryCodeSd PrivacyCountryCode = "SD"
+	// The `ISO 3166` country code of `SE`.
+	PrivacyCountryCodeSe PrivacyCountryCode = "SE"
+	// The `ISO 3166` country code of `SG`.
+	PrivacyCountryCodeSg PrivacyCountryCode = "SG"
+	// The `ISO 3166` country code of `SH`.
+	PrivacyCountryCodeSh PrivacyCountryCode = "SH"
+	// The `ISO 3166` country code of `SI`.
+	PrivacyCountryCodeSi PrivacyCountryCode = "SI"
+	// The `ISO 3166` country code of `SJ`.
+	PrivacyCountryCodeSj PrivacyCountryCode = "SJ"
+	// The `ISO 3166` country code of `SK`.
+	PrivacyCountryCodeSk PrivacyCountryCode = "SK"
+	// The `ISO 3166` country code of `SL`.
+	PrivacyCountryCodeSl PrivacyCountryCode = "SL"
+	// The `ISO 3166` country code of `SM`.
+	PrivacyCountryCodeSm PrivacyCountryCode = "SM"
+	// The `ISO 3166` country code of `SN`.
+	PrivacyCountryCodeSn PrivacyCountryCode = "SN"
+	// The `ISO 3166` country code of `SO`.
+	PrivacyCountryCodeSo PrivacyCountryCode = "SO"
+	// The `ISO 3166` country code of `SR`.
+	PrivacyCountryCodeSr PrivacyCountryCode = "SR"
+	// The `ISO 3166` country code of `SS`.
+	PrivacyCountryCodeSs PrivacyCountryCode = "SS"
+	// The `ISO 3166` country code of `ST`.
+	PrivacyCountryCodeSt PrivacyCountryCode = "ST"
+	// The `ISO 3166` country code of `SV`.
+	PrivacyCountryCodeSv PrivacyCountryCode = "SV"
+	// The `ISO 3166` country code of `SX`.
+	PrivacyCountryCodeSx PrivacyCountryCode = "SX"
+	// The `ISO 3166` country code of `SY`.
+	PrivacyCountryCodeSy PrivacyCountryCode = "SY"
+	// The `ISO 3166` country code of `SZ`.
+	PrivacyCountryCodeSz PrivacyCountryCode = "SZ"
+	// The `ISO 3166` country code of `TA`.
+	PrivacyCountryCodeTa PrivacyCountryCode = "TA"
+	// The `ISO 3166` country code of `TC`.
+	PrivacyCountryCodeTc PrivacyCountryCode = "TC"
+	// The `ISO 3166` country code of `TD`.
+	PrivacyCountryCodeTd PrivacyCountryCode = "TD"
+	// The `ISO 3166` country code of `TF`.
+	PrivacyCountryCodeTf PrivacyCountryCode = "TF"
+	// The `ISO 3166` country code of `TG`.
+	PrivacyCountryCodeTg PrivacyCountryCode = "TG"
+	// The `ISO 3166` country code of `TH`.
+	PrivacyCountryCodeTh PrivacyCountryCode = "TH"
+	// The `ISO 3166` country code of `TJ`.
+	PrivacyCountryCodeTj PrivacyCountryCode = "TJ"
+	// The `ISO 3166` country code of `TK`.
+	PrivacyCountryCodeTk PrivacyCountryCode = "TK"
+	// The `ISO 3166` country code of `TL`.
+	PrivacyCountryCodeTl PrivacyCountryCode = "TL"
+	// The `ISO 3166` country code of `TM`.
+	PrivacyCountryCodeTm PrivacyCountryCode = "TM"
+	// The `ISO 3166` country code of `TN`.
+	PrivacyCountryCodeTn PrivacyCountryCode = "TN"
+	// The `ISO 3166` country code of `TO`.
+	PrivacyCountryCodeTo PrivacyCountryCode = "TO"
+	// The `ISO 3166` country code of `TR`.
+	PrivacyCountryCodeTr PrivacyCountryCode = "TR"
+	// The `ISO 3166` country code of `TT`.
+	PrivacyCountryCodeTt PrivacyCountryCode = "TT"
+	// The `ISO 3166` country code of `TV`.
+	PrivacyCountryCodeTv PrivacyCountryCode = "TV"
+	// The `ISO 3166` country code of `TW`.
+	PrivacyCountryCodeTw PrivacyCountryCode = "TW"
+	// The `ISO 3166` country code of `TZ`.
+	PrivacyCountryCodeTz PrivacyCountryCode = "TZ"
+	// The `ISO 3166` country code of `UA`.
+	PrivacyCountryCodeUa PrivacyCountryCode = "UA"
+	// The `ISO 3166` country code of `UG`.
+	PrivacyCountryCodeUg PrivacyCountryCode = "UG"
+	// The `ISO 3166` country code of `UM`.
+	PrivacyCountryCodeUm PrivacyCountryCode = "UM"
+	// The `ISO 3166` country code of `US`.
+	PrivacyCountryCodeUs PrivacyCountryCode = "US"
+	// The `ISO 3166` country code of `UY`.
+	PrivacyCountryCodeUy PrivacyCountryCode = "UY"
+	// The `ISO 3166` country code of `UZ`.
+	PrivacyCountryCodeUz PrivacyCountryCode = "UZ"
+	// The `ISO 3166` country code of `VA`.
+	PrivacyCountryCodeVa PrivacyCountryCode = "VA"
+	// The `ISO 3166` country code of `VC`.
+	PrivacyCountryCodeVc PrivacyCountryCode = "VC"
+	// The `ISO 3166` country code of `VE`.
+	PrivacyCountryCodeVe PrivacyCountryCode = "VE"
+	// The `ISO 3166` country code of `VG`.
+	PrivacyCountryCodeVg PrivacyCountryCode = "VG"
+	// The `ISO 3166` country code of `VI`.
+	PrivacyCountryCodeVi PrivacyCountryCode = "VI"
+	// The `ISO 3166` country code of `VN`.
+	PrivacyCountryCodeVn PrivacyCountryCode = "VN"
+	// The `ISO 3166` country code of `VU`.
+	PrivacyCountryCodeVu PrivacyCountryCode = "VU"
+	// The `ISO 3166` country code of `WF`.
+	PrivacyCountryCodeWf PrivacyCountryCode = "WF"
+	// The `ISO 3166` country code of `WS`.
+	PrivacyCountryCodeWs PrivacyCountryCode = "WS"
+	// The `ISO 3166` country code of `XK`.
+	PrivacyCountryCodeXk PrivacyCountryCode = "XK"
+	// The `ISO 3166` country code of `YE`.
+	PrivacyCountryCodeYe PrivacyCountryCode = "YE"
+	// The `ISO 3166` country code of `YT`.
+	PrivacyCountryCodeYt PrivacyCountryCode = "YT"
+	// The `ISO 3166` country code of `ZA`.
+	PrivacyCountryCodeZa PrivacyCountryCode = "ZA"
+	// The `ISO 3166` country code of `ZM`.
+	PrivacyCountryCodeZm PrivacyCountryCode = "ZM"
+	// The `ISO 3166` country code of `ZW`.
+	PrivacyCountryCodeZw PrivacyCountryCode = "ZW"
+	// The `ISO 3166` country code of `XX`.
+	PrivacyCountryCodeXx PrivacyCountryCode = "XX"
+)
+
+var AllPrivacyCountryCode = []PrivacyCountryCode{
+	PrivacyCountryCodeAn,
+	PrivacyCountryCodeAc,
+	PrivacyCountryCodeAd,
+	PrivacyCountryCodeAe,
+	PrivacyCountryCodeAf,
+	PrivacyCountryCodeAg,
+	PrivacyCountryCodeAi,
+	PrivacyCountryCodeAl,
+	PrivacyCountryCodeAm,
+	PrivacyCountryCodeAo,
+	PrivacyCountryCodeAq,
+	PrivacyCountryCodeAr,
+	PrivacyCountryCodeAs,
+	PrivacyCountryCodeAt,
+	PrivacyCountryCodeAu,
+	PrivacyCountryCodeAw,
+	PrivacyCountryCodeAx,
+	PrivacyCountryCodeAz,
+	PrivacyCountryCodeBa,
+	PrivacyCountryCodeBb,
+	PrivacyCountryCodeBd,
+	PrivacyCountryCodeBe,
+	PrivacyCountryCodeBf,
+	PrivacyCountryCodeBg,
+	PrivacyCountryCodeBh,
+	PrivacyCountryCodeBi,
+	PrivacyCountryCodeBj,
+	PrivacyCountryCodeBl,
+	PrivacyCountryCodeBm,
+	PrivacyCountryCodeBn,
+	PrivacyCountryCodeBo,
+	PrivacyCountryCodeBq,
+	PrivacyCountryCodeBr,
+	PrivacyCountryCodeBs,
+	PrivacyCountryCodeBt,
+	PrivacyCountryCodeBv,
+	PrivacyCountryCodeBw,
+	PrivacyCountryCodeBy,
+	PrivacyCountryCodeBz,
+	PrivacyCountryCodeCa,
+	PrivacyCountryCodeCc,
+	PrivacyCountryCodeCd,
+	PrivacyCountryCodeCf,
+	PrivacyCountryCodeCg,
+	PrivacyCountryCodeCh,
+	PrivacyCountryCodeCi,
+	PrivacyCountryCodeCk,
+	PrivacyCountryCodeCl,
+	PrivacyCountryCodeCm,
+	PrivacyCountryCodeCn,
+	PrivacyCountryCodeCo,
+	PrivacyCountryCodeCr,
+	PrivacyCountryCodeCu,
+	PrivacyCountryCodeCv,
+	PrivacyCountryCodeCw,
+	PrivacyCountryCodeCx,
+	PrivacyCountryCodeCy,
+	PrivacyCountryCodeCz,
+	PrivacyCountryCodeDe,
+	PrivacyCountryCodeDj,
+	PrivacyCountryCodeDk,
+	PrivacyCountryCodeDm,
+	PrivacyCountryCodeDo,
+	PrivacyCountryCodeDz,
+	PrivacyCountryCodeEc,
+	PrivacyCountryCodeEe,
+	PrivacyCountryCodeEg,
+	PrivacyCountryCodeEh,
+	PrivacyCountryCodeEr,
+	PrivacyCountryCodeEs,
+	PrivacyCountryCodeEt,
+	PrivacyCountryCodeFi,
+	PrivacyCountryCodeFj,
+	PrivacyCountryCodeFk,
+	PrivacyCountryCodeFm,
+	PrivacyCountryCodeFo,
+	PrivacyCountryCodeFr,
+	PrivacyCountryCodeGa,
+	PrivacyCountryCodeGb,
+	PrivacyCountryCodeGd,
+	PrivacyCountryCodeGe,
+	PrivacyCountryCodeGf,
+	PrivacyCountryCodeGg,
+	PrivacyCountryCodeGh,
+	PrivacyCountryCodeGi,
+	PrivacyCountryCodeGl,
+	PrivacyCountryCodeGm,
+	PrivacyCountryCodeGn,
+	PrivacyCountryCodeGp,
+	PrivacyCountryCodeGq,
+	PrivacyCountryCodeGr,
+	PrivacyCountryCodeGs,
+	PrivacyCountryCodeGt,
+	PrivacyCountryCodeGu,
+	PrivacyCountryCodeGw,
+	PrivacyCountryCodeGy,
+	PrivacyCountryCodeHk,
+	PrivacyCountryCodeHm,
+	PrivacyCountryCodeHn,
+	PrivacyCountryCodeHr,
+	PrivacyCountryCodeHt,
+	PrivacyCountryCodeHu,
+	PrivacyCountryCodeId,
+	PrivacyCountryCodeIe,
+	PrivacyCountryCodeIl,
+	PrivacyCountryCodeIm,
+	PrivacyCountryCodeIn,
+	PrivacyCountryCodeIo,
+	PrivacyCountryCodeIq,
+	PrivacyCountryCodeIr,
+	PrivacyCountryCodeIs,
+	PrivacyCountryCodeIt,
+	PrivacyCountryCodeJe,
+	PrivacyCountryCodeJm,
+	PrivacyCountryCodeJo,
+	PrivacyCountryCodeJp,
+	PrivacyCountryCodeKe,
+	PrivacyCountryCodeKg,
+	PrivacyCountryCodeKh,
+	PrivacyCountryCodeKi,
+	PrivacyCountryCodeKm,
+	PrivacyCountryCodeKn,
+	PrivacyCountryCodeKp,
+	PrivacyCountryCodeKr,
+	PrivacyCountryCodeKw,
+	PrivacyCountryCodeKy,
+	PrivacyCountryCodeKz,
+	PrivacyCountryCodeLa,
+	PrivacyCountryCodeLb,
+	PrivacyCountryCodeLc,
+	PrivacyCountryCodeLi,
+	PrivacyCountryCodeLk,
+	PrivacyCountryCodeLr,
+	PrivacyCountryCodeLs,
+	PrivacyCountryCodeLt,
+	PrivacyCountryCodeLu,
+	PrivacyCountryCodeLv,
+	PrivacyCountryCodeLy,
+	PrivacyCountryCodeMa,
+	PrivacyCountryCodeMc,
+	PrivacyCountryCodeMd,
+	PrivacyCountryCodeMe,
+	PrivacyCountryCodeMf,
+	PrivacyCountryCodeMg,
+	PrivacyCountryCodeMh,
+	PrivacyCountryCodeMk,
+	PrivacyCountryCodeMl,
+	PrivacyCountryCodeMm,
+	PrivacyCountryCodeMn,
+	PrivacyCountryCodeMo,
+	PrivacyCountryCodeMp,
+	PrivacyCountryCodeMq,
+	PrivacyCountryCodeMr,
+	PrivacyCountryCodeMs,
+	PrivacyCountryCodeMt,
+	PrivacyCountryCodeMu,
+	PrivacyCountryCodeMv,
+	PrivacyCountryCodeMw,
+	PrivacyCountryCodeMx,
+	PrivacyCountryCodeMy,
+	PrivacyCountryCodeMz,
+	PrivacyCountryCodeNa,
+	PrivacyCountryCodeNc,
+	PrivacyCountryCodeNe,
+	PrivacyCountryCodeNf,
+	PrivacyCountryCodeNg,
+	PrivacyCountryCodeNi,
+	PrivacyCountryCodeNl,
+	PrivacyCountryCodeNo,
+	PrivacyCountryCodeNp,
+	PrivacyCountryCodeNr,
+	PrivacyCountryCodeNs,
+	PrivacyCountryCodeNu,
+	PrivacyCountryCodeNz,
+	PrivacyCountryCodeOm,
+	PrivacyCountryCodePa,
+	PrivacyCountryCodePe,
+	PrivacyCountryCodePf,
+	PrivacyCountryCodePg,
+	PrivacyCountryCodePh,
+	PrivacyCountryCodePk,
+	PrivacyCountryCodePl,
+	PrivacyCountryCodePm,
+	PrivacyCountryCodePn,
+	PrivacyCountryCodePr,
+	PrivacyCountryCodePs,
+	PrivacyCountryCodePt,
+	PrivacyCountryCodePw,
+	PrivacyCountryCodePy,
+	PrivacyCountryCodeQa,
+	PrivacyCountryCodeRe,
+	PrivacyCountryCodeRo,
+	PrivacyCountryCodeRs,
+	PrivacyCountryCodeRu,
+	PrivacyCountryCodeRw,
+	PrivacyCountryCodeSa,
+	PrivacyCountryCodeSb,
+	PrivacyCountryCodeSc,
+	PrivacyCountryCodeSd,
+	PrivacyCountryCodeSe,
+	PrivacyCountryCodeSg,
+	PrivacyCountryCodeSh,
+	PrivacyCountryCodeSi,
+	PrivacyCountryCodeSj,
+	PrivacyCountryCodeSk,
+	PrivacyCountryCodeSl,
+	PrivacyCountryCodeSm,
+	PrivacyCountryCodeSn,
+	PrivacyCountryCodeSo,
+	PrivacyCountryCodeSr,
+	PrivacyCountryCodeSs,
+	PrivacyCountryCodeSt,
+	PrivacyCountryCodeSv,
+	PrivacyCountryCodeSx,
+	PrivacyCountryCodeSy,
+	PrivacyCountryCodeSz,
+	PrivacyCountryCodeTa,
+	PrivacyCountryCodeTc,
+	PrivacyCountryCodeTd,
+	PrivacyCountryCodeTf,
+	PrivacyCountryCodeTg,
+	PrivacyCountryCodeTh,
+	PrivacyCountryCodeTj,
+	PrivacyCountryCodeTk,
+	PrivacyCountryCodeTl,
+	PrivacyCountryCodeTm,
+	PrivacyCountryCodeTn,
+	PrivacyCountryCodeTo,
+	PrivacyCountryCodeTr,
+	PrivacyCountryCodeTt,
+	PrivacyCountryCodeTv,
+	PrivacyCountryCodeTw,
+	PrivacyCountryCodeTz,
+	PrivacyCountryCodeUa,
+	PrivacyCountryCodeUg,
+	PrivacyCountryCodeUm,
+	PrivacyCountryCodeUs,
+	PrivacyCountryCodeUy,
+	PrivacyCountryCodeUz,
+	PrivacyCountryCodeVa,
+	PrivacyCountryCodeVc,
+	PrivacyCountryCodeVe,
+	PrivacyCountryCodeVg,
+	PrivacyCountryCodeVi,
+	PrivacyCountryCodeVn,
+	PrivacyCountryCodeVu,
+	PrivacyCountryCodeWf,
+	PrivacyCountryCodeWs,
+	PrivacyCountryCodeXk,
+	PrivacyCountryCodeYe,
+	PrivacyCountryCodeYt,
+	PrivacyCountryCodeZa,
+	PrivacyCountryCodeZm,
+	PrivacyCountryCodeZw,
+	PrivacyCountryCodeXx,
+}
+
+// Possible error codes that can be returned by `PrivacyFeaturesDisableUserError`.
+type PrivacyFeaturesDisableUserErrorCode string
+
+const (
+	// Failed to disable privacy features.
+	PrivacyFeaturesDisableUserErrorCodeFailed PrivacyFeaturesDisableUserErrorCode = "FAILED"
+)
+
+var AllPrivacyFeaturesDisableUserErrorCode = []PrivacyFeaturesDisableUserErrorCode{
+	PrivacyFeaturesDisableUserErrorCodeFailed,
+}
+
+// The input fields for a shop's privacy settings.
+type PrivacyFeaturesEnum string
+
+const (
+	// The cookie banner feature.
+	PrivacyFeaturesEnumCookieBanner PrivacyFeaturesEnum = "COOKIE_BANNER"
+	// The data sale opt out page feature.
+	PrivacyFeaturesEnumDataSaleOptOutPage PrivacyFeaturesEnum = "DATA_SALE_OPT_OUT_PAGE"
+	// The privacy policy feature.
+	PrivacyFeaturesEnumPrivacyPolicy PrivacyFeaturesEnum = "PRIVACY_POLICY"
+)
+
+var AllPrivacyFeaturesEnum = []PrivacyFeaturesEnum{
+	PrivacyFeaturesEnumCookieBanner,
+	PrivacyFeaturesEnumDataSaleOptOutPage,
+	PrivacyFeaturesEnumPrivacyPolicy,
+}
+
 // The input fields for creating a market's shipping configuration.
 type ShippingConfigurationCreateInput struct {
 	// Whether shipping is enabled for this market. When false, customers in this market won't see shipping options at checkout.
@@ -11146,6 +12492,156 @@ var AllShopPolicyType = []ShopPolicyType{
 	ShopPolicyTypeLegalNotice,
 	ShopPolicyTypeSubscriptionPolicy,
 	ShopPolicyTypeContactInformation,
+}
+
+// UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayload includes the requested fields of the GraphQL type ConsentPolicyUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `consentPolicyUpdate` mutation.
+type UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayload struct {
+	// All updated and created consent policies. The consent policies that haven't been modified as part of the mutation aren't returned.
+	UpdatedPolicies []UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy `json:"updatedPolicies"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUserErrorsConsentPolicyError `json:"userErrors"`
+}
+
+// GetUpdatedPolicies returns UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayload.UpdatedPolicies, and is useful for accessing the field via an interface.
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayload) GetUpdatedPolicies() []UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy {
+	return v.UpdatedPolicies
+}
+
+// GetUserErrors returns UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayload) GetUserErrors() []UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUserErrorsConsentPolicyError {
+	return v.UserErrors
+}
+
+// UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy includes the requested fields of the GraphQL type ConsentPolicy.
+// The GraphQL type's documentation follows.
+//
+// A consent policy describes the level of consent that the merchant requires from the user before actually
+// collecting and processing the data.
+type UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy struct {
+	ConsentPolicyFields `json:"-"`
+}
+
+// GetId returns UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy.Id, and is useful for accessing the field via an interface.
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy) GetId() string {
+	return v.ConsentPolicyFields.Id
+}
+
+// GetCountryCode returns UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy.CountryCode, and is useful for accessing the field via an interface.
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy) GetCountryCode() *PrivacyCountryCode {
+	return v.ConsentPolicyFields.CountryCode
+}
+
+// GetRegionCode returns UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy.RegionCode, and is useful for accessing the field via an interface.
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy) GetRegionCode() *string {
+	return v.ConsentPolicyFields.RegionCode
+}
+
+// GetConsentRequired returns UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy.ConsentRequired, and is useful for accessing the field via an interface.
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy) GetConsentRequired() *bool {
+	return v.ConsentPolicyFields.ConsentRequired
+}
+
+// GetDataSaleOptOutRequired returns UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy.DataSaleOptOutRequired, and is useful for accessing the field via an interface.
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy) GetDataSaleOptOutRequired() *bool {
+	return v.ConsentPolicyFields.DataSaleOptOutRequired
+}
+
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ConsentPolicyFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy struct {
+	Id string `json:"id"`
+
+	CountryCode *PrivacyCountryCode `json:"countryCode"`
+
+	RegionCode *string `json:"regionCode"`
+
+	ConsentRequired *bool `json:"consentRequired"`
+
+	DataSaleOptOutRequired *bool `json:"dataSaleOptOutRequired"`
+}
+
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy) __premarshalJSON() (*__premarshalUpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy, error) {
+	var retval __premarshalUpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUpdatedPoliciesConsentPolicy
+
+	retval.Id = v.ConsentPolicyFields.Id
+	retval.CountryCode = v.ConsentPolicyFields.CountryCode
+	retval.RegionCode = v.ConsentPolicyFields.RegionCode
+	retval.ConsentRequired = v.ConsentPolicyFields.ConsentRequired
+	retval.DataSaleOptOutRequired = v.ConsentPolicyFields.DataSaleOptOutRequired
+	return &retval, nil
+}
+
+// UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUserErrorsConsentPolicyError includes the requested fields of the GraphQL type ConsentPolicyError.
+// The GraphQL type's documentation follows.
+//
+// The errors encountered while performing mutations on consent policies.
+type UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUserErrorsConsentPolicyError struct {
+	// The error code.
+	Code *ConsentPolicyErrorCode `json:"code"`
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetCode returns UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUserErrorsConsentPolicyError.Code, and is useful for accessing the field via an interface.
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUserErrorsConsentPolicyError) GetCode() *ConsentPolicyErrorCode {
+	return v.Code
+}
+
+// GetField returns UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUserErrorsConsentPolicyError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUserErrorsConsentPolicyError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUserErrorsConsentPolicyError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayloadUserErrorsConsentPolicyError) GetMessage() string {
+	return v.Message
+}
+
+// UpdateConsentPolicyResponse is returned by UpdateConsentPolicy on success.
+type UpdateConsentPolicyResponse struct {
+	// Update or create consent policies in bulk.
+	ConsentPolicyUpdate *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayload `json:"consentPolicyUpdate"`
+}
+
+// GetConsentPolicyUpdate returns UpdateConsentPolicyResponse.ConsentPolicyUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateConsentPolicyResponse) GetConsentPolicyUpdate() *UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayload {
+	return v.ConsentPolicyUpdate
 }
 
 // UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayload includes the requested fields of the GraphQL type DeliveryProfileUpdatePayload.
@@ -12707,6 +14203,14 @@ type __DeleteWebPresenceInput struct {
 // GetId returns __DeleteWebPresenceInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteWebPresenceInput) GetId() string { return v.Id }
 
+// __DisablePrivacyFeaturesInput is used internally by genqlient
+type __DisablePrivacyFeaturesInput struct {
+	Features []PrivacyFeaturesEnum `json:"features"`
+}
+
+// GetFeatures returns __DisablePrivacyFeaturesInput.Features, and is useful for accessing the field via an interface.
+func (v *__DisablePrivacyFeaturesInput) GetFeatures() []PrivacyFeaturesEnum { return v.Features }
+
 // __DisableShopLocaleInput is used internally by genqlient
 type __DisableShopLocaleInput struct {
 	Locale string `json:"locale"`
@@ -12742,6 +14246,26 @@ type __FindLocationsInput struct {
 
 // GetQuery returns __FindLocationsInput.Query, and is useful for accessing the field via an interface.
 func (v *__FindLocationsInput) GetQuery() string { return v.Query }
+
+// __GetConsentPolicyByIDInput is used internally by genqlient
+type __GetConsentPolicyByIDInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetConsentPolicyByIDInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetConsentPolicyByIDInput) GetId() string { return v.Id }
+
+// __GetConsentPolicyByRegionInput is used internally by genqlient
+type __GetConsentPolicyByRegionInput struct {
+	CountryCode PrivacyCountryCode `json:"countryCode"`
+	RegionCode  *string            `json:"regionCode,omitempty"`
+}
+
+// GetCountryCode returns __GetConsentPolicyByRegionInput.CountryCode, and is useful for accessing the field via an interface.
+func (v *__GetConsentPolicyByRegionInput) GetCountryCode() PrivacyCountryCode { return v.CountryCode }
+
+// GetRegionCode returns __GetConsentPolicyByRegionInput.RegionCode, and is useful for accessing the field via an interface.
+func (v *__GetConsentPolicyByRegionInput) GetRegionCode() *string { return v.RegionCode }
 
 // __GetDeliveryProfileInput is used internally by genqlient
 type __GetDeliveryProfileInput struct {
@@ -12880,6 +14404,14 @@ type __ListWebPresencesInput struct {
 
 // GetAfter returns __ListWebPresencesInput.After, and is useful for accessing the field via an interface.
 func (v *__ListWebPresencesInput) GetAfter() *string { return v.After }
+
+// __UpdateConsentPolicyInput is used internally by genqlient
+type __UpdateConsentPolicyInput struct {
+	Policy ConsentPolicyInput `json:"policy"`
+}
+
+// GetPolicy returns __UpdateConsentPolicyInput.Policy, and is useful for accessing the field via an interface.
+func (v *__UpdateConsentPolicyInput) GetPolicy() ConsentPolicyInput { return v.Policy }
 
 // __UpdateDeliveryProfileInput is used internally by genqlient
 type __UpdateDeliveryProfileInput struct {
@@ -13729,6 +15261,46 @@ func DeleteWebPresence(
 	return data_, err_
 }
 
+// The mutation executed by DisablePrivacyFeatures.
+const DisablePrivacyFeatures_Operation = `
+mutation DisablePrivacyFeatures ($features: [PrivacyFeaturesEnum!]!) {
+	privacyFeaturesDisable(featuresToDisable: $features) {
+		featuresDisabled
+		userErrors {
+			code
+			field
+			message
+		}
+	}
+}
+`
+
+// One-way: the API has no mutation that turns a feature back on.
+func DisablePrivacyFeatures(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	features []PrivacyFeaturesEnum,
+) (data_ *DisablePrivacyFeaturesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DisablePrivacyFeatures",
+		Query:  DisablePrivacyFeatures_Operation,
+		Variables: &__DisablePrivacyFeaturesInput{
+			Features: features,
+		},
+	}
+
+	data_ = &DisablePrivacyFeaturesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by DisableShopLocale.
 const DisableShopLocale_Operation = `
 mutation DisableShopLocale ($locale: String!) {
@@ -13914,6 +15486,92 @@ func FindLocations(
 	}
 
 	data_ = &FindLocationsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetConsentPolicyByID.
+const GetConsentPolicyByID_Operation = `
+query GetConsentPolicyByID ($id: ID!) {
+	consentPolicy(id: $id) {
+		... ConsentPolicyFields
+	}
+}
+fragment ConsentPolicyFields on ConsentPolicy {
+	id
+	countryCode
+	regionCode
+	consentRequired
+	dataSaleOptOutRequired
+}
+`
+
+// `SD-` IDs return an empty list here.
+func GetConsentPolicyByID(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetConsentPolicyByIDResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetConsentPolicyByID",
+		Query:  GetConsentPolicyByID_Operation,
+		Variables: &__GetConsentPolicyByIDInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetConsentPolicyByIDResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetConsentPolicyByRegion.
+const GetConsentPolicyByRegion_Operation = `
+query GetConsentPolicyByRegion ($countryCode: PrivacyCountryCode!, $regionCode: String) {
+	consentPolicy(countryCode: $countryCode, regionCode: $regionCode) {
+		... ConsentPolicyFields
+	}
+}
+fragment ConsentPolicyFields on ConsentPolicy {
+	id
+	countryCode
+	regionCode
+	consentRequired
+	dataSaleOptOutRequired
+}
+`
+
+// Without regionCode this returns only the country-level row.
+func GetConsentPolicyByRegion(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	countryCode PrivacyCountryCode,
+	regionCode *string,
+) (data_ *GetConsentPolicyByRegionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetConsentPolicyByRegion",
+		Query:  GetConsentPolicyByRegion_Operation,
+		Variables: &__GetConsentPolicyByRegionInput{
+			CountryCode: countryCode,
+			RegionCode:  regionCode,
+		},
+	}
+
+	data_ = &GetConsentPolicyByRegionResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -14470,6 +16128,48 @@ func GetMetaobjectDefinitionByType(
 	return data_, err_
 }
 
+// The query executed by GetPrivacySettings.
+const GetPrivacySettings_Operation = `
+query GetPrivacySettings {
+	shop {
+		id
+	}
+	privacySettings {
+		banner {
+			autoManaged
+			enabled
+		}
+		dataSaleOptOutPage {
+			autoManaged
+		}
+		privacyPolicy {
+			autoManaged
+		}
+	}
+}
+`
+
+func GetPrivacySettings(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *GetPrivacySettingsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetPrivacySettings",
+		Query:  GetPrivacySettings_Operation,
+	}
+
+	data_ = &GetPrivacySettingsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetShop.
 const GetShop_Operation = `
 query GetShop {
@@ -14556,6 +16256,44 @@ func GetWebPresence(
 	}
 
 	data_ = &GetWebPresenceResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListConsentPolicies.
+const ListConsentPolicies_Operation = `
+query ListConsentPolicies {
+	consentPolicy {
+		... ConsentPolicyFields
+	}
+}
+fragment ConsentPolicyFields on ConsentPolicy {
+	id
+	countryCode
+	regionCode
+	consentRequired
+	dataSaleOptOutRequired
+}
+`
+
+// Every country and region, 319 rows on the dev store; IDs prefixed `SD-` are untouched system defaults.
+func ListConsentPolicies(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *ListConsentPoliciesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListConsentPolicies",
+		Query:  ListConsentPolicies_Operation,
+	}
+
+	data_ = &ListConsentPoliciesResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -15075,6 +16813,55 @@ func ListWebPresences(
 	}
 
 	data_ = &ListWebPresencesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateConsentPolicy.
+const UpdateConsentPolicy_Operation = `
+mutation UpdateConsentPolicy ($policy: ConsentPolicyInput!) {
+	consentPolicyUpdate(consentPolicies: [$policy]) {
+		updatedPolicies {
+			... ConsentPolicyFields
+		}
+		userErrors {
+			code
+			field
+			message
+		}
+	}
+}
+fragment ConsentPolicyFields on ConsentPolicy {
+	id
+	countryCode
+	regionCode
+	consentRequired
+	dataSaleOptOutRequired
+}
+`
+
+// Upserts by country and region. Unset booleans are omitted so they stay unmanaged.
+func UpdateConsentPolicy(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	policy ConsentPolicyInput,
+) (data_ *UpdateConsentPolicyResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateConsentPolicy",
+		Query:  UpdateConsentPolicy_Operation,
+		Variables: &__UpdateConsentPolicyInput{
+			Policy: policy,
+		},
+	}
+
+	data_ = &UpdateConsentPolicyResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

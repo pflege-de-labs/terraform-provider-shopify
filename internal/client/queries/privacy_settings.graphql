@@ -1,0 +1,85 @@
+query GetPrivacySettings {
+  shop {
+    id
+  }
+  privacySettings {
+    banner {
+      autoManaged
+      enabled
+    }
+    dataSaleOptOutPage {
+      autoManaged
+    }
+    privacyPolicy {
+      autoManaged
+    }
+  }
+}
+
+# One-way: the API has no mutation that turns a feature back on.
+mutation DisablePrivacyFeatures(
+  $features: [PrivacyFeaturesEnum!]!
+) {
+  privacyFeaturesDisable(featuresToDisable: $features) {
+    featuresDisabled
+    userErrors {
+      code
+      field
+      message
+    }
+  }
+}
+
+fragment ConsentPolicyFields on ConsentPolicy {
+  id
+  countryCode
+  regionCode
+  consentRequired
+  dataSaleOptOutRequired
+}
+
+# Every country and region, 319 rows on the dev store; IDs prefixed `SD-` are untouched system defaults.
+query ListConsentPolicies {
+  consentPolicy {
+    ...ConsentPolicyFields
+  }
+}
+
+# `SD-` IDs return an empty list here.
+query GetConsentPolicyByID(
+  $id: ID!
+) {
+  consentPolicy(id: $id) {
+    ...ConsentPolicyFields
+  }
+}
+
+# Without regionCode this returns only the country-level row.
+query GetConsentPolicyByRegion(
+  $countryCode: PrivacyCountryCode!
+  # @genqlient(omitempty: true)
+  $regionCode: String
+) {
+  consentPolicy(countryCode: $countryCode, regionCode: $regionCode) {
+    ...ConsentPolicyFields
+  }
+}
+
+# Upserts by country and region. Unset booleans are omitted so they stay unmanaged.
+# @genqlient(for: "ConsentPolicyInput.regionCode", omitempty: true)
+# @genqlient(for: "ConsentPolicyInput.consentRequired", omitempty: true)
+# @genqlient(for: "ConsentPolicyInput.dataSaleOptOutRequired", omitempty: true)
+mutation UpdateConsentPolicy(
+  $policy: ConsentPolicyInput!
+) {
+  consentPolicyUpdate(consentPolicies: [$policy]) {
+    updatedPolicies {
+      ...ConsentPolicyFields
+    }
+    userErrors {
+      code
+      field
+      message
+    }
+  }
+}
