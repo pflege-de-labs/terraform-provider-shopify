@@ -138,3 +138,9 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 11: complete (commits 3f537c1..761ceb7, review clean)
 - Step 10 complete.
 - Ruling S11-1: step 11 design (catalogs resource + publication data source) runs as one design-only dispatch (opus), controller reviews before implementation — catalogs have three subtypes (market, app, company location) and link to publications and price lists, which needs real design — costs one more dispatch.
+- Step 11: branch feat/phase2-11-catalogs from step 10 @ e9c0053; design dispatch running (opus).
+- Step 11 design: dd25a6e..b363080 (§9i shopify_catalog, §9j shopify_publication data source), report step11-design-report.md. Dev store restored (probe catalogs, publications, price lists, market removed).
+- Ruling S11-2: `shopify_catalog` (Task 12) goes on the roadmap with its §9i design kept — discovery's catalogs are all channel app catalogs (excluded by D3) and market catalogs are 0 on staging/production, so D5's "likely defaults" premise doesn't hold and D6 applies — costs a later task if the user wants catalogs now (user informed, reversible).
+- Ruling S11-3: `shopify_publication` keys on the deprecated `Publication.name` — publications have no handle and `Catalog.title` differs per store; a later API removal surfaces as a compile error — costs a migration when the field goes.
+- Task 12: deferred to roadmap (S11-2).
+- Task 13 (publication data source): dispatched (model sonnet)
