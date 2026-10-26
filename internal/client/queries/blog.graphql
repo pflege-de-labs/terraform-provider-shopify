@@ -1,0 +1,139 @@
+fragment BlogFields on Blog {
+  id
+  handle
+  title
+  commentPolicy
+  templateSuffix
+}
+
+query GetBlog(
+  $id: ID!
+) {
+  blog(id: $id) {
+    ...BlogFields
+  }
+}
+
+# There is no blogByHandle, so this is a search; the caller checks the handle exactly.
+query FindBlogs(
+  $query: String!
+) {
+  blogs(first: 25, query: $query) {
+    nodes {
+      ...BlogFields
+    }
+  }
+}
+
+# Only the Pattern B guard needs the count.
+query GetBlogArticlesCount(
+  $id: ID!
+) {
+  blog(id: $id) {
+    articlesCount {
+      count
+    }
+  }
+}
+
+query ListBlogs(
+  $after: String
+) {
+  blogs(first: 250, after: $after) {
+    nodes {
+      ...BlogFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# metafields is never sent: metafield values are a roadmap type.
+# @genqlient(for: "BlogCreateInput.handle", omitempty: true)
+# @genqlient(for: "BlogCreateInput.commentPolicy", omitempty: true)
+# @genqlient(for: "BlogCreateInput.templateSuffix", omitempty: true)
+# @genqlient(for: "BlogCreateInput.metafields", omitempty: true)
+mutation CreateBlog(
+  $blog: BlogCreateInput!
+) {
+  blogCreate(blog: $blog) {
+    blog {
+      ...BlogFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# redirectNewHandle and redirectArticles are never sent: URL redirects are a roadmap type.
+# @genqlient(for: "BlogUpdateInput.handle", omitempty: true)
+# @genqlient(for: "BlogUpdateInput.title", omitempty: true)
+# @genqlient(for: "BlogUpdateInput.commentPolicy", omitempty: true)
+# @genqlient(for: "BlogUpdateInput.templateSuffix", omitempty: true)
+# @genqlient(for: "BlogUpdateInput.metafields", omitempty: true)
+# @genqlient(for: "BlogUpdateInput.redirectNewHandle", omitempty: true)
+# @genqlient(for: "BlogUpdateInput.redirectArticles", omitempty: true)
+mutation UpdateBlog(
+  $id: ID!
+  $blog: BlogUpdateInput!
+) {
+  blogUpdate(id: $id, blog: $blog) {
+    blog {
+      ...BlogFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeleteBlog(
+  $id: ID!
+) {
+  blogDelete(id: $id) {
+    deletedBlogId
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+# Only the acceptance tests call this, to give a blog an article for the Pattern B step.
+# @genqlient(for: "ArticleCreateInput.handle", omitempty: true)
+# @genqlient(for: "ArticleCreateInput.body", omitempty: true)
+# @genqlient(for: "ArticleCreateInput.summary", omitempty: true)
+# @genqlient(for: "ArticleCreateInput.isPublished", omitempty: true)
+# @genqlient(for: "ArticleCreateInput.publishDate", omitempty: true)
+# @genqlient(for: "ArticleCreateInput.templateSuffix", omitempty: true)
+# @genqlient(for: "ArticleCreateInput.metafields", omitempty: true)
+# @genqlient(for: "ArticleCreateInput.tags", omitempty: true)
+# @genqlient(for: "ArticleCreateInput.image", omitempty: true)
+# @genqlient(for: "AuthorInput.userId", omitempty: true)
+mutation CreateArticle(
+  $article: ArticleCreateInput!
+) {
+  articleCreate(article: $article) {
+    article {
+      id
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+query GetArticle(
+  $id: ID!
+) {
+  article(id: $id) {
+    id
+  }
+}

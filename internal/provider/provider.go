@@ -27,6 +27,7 @@ import (
 	metaobjectdefinitionds "github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/metaobjectdefinition"
 	publicationds "github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/publication"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/shop"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/blog"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/checkoutandaccountsconfiguration"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/collection"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/deliveryprofile"
@@ -191,6 +192,7 @@ func (p *ShopifyProvider) Resources(ctx context.Context) []func() resource.Resou
 		shoppolicy.NewResource,
 		product.NewResource,
 		collection.NewResource,
+		blog.NewResource,
 		page.NewResource,
 		webpresence.NewResource,
 		checkoutandaccountsconfiguration.NewResource,
@@ -211,6 +213,7 @@ func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListR
 		shoppolicy.NewListResource,
 		product.NewListResource,
 		collection.NewListResource,
+		blog.NewListResource,
 		page.NewListResource,
 		webpresence.NewListResource,
 		checkoutandaccountsconfiguration.NewListResource,

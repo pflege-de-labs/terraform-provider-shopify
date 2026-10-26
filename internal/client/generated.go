@@ -322,6 +322,102 @@ func (v *AddLocationResponse) GetLocationAdd() *AddLocationLocationAddLocationAd
 	return v.LocationAdd
 }
 
+// The input fields to create an article.
+type ArticleCreateInput struct {
+	// The ID of the blog containing the article.
+	BlogId *string `json:"blogId"`
+	// A unique, human-friendly string for the article that's automatically generated from the article's title.
+	// The handle is used in the article's URL.
+	Handle *string `json:"handle,omitempty"`
+	// The text of the article's body, complete with HTML markup.
+	Body *string `json:"body,omitempty"`
+	// A summary of the article, which can include HTML markup.
+	// The summary is used by the online store theme to display the article on other pages, such as the home page or the main blog page.
+	Summary *string `json:"summary,omitempty"`
+	// Whether or not the article should be visible.
+	IsPublished *bool `json:"isPublished,omitempty"`
+	// The date and time (ISO 8601 format) when the article should become visible.
+	PublishDate *string `json:"publishDate,omitempty"`
+	// The suffix of the template that's used to render the page.
+	// If the value is an empty string or `null`, then the default article template is used.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// The input fields to create or update a metafield.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// A comma-separated list of tags.
+	// Tags are additional short descriptors formatted as a string of comma-separated values.
+	Tags []string `json:"tags,omitempty"`
+	// The image associated with the article.
+	Image *ArticleImageInput `json:"image,omitempty"`
+	// The title of the article.
+	Title string `json:"title"`
+	// The name of the author of the article.
+	Author AuthorInput `json:"author"`
+}
+
+// GetBlogId returns ArticleCreateInput.BlogId, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetBlogId() *string { return v.BlogId }
+
+// GetHandle returns ArticleCreateInput.Handle, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetHandle() *string { return v.Handle }
+
+// GetBody returns ArticleCreateInput.Body, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetBody() *string { return v.Body }
+
+// GetSummary returns ArticleCreateInput.Summary, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetSummary() *string { return v.Summary }
+
+// GetIsPublished returns ArticleCreateInput.IsPublished, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetIsPublished() *bool { return v.IsPublished }
+
+// GetPublishDate returns ArticleCreateInput.PublishDate, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetPublishDate() *string { return v.PublishDate }
+
+// GetTemplateSuffix returns ArticleCreateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetMetafields returns ArticleCreateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetTags returns ArticleCreateInput.Tags, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetTags() []string { return v.Tags }
+
+// GetImage returns ArticleCreateInput.Image, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetImage() *ArticleImageInput { return v.Image }
+
+// GetTitle returns ArticleCreateInput.Title, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetTitle() string { return v.Title }
+
+// GetAuthor returns ArticleCreateInput.Author, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetAuthor() AuthorInput { return v.Author }
+
+// The input fields for an image associated with an article.
+type ArticleImageInput struct {
+	// A word or phrase to share the nature or contents of an image.
+	AltText *string `json:"altText"`
+	// The URL of the image.
+	Url *string `json:"url"`
+}
+
+// GetAltText returns ArticleImageInput.AltText, and is useful for accessing the field via an interface.
+func (v *ArticleImageInput) GetAltText() *string { return v.AltText }
+
+// GetUrl returns ArticleImageInput.Url, and is useful for accessing the field via an interface.
+func (v *ArticleImageInput) GetUrl() *string { return v.Url }
+
+// The input fields for an author. Either the `name` or `user_id` fields can be supplied, but never both.
+type AuthorInput struct {
+	// The author's full name.
+	Name *string `json:"name"`
+	// The ID of a staff member's account.
+	UserId *string `json:"userId,omitempty"`
+}
+
+// GetName returns AuthorInput.Name, and is useful for accessing the field via an interface.
+func (v *AuthorInput) GetName() *string { return v.Name }
+
+// GetUserId returns AuthorInput.UserId, and is useful for accessing the field via an interface.
+func (v *AuthorInput) GetUserId() *string { return v.UserId }
+
 // The identifier standard that a barcode value conforms to. A single value can satisfy more than one
 // standard, so declare the standard that the merchant or supplier assigned. If no `BarcodeType` is provided,
 // then no standard was declared and the value is stored as entered.
@@ -350,6 +446,127 @@ var AllBarcodeType = []BarcodeType{
 	BarcodeTypeAsin,
 	BarcodeTypeNsPid,
 }
+
+// The input fields to create a blog.
+type BlogCreateInput struct {
+	// A unique, human-friendly string for the blog. If no handle is specified, a handle will be generated automatically from the blog title.
+	// The handle is customizable and is used by the Liquid templating language to refer to the blog.
+	Handle *string `json:"handle,omitempty"`
+	// The name of the template a blog is using if it's using an alternate template.
+	// Returns `null` if a blog is using the default blog.liquid template.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// Attaches additional metadata to a store's resources.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// Indicates whether readers can post comments to the blog and whether comments are moderated.
+	CommentPolicy *CommentPolicy `json:"commentPolicy,omitempty"`
+	// The title of the blog.
+	Title string `json:"title"`
+}
+
+// GetHandle returns BlogCreateInput.Handle, and is useful for accessing the field via an interface.
+func (v *BlogCreateInput) GetHandle() *string { return v.Handle }
+
+// GetTemplateSuffix returns BlogCreateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *BlogCreateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetMetafields returns BlogCreateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *BlogCreateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetCommentPolicy returns BlogCreateInput.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *BlogCreateInput) GetCommentPolicy() *CommentPolicy { return v.CommentPolicy }
+
+// GetTitle returns BlogCreateInput.Title, and is useful for accessing the field via an interface.
+func (v *BlogCreateInput) GetTitle() string { return v.Title }
+
+// Possible error codes that can be returned by `BlogDeleteUserError`.
+type BlogDeleteUserErrorCode string
+
+const (
+	// The record with the ID used as the input value couldn't be found.
+	BlogDeleteUserErrorCodeNotFound BlogDeleteUserErrorCode = "NOT_FOUND"
+)
+
+var AllBlogDeleteUserErrorCode = []BlogDeleteUserErrorCode{
+	BlogDeleteUserErrorCodeNotFound,
+}
+
+// BlogFields includes the GraphQL fields of Blog requested by the fragment BlogFields.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type BlogFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A unique, human-friendly string for the blog. If no handle is specified, a handle will be generated automatically from the blog title.
+	// The handle is customizable and is used by the Liquid templating language to refer to the blog.
+	Handle string `json:"handle"`
+	// The title of the blog.
+	Title string `json:"title"`
+	// Indicates whether readers can post comments to the blog and if comments are moderated or not.
+	CommentPolicy CommentPolicy `json:"commentPolicy"`
+	// The name of the template a blog is using if it's using an alternate template.
+	// Returns `null` if a blog is using the default blog.liquid template.
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+// GetId returns BlogFields.Id, and is useful for accessing the field via an interface.
+func (v *BlogFields) GetId() string { return v.Id }
+
+// GetHandle returns BlogFields.Handle, and is useful for accessing the field via an interface.
+func (v *BlogFields) GetHandle() string { return v.Handle }
+
+// GetTitle returns BlogFields.Title, and is useful for accessing the field via an interface.
+func (v *BlogFields) GetTitle() string { return v.Title }
+
+// GetCommentPolicy returns BlogFields.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *BlogFields) GetCommentPolicy() CommentPolicy { return v.CommentPolicy }
+
+// GetTemplateSuffix returns BlogFields.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *BlogFields) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// The input fields to update a blog.
+type BlogUpdateInput struct {
+	// A unique, human-friendly string for the blog. If no handle is specified, a handle will be generated automatically from the blog title.
+	// The handle is customizable and is used by the Liquid templating language to refer to the blog.
+	Handle *string `json:"handle,omitempty"`
+	// The name of the template a blog is using if it's using an alternate template.
+	// Returns `null` if a blog is using the default blog.liquid template.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// Attaches additional metadata to a store's resources.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// Indicates whether readers can post comments to the blog and whether comments are moderated.
+	CommentPolicy *CommentPolicy `json:"commentPolicy,omitempty"`
+	// The title of the blog.
+	Title *string `json:"title,omitempty"`
+	// Whether a redirect is required after a new handle has been provided.
+	// If `true`, then the old handle is redirected to the new one automatically.
+	RedirectNewHandle *bool `json:"redirectNewHandle,omitempty"`
+	// Whether to redirect blog posts automatically.
+	RedirectArticles *bool `json:"redirectArticles,omitempty"`
+}
+
+// GetHandle returns BlogUpdateInput.Handle, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetHandle() *string { return v.Handle }
+
+// GetTemplateSuffix returns BlogUpdateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetMetafields returns BlogUpdateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetCommentPolicy returns BlogUpdateInput.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetCommentPolicy() *CommentPolicy { return v.CommentPolicy }
+
+// GetTitle returns BlogUpdateInput.Title, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetTitle() *string { return v.Title }
+
+// GetRedirectNewHandle returns BlogUpdateInput.RedirectNewHandle, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetRedirectNewHandle() *bool { return v.RedirectNewHandle }
+
+// GetRedirectArticles returns BlogUpdateInput.RedirectArticles, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetRedirectArticles() *bool { return v.RedirectArticles }
 
 // CheckoutAndAccountsConfigurationFields includes the GraphQL fields of CheckoutAndAccountsConfiguration requested by the fragment CheckoutAndAccountsConfigurationFields.
 // The GraphQL type's documentation follows.
@@ -2442,6 +2659,24 @@ var AllCombinedListingsRole = []CombinedListingsRole{
 	CombinedListingsRoleChild,
 }
 
+// Possible comment policies for a blog.
+type CommentPolicy string
+
+const (
+	// Readers can post comments to blog articles without moderation.
+	CommentPolicyAutoPublished CommentPolicy = "AUTO_PUBLISHED"
+	// Readers cannot post comments to blog articles.
+	CommentPolicyClosed CommentPolicy = "CLOSED"
+	// Readers can post comments to blog articles, but comments must be moderated before they appear.
+	CommentPolicyModerated CommentPolicy = "MODERATED"
+)
+
+var AllCommentPolicy = []CommentPolicy{
+	CommentPolicyAutoPublished,
+	CommentPolicyClosed,
+	CommentPolicyModerated,
+}
+
 // Possible error codes that can be returned by `ConsentPolicyError`.
 type ConsentPolicyErrorCode string
 
@@ -3285,6 +3520,224 @@ func (v *CountryHarmonizedSystemCodeInput) GetHarmonizedSystemCode() string {
 
 // GetCountryCode returns CountryHarmonizedSystemCodeInput.CountryCode, and is useful for accessing the field via an interface.
 func (v *CountryHarmonizedSystemCodeInput) GetCountryCode() *CountryCode { return v.CountryCode }
+
+// CreateArticleArticleCreateArticleCreatePayload includes the requested fields of the GraphQL type ArticleCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `articleCreate` mutation.
+type CreateArticleArticleCreateArticleCreatePayload struct {
+	// The article that was created.
+	Article *CreateArticleArticleCreateArticleCreatePayloadArticle `json:"article"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError `json:"userErrors"`
+}
+
+// GetArticle returns CreateArticleArticleCreateArticleCreatePayload.Article, and is useful for accessing the field via an interface.
+func (v *CreateArticleArticleCreateArticleCreatePayload) GetArticle() *CreateArticleArticleCreateArticleCreatePayloadArticle {
+	return v.Article
+}
+
+// GetUserErrors returns CreateArticleArticleCreateArticleCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateArticleArticleCreateArticleCreatePayload) GetUserErrors() []CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError {
+	return v.UserErrors
+}
+
+// CreateArticleArticleCreateArticleCreatePayloadArticle includes the requested fields of the GraphQL type Article.
+// The GraphQL type's documentation follows.
+//
+// An article that contains content, author information, and metadata. Articles belong to a [`Blog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Blog) and can include HTML-formatted body text, summary text, and an associated image. Merchants publish articles to share content, drive traffic, and engage customers.
+//
+// Articles can be organized with tags and published immediately or scheduled for future publication using the [`publishedAt`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Article#field-Article.fields.publishedAt) timestamp. The API manages comments on articles when the blog's comment policy enables them.
+type CreateArticleArticleCreateArticleCreatePayloadArticle struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns CreateArticleArticleCreateArticleCreatePayloadArticle.Id, and is useful for accessing the field via an interface.
+func (v *CreateArticleArticleCreateArticleCreatePayloadArticle) GetId() string { return v.Id }
+
+// CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError includes the requested fields of the GraphQL type ArticleCreateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `ArticleCreate`.
+type CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreateArticleResponse is returned by CreateArticle on success.
+type CreateArticleResponse struct {
+	// Creates an [`Article`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Article). Articles are content pieces that include a title, body text, and author information.
+	//
+	// You can publish the article immediately or schedule it with a specific publish date. You can customize the article's URL handle, apply custom templates for rendering, and add optional fields like [tags](https://shopify.dev/docs/api/admin-graphql/latest/mutations/articleCreate#arguments-article.fields.tags), an [image](https://shopify.dev/docs/api/admin-graphql/latest/mutations/articleCreate#arguments-article.fields.image), and [`Metafield`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metafield) objects.
+	//
+	// The mutation validates article content and ensures proper blog association. Error handling provides specific feedback for content requirements.
+	ArticleCreate *CreateArticleArticleCreateArticleCreatePayload `json:"articleCreate"`
+}
+
+// GetArticleCreate returns CreateArticleResponse.ArticleCreate, and is useful for accessing the field via an interface.
+func (v *CreateArticleResponse) GetArticleCreate() *CreateArticleArticleCreateArticleCreatePayload {
+	return v.ArticleCreate
+}
+
+// CreateBlogBlogCreateBlogCreatePayload includes the requested fields of the GraphQL type BlogCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `blogCreate` mutation.
+type CreateBlogBlogCreateBlogCreatePayload struct {
+	// The blog that was created.
+	Blog *CreateBlogBlogCreateBlogCreatePayloadBlog `json:"blog"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError `json:"userErrors"`
+}
+
+// GetBlog returns CreateBlogBlogCreateBlogCreatePayload.Blog, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayload) GetBlog() *CreateBlogBlogCreateBlogCreatePayloadBlog {
+	return v.Blog
+}
+
+// GetUserErrors returns CreateBlogBlogCreateBlogCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayload) GetUserErrors() []CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError {
+	return v.UserErrors
+}
+
+// CreateBlogBlogCreateBlogCreatePayloadBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type CreateBlogBlogCreateBlogCreatePayloadBlog struct {
+	BlogFields `json:"-"`
+}
+
+// GetId returns CreateBlogBlogCreateBlogCreatePayloadBlog.Id, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) GetId() string { return v.BlogFields.Id }
+
+// GetHandle returns CreateBlogBlogCreateBlogCreatePayloadBlog.Handle, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) GetHandle() string { return v.BlogFields.Handle }
+
+// GetTitle returns CreateBlogBlogCreateBlogCreatePayloadBlog.Title, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) GetTitle() string { return v.BlogFields.Title }
+
+// GetCommentPolicy returns CreateBlogBlogCreateBlogCreatePayloadBlog.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) GetCommentPolicy() CommentPolicy {
+	return v.BlogFields.CommentPolicy
+}
+
+// GetTemplateSuffix returns CreateBlogBlogCreateBlogCreatePayloadBlog.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) GetTemplateSuffix() *string {
+	return v.BlogFields.TemplateSuffix
+}
+
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateBlogBlogCreateBlogCreatePayloadBlog
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateBlogBlogCreateBlogCreatePayloadBlog = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.BlogFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateBlogBlogCreateBlogCreatePayloadBlog struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	CommentPolicy CommentPolicy `json:"commentPolicy"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) __premarshalJSON() (*__premarshalCreateBlogBlogCreateBlogCreatePayloadBlog, error) {
+	var retval __premarshalCreateBlogBlogCreateBlogCreatePayloadBlog
+
+	retval.Id = v.BlogFields.Id
+	retval.Handle = v.BlogFields.Handle
+	retval.Title = v.BlogFields.Title
+	retval.CommentPolicy = v.BlogFields.CommentPolicy
+	retval.TemplateSuffix = v.BlogFields.TemplateSuffix
+	return &retval, nil
+}
+
+// CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError includes the requested fields of the GraphQL type BlogCreateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `BlogCreate`.
+type CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreateBlogResponse is returned by CreateBlog on success.
+type CreateBlogResponse struct {
+	// Creates a new blog within a shop, establishing a container for organizing articles.
+	//
+	// For example, a fitness equipment retailer launching a wellness blog would use this mutation to create the blog, enabling them to publish workout guides and nutrition tips.
+	//
+	// Use the `blogCreate` mutation to:
+	// - Launch new content marketing initiatives
+	// - Create separate blogs for different content themes
+	// - Establish spaces for article organization
+	//
+	// The mutation validates blog settings and establishes the structure for article publishing.
+	BlogCreate *CreateBlogBlogCreateBlogCreatePayload `json:"blogCreate"`
+}
+
+// GetBlogCreate returns CreateBlogResponse.BlogCreate, and is useful for accessing the field via an interface.
+func (v *CreateBlogResponse) GetBlogCreate() *CreateBlogBlogCreateBlogCreatePayload {
+	return v.BlogCreate
+}
 
 // CreateCollectionCollectionCreateCollectionCreatePayload includes the requested fields of the GraphQL type CollectionCreatePayload.
 // The GraphQL type's documentation follows.
@@ -5182,6 +5635,73 @@ type DeactivateLocationResponse struct {
 // GetLocationDeactivate returns DeactivateLocationResponse.LocationDeactivate, and is useful for accessing the field via an interface.
 func (v *DeactivateLocationResponse) GetLocationDeactivate() *DeactivateLocationLocationDeactivateLocationDeactivatePayload {
 	return v.LocationDeactivate
+}
+
+// DeleteBlogBlogDeleteBlogDeletePayload includes the requested fields of the GraphQL type BlogDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `blogDelete` mutation.
+type DeleteBlogBlogDeleteBlogDeletePayload struct {
+	// The ID of the deleted blog.
+	DeletedBlogId *string `json:"deletedBlogId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError `json:"userErrors"`
+}
+
+// GetDeletedBlogId returns DeleteBlogBlogDeleteBlogDeletePayload.DeletedBlogId, and is useful for accessing the field via an interface.
+func (v *DeleteBlogBlogDeleteBlogDeletePayload) GetDeletedBlogId() *string { return v.DeletedBlogId }
+
+// GetUserErrors returns DeleteBlogBlogDeleteBlogDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteBlogBlogDeleteBlogDeletePayload) GetUserErrors() []DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError {
+	return v.UserErrors
+}
+
+// DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError includes the requested fields of the GraphQL type BlogDeleteUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `BlogDelete`.
+type DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *BlogDeleteUserErrorCode `json:"code"`
+}
+
+// GetField returns DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError.Code, and is useful for accessing the field via an interface.
+func (v *DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError) GetCode() *BlogDeleteUserErrorCode {
+	return v.Code
+}
+
+// DeleteBlogResponse is returned by DeleteBlog on success.
+type DeleteBlogResponse struct {
+	// Permanently deletes a blog from a shop. This mutation removes the blog container and its organizational structure.
+	//
+	// For example, when consolidating multiple seasonal blogs into a single year-round content strategy, merchants can use this mutation to remove unused blogs.
+	//
+	// Use the `blogDelete` mutation to:
+	// - Remove unused or outdated blogs
+	// - Consolidate content organization
+	// - Clean up blog structure
+	//
+	// The deletion is permanent and returns the deleted blog's ID for confirmation.
+	BlogDelete *DeleteBlogBlogDeleteBlogDeletePayload `json:"blogDelete"`
+}
+
+// GetBlogDelete returns DeleteBlogResponse.BlogDelete, and is useful for accessing the field via an interface.
+func (v *DeleteBlogResponse) GetBlogDelete() *DeleteBlogBlogDeleteBlogDeletePayload {
+	return v.BlogDelete
 }
 
 // DeleteCollectionCollectionDeleteCollectionDeletePayload includes the requested fields of the GraphQL type CollectionDeletePayload.
@@ -8102,6 +8622,116 @@ func (v *FileSetInput) GetId() *string { return v.Id }
 // GetOriginalSource returns FileSetInput.OriginalSource, and is useful for accessing the field via an interface.
 func (v *FileSetInput) GetOriginalSource() *string { return v.OriginalSource }
 
+// FindBlogsBlogsBlogConnection includes the requested fields of the GraphQL type BlogConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Blogs.
+type FindBlogsBlogsBlogConnection struct {
+	// A list of nodes that are contained in BlogEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []FindBlogsBlogsBlogConnectionNodesBlog `json:"nodes"`
+}
+
+// GetNodes returns FindBlogsBlogsBlogConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *FindBlogsBlogsBlogConnection) GetNodes() []FindBlogsBlogsBlogConnectionNodesBlog {
+	return v.Nodes
+}
+
+// FindBlogsBlogsBlogConnectionNodesBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type FindBlogsBlogsBlogConnectionNodesBlog struct {
+	BlogFields `json:"-"`
+}
+
+// GetId returns FindBlogsBlogsBlogConnectionNodesBlog.Id, and is useful for accessing the field via an interface.
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) GetId() string { return v.BlogFields.Id }
+
+// GetHandle returns FindBlogsBlogsBlogConnectionNodesBlog.Handle, and is useful for accessing the field via an interface.
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) GetHandle() string { return v.BlogFields.Handle }
+
+// GetTitle returns FindBlogsBlogsBlogConnectionNodesBlog.Title, and is useful for accessing the field via an interface.
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) GetTitle() string { return v.BlogFields.Title }
+
+// GetCommentPolicy returns FindBlogsBlogsBlogConnectionNodesBlog.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) GetCommentPolicy() CommentPolicy {
+	return v.BlogFields.CommentPolicy
+}
+
+// GetTemplateSuffix returns FindBlogsBlogsBlogConnectionNodesBlog.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) GetTemplateSuffix() *string {
+	return v.BlogFields.TemplateSuffix
+}
+
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*FindBlogsBlogsBlogConnectionNodesBlog
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.FindBlogsBlogsBlogConnectionNodesBlog = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.BlogFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalFindBlogsBlogsBlogConnectionNodesBlog struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	CommentPolicy CommentPolicy `json:"commentPolicy"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) __premarshalJSON() (*__premarshalFindBlogsBlogsBlogConnectionNodesBlog, error) {
+	var retval __premarshalFindBlogsBlogsBlogConnectionNodesBlog
+
+	retval.Id = v.BlogFields.Id
+	retval.Handle = v.BlogFields.Handle
+	retval.Title = v.BlogFields.Title
+	retval.CommentPolicy = v.BlogFields.CommentPolicy
+	retval.TemplateSuffix = v.BlogFields.TemplateSuffix
+	return &retval, nil
+}
+
+// FindBlogsResponse is returned by FindBlogs on success.
+type FindBlogsResponse struct {
+	// Returns a paginated list of the shop's [`Blog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Blog) objects. Blogs serve as containers for [`Article`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Article) objects and provide content management capabilities for the store's editorial content.
+	//
+	// Supports [cursor-based pagination](https://shopify.dev/docs/api/usage/pagination-graphql) to control the number of blogs returned and their order. Use the [`query`](https://shopify.dev/docs/api/admin-graphql/latest/queries/blogs#arguments-query) argument to filter results by specific criteria.
+	Blogs FindBlogsBlogsBlogConnection `json:"blogs"`
+}
+
+// GetBlogs returns FindBlogsResponse.Blogs, and is useful for accessing the field via an interface.
+func (v *FindBlogsResponse) GetBlogs() FindBlogsBlogsBlogConnection { return v.Blogs }
+
 // FindLocationsLocationsLocationConnection includes the requested fields of the GraphQL type LocationConnection.
 // The GraphQL type's documentation follows.
 //
@@ -8361,6 +8991,156 @@ var AllFulfillmentServiceType = []FulfillmentServiceType{
 	FulfillmentServiceTypeManual,
 	FulfillmentServiceTypeThirdParty,
 }
+
+// GetArticleArticle includes the requested fields of the GraphQL type Article.
+// The GraphQL type's documentation follows.
+//
+// An article that contains content, author information, and metadata. Articles belong to a [`Blog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Blog) and can include HTML-formatted body text, summary text, and an associated image. Merchants publish articles to share content, drive traffic, and engage customers.
+//
+// Articles can be organized with tags and published immediately or scheduled for future publication using the [`publishedAt`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Article#field-Article.fields.publishedAt) timestamp. The API manages comments on articles when the blog's comment policy enables them.
+type GetArticleArticle struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns GetArticleArticle.Id, and is useful for accessing the field via an interface.
+func (v *GetArticleArticle) GetId() string { return v.Id }
+
+// GetArticleResponse is returned by GetArticle on success.
+type GetArticleResponse struct {
+	// Returns a `Article` resource by ID.
+	Article *GetArticleArticle `json:"article"`
+}
+
+// GetArticle returns GetArticleResponse.Article, and is useful for accessing the field via an interface.
+func (v *GetArticleResponse) GetArticle() *GetArticleArticle { return v.Article }
+
+// GetBlogArticlesCountBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type GetBlogArticlesCountBlog struct {
+	// Count of articles. Limited to a maximum of 10000 by default.
+	ArticlesCount *GetBlogArticlesCountBlogArticlesCount `json:"articlesCount"`
+}
+
+// GetArticlesCount returns GetBlogArticlesCountBlog.ArticlesCount, and is useful for accessing the field via an interface.
+func (v *GetBlogArticlesCountBlog) GetArticlesCount() *GetBlogArticlesCountBlogArticlesCount {
+	return v.ArticlesCount
+}
+
+// GetBlogArticlesCountBlogArticlesCount includes the requested fields of the GraphQL type Count.
+// The GraphQL type's documentation follows.
+//
+// A numeric count with precision information indicating whether the count is exact or an estimate.
+type GetBlogArticlesCountBlogArticlesCount struct {
+	// The count of elements.
+	Count int `json:"count"`
+}
+
+// GetCount returns GetBlogArticlesCountBlogArticlesCount.Count, and is useful for accessing the field via an interface.
+func (v *GetBlogArticlesCountBlogArticlesCount) GetCount() int { return v.Count }
+
+// GetBlogArticlesCountResponse is returned by GetBlogArticlesCount on success.
+type GetBlogArticlesCountResponse struct {
+	// Returns a `Blog` resource by ID.
+	Blog *GetBlogArticlesCountBlog `json:"blog"`
+}
+
+// GetBlog returns GetBlogArticlesCountResponse.Blog, and is useful for accessing the field via an interface.
+func (v *GetBlogArticlesCountResponse) GetBlog() *GetBlogArticlesCountBlog { return v.Blog }
+
+// GetBlogBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type GetBlogBlog struct {
+	BlogFields `json:"-"`
+}
+
+// GetId returns GetBlogBlog.Id, and is useful for accessing the field via an interface.
+func (v *GetBlogBlog) GetId() string { return v.BlogFields.Id }
+
+// GetHandle returns GetBlogBlog.Handle, and is useful for accessing the field via an interface.
+func (v *GetBlogBlog) GetHandle() string { return v.BlogFields.Handle }
+
+// GetTitle returns GetBlogBlog.Title, and is useful for accessing the field via an interface.
+func (v *GetBlogBlog) GetTitle() string { return v.BlogFields.Title }
+
+// GetCommentPolicy returns GetBlogBlog.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *GetBlogBlog) GetCommentPolicy() CommentPolicy { return v.BlogFields.CommentPolicy }
+
+// GetTemplateSuffix returns GetBlogBlog.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *GetBlogBlog) GetTemplateSuffix() *string { return v.BlogFields.TemplateSuffix }
+
+func (v *GetBlogBlog) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetBlogBlog
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetBlogBlog = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.BlogFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetBlogBlog struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	CommentPolicy CommentPolicy `json:"commentPolicy"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *GetBlogBlog) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetBlogBlog) __premarshalJSON() (*__premarshalGetBlogBlog, error) {
+	var retval __premarshalGetBlogBlog
+
+	retval.Id = v.BlogFields.Id
+	retval.Handle = v.BlogFields.Handle
+	retval.Title = v.BlogFields.Title
+	retval.CommentPolicy = v.BlogFields.CommentPolicy
+	retval.TemplateSuffix = v.BlogFields.TemplateSuffix
+	return &retval, nil
+}
+
+// GetBlogResponse is returned by GetBlog on success.
+type GetBlogResponse struct {
+	// Returns a `Blog` resource by ID.
+	Blog *GetBlogBlog `json:"blog"`
+}
+
+// GetBlog returns GetBlogResponse.Blog, and is useful for accessing the field via an interface.
+func (v *GetBlogResponse) GetBlog() *GetBlogBlog { return v.Blog }
 
 // GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration includes the requested fields of the GraphQL type CheckoutAndAccountsConfiguration.
 // The GraphQL type's documentation follows.
@@ -11674,6 +12454,142 @@ func (v *LinkedMetafieldCreateInput) GetKey() string { return v.Key }
 
 // GetValues returns LinkedMetafieldCreateInput.Values, and is useful for accessing the field via an interface.
 func (v *LinkedMetafieldCreateInput) GetValues() []string { return v.Values }
+
+// ListBlogsBlogsBlogConnection includes the requested fields of the GraphQL type BlogConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Blogs.
+type ListBlogsBlogsBlogConnection struct {
+	// A list of nodes that are contained in BlogEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListBlogsBlogsBlogConnectionNodesBlog `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListBlogsBlogsBlogConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListBlogsBlogsBlogConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnection) GetNodes() []ListBlogsBlogsBlogConnectionNodesBlog {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListBlogsBlogsBlogConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnection) GetPageInfo() ListBlogsBlogsBlogConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListBlogsBlogsBlogConnectionNodesBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type ListBlogsBlogsBlogConnectionNodesBlog struct {
+	BlogFields `json:"-"`
+}
+
+// GetId returns ListBlogsBlogsBlogConnectionNodesBlog.Id, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) GetId() string { return v.BlogFields.Id }
+
+// GetHandle returns ListBlogsBlogsBlogConnectionNodesBlog.Handle, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) GetHandle() string { return v.BlogFields.Handle }
+
+// GetTitle returns ListBlogsBlogsBlogConnectionNodesBlog.Title, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) GetTitle() string { return v.BlogFields.Title }
+
+// GetCommentPolicy returns ListBlogsBlogsBlogConnectionNodesBlog.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) GetCommentPolicy() CommentPolicy {
+	return v.BlogFields.CommentPolicy
+}
+
+// GetTemplateSuffix returns ListBlogsBlogsBlogConnectionNodesBlog.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) GetTemplateSuffix() *string {
+	return v.BlogFields.TemplateSuffix
+}
+
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListBlogsBlogsBlogConnectionNodesBlog
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListBlogsBlogsBlogConnectionNodesBlog = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.BlogFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListBlogsBlogsBlogConnectionNodesBlog struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	CommentPolicy CommentPolicy `json:"commentPolicy"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) __premarshalJSON() (*__premarshalListBlogsBlogsBlogConnectionNodesBlog, error) {
+	var retval __premarshalListBlogsBlogsBlogConnectionNodesBlog
+
+	retval.Id = v.BlogFields.Id
+	retval.Handle = v.BlogFields.Handle
+	retval.Title = v.BlogFields.Title
+	retval.CommentPolicy = v.BlogFields.CommentPolicy
+	retval.TemplateSuffix = v.BlogFields.TemplateSuffix
+	return &retval, nil
+}
+
+// ListBlogsBlogsBlogConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListBlogsBlogsBlogConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListBlogsBlogsBlogConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ListBlogsBlogsBlogConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
+
+// ListBlogsResponse is returned by ListBlogs on success.
+type ListBlogsResponse struct {
+	// Returns a paginated list of the shop's [`Blog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Blog) objects. Blogs serve as containers for [`Article`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Article) objects and provide content management capabilities for the store's editorial content.
+	//
+	// Supports [cursor-based pagination](https://shopify.dev/docs/api/usage/pagination-graphql) to control the number of blogs returned and their order. Use the [`query`](https://shopify.dev/docs/api/admin-graphql/latest/queries/blogs#arguments-query) argument to filter results by specific criteria.
+	Blogs ListBlogsBlogsBlogConnection `json:"blogs"`
+}
+
+// GetBlogs returns ListBlogsResponse.Blogs, and is useful for accessing the field via an interface.
+func (v *ListBlogsResponse) GetBlogs() ListBlogsBlogsBlogConnection { return v.Blogs }
 
 // ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection includes the requested fields of the GraphQL type CheckoutAndAccountsConfigurationConnection.
 // The GraphQL type's documentation follows.
@@ -21077,6 +21993,153 @@ func (v *UnpublishPublishableResponse) GetPublishableUnpublish() *UnpublishPubli
 	return v.PublishableUnpublish
 }
 
+// UpdateBlogBlogUpdateBlogUpdatePayload includes the requested fields of the GraphQL type BlogUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `blogUpdate` mutation.
+type UpdateBlogBlogUpdateBlogUpdatePayload struct {
+	// The blog that was updated.
+	Blog *UpdateBlogBlogUpdateBlogUpdatePayloadBlog `json:"blog"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError `json:"userErrors"`
+}
+
+// GetBlog returns UpdateBlogBlogUpdateBlogUpdatePayload.Blog, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayload) GetBlog() *UpdateBlogBlogUpdateBlogUpdatePayloadBlog {
+	return v.Blog
+}
+
+// GetUserErrors returns UpdateBlogBlogUpdateBlogUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayload) GetUserErrors() []UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError {
+	return v.UserErrors
+}
+
+// UpdateBlogBlogUpdateBlogUpdatePayloadBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type UpdateBlogBlogUpdateBlogUpdatePayloadBlog struct {
+	BlogFields `json:"-"`
+}
+
+// GetId returns UpdateBlogBlogUpdateBlogUpdatePayloadBlog.Id, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) GetId() string { return v.BlogFields.Id }
+
+// GetHandle returns UpdateBlogBlogUpdateBlogUpdatePayloadBlog.Handle, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) GetHandle() string { return v.BlogFields.Handle }
+
+// GetTitle returns UpdateBlogBlogUpdateBlogUpdatePayloadBlog.Title, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) GetTitle() string { return v.BlogFields.Title }
+
+// GetCommentPolicy returns UpdateBlogBlogUpdateBlogUpdatePayloadBlog.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) GetCommentPolicy() CommentPolicy {
+	return v.BlogFields.CommentPolicy
+}
+
+// GetTemplateSuffix returns UpdateBlogBlogUpdateBlogUpdatePayloadBlog.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) GetTemplateSuffix() *string {
+	return v.BlogFields.TemplateSuffix
+}
+
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateBlogBlogUpdateBlogUpdatePayloadBlog
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateBlogBlogUpdateBlogUpdatePayloadBlog = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.BlogFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateBlogBlogUpdateBlogUpdatePayloadBlog struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	CommentPolicy CommentPolicy `json:"commentPolicy"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) __premarshalJSON() (*__premarshalUpdateBlogBlogUpdateBlogUpdatePayloadBlog, error) {
+	var retval __premarshalUpdateBlogBlogUpdateBlogUpdatePayloadBlog
+
+	retval.Id = v.BlogFields.Id
+	retval.Handle = v.BlogFields.Handle
+	retval.Title = v.BlogFields.Title
+	retval.CommentPolicy = v.BlogFields.CommentPolicy
+	retval.TemplateSuffix = v.BlogFields.TemplateSuffix
+	return &retval, nil
+}
+
+// UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError includes the requested fields of the GraphQL type BlogUpdateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `BlogUpdate`.
+type UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError) GetMessage() string {
+	return v.Message
+}
+
+// UpdateBlogResponse is returned by UpdateBlog on success.
+type UpdateBlogResponse struct {
+	// Updates an existing blog's configuration and settings. This mutation allows merchants to modify blog properties to keep their content strategy current.
+	//
+	// For example, a merchant might update their blog's title from "Company News" to "Sustainability Stories" when shifting their content focus, or modify the handle to improve URL structure.
+	//
+	// Use the `blogUpdate` mutation to:
+	// - Change blog titles for rebranding
+	// - Modify blog handles for better URLs
+	// - Adjust comment settings and moderation preferences
+	//
+	// The mutation returns the updated blog with any validation errors.
+	BlogUpdate *UpdateBlogBlogUpdateBlogUpdatePayload `json:"blogUpdate"`
+}
+
+// GetBlogUpdate returns UpdateBlogResponse.BlogUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateBlogResponse) GetBlogUpdate() *UpdateBlogBlogUpdateBlogUpdatePayload {
+	return v.BlogUpdate
+}
+
 // UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload includes the requested fields of the GraphQL type CheckoutAndAccountsConfigurationUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -23404,6 +24467,22 @@ type __AddLocationInput struct {
 // GetInput returns __AddLocationInput.Input, and is useful for accessing the field via an interface.
 func (v *__AddLocationInput) GetInput() LocationAddInput { return v.Input }
 
+// __CreateArticleInput is used internally by genqlient
+type __CreateArticleInput struct {
+	Article ArticleCreateInput `json:"article"`
+}
+
+// GetArticle returns __CreateArticleInput.Article, and is useful for accessing the field via an interface.
+func (v *__CreateArticleInput) GetArticle() ArticleCreateInput { return v.Article }
+
+// __CreateBlogInput is used internally by genqlient
+type __CreateBlogInput struct {
+	Blog BlogCreateInput `json:"blog"`
+}
+
+// GetBlog returns __CreateBlogInput.Blog, and is useful for accessing the field via an interface.
+func (v *__CreateBlogInput) GetBlog() BlogCreateInput { return v.Blog }
+
 // __CreateCollectionInput is used internally by genqlient
 type __CreateCollectionInput struct {
 	Collection CollectionCreateInput `json:"collection"`
@@ -23483,6 +24562,14 @@ func (v *__DeactivateLocationInput) GetLocationId() string { return v.LocationId
 
 // GetIdempotencyKey returns __DeactivateLocationInput.IdempotencyKey, and is useful for accessing the field via an interface.
 func (v *__DeactivateLocationInput) GetIdempotencyKey() string { return v.IdempotencyKey }
+
+// __DeleteBlogInput is used internally by genqlient
+type __DeleteBlogInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteBlogInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteBlogInput) GetId() string { return v.Id }
 
 // __DeleteCollectionInput is used internally by genqlient
 type __DeleteCollectionInput struct {
@@ -23598,6 +24685,14 @@ type __EnableShopLocaleInput struct {
 // GetLocale returns __EnableShopLocaleInput.Locale, and is useful for accessing the field via an interface.
 func (v *__EnableShopLocaleInput) GetLocale() string { return v.Locale }
 
+// __FindBlogsInput is used internally by genqlient
+type __FindBlogsInput struct {
+	Query string `json:"query"`
+}
+
+// GetQuery returns __FindBlogsInput.Query, and is useful for accessing the field via an interface.
+func (v *__FindBlogsInput) GetQuery() string { return v.Query }
+
 // __FindLocationsInput is used internally by genqlient
 type __FindLocationsInput struct {
 	Query string `json:"query"`
@@ -23613,6 +24708,30 @@ type __FindPagesInput struct {
 
 // GetQuery returns __FindPagesInput.Query, and is useful for accessing the field via an interface.
 func (v *__FindPagesInput) GetQuery() string { return v.Query }
+
+// __GetArticleInput is used internally by genqlient
+type __GetArticleInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetArticleInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetArticleInput) GetId() string { return v.Id }
+
+// __GetBlogArticlesCountInput is used internally by genqlient
+type __GetBlogArticlesCountInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetBlogArticlesCountInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetBlogArticlesCountInput) GetId() string { return v.Id }
+
+// __GetBlogInput is used internally by genqlient
+type __GetBlogInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetBlogInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetBlogInput) GetId() string { return v.Id }
 
 // __GetCheckoutAndAccountsConfigurationInput is used internally by genqlient
 type __GetCheckoutAndAccountsConfigurationInput struct {
@@ -23804,6 +24923,14 @@ type __GetWebPresenceInput struct {
 // GetId returns __GetWebPresenceInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetWebPresenceInput) GetId() string { return v.Id }
 
+// __ListBlogsInput is used internally by genqlient
+type __ListBlogsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListBlogsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListBlogsInput) GetAfter() *string { return v.After }
+
 // __ListCheckoutAndAccountsConfigurationsInput is used internally by genqlient
 type __ListCheckoutAndAccountsConfigurationsInput struct {
 	Query *string `json:"query"`
@@ -23947,6 +25074,18 @@ func (v *__UnpublishPublishableInput) GetId() string { return v.Id }
 
 // GetInput returns __UnpublishPublishableInput.Input, and is useful for accessing the field via an interface.
 func (v *__UnpublishPublishableInput) GetInput() []PublicationInput { return v.Input }
+
+// __UpdateBlogInput is used internally by genqlient
+type __UpdateBlogInput struct {
+	Id   string          `json:"id"`
+	Blog BlogUpdateInput `json:"blog"`
+}
+
+// GetId returns __UpdateBlogInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateBlogInput) GetId() string { return v.Id }
+
+// GetBlog returns __UpdateBlogInput.Blog, and is useful for accessing the field via an interface.
+func (v *__UpdateBlogInput) GetBlog() BlogUpdateInput { return v.Blog }
 
 // __UpdateCheckoutAndAccountsConfigurationInput is used internally by genqlient
 type __UpdateCheckoutAndAccountsConfigurationInput struct {
@@ -24194,6 +25333,95 @@ func AddLocation(
 	}
 
 	data_ = &AddLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateArticle.
+const CreateArticle_Operation = `
+mutation CreateArticle ($article: ArticleCreateInput!) {
+	articleCreate(article: $article) {
+		article {
+			id
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+// Only the acceptance tests call this, to give a blog an article for the Pattern B step.
+func CreateArticle(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	article ArticleCreateInput,
+) (data_ *CreateArticleResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateArticle",
+		Query:  CreateArticle_Operation,
+		Variables: &__CreateArticleInput{
+			Article: article,
+		},
+	}
+
+	data_ = &CreateArticleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateBlog.
+const CreateBlog_Operation = `
+mutation CreateBlog ($blog: BlogCreateInput!) {
+	blogCreate(blog: $blog) {
+		blog {
+			... BlogFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment BlogFields on Blog {
+	id
+	handle
+	title
+	commentPolicy
+	templateSuffix
+}
+`
+
+// metafields is never sent: metafield values are a roadmap type.
+func CreateBlog(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	blog BlogCreateInput,
+) (data_ *CreateBlogResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateBlog",
+		Query:  CreateBlog_Operation,
+		Variables: &__CreateBlogInput{
+			Blog: blog,
+		},
+	}
+
+	data_ = &CreateBlogResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -24871,6 +26099,45 @@ func DeactivateLocation(
 	return data_, err_
 }
 
+// The mutation executed by DeleteBlog.
+const DeleteBlog_Operation = `
+mutation DeleteBlog ($id: ID!) {
+	blogDelete(id: $id) {
+		deletedBlogId
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+`
+
+func DeleteBlog(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteBlogResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteBlog",
+		Query:  DeleteBlog_Operation,
+		Variables: &__DeleteBlogInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteBlogResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by DeleteCollection.
 const DeleteCollection_Operation = `
 mutation DeleteCollection ($id: ID!) {
@@ -25400,6 +26667,50 @@ func EnableShopLocale(
 	return data_, err_
 }
 
+// The query executed by FindBlogs.
+const FindBlogs_Operation = `
+query FindBlogs ($query: String!) {
+	blogs(first: 25, query: $query) {
+		nodes {
+			... BlogFields
+		}
+	}
+}
+fragment BlogFields on Blog {
+	id
+	handle
+	title
+	commentPolicy
+	templateSuffix
+}
+`
+
+// There is no blogByHandle, so this is a search; the caller checks the handle exactly.
+func FindBlogs(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	query string,
+) (data_ *FindBlogsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "FindBlogs",
+		Query:  FindBlogs_Operation,
+		Variables: &__FindBlogsInput{
+			Query: query,
+		},
+	}
+
+	data_ = &FindBlogsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by FindLocations.
 const FindLocations_Operation = `
 query FindLocations ($query: String!) {
@@ -25487,6 +26798,118 @@ func FindPages(
 	}
 
 	data_ = &FindPagesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetArticle.
+const GetArticle_Operation = `
+query GetArticle ($id: ID!) {
+	article(id: $id) {
+		id
+	}
+}
+`
+
+func GetArticle(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetArticleResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetArticle",
+		Query:  GetArticle_Operation,
+		Variables: &__GetArticleInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetArticleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetBlog.
+const GetBlog_Operation = `
+query GetBlog ($id: ID!) {
+	blog(id: $id) {
+		... BlogFields
+	}
+}
+fragment BlogFields on Blog {
+	id
+	handle
+	title
+	commentPolicy
+	templateSuffix
+}
+`
+
+func GetBlog(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetBlogResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetBlog",
+		Query:  GetBlog_Operation,
+		Variables: &__GetBlogInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetBlogResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetBlogArticlesCount.
+const GetBlogArticlesCount_Operation = `
+query GetBlogArticlesCount ($id: ID!) {
+	blog(id: $id) {
+		articlesCount {
+			count
+		}
+	}
+}
+`
+
+// Only the Pattern B guard needs the count.
+func GetBlogArticlesCount(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetBlogArticlesCountResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetBlogArticlesCount",
+		Query:  GetBlogArticlesCount_Operation,
+		Variables: &__GetBlogArticlesCountInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetBlogArticlesCountResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -28514,6 +29937,53 @@ func GetWebPresence(
 	return data_, err_
 }
 
+// The query executed by ListBlogs.
+const ListBlogs_Operation = `
+query ListBlogs ($after: String) {
+	blogs(first: 250, after: $after) {
+		nodes {
+			... BlogFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment BlogFields on Blog {
+	id
+	handle
+	title
+	commentPolicy
+	templateSuffix
+}
+`
+
+func ListBlogs(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListBlogsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListBlogs",
+		Query:  ListBlogs_Operation,
+		Variables: &__ListBlogsInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListBlogsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListCheckoutAndAccountsConfigurations.
 const ListCheckoutAndAccountsConfigurations_Operation = `
 query ListCheckoutAndAccountsConfigurations ($query: String, $after: String) {
@@ -31029,6 +32499,56 @@ func UnpublishPublishable(
 	}
 
 	data_ = &UnpublishPublishableResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateBlog.
+const UpdateBlog_Operation = `
+mutation UpdateBlog ($id: ID!, $blog: BlogUpdateInput!) {
+	blogUpdate(id: $id, blog: $blog) {
+		blog {
+			... BlogFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment BlogFields on Blog {
+	id
+	handle
+	title
+	commentPolicy
+	templateSuffix
+}
+`
+
+// redirectNewHandle and redirectArticles are never sent: URL redirects are a roadmap type.
+func UpdateBlog(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	blog BlogUpdateInput,
+) (data_ *UpdateBlogResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateBlog",
+		Query:  UpdateBlog_Operation,
+		Variables: &__UpdateBlogInput{
+			Id:   id,
+			Blog: blog,
+		},
+	}
+
+	data_ = &UpdateBlogResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
