@@ -880,7 +880,7 @@ data "shopify_publication" "online_store" {
 
 Left out: `supportsFuturePublishing`, `operation`, the product and collection connections (content), and the deprecated `app` (use the catalog).
 
-**Name, not handle.** Publications have no handle. `Publication.name` is deprecated in 2026-10 ("Use `Catalog.title` instead"), but `Catalog.title` of a channel's app catalog is `Channel Catalog <publication id> for Online Store`, which differs per store and can't be a key. The channel behind a publication has a handle (`online_store`, `pos`, `shop-72` on the dev store), but the `shop-72` suffix suggests it is not the same on every store. So the key stays the name, read from the deprecated field: it returns the channel name on the dev store, and genqlient copies descriptions, not deprecation reasons, into generated code, so lint should stay quiet (`make lint` confirms it at implementation). If a later API version removes the field, the generated code stops compiling, which is the intended signal. `TODO(verify)`: whether every channel publication has a matching `channels.nodes[].name` (true for all three on the dev store), which would be the non-deprecated fallback.
+**Name, not handle.** Publications have no handle. `Publication.name` is deprecated in 2026-10 ("Use `Catalog.title` instead"), but `Catalog.title` of a channel's app catalog is `Channel Catalog <publication id> for Online Store`, which differs per store and can't be a key. The channel behind a publication has a handle (`online_store`, `pos`, `shop-72` on the dev store), but the `shop-72` suffix suggests it is not the same on every store. So the key stays the name, read from the deprecated field: it returns the channel name on the dev store, and genqlient copies descriptions, not deprecation reasons, into generated code, so lint stays quiet (confirmed at implementation: `make lint` reports no issues). If a later API version removes the field, the generated code stops compiling, which is the intended signal. `TODO(verify)`: whether every channel publication has a matching `channels.nodes[].name` (true for all three on the dev store), which would be the non-deprecated fallback.
 
 **Lookup:** root `publications(first: 250)` without `catalogType`, paged (`patterns.Paginate`). On the dev store it returns the channel publications only; a market catalog's publication (empty `name`) shows up only with `catalogType: MARKET` (checked, §9i). Publications with an empty name are skipped. No fallback by GID and nothing is written beyond the read.
 
@@ -892,7 +892,7 @@ Left out: `supportsFuturePublishing`, `operation`, the product and collection co
 
 **Fit:** good. Read-only reference; channels come and go with app installs, and the data source reads the current state on every plan.
 
-**Tests:** acceptance: read `Online Store` and check `id` (`^gid://shopify/Publication/`), `catalog_id` (`^gid://shopify/AppCatalog/`) and `auto_publish`; not found. Unit: exact match, empty names skipped, the duplicate and not-found messages, mapping.
+**Tests:** acceptance: read `Online Store` and check `id` (`^gid://shopify/Publication/`), `catalog_id` (`^gid://shopify/AppCatalog/`) and `auto_publish`; not found. On the dev store all three publications (Online Store, Shop, Point of Sale) have `auto_publish = false`, so the test asserts `false` for the Online Store. Unit: exact match, empty names skipped, the duplicate and not-found messages, mapping.
 
 ---
 
