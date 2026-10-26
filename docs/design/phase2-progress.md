@@ -221,3 +221,13 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 14c: minor (deferred): `write_publications` scope stated as fact in attribute description; no `// TODO(verify)` in code
 - Task 14c: minor (deferred): product list pages publications per product beyond 10 (N+1, rare)
 - Task 14c: complete (commits 4602d2a..3f17570, review clean)
+- Task 16 (shopify_page, §9m): dispatched (base b49e8cf, model sonnet)
+- Task 16: implemented 0bfcf2d..7005d81 (DONE; template_suffix uses UseStateForUnknownIncludingNull, not plain UseStateForUnknown as §9m names — never-set reads null; recorded in §9m; controller re-ran checks green); review dispatched (model sonnet)
+- Task 16: ⚠️ resolved by controller: `patterns.UseStateForUnknownIncludingNull` exists (access.go:21); framework pre-fills Update response Private and Identity from plan (fwserver/server_updateresource.go:123,143)
+- Task 16: minor (deferred): "destroy of already gone page" claim overstated — step is PlanOnly, refresh drops it, Delete wiring (resource.go PageDelete.UserErrors) not exercised; reword §9m/report
+- Task 16: minor (deferred): `del.PageDelete` dereferenced without nil check
+- Task 16: minor (deferred): `FindPages` uses first: 5 before exact compare; >5 fuzzy hits could miss the page (TODO(verify) or larger page)
+- Task 16: minor (deferred): two-line comment block near Create TODO
+- Task 16: minor (deferred): no unit case for configured `body = ""`
+- Task 16: minor (deferred): §9m attribute table row for `template_suffix` still says plain UseStateForUnknown
+- Task 16: complete (commits 0bfcf2d..7005d81, review clean)
