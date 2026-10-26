@@ -17,7 +17,8 @@ resource "shopify_product" "existing" {
 }
 
 # Destroy deletes the product with its variants, inventory and media, so it needs the flag in state first.
-# Archiving (status = "ARCHIVED") is the safer way to retire a product.
+# Archiving (status = "ARCHIVED") is the safer way to retire a product; in production also add
+# lifecycle { prevent_destroy = true }.
 resource "shopify_product" "temporary" {
   handle              = "aktion"
   title               = "Aktion"

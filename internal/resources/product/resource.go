@@ -62,7 +62,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"**A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository:** products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, " +
 			"and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. " +
 			"Variants, options, publishing and media are not managed yet; Shopify keeps whatever they hold. " +
-			"Destroying a product deletes its variants, inventory, media and metafield values: set `allow_data_deletion = true` first, or archive it with `status = \"ARCHIVED\"` instead. " +
+			"Destroying a product deletes its variants, inventory, media and metafield values: archive it with `status = \"ARCHIVED\"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. " +
 			"A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. " +
 			"Import with the handle.",
 		Attributes: map[string]schema.Attribute{
@@ -356,7 +356,7 @@ func (r *Resource) write(ctx context.Context, id *string, plan, cfg *model, diag
 		diags.AddError("Failed to write "+what, err.Error())
 		return
 	}
-	diags.Append(userErrorDiags("Failed to write "+what, res.ProductSet.UserErrors)...)
+	diags.Append(client.UserErrorDiagsWith("Failed to write "+what, res.ProductSet.UserErrors, errorPath)...)
 	if diags.HasError() {
 		return
 	}

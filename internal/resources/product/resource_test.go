@@ -421,3 +421,49 @@ func TestAccProduct_deletionGuard(t *testing.T) {
 		},
 	})
 }
+
+// seo_title and seo_description share one productSet object: leaving one out must keep its admin value.
+func TestAccProduct_unmanagedSEODescription(t *testing.T) {
+	accSetup(t)
+	handle := testHandle()
+	cleanup(t, handle)
+	cfg := func(seoTitle string) string {
+		return config(fmt.Sprintf(`
+  handle              = %q
+  title               = "tf-acc seo"
+  status              = "DRAFT"
+  seo_title           = %q
+  allow_data_deletion = true
+`, handle, seoTitle))
+	}
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkGone(t, handle),
+		Steps: []resource.TestStep{
+			{Config: cfg("tf-acc seo 1"), ConfigStateChecks: []statecheck.StateCheck{stateValue("seo_description", knownvalue.Null())}},
+			{
+				PreConfig: func() {
+					d := "tf-acc admin seo description"
+					mustSet(t, &mustLookup(t, handle).Id, client.ProductSetInput{Seo: &client.SEOInput{Description: &d}})
+				},
+				Config:            cfg("tf-acc seo 1"),
+				ConfigPlanChecks:  resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}},
+				ConfigStateChecks: []statecheck.StateCheck{stateValue("seo_description", str("tf-acc admin seo description"))},
+			},
+			{
+				Config: cfg("tf-acc seo 2"),
+				Check: func(*terraform.State) error {
+					p := mustLookup(t, handle)
+					if p.Seo.Title == nil || *p.Seo.Title != "tf-acc seo 2" {
+						return fmt.Errorf("seo title = %v, want tf-acc seo 2", p.Seo.Title)
+					}
+					if p.Seo.Description == nil || *p.Seo.Description != "tf-acc admin seo description" {
+						return fmt.Errorf("seo description = %v after an update that left it out, want the admin value kept", p.Seo.Description)
+					}
+					return nil
+				},
+			},
+		},
+	})
+}

@@ -20,10 +20,18 @@ func UserErrorDiags[E any, P interface {
 	*E
 	UserError
 }](summary string, errs []E) diag.Diagnostics {
+	return UserErrorDiagsWith[E, P](summary, errs, FieldPath)
+}
+
+// UserErrorDiagsWith is UserErrorDiags for resources whose attribute names differ from the API field names.
+func UserErrorDiagsWith[E any, P interface {
+	*E
+	UserError
+}](summary string, errs []E, mapper func(field []string) (path.Path, bool)) diag.Diagnostics {
 	var diags diag.Diagnostics
 	for i := range errs {
 		e := P(&errs[i])
-		if p, ok := FieldPath(e.GetField()); ok {
+		if p, ok := mapper(e.GetField()); ok {
 			diags.AddAttributeError(p, summary, e.GetMessage())
 		} else {
 			diags.AddError(summary, e.GetMessage())

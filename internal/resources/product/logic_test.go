@@ -9,6 +9,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 )
 
 func TestValidateHandle(t *testing.T) {
@@ -217,7 +219,7 @@ func TestUserErrorDiags(t *testing.T) {
 		{[]string{"input", "handle"}, "Handle has already been taken"},
 		{[]string{"input", "variants", "0", "price"}, "Price is invalid"},
 	}
-	diags := userErrorDiags("Failed to write product", errs)
+	diags := client.UserErrorDiagsWith("Failed to write product", errs, errorPath)
 	if len(diags) != 2 {
 		t.Fatalf("got %d diagnostics, want 2", len(diags))
 	}

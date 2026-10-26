@@ -6,12 +6,9 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-
-	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 )
 
 // validateHandle rejects what Shopify would normalise, which would otherwise plan forever.
@@ -106,21 +103,4 @@ func errorPath(field []string) (path.Path, bool) {
 		return path.Root(a), true
 	}
 	return path.Empty(), false
-}
-
-// userErrorDiags scopes userErrors to attributes where errorPath knows them; the rest stay resource-level.
-func userErrorDiags[E any, P interface {
-	*E
-	client.UserError
-}](summary string, errs []E) diag.Diagnostics {
-	var diags diag.Diagnostics
-	for i := range errs {
-		e := P(&errs[i])
-		if p, ok := errorPath(e.GetField()); ok {
-			diags.AddAttributeError(p, summary, e.GetMessage())
-		} else {
-			diags.AddError(summary, e.GetMessage())
-		}
-	}
-	return diags
 }

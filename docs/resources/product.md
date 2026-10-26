@@ -3,12 +3,12 @@
 page_title: "shopify_product Resource - shopify"
 subcategory: ""
 description: |-
-  A product's core fields: title, handle, status, description, tags and SEO. A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository: products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. Variants, options, publishing and media are not managed yet; Shopify keeps whatever they hold. Destroying a product deletes its variants, inventory, media and metafield values: set allow_data_deletion = true first, or archive it with status = "ARCHIVED" instead. A product that already has the handle needs adopt_existing = true, so it isn't overwritten silently. Import with the handle.
+  A product's core fields: title, handle, status, description, tags and SEO. A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository: products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. Variants, options, publishing and media are not managed yet; Shopify keeps whatever they hold. Destroying a product deletes its variants, inventory, media and metafield values: archive it with status = "ARCHIVED" instead, or set allow_data_deletion = true first, and add lifecycle { prevent_destroy = true } to guard it. A product that already has the handle needs adopt_existing = true, so it isn't overwritten silently. Import with the handle.
 ---
 
 # shopify_product (Resource)
 
-A product's core fields: title, handle, status, description, tags and SEO. **A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository:** products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. Variants, options, publishing and media are not managed yet; Shopify keeps whatever they hold. Destroying a product deletes its variants, inventory, media and metafield values: set `allow_data_deletion = true` first, or archive it with `status = "ARCHIVED"` instead. A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. Import with the handle.
+A product's core fields: title, handle, status, description, tags and SEO. **A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository:** products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. Variants, options, publishing and media are not managed yet; Shopify keeps whatever they hold. Destroying a product deletes its variants, inventory, media and metafield values: archive it with `status = "ARCHIVED"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. Import with the handle.
 
 ## Example Usage
 
@@ -32,7 +32,8 @@ resource "shopify_product" "existing" {
 }
 
 # Destroy deletes the product with its variants, inventory and media, so it needs the flag in state first.
-# Archiving (status = "ARCHIVED") is the safer way to retire a product.
+# Archiving (status = "ARCHIVED") is the safer way to retire a product; in production also add
+# lifecycle { prevent_destroy = true }.
 resource "shopify_product" "temporary" {
   handle              = "aktion"
   title               = "Aktion"
