@@ -3,12 +3,12 @@
 page_title: "shopify_product List Resource - shopify"
 subcategory: ""
 description: |-
-  Lists all products of the store, gift card products included. Generated config carries every core attribute, so a large catalogue produces a long file; options and variants are not listed yet.
+  Lists all products of the store, gift card products included. Generated config carries every core attribute and one block per variant, so a large catalogue produces a long file. A product with a linked option is listed with an error, since linked options are not supported yet.
 ---
 
 # shopify_product (List Resource)
 
-Lists all products of the store, gift card products included. Generated config carries every core attribute, so a large catalogue produces a long file; options and variants are not listed yet.
+Lists all products of the store, gift card products included. Generated config carries every core attribute and one block per variant, so a large catalogue produces a long file. A product with a linked option is listed with an error, since linked options are not supported yet.
 
 ## Example Usage
 

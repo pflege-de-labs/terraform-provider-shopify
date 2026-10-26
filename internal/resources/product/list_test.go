@@ -45,7 +45,11 @@ resource "shopify_product" %q {
 		TerraformVersionChecks:   []tfversion.TerraformVersionCheck{tfversion.SkipBelow(tfversion.Version1_14_0)},
 		CheckDestroy:             checkGone(t, handleA, handleB),
 		Steps: []resource.TestStep{
-			{Config: product("a", handleA, `tags = ["tf-acc-list"]`) + product("b", handleB, "")},
+			{Config: product("a", handleA, `
+  tags     = ["tf-acc-list"]
+  options  = [{ name = "Size", values = ["S", "M"] }]
+  variants = [{ option_values = { Size = "S" }, price = "3.00" }, { option_values = { Size = "M" }, sku = "TF-LIST-M" }]
+`) + product("b", handleB, "")},
 			{
 				Query:  true,
 				Config: listConfig,
@@ -60,6 +64,10 @@ resource "shopify_product" %q {
 							{Path: tfjsonpath.New("status"), KnownValue: knownvalue.StringExact("DRAFT")},
 							{Path: tfjsonpath.New("tags"), KnownValue: knownvalue.SetExact([]knownvalue.Check{knownvalue.StringExact("tf-acc-list")})},
 							{Path: tfjsonpath.New("gift_card"), KnownValue: knownvalue.Bool(false)},
+							{Path: tfjsonpath.New("options").AtSliceIndex(0).AtMapKey("values"), KnownValue: knownvalue.ListExact([]knownvalue.Check{knownvalue.StringExact("S"), knownvalue.StringExact("M")})},
+							{Path: tfjsonpath.New("variants").AtSliceIndex(0).AtMapKey("price"), KnownValue: knownvalue.StringExact("3.00")},
+							{Path: tfjsonpath.New("variants").AtSliceIndex(1).AtMapKey("option_values"), KnownValue: knownvalue.MapExact(map[string]knownvalue.Check{"Size": knownvalue.StringExact("M")})},
+							{Path: tfjsonpath.New("variants").AtSliceIndex(1).AtMapKey("sku"), KnownValue: knownvalue.StringExact("TF-LIST-M")},
 							{Path: tfjsonpath.New("adopt_existing"), KnownValue: knownvalue.Bool(false)},
 						}),
 				},

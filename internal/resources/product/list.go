@@ -27,7 +27,8 @@ type ListResource struct {
 func (r *ListResource) ListResourceConfigSchema(ctx context.Context, req list.ListResourceSchemaRequest, resp *list.ListResourceSchemaResponse) {
 	resp.Schema = listschema.Schema{
 		MarkdownDescription: "Lists all products of the store, gift card products included. " +
-			"Generated config carries every core attribute, so a large catalogue produces a long file; options and variants are not listed yet.",
+			"Generated config carries every core attribute and one block per variant, so a large catalogue produces a long file. " +
+			"A product with a linked option is listed with an error, since linked options are not supported yet.",
 	}
 }
 
@@ -54,6 +55,9 @@ func listPage(ctx context.Context, c *client.Client) func(after *string) ([]clie
 		nodes := make([]client.ProductFields, len(conn.Nodes))
 		for i, n := range conn.Nodes {
 			nodes[i] = n.ProductFields
+			if err := fetchAllVariants(ctx, c, &nodes[i]); err != nil {
+				return nil, nil, err
+			}
 		}
 		return nodes, patterns.NextCursor(conn.PageInfo.HasNextPage, conn.PageInfo.EndCursor), nil
 	}
