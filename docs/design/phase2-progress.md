@@ -211,4 +211,13 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 15: minor (deferred): admin edit to an unset attribute between plan and apply now yields "inconsistent result" instead of a silent revert (safer, but surprising)
 - Task 15: minor (deferred): ModifyPlan unsupported-membership text always names the sources cause; S13-9 refusal and match_type error appear at apply, not plan
 - Task 15: complete (commits 2c95080..4088b77, review clean after 1 fix round)
-- Task 14c (publishing on product + collection): dispatched (model sonnet)
+- Task 14c (publishing on product + collection): dispatched (base d0f2c11, model sonnet)
+- Task 14c: implemented 4602d2a..3f17570 (DONE_WITH_CONCERNS: tainted object after failed publish on create; market-catalog publishing and write_products-only scope are TODO(verify); controller re-ran checks and all product/collection/publishing acceptance tests green); review dispatched (model sonnet)
+- Task 14c: minor (deferred): `publishing.Sync` ordering (publish before unpublish) and nil-payload returns have no unit or add+remove-in-one-apply acceptance test
+- Task 14c: minor (deferred): publish ok + unpublish failed returns stale `live` set; return IDs from publish payload so the "real publications" comment holds (refresh corrects it)
+- Task 14c: minor (deferred): nil `Publishable` in a successful payload surfaces as misleading "accepted but doesn't list" mismatch
+- Task 14c: minor (deferred): per-type `publish()` glue and node-to-ID loop duplicated in product/collection; a `publishing.Apply` would cut each to one call
+- Task 14c: minor (deferred): multi-line comments on `Sync`, collection `finish`, product `write` (one-line rule)
+- Task 14c: minor (deferred): `write_publications` scope stated as fact in attribute description; no `// TODO(verify)` in code
+- Task 14c: minor (deferred): product list pages publications per product beyond 10 (N+1, rare)
+- Task 14c: complete (commits 4602d2a..3f17570, review clean)
