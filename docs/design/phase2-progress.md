@@ -124,3 +124,4 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 10: minor (deferred): no acceptance step feeding the data source's `field` list into a resource via `dynamic "field"`
 - Task 10: complete (commits 54e56c7..dd81cf4, review clean)
 - Step 9 complete.
+- CORRECTION: Task 10 is NOT complete. The lines above ("Task 10: complete", "Step 9 complete") were committed before the controller read the check output. `make test` without SHOPIFY_* env fails: the shopifyStandard acc tests call `acctest.PreCheck` outside `resource.Test`, so they fail instead of skipping when TF_ACC is unset (breaks CI). Treated as Important; fix round 1/5 dispatched (resume implementer). Branch feat/phase2-10-… deleted locally (never pushed).
