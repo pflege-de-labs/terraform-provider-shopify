@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# gh wrapper: runs the real gh with an agent token for the target repo.
+# Install as `gh` ahead of the real gh in PATH. See docs/containers.md.
+set -euo pipefail
+self=${BASH_SOURCE[0]}
+real=
+while read -r candidate; do
+  [[ $candidate -ef $self ]] || { real=$candidate; break; }
+done < <(type -ap gh)
+[[ -n $real ]] || { echo "agent-gh: no real gh found in PATH" >&2; exit 1; }
+
+# Same precedence as gh: --repo flag, then GH_REPO, then the origin remote.
+repo=${GH_REPO:-}
+args=("$@")
+for ((i = 0; i < ${#args[@]}; i++)); do
+  case ${args[i]} in
+    -R | --repo) repo=${args[i + 1]:-} ;;
+    --repo=*) repo=${args[i]#--repo=} ;;
+    -R?*) repo=${args[i]#-R} ;;
+  esac
+done
+if [[ -z $repo ]]; then
+  repo=$(git remote get-url origin 2>/dev/null) || repo=
+fi
+# Normalise https://github.com/org/repo(.git), git@github.com:org/repo(.git) and HOST/org/repo to org/repo.
+repo=${repo%.git}
+repo=${repo#*github.com[:/]}
+if [[ $repo =~ ^[^/]+/[^/]+/[^/]+$ ]]; then repo=${repo#*/}; fi
+if [[ ! $repo =~ ^[^/]+/[^/]+$ ]]; then
+  # shortcut: no token without one target repo (e.g. `gh api orgs/...`); gh then uses its own auth, if any.
+  exec "$real" "$@"
+fi
+GH_TOKEN=$(AGENT_TOKEN_NONINTERACTIVE=1 agent-token "$repo")
+export GH_TOKEN
+exec "$real" "$@"

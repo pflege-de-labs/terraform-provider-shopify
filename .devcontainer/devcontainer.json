@@ -1,0 +1,43 @@
+// Agent workspace: everything committed or pushed from here goes out as pflege-de-agent[bot].
+// Setup and limits: docs/devcontainer.md.
+{
+  "name": "terraform-provider-shopify",
+  "build": { "dockerfile": "Dockerfile" },
+  "containerEnv": {
+    // pflege-de deployment, see cc-gitops docs/token-broker.md.
+    "TOKEN_BROKER_URL": "https://token-broker.management.p4e.io",
+    "LOGIN_APP_CLIENT_ID": "Iv23lioIrEgGS8HhXBj1",
+    // Environment beats the host ~/.gitconfig that VS Code copies in.
+    "GIT_AUTHOR_NAME": "pflege-de-agent[bot]",
+    "GIT_AUTHOR_EMAIL": "346949488+pflege-de-agent[bot]@users.noreply.github.com",
+    "GIT_COMMITTER_NAME": "pflege-de-agent[bot]",
+    "GIT_COMMITTER_EMAIL": "346949488+pflege-de-agent[bot]@users.noreply.github.com"
+  },
+  "remoteEnv": {
+    "CLAUDE_CODE_OAUTH_TOKEN": "${localEnv:CLAUDE_CODE_OAUTH_TOKEN}",
+    // Dev store only (acceptance tests); empty when the host has none exported.
+    "SHOPIFY_STORE_DOMAIN": "${localEnv:SHOPIFY_STORE_DOMAIN}",
+    "SHOPIFY_CLIENT_ID": "${localEnv:SHOPIFY_CLIENT_ID}",
+    "SHOPIFY_CLIENT_SECRET": "${localEnv:SHOPIFY_CLIENT_SECRET}"
+  },
+  "mounts": [
+    // Per developer and per devcontainer; the login and toolchains survive rebuilds.
+    "source=agent-token-cache-${devcontainerId},target=/home/vscode/.cache/agent-token,type=volume",
+    "source=mise-data-${devcontainerId},target=/home/vscode/.local/share/mise,type=volume",
+    "source=go-${devcontainerId},target=/home/vscode/go,type=volume"
+  ],
+  "remoteUser": "vscode",
+  "postCreateCommand": ".devcontainer/post-create.sh",
+  // Prompts in the terminal that opens on attach; skipped while the login is still valid.
+  "postAttachCommand": "agent-token --check 2>/dev/null || agent-token --login",
+  "customizations": {
+    "vscode": {
+      // Otherwise VS Code answers git's credential requests with your own GitHub login.
+      "settings": {
+        "git.terminalAuthentication": false,
+        "github.gitAuthentication": false
+      },
+      "extensions": ["golang.go", "hashicorp.terraform"]
+    }
+  }
+}
