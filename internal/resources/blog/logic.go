@@ -56,3 +56,14 @@ func goneOnDelete(errs []client.DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsB
 	}
 	return len(errs) > 0
 }
+
+// articlesAtRisk reports whether deleting the blog may delete articles; an unknown count counts as at risk.
+func articlesAtRisk(count *client.GetBlogArticlesCountBlogArticlesCount) (bool, string) {
+	switch {
+	case count == nil:
+		return true, "Shopify did not return the article count, so the blog may hold articles, which are deleted with it."
+	case count.Count > 0:
+		return true, fmt.Sprintf("It holds %d articles, which are deleted with it.", count.Count)
+	}
+	return false, ""
+}

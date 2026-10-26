@@ -174,3 +174,23 @@ func TestSetFromAPI(t *testing.T) {
 		t.Errorf("template suffix: got %v, want null", m.TemplateSuffix)
 	}
 }
+
+// The data-loss guard fails closed: only a known count of 0 lets a delete through.
+func TestArticlesAtRisk(t *testing.T) {
+	cases := []struct {
+		name   string
+		count  *client.GetBlogArticlesCountBlogArticlesCount
+		risk   bool
+		detail string
+	}{
+		{"empty", &client.GetBlogArticlesCountBlogArticlesCount{Count: 0}, false, ""},
+		{"known", &client.GetBlogArticlesCountBlogArticlesCount{Count: 3}, true, "It holds 3 articles, which are deleted with it."},
+		{"unknown", nil, true, "Shopify did not return the article count, so the blog may hold articles, which are deleted with it."},
+	}
+	for _, c := range cases {
+		risk, detail := articlesAtRisk(c.count)
+		if risk != c.risk || detail != c.detail {
+			t.Errorf("%s: got %t, %q; want %t, %q", c.name, risk, detail, c.risk, c.detail)
+		}
+	}
+}

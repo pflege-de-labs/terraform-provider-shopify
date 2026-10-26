@@ -253,9 +253,9 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	if count.Blog == nil {
 		return
 	}
-	if count.Blog.ArticlesCount != nil && count.Blog.ArticlesCount.Count > 0 {
+	if risk, detail := articlesAtRisk(count.Blog.ArticlesCount); risk {
 		if guard := patterns.GuardDataDeletion(state.AllowDataDeletion, what); guard.HasError() {
-			resp.Diagnostics.AddError("The blog has articles", fmt.Sprintf("It holds %d articles, which are deleted with it.", count.Blog.ArticlesCount.Count))
+			resp.Diagnostics.AddError("The blog may have articles", detail)
 			resp.Diagnostics.Append(guard...)
 			return
 		}
