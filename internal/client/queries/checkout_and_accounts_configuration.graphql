@@ -1,0 +1,1299 @@
+fragment CheckoutAndAccountsConfigurationFields on CheckoutAndAccountsConfiguration {
+  id
+  name
+  isPublished
+  # Raw JSON: the provider compares branding as JSON, not as 66 generated types.
+  # Every leaf of the output type except the image and font unions, which the provider treats as write-only.
+  # Written from admin-2026-10.graphql; regenerate it when the API version changes.
+  # @genqlient(bind: "encoding/json.RawMessage")
+  branding {
+    components {
+      checkbox {
+        cornerRadius
+      }
+      choiceList {
+        group {
+          spacing
+        }
+      }
+      control {
+        border
+        cornerRadius
+        labelPosition
+      }
+      divider {
+        borderStyle
+        borderWidth
+      }
+      footer {
+        alignment
+        background
+        colors {
+          base {
+            accent
+            background
+            border
+            decorative
+            icon
+            text
+          }
+          control {
+            accent
+            background
+            border
+            decorative
+            icon
+            selected {
+              accent
+              background
+              border
+              decorative
+              icon
+              text
+            }
+            text
+          }
+          primaryButton {
+            accent
+            background
+            border
+            decorative
+            hover {
+              accent
+              background
+              border
+              decorative
+              icon
+              text
+            }
+            icon
+            text
+          }
+          secondaryButton {
+            accent
+            background
+            border
+            decorative
+            hover {
+              accent
+              background
+              border
+              decorative
+              icon
+              text
+            }
+            icon
+            text
+          }
+        }
+        content {
+          visibility
+        }
+        divided
+        padding
+      }
+      header {
+        alignment
+        background
+        colors {
+          base {
+            accent
+            background
+            border
+            decorative
+            icon
+            text
+          }
+          control {
+            accent
+            background
+            border
+            decorative
+            icon
+            selected {
+              accent
+              background
+              border
+              decorative
+              icon
+              text
+            }
+            text
+          }
+          primaryButton {
+            accent
+            background
+            border
+            decorative
+            hover {
+              accent
+              background
+              border
+              decorative
+              icon
+              text
+            }
+            icon
+            text
+          }
+          secondaryButton {
+            accent
+            background
+            border
+            decorative
+            hover {
+              accent
+              background
+              border
+              decorative
+              icon
+              text
+            }
+            icon
+            text
+          }
+        }
+        divided
+        logo {
+          maxWidth
+          visibility
+        }
+        padding
+      }
+      headingLevel1 {
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+        }
+      }
+      headingLevel2 {
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+        }
+      }
+      headingLevel3 {
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+        }
+      }
+      main {
+        colors {
+          base {
+            accent
+            background
+            border
+            decorative
+            icon
+            text
+          }
+          control {
+            accent
+            background
+            border
+            decorative
+            icon
+            selected {
+              accent
+              background
+              border
+              decorative
+              icon
+              text
+            }
+            text
+          }
+          primaryButton {
+            accent
+            background
+            border
+            decorative
+            hover {
+              accent
+              background
+              border
+              decorative
+              icon
+              text
+            }
+            icon
+            text
+          }
+          secondaryButton {
+            accent
+            background
+            border
+            decorative
+            hover {
+              accent
+              background
+              border
+              decorative
+              icon
+              text
+            }
+            icon
+            text
+          }
+        }
+        divider {
+          borderStyle
+          borderWidth
+          visibility
+        }
+        section {
+          background
+          border
+          borderStyle
+          borderWidth
+          colors {
+            base {
+              accent
+              background
+              border
+              decorative
+              icon
+              text
+            }
+            control {
+              accent
+              background
+              border
+              decorative
+              icon
+              selected {
+                accent
+                background
+                border
+                decorative
+                icon
+                text
+              }
+              text
+            }
+            primaryButton {
+              accent
+              background
+              border
+              decorative
+              hover {
+                accent
+                background
+                border
+                decorative
+                icon
+                text
+              }
+              icon
+              text
+            }
+            secondaryButton {
+              accent
+              background
+              border
+              decorative
+              hover {
+                accent
+                background
+                border
+                decorative
+                icon
+                text
+              }
+              icon
+              text
+            }
+          }
+          cornerRadius
+          padding
+          shadow
+        }
+      }
+      merchandiseThumbnail {
+        badge {
+          background
+        }
+        border
+        cornerRadius
+        fit
+      }
+      primaryButton {
+        blockPadding
+        border
+        cornerRadius
+        inlinePadding
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+        }
+      }
+      secondaryButton {
+        blockPadding
+        border
+        cornerRadius
+        inlinePadding
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+        }
+      }
+      select {
+        border
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+        }
+      }
+      shared {
+        colors {
+          accent
+          button
+          control
+          critical
+          decorative
+          info
+          success
+          warning
+        }
+        cornerRadius
+        typography {
+          kerning
+          letterCase
+        }
+      }
+      textField {
+        border
+        typography {
+          font
+          kerning
+          letterCase
+          size
+          weight
+        }
+      }
+    }
+    designTokens {
+      colors {
+        palette {
+          color1
+          color10
+          color11
+          color12
+          color13
+          color14
+          color15
+          color16
+          color17
+          color18
+          color19
+          color2
+          color20
+          color3
+          color4
+          color5
+          color6
+          color7
+          color8
+          color9
+        }
+      }
+      cornerRadius {
+        base
+        large
+        small
+      }
+      typography {
+        size {
+          base
+          ratio
+        }
+      }
+    }
+    surfaces {
+      checkout {
+        components {
+          buyerJourney {
+            visibility
+          }
+          cartLink {
+            visibility
+          }
+          content {
+            divider {
+              borderStyle
+              borderWidth
+              visibility
+            }
+          }
+          expressCheckout {
+            button {
+              cornerRadius
+            }
+          }
+          footer {
+            alignment
+            background
+            colors {
+              base {
+                accent
+                background
+                border
+                decorative
+                icon
+                text
+              }
+              control {
+                accent
+                background
+                border
+                decorative
+                icon
+                selected {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                text
+              }
+              primaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+              secondaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+            }
+            content {
+              visibility
+            }
+            divided
+            padding
+            position
+          }
+          header {
+            alignment
+            background
+            cartLink {
+              contentType
+            }
+            colors {
+              base {
+                accent
+                background
+                border
+                decorative
+                icon
+                text
+              }
+              control {
+                accent
+                background
+                border
+                decorative
+                icon
+                selected {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                text
+              }
+              primaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+              secondaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+            }
+            divided
+            logo {
+              maxWidth
+              visibility
+            }
+            padding
+            position
+          }
+          main {
+            colors {
+              base {
+                accent
+                background
+                border
+                decorative
+                icon
+                text
+              }
+              control {
+                accent
+                background
+                border
+                decorative
+                icon
+                selected {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                text
+              }
+              primaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+              secondaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+            }
+            divider {
+              borderStyle
+              borderWidth
+              visibility
+            }
+            section {
+              background
+              border
+              borderStyle
+              borderWidth
+              colors {
+                base {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                control {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  selected {
+                    accent
+                    background
+                    border
+                    decorative
+                    icon
+                    text
+                  }
+                  text
+                }
+                primaryButton {
+                  accent
+                  background
+                  border
+                  decorative
+                  hover {
+                    accent
+                    background
+                    border
+                    decorative
+                    icon
+                    text
+                  }
+                  icon
+                  text
+                }
+                secondaryButton {
+                  accent
+                  background
+                  border
+                  decorative
+                  hover {
+                    accent
+                    background
+                    border
+                    decorative
+                    icon
+                    text
+                  }
+                  icon
+                  text
+                }
+              }
+              cornerRadius
+              padding
+              shadow
+            }
+          }
+          orderSummary {
+            colors {
+              base {
+                accent
+                background
+                border
+                decorative
+                icon
+                text
+              }
+              control {
+                accent
+                background
+                border
+                decorative
+                icon
+                selected {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                text
+              }
+              primaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+              secondaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+            }
+            divider {
+              borderStyle
+              borderWidth
+              visibility
+            }
+            section {
+              background
+              border
+              borderStyle
+              borderWidth
+              colors {
+                base {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                control {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  selected {
+                    accent
+                    background
+                    border
+                    decorative
+                    icon
+                    text
+                  }
+                  text
+                }
+                primaryButton {
+                  accent
+                  background
+                  border
+                  decorative
+                  hover {
+                    accent
+                    background
+                    border
+                    decorative
+                    icon
+                    text
+                  }
+                  icon
+                  text
+                }
+                secondaryButton {
+                  accent
+                  background
+                  border
+                  decorative
+                  hover {
+                    accent
+                    background
+                    border
+                    decorative
+                    icon
+                    text
+                  }
+                  icon
+                  text
+                }
+              }
+              cornerRadius
+              padding
+              shadow
+            }
+          }
+        }
+      }
+      customerAccounts {
+        components {
+          footer {
+            alignment
+            colors {
+              base {
+                accent
+                background
+                border
+                decorative
+                icon
+                text
+              }
+              control {
+                accent
+                background
+                border
+                decorative
+                icon
+                selected {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                text
+              }
+              primaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+              secondaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+            }
+            padding
+          }
+          header {
+            alignment
+            colors {
+              base {
+                accent
+                background
+                border
+                decorative
+                icon
+                text
+              }
+              control {
+                accent
+                background
+                border
+                decorative
+                icon
+                selected {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                text
+              }
+              primaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+              secondaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+            }
+            logo {
+              maxWidth
+            }
+            padding
+          }
+          main {
+            colors {
+              base {
+                accent
+                background
+                border
+                decorative
+                icon
+                text
+              }
+              control {
+                accent
+                background
+                border
+                decorative
+                icon
+                selected {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                text
+              }
+              primaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+              secondaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+            }
+            section {
+              background
+              border
+              borderStyle
+              borderWidth
+              colors {
+                base {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                control {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  selected {
+                    accent
+                    background
+                    border
+                    decorative
+                    icon
+                    text
+                  }
+                  text
+                }
+                primaryButton {
+                  accent
+                  background
+                  border
+                  decorative
+                  hover {
+                    accent
+                    background
+                    border
+                    decorative
+                    icon
+                    text
+                  }
+                  icon
+                  text
+                }
+                secondaryButton {
+                  accent
+                  background
+                  border
+                  decorative
+                  hover {
+                    accent
+                    background
+                    border
+                    decorative
+                    icon
+                    text
+                  }
+                  icon
+                  text
+                }
+              }
+              cornerRadius
+              padding
+              shadow
+            }
+          }
+        }
+      }
+      signIn {
+        components {
+          header {
+            logo {
+              maxWidth
+            }
+            padding
+          }
+          main {
+            colors {
+              base {
+                accent
+                background
+                border
+                decorative
+                icon
+                text
+              }
+              control {
+                accent
+                background
+                border
+                decorative
+                icon
+                selected {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                text
+              }
+              primaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+              secondaryButton {
+                accent
+                background
+                border
+                decorative
+                hover {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                icon
+                text
+              }
+            }
+            section {
+              background
+              border
+              borderStyle
+              borderWidth
+              colors {
+                base {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  text
+                }
+                control {
+                  accent
+                  background
+                  border
+                  decorative
+                  icon
+                  selected {
+                    accent
+                    background
+                    border
+                    decorative
+                    icon
+                    text
+                  }
+                  text
+                }
+                primaryButton {
+                  accent
+                  background
+                  border
+                  decorative
+                  hover {
+                    accent
+                    background
+                    border
+                    decorative
+                    icon
+                    text
+                  }
+                  icon
+                  text
+                }
+                secondaryButton {
+                  accent
+                  background
+                  border
+                  decorative
+                  hover {
+                    accent
+                    background
+                    border
+                    decorative
+                    icon
+                    text
+                  }
+                  icon
+                  text
+                }
+              }
+              cornerRadius
+              padding
+              shadow
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetCheckoutAndAccountsConfiguration(
+  $id: ID!
+) {
+  checkoutAndAccountsConfiguration(id: $id) {
+    ...CheckoutAndAccountsConfigurationFields
+  }
+}
+
+# first is small because the branding selection makes each node cost about 85 points (request limit 1,000).
+query ListCheckoutAndAccountsConfigurations(
+  $query: String
+  $after: String
+) {
+  checkoutAndAccountsConfigurations(first: 10, after: $after, query: $query) {
+    nodes {
+      ...CheckoutAndAccountsConfigurationFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# Branding is raw JSON so the keys the user wrote, null included, are sent as is. Overrides are never sent.
+# @genqlient(for: "CheckoutAndAccountsConfigurationInput.branding", omitempty: true, bind: "encoding/json.RawMessage")
+# @genqlient(for: "CheckoutAndAccountsConfigurationInput.overrides", omitempty: true, bind: "encoding/json.RawMessage")
+mutation UpdateCheckoutAndAccountsConfiguration(
+  $id: ID!
+  $configuration: CheckoutAndAccountsConfigurationInput!
+) {
+  checkoutAndAccountsConfigurationUpdate(id: $id, configuration: $configuration) {
+    configuration {
+      ...CheckoutAndAccountsConfigurationFields
+    }
+    userErrors {
+      code
+      field
+      message
+      reason
+    }
+  }
+}

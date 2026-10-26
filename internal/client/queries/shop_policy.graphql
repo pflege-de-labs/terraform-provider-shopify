@@ -1,0 +1,32 @@
+fragment ShopPolicyFields on ShopPolicy {
+  id
+  type
+  title
+  body
+  url
+}
+
+# At most eight rows, one per policy type; a type without text may be missing or have an empty body.
+query ListShopPolicies {
+  shop {
+    shopPolicies {
+      ...ShopPolicyFields
+    }
+  }
+}
+
+# There is no create or delete: this creates the row for a type that has none.
+mutation UpdateShopPolicy(
+  $input: ShopPolicyInput!
+) {
+  shopPolicyUpdate(shopPolicy: $input) {
+    shopPolicy {
+      ...ShopPolicyFields
+    }
+    userErrors {
+      code
+      field
+      message
+    }
+  }
+}

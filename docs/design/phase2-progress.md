@@ -58,3 +58,59 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 4: minor (deferred): primary-domain error drops other userErrors in the same response (resource.go:260-266)
 - Task 4: ⚠️ resolved: `make fmt lint test` + `make generate` re-run by controller, clean, no diff. Review Focus 4 list-path generate-config: same identity-import workaround as the earlier list resources (cross-task, known). Suffix validator `^[a-z]{2,}$` vs legacy suffixes on staging/production: check at the first import.
 - Task 4: complete (commits 40d5910..d7a4b93, review clean)
+- Ruling S8-1: step 8 design (Step 1 of Tasks 5–9) runs as one design-only dispatch (opus) for all five types, reviewed by the controller before any implementer starts — the five are same-shaped shop-level singletons and must share Pattern A semantics — costs one larger re-design if the batch gets a shared assumption wrong.
+- Step 8: branch feat/phase2-08-shop-settings from feat/phase2-07-web-presence @ 690ca52; design dispatch running.
+- Step 8 design: 334ecf3..d329be9 (§9b–9f), report step8-design-report.md. Controller review: approved with the rulings below.
+- Ruling S8-2: checkout branding (Task 9) is merged into Task 8 `shopify_checkout_and_accounts_configuration` with a JSON `branding` attribute (§9e/§9f) — in 2026-10 branding is a field of the configuration and its only writable content, there is no separate object to manage — costs a split later if the task proves too big (fallback in the design report).
+- Ruling S8-3: `shopify_shop_locale.id` is the locale code and `shopify_privacy_settings.id` the shop GID, deviating from "id = GID" — `ShopLocale` and `PrivacySettings` have no GID of their own — costs an identity schema change if Shopify adds IDs later.
+- Ruling S8-4: Task 7 (privacy settings + consent policy) runs with write steps skipped until the dev store's Shopify cookie banner is off; disabling it is one-way through the API and is the user's call (asked) — costs untested write paths until then.
+- Step 8 open: dev store keeps an empty LEGAL_NOTICE policy row (API can't delete policies); branding on the dev store now reads empty containers instead of null.
+- Task 5 (shop locale): dispatched (base e25c80a, model sonnet)
+- Task 5: implemented e25c80a..e5f504d (DONE_WITH_CONCERNS: 859ca7c alone fails lint, unused `localeRe` used by the next commit; acc tests not run red first; TODO(verify) disabling a locale a web presence uses; `published = false` on primary relies on Shopify's error). Review dispatched (sonnet).
+- Task 5: review: spec ✅, quality Approved, 0 Critical/Important.
+- Task 5: minor (deferred): primary-locale safety test reaches adopt=false via update, not via import-then-destroy (resource_test.go adoptPrimary)
+- Task 5: minor (deferred): partial Create (enable ok, publish fails) leaves an enabled locale without state; retry needs adopt_existing — same in sibling resources
+- Task 5: minor (deferred): Delete of a locale already gone fails on "The locale doesn't exist." instead of succeeding
+- Task 5: minor (deferred): unchecked nil on mutation payloads (resource.go ShopLocaleEnable/Disable) — same in sibling resources
+- Task 5: ⚠️ resolved: controller re-ran `make fmt lint test` + `make generate`: clean, no diff. List-path generate-config: same identity-import workaround (cross-task, known).
+- Task 5: complete (commits e25c80a..e5f504d, review clean)
+- Task 6 (shop policy): dispatched (base 5851c8d, model sonnet)
+- Task 6: implemented 5851c8d..4a48d66 (DONE_WITH_CONCERNS minor: dev store gained an empty SHIPPING_POLICY row the API can't remove; TODO(verify) auto-managed PRIVACY_POLICY write, TOO_BIG path, whitespace-only body). Review dispatched (sonnet).
+- Task 6: review: spec ✅, quality Approved, 0 Critical/Important.
+- Task 6: minor (deferred): nil deref on `ShopPolicyUpdate`/`.ShopPolicy` payload (resource.go) — same as shoplocale
+- Task 6: minor (deferred): no unit test for TOO_BIG → `body` userError mapping (field path assumed `["shopPolicy","body"]`)
+- Task 6: minor (deferred): whitespace-only body passes the validator, untested against the API
+- Task 6: minor (deferred): `ownPolicy` comment says "restores pre-test body" but writes ""; list acc test doesn't assert empty rows are skipped
+- Task 6: ⚠️ resolved: controller re-ran `make fmt lint test` + `make generate`: see ledger commit. Dev store now has empty LEGAL_NOTICE and SHIPPING_POLICY rows (not removable via API).
+- Task 6: complete (commits 5851c8d..4a48d66, review clean)
+- Task 7 (privacy settings + consent policy): dispatched (base 2e77eb6, model sonnet), write steps skipped per S8-4
+- S8-4 update (2026-10-26): user approved turning off Shopify's cookie banner on the dev store. Implementer told: `privacyFeaturesDisable` only with COOKIE_BANNER, dev store only, record before/after; consent writes then run with cleanup; DATA_SALE_OPT_OUT_PAGE and PRIVACY_POLICY stay forbidden.
+- Task 7: implemented 2e77eb6..efa6ce9 (DONE_WITH_CONCERNS: COOKIE_BANNER disabled once on the dev store via a client probe, the resource's disable path is covered by fake-API unit tests only; writing US/USCA materialised all 51 US regional rows (irreversible via API); dso/pp untouched; TODO(verify) consentPolicyRegions check, CA materialisation). Review dispatched (sonnet).
+- Task 7: review: spec ❌ (1 Important, plan-mandated: regional-write side effect undocumented for users), 6 Minor.
+- Ruling T7-1: the resource's COOKIE_BANNER disable path stays covered by fake-API unit tests plus one identical real probe call, not by acceptance — the banner can't be re-enabled through the API, so a real acceptance run is impossible on this dev store — costs an untested real-API path if the resource's request differs from the probe.
+- Task 7: minor (deferred): acc-test regex alternation makes the region_code half pointless (consent_policy_test.go:157)
+- Task 7: minor (deferred): CheckDestroy checks IS, not the finally destroyed US/USCA; comment misleading (consent_policy_test.go:122)
+- Task 7: minor (deferred): AT config uses boolOr(live); a null live value would trigger a write to AT (consent_policy_test.go:58-60)
+- Task 7: minor (deferred): regionRe accepts foreign regions (DE+USCA); docs don't say country-level US/CA rows can't be written (logic.go:82)
+- Task 7: minor (deferred): multi-line comments against house rule (consent_policy.go:241,282; helpers_test.go:37; consent_policy_test.go:55; privacy_settings_test.go:84)
+- Task 7: minor (deferred): optional plan-time warning when a plan turns a privacy feature off (one-way)
+- Task 7: fix round 1/5 dispatched (resume implementer; finding: document regional-write side effect)
+- Task 7: fix round 1/5 (1 addressed, 0 open — regional-write side effect now in resource, region_code and list descriptions; commits efa6ce9..5a99542). Controller re-ran `make fmt lint test` (0 issues) + `make generate`: clean.
+- Task 7: minor (deferred): regional side-effect wording claims all countries; only US verified (CA TODO(verify))
+- Task 7: complete (commits 2e77eb6..5a99542, review clean after 1 fix round)
+- Task 8 (checkout and accounts configuration + branding JSON): dispatched (base 616af0c, model opus — custom semantic-equality type and JSON projection need judgment)
+- Task 8: implemented 616af0c..a90527e (DONE_WITH_CONCERNS: whitespace/key-order of hand-written branding JSON plans one no-op update (semantic equality not applied at plan time; jsonencode avoids it); import into a partial-branding config plans one harmless update; write-only paths unit-tested only; TODO(verify) branding scope, images/fonts read-back, overrides). Review dispatched (opus).
+- Task 8: review: spec ✅, quality Approved, 0 Critical/Important (opus).
+- Task 8: ⚠️ resolved: controller probed `checkoutAndAccountsConfiguration(id:)` with an unknown GID on the dev store: returns `null`, no error, so `getByID`'s gone detection holds. `make fmt lint test` (0 issues) + `make generate`: clean.
+- Task 8: minor (deferred): §9f still says "key order and whitespace never plan" next to the finding that hand-written JSON plans once
+- Task 8: minor (deferred): `branding` description "colours compare case-insensitively" true for drift only; editing config hex case plans one update (resource.go:106)
+- Task 8: minor (deferred): `follows_published` edge case (dropping `name` alone keeps name fallback) only in §9f, not in the `name` description
+- Task 8: minor (deferred): 3-line comment in the GraphQL file before `branding {`
+- Task 8: minor (deferred): `prune` in helpers_test.go mirrors `normalise` (independent oracle; add a comment)
+- Task 8: minor (deferred): a configuration named `published` can't be imported by name (undocumented)
+- Task 8: minor (deferred): transport/throttle errors attached to `branding` attribute (resource.go:307)
+- Task 8: minor (deferred): test style `!= true` (brandingtype_test.go:35)
+- Task 8: complete (commits 616af0c..a90527e, review clean)
+- Task 9: merged into Task 8 (ruling S8-2), nothing separate to do.
+- Step 8 complete on feat/phase2-08-shop-settings.
+- Ruling S9-1: Task 10 data sources mirror the existing resources' schemas as read-only attributes; the implementer writes the model section and code in one dispatch, and the task review checks the section — a data source has no identity, import, list or Pattern A/B, so there are no open design questions to settle before code — costs a rework if the reviewer rejects the schema shape.

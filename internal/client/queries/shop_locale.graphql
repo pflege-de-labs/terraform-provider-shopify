@@ -1,0 +1,58 @@
+fragment ShopLocaleFields on ShopLocale {
+  locale
+  name
+  primary
+  published
+}
+
+# published: false is the schema default and returns published and unpublished locales; the list has no pagination.
+query ListShopLocales {
+  shopLocales {
+    ...ShopLocaleFields
+  }
+}
+
+# marketWebPresenceIds is never sent: shopify_web_presence owns that relation.
+mutation EnableShopLocale(
+  $locale: String!
+) {
+  shopLocaleEnable(locale: $locale) {
+    shopLocale {
+      ...ShopLocaleFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# Only published is sent; unset means unmanaged.
+# @genqlient(for: "ShopLocaleInput.published", omitempty: true)
+# @genqlient(for: "ShopLocaleInput.marketWebPresenceIds", omitempty: true)
+mutation UpdateShopLocale(
+  $locale: String!
+  $input: ShopLocaleInput!
+) {
+  shopLocaleUpdate(locale: $locale, shopLocale: $input) {
+    shopLocale {
+      ...ShopLocaleFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DisableShopLocale(
+  $locale: String!
+) {
+  shopLocaleDisable(locale: $locale) {
+    locale
+    userErrors {
+      field
+      message
+    }
+  }
+}
