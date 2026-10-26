@@ -231,6 +231,8 @@ query ListCollections(
 # @genqlient(for: "CollectionCreateSourceInclusionInput.conditions", omitempty: true, bind: "encoding/json.RawMessage")
 # @genqlient(for: "CollectionCreateSourceInclusionInput.selections", omitempty: true)
 # @genqlient(for: "CollectionInclusionProductSelectionInput.variantIds", omitempty: true)
+# @genqlient(for: "SEOInput.title", omitempty: true)
+# @genqlient(for: "SEOInput.description", omitempty: true)
 mutation CreateCollection(
   $collection: CollectionCreateInput!
 ) {
@@ -269,6 +271,8 @@ mutation CreateCollection(
 # @genqlient(for: "CollectionUpdateSourceInclusionInput.conditionsToUpdate", omitempty: true)
 # @genqlient(for: "CollectionUpdateSourceInclusionInput.selectionsToAdd", omitempty: true)
 # @genqlient(for: "CollectionUpdateSourceInclusionInput.selectionsToRemove", omitempty: true)
+# @genqlient(for: "SEOInput.title", omitempty: true)
+# @genqlient(for: "SEOInput.description", omitempty: true)
 mutation UpdateCollection(
   $collection: CollectionUpdateInput!
 ) {

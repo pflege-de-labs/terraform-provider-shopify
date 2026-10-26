@@ -1171,6 +1171,15 @@ Notes:
 
 **Dev store (2026-10-26):** probes created four collections (`tf-probe-legacy-smart` and `tf-probe-legacy-manual` with API 2026-07, `tf-probe-new` and `tf-probe-empty` with 2026-10) and deleted all four. `frontpage` gained an empty source twice through the product probes; both were removed with `sourcesToDelete`, so it is back to `sources: []`, 0 products, `MOST_RELEVANT`.
 
+**Implementation findings (task 15, dev store, 2026-10-26):**
+- ⚠ **Open, pending controller:** a source created through the 2026-10 `sources` input carries the creating app: `collectionCreate(sources: [{ source: { inclusion: { selections } } }])` read back `app: { id: "gid://shopify/App/438813065217" }` (the provider's app), while the 2026-07-migrated sources read `app: null`. The support rule above ("app `null`") therefore rejects every source the provider creates itself, and the acceptance test fails right after the first manual create (`product_ids` reads back null). Options: (A) accept `app` null or the current app (`currentAppInstallation { app { id } }`; `Update` must then always read live first, since every write's result is checked); (B) drop the app check and keep only `shareable = false` (S13-3 names only shared sources as unmanaged).
+- A conditions source can't be empty: create without conditions and selections fails with "A condition based source must have at least one product selection or condition" (`field = ["collection","sources","0","source","inclusion"]`), and so does an update deleting the last condition without adding a selection. So when the planned conditions and products are both empty, the provider deletes the source (`sourcesToDelete`), and creates none. An empty source Shopify made itself (`frontpage`, or one whose products were all deleted) is left alone.
+- `matchType` is required on create when conditions are given ("Match type is required when conditions are provided"); ValidateConfig requires `match_type` with a non-empty `conditions`. `matchType` persists after all conditions are removed (an update deleting the condition while adding a selection kept `ALL`, and `matchType: ANY` could be set on a source without conditions), so `match_type` is read as returned, not forced to null.
+- Handles are normalised like products (`TF-Probe Upper A` → `tf-probe-upper-a`) and HTML is repaired like products (`<p>Hi<br>there<b>bold</p>` → `…<b>bold</b></p>`): both `TODO(verify)` above are confirmed, and the product validator and keep-or-take rule are shared (`internal/patterns`).
+- Deleting a product leaves the collection's source in place with no selections (and `matchType` unchanged).
+- Output conditions can't be selected with plain field names: every kind has its own `relation` enum and differently typed `value`/`values`, which GraphQL's field-merging rules reject. The query aliases them as `<field>__<Kind>` and the mapping strips the suffix.
+- `frontpage` on the dev store had one empty Shopify source (`CollectionConditionsSource/52052885835`, app `null`, `matchType` null) before this task's tests, not `sources: []`; the tests left it like that.
+
 ---
 
 ## 9m. Resource: `shopify_page`
