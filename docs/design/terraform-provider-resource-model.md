@@ -1300,6 +1300,15 @@ Notes:
 
 **Dev store (2026-10-26):** probes created blogs `tf-probe_blog` and `news-1` (the suffix probe) and one article; `news-1` was deleted, the probe blog was renamed (`news-1`, then `tf-probe-blog-2`) and deleted with its article. End state equals the start: only `news`, 0 articles.
 
+**Implemented (§9n, verified on the dev store, 2026-10-26):**
+- Everything above held in the acceptance tests: create without `comment_policy` gives `CLOSED`; `template_suffix` `""` reads back as `""` and a never-set one as `null` (so it uses `UseStateForUnknownIncludingNull`, as for pages); a handle rename keeps the GID; import by handle, by identity and from generated config; the list shows `comment_policy` and `template_suffix`. No attribute deviates from the table.
+- Review Focus 1: adopting `news` and destroying leaves it byte-identical (id, handle, title, comment policy, suffix). Review Focus 2: `comment_policy` set, then left out and changed through the client: the config without it plans empty and state takes the client's value.
+- Suffixed handles: a taken handle on create is refused by the lookup before `blogCreate`, on update before `blogUpdate`; neither test left a `-1` blog. The post-create check (delete the suffixed copy, then fail) and the post-update check (state takes the returned handle) only run when Shopify wins a race, so they are not reached by the tests; `handleDrift` is unit-tested.
+- Pattern B: `articlesCount` reflected an article created seconds earlier, so the guard fires on the first destroy (`holds 1 articles`, plus the `allow_data_deletion` hint); with `allow_data_deletion = true` blog and article are gone. An empty blog is deleted without the flag (every other test's destroy).
+- `NOT_FOUND` on delete is handled by `goneOnDelete` (unit-tested), not by an acceptance test: Terraform refreshes before destroy, so Read already drops a blog deleted outside. The `deletedOutside` test covers that Read path and the recreate.
+- The handle fallback sends `blogs(first: 25, query: "handle:\"<handle>\"")` and compares handles exactly; the quoted form found new blogs immediately. `TODO(verify)` on index lag stays in `Create`. `TODO(verify)` on deleting `news` stays untried.
+- The test-only `articleCreate` / `article(id:)` operations live in `blog.graphql`; the provider never calls them.
+
 ---
 
 ## 9o. Resource: `shopify_file`

@@ -53,7 +53,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_customers` | customer segments; metafield definitions for `CUSTOMER` ⚠ | planned | segments volatile |
 | `write_companies` | metafield definitions for `COMPANY`, `COMPANY_LOCATION` ⚠ (B2B stores only; not in the reference configs) | planned | good |
 | `write_orders`, `write_draft_orders` | metafield definitions for `ORDER`, `DRAFTORDER` ⚠ | planned | good |
-| `write_content` | `shopify_page`; blogs, articles; their metafield definitions ⚠ | ✅ pages, the rest planned | volatile (content) |
+| `write_content` | `shopify_page`, `shopify_blog`; articles; their metafield definitions ⚠ | ✅ pages, blogs, the rest planned | volatile (content) |
 | `write_discounts` | discounts; metafield definitions for `DISCOUNT` ⚠ | planned | volatile (content) |
 | `write_metaobjects` | metaobject entries | planned | volatile (content) |
 | `write_files` | files and media | planned | volatile (content) |

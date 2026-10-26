@@ -44,7 +44,7 @@ func handleDrift(want, got string) error {
 	if want == got {
 		return nil
 	}
-	return fmt.Errorf("Shopify gave the blog the handle %q instead of %q, because %q is taken", got, want, want)
+	return fmt.Errorf("the blog got the handle %q instead of %q, because %q is taken", got, want, want)
 }
 
 // goneOnDelete reports whether blogDelete failed only because the blog no longer exists.
