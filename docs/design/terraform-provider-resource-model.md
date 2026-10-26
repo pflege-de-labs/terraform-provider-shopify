@@ -61,6 +61,7 @@ provider "shopify" {
 | `shopify_product` | `<handle>` (unique per shop, see §9k) |
 | `shopify_collection` | `<handle>` (unique per shop, see §9l) |
 | `shopify_page` | `<handle>` (unique per shop, see §9m) |
+| `shopify_blog` | `<handle>` (unique per shop; Shopify suffixes a taken handle, see §9n) |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -1205,6 +1206,58 @@ Notes:
 **List:** no config. `pages(first: 250)`, paged; requested cost with all attributes was low (149 for pages, blogs and segments together at 250 each, checked). `DisplayName`: `<title> (<handle>)`. Results carry `handle`, `title`, `body`, `published` and `template_suffix` when not null; they pass the validators (Shopify-normalised handles) and plan as import-only.
 
 **Dev store (2026-10-26):** one probe page (`tf-probe_1`, renamed to `tf-probe-renamed`) was created, updated (publish toggles, template suffix, a future `publishDate`) and deleted. End state equals the start: only `contact`.
+
+---
+
+## 9n. Resource: `shopify_blog`
+
+Discovery: 1 blog on staging and on production (D2: build); articles 0 / 0 (roadmap, D6). A blog is a container: handle, title, comment policy and template. Its articles are content and stay out of this resource.
+
+```hcl
+resource "shopify_blog" "news" {
+  handle          = "news"
+  title           = "Ratgeber"
+  comment_policy  = "MODERATED" # optional, unset = unmanaged (created as CLOSED)
+  template_suffix = "ratgeber"  # optional, unset = unmanaged
+  adopt_existing  = true        # every store has "news"
+
+  allow_data_deletion = false
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `Blog` GID. Computed, UseStateForUnknown |
+| `handle` | string | Required, import key. Updatable in place. Same validator as `shopify_product.handle` (`TF Probe_Blog` became `tf-probe_blog`, checked) |
+| `title` | string | Required |
+| `comment_policy` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `CommentPolicy`: `AUTO_PUBLISHED`, `CLOSED`, `MODERATED`. Create without it gives `CLOSED` (checked); in-place update checked |
+| `template_suffix` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `""` reads back as `""`, never set as `null` (checked), as for pages |
+| `adopt_existing` | bool | Pattern A, see below |
+| `allow_data_deletion` | bool | Pattern B, see below |
+
+Import key: the handle (`news`). Read: `blog(id:)` first; if it is gone, `blogs(first: 5, query: "handle:<handle>")` with an exact handle match (no `blogByHandle` root field, so search-indexed; same `TODO(verify)` on lag as pages). `MutableIdentity` is set.
+
+**Shopify suffixes a taken handle instead of failing**, on create and on update: `blogCreate` with `handle: "news"` returned a new blog `news-1`, and `blogUpdate` to `news` renamed the blog to `news-1` (both checked, no userError). So, as for menus (§9):
+- Create looks the handle up first (fails unless `adopt_existing`), then checks the returned handle; a suffixed handle (another writer won the race) means the new blog is deleted again and Create fails, naming the handle.
+- Update with a new handle looks it up first and fails if it is taken. If Shopify still returns a different handle, the update fails with an error naming both, and state takes the returned handle, so the next plan shows the drift.
+
+**Pattern A: `adopt_existing` only.** Every store has a `news` blog ("News", `CLOSED`, created with the shop; the dev store's only blog, and very likely the one blog on staging and production). The schema doesn't mark it as a default, so it is handled like `frontpage` (§9l) and `contact` (§9m): `adopt_existing = true` updates it in place, and destroy only removes it from state with a warning. `TODO(verify)`: whether `news` can be deleted; not tried.
+
+**Pattern B: deleting a blog deletes its articles.** `blogDelete` on a blog with one article removed the article too (`article(id:)` returned `null` afterwards, checked); the schema only says it "removes the blog container". So Delete reads `articlesCount` first and, if it is above 0, fails unless `allow_data_deletion = true`, naming the count. An empty blog is deleted without the guard (it holds only config). No attribute forces a replace, so there is no plan-time replace warning. `NOT_FOUND` on delete ("Blog does not exist", checked) means already gone: removed from state without error.
+
+Notes:
+- Uses `blog(id:)`, `blogs(first:, query:)`, `blogCreate(blog:)`, `blogUpdate(id:, blog:)`, `blogDelete(id:)`. Update sends only changed attributes.
+- Never sent: `metafields`, `redirectNewHandle`, `redirectArticles` (both default `false`; URL redirects are a roadmap type). Renaming a blog therefore changes its article URLs without redirects; the docs say so.
+- Not exposed: `feed` (legacy FeedBurner settings, `null` on the dev store), `tags` (derived from articles), `articlesCount` (only used by the Pattern B check).
+- Errors (`BlogCreateUserError` / `BlogUpdateUserError`, `field` relative to `blog`): `BLANK` (`title`), `INVALID`, `TOO_LONG`, `INCLUSION` (`comment_policy`), `INVALID_VALUE` / `INVALID_TYPE` (metafields, never sent), `NOT_FOUND`. `blogDelete`: `NOT_FOUND`. There is no `TAKEN`: see the handle check above. None is retried.
+- **Fit: good.** A blog's settings are stable configuration; articles, the content, are not managed (roadmap). The description says so, and that destroying a blog with articles needs `allow_data_deletion`.
+- **Scopes:** `read_content` / `write_content`. `TODO(verify)`: checked only with every scope granted.
+- **Review Focus 1:** after destroy of the adopted `news` blog, read it back through the client and expect it unchanged. **Review Focus 2:** set `comment_policy` in one step, leave it out in the next, change it through the client in between: the config without it plans empty.
+- **Testing:** handles `tf-acc-blog-<random>`. Steps: create, update, handle rename, import by handle and identity, adopt `news` (destroy leaves it), a taken handle fails without creating `-1`. Pattern B: create an article through the client (`articleCreate`), destroy fails without `allow_data_deletion`, succeeds with it, and the article is gone. Unit tests first: the suffixed-handle check.
+
+**List:** no config. `blogs(first: 250)`, paged. `DisplayName`: `<title> (<handle>)`. Results carry `handle`, `title`, `comment_policy` and `template_suffix` when not null, and plan as import-only.
+
+**Dev store (2026-10-26):** probes created blogs `tf-probe_blog` and `news-1` (the suffix probe) and one article; `news-1` was deleted, the probe blog was renamed (`news-1`, then `tf-probe-blog-2`) and deleted with its article. End state equals the start: only `news`, 0 articles.
 
 ---
 
