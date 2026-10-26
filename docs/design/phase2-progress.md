@@ -114,3 +114,13 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 9: merged into Task 8 (ruling S8-2), nothing separate to do.
 - Step 8 complete on feat/phase2-08-shop-settings.
 - Ruling S9-1: Task 10 data sources mirror the existing resources' schemas as read-only attributes; the implementer writes the model section and code in one dispatch, and the task review checks the section — a data source has no identity, import, list or Pattern A/B, so there are no open design questions to settle before code — costs a rework if the reviewer rejects the schema shape.
+- Step 9: branch feat/phase2-09-definition-data-sources from feat/phase2-08-shop-settings @ 54e56c7. Task 10 brief written by controller (task-10-brief.md; data sources don't fit the resource template).
+- Task 10: dispatched (base 54e56c7, model sonnet)
+- Task 10: implemented 54e56c7..dd81cf4 (DONE; refactor exports Definition/SetFromAPI from both resource packages, resource acc suites re-run green; no shopify.* metafield defs on dev store → that test skips; TODO(verify) owner-type scopes, $app: type resolution). Review dispatched (sonnet).
+- Task 10: review: spec ✅, quality Approved, 0 Critical/Important. Controller re-ran `make fmt lint test` + `make generate`: clean.
+- Task 10: minor (deferred): no non-acceptance test of the null-result / ACCESS_DENIED branches (needs a fake client)
+- Task 10: minor (deferred): 9g TODO(verify) on `$app:` resolution covers metaobject types only, not metafield namespaces
+- Task 10: minor (deferred): metafield standard-definition acc test hardwired to PRODUCT/shopify/material, always skips on the dev store; double PreCheck
+- Task 10: minor (deferred): no acceptance step feeding the data source's `field` list into a resource via `dynamic "field"`
+- Task 10: complete (commits 54e56c7..dd81cf4, review clean)
+- Step 9 complete.
