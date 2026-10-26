@@ -719,6 +719,41 @@ Leaf equality: numbers numerically, `#RRGGBB` strings case-insensitively, everyt
 
 ---
 
+## 9g. Data sources for Shopify-owned definitions
+
+Decision D4 (2026-10-26). Shopify's standard definitions (`shopify.*` metafield definitions, `shopify--*` metaobject definitions) and app-owned ones (`checkoutblocks.*` on ORDER and SHOP, `$app:…` types) are excluded from import (D3): Terraform must not manage them. Configuration still needs to read them, for example to point a metaobject reference validation at a standard definition. Lookup by natural key also works for merchant-owned definitions.
+
+```hcl
+data "shopify_metafield_definition" "material" {
+  owner_type = "PRODUCT"
+  namespace  = "shopify"
+  key        = "material"
+}
+
+data "shopify_metaobject_definition" "material" {
+  type = "shopify--material"
+}
+```
+
+**Arguments (Required):** `shopify_metafield_definition`: `owner_type` (any `MetafieldOwnerType`, not only `PRODUCT`), `namespace`, `key`. `shopify_metaobject_definition`: `type`, exactly as the API returns it (`shopify--material`, `app--123--foo`, or a merchant type). `TODO(verify)`: whether the API resolves `$app:foo` to the caller's prefix on lookup; the same is unverified for a metafield `namespace` of `$app:…`.
+
+**Attributes (all Computed):** every other attribute of the resource of the same name, with the same names, types and nested shapes, so a value can be passed from data source to resource. Left out: the provider-only `adopt_existing`, `allow_data_deletion` and `timeouts`. `id` is the GID. The `field` list of a metaobject definition is a computed list of objects (data sources can't have computed blocks), with the resource block's attributes (`key`, `type`, `name`, `description`, `required`, `validations`); to build a resource from it, use `dynamic "field"`. As on the resource, empty values read back as `""` (top-level strings), `null` (field description and validations), and Shopify-set access values the API won't accept as input (`admin = PUBLIC_READ_WRITE`) as `null`.
+
+**Lookup and code sharing:** no new GraphQL. `metafieldDefinition(identifier:)` and `metaobjectDefinitionByType(type:)` are the resources' own natural-key queries, and the data sources use the resources' API-to-state mapping (`SetFromAPI` on an exported `Definition` struct that the resource model embeds), so the two can't drift apart. There is no fallback by GID and nothing is written to state beyond the read.
+
+**Errors:**
+- Not found: error, never an empty result, naming the key (`no metafield definition PRODUCT/shopify/material`, `no metaobject definition of type shopify--material`).
+- Missing scope: Shopify's `ACCESS_DENIED` is reported with the owner type and the scope hint. The dev store (2026-10-26) returns `null` instead of an error for an owner type the app can't read (§ scope ⚠ in `docs/bootstrapping.md`), so the not-found error for a metafield definition also says the app may lack the read scope for that owner type. `TODO(verify)`: which scope each owner type needs.
+- Nothing is retried (throttling is handled in the client).
+
+**Scopes:** same as the resources: `read_products` (or `write_products`) for `PRODUCT`/`PRODUCTVARIANT`/`COLLECTION`, `read_metaobject_definitions` for metaobject definitions; other owner types per the ⚠ note.
+
+**Fit:** good. These are read-only references. Definitions owned by Shopify or an app can change with a new Shopify release or app version, and a data source reads the current state on every plan.
+
+**Tests:** acceptance: (a) a definition created by the resource in the same config reads back through the data source with every mirrored attribute equal; (b) a Shopify-standard definition, if the dev store has one; (c) not found. Unit: the not-found message.
+
+---
+
 ## 10. Not covered
 
 Since 2026-10-23 the provider aims to cover every store object the Admin API can manage; remaining types are planned in [[implementation-plan]] Phase 2. Not covered:
