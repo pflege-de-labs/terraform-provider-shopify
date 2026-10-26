@@ -58,6 +58,7 @@ provider "shopify" {
 | `shopify_consent_policy` | `<COUNTRY>` or `<COUNTRY>/<REGION>`, e.g. `DE`, `US/USCA` |
 | `shopify_checkout_and_accounts_configuration` | `published`, or the configuration `<name>` |
 | `shopify_catalog` | `<title>` (unique across all catalogs; market catalogs only, see §9i) |
+| `shopify_product` | `<handle>` (unique per shop, see §9k) |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -893,6 +894,184 @@ Left out: `supportsFuturePublishing`, `operation`, the product and collection co
 **Fit:** good. Read-only reference; channels come and go with app installs, and the data source reads the current state on every plan.
 
 **Tests:** acceptance: read `Online Store` and check `id` (`^gid://shopify/Publication/`), `catalog_id` (`^gid://shopify/AppCatalog/`) and `auto_publish`; not found. On the dev store all three publications (Online Store, Shop, Point of Sale) have `auto_publish = false`, so the test asserts `false` for the Online Store. Unit: exact match, empty names skipped, the duplicate and not-found messages, mapping.
+
+---
+
+## 9k. Resource: `shopify_product`
+
+Discovery: 86 products on staging, 214 on production, all merchant-owned (D2: build). Products are content: merchants and other systems (PIM, ERP, apps) edit them in the admin all the time. The resource exists so a store can be bootstrapped or a small catalogue kept in a repository; the description says it is a poor fit for Terraform otherwise.
+
+```hcl
+resource "shopify_product" "bettschutz" {
+  handle            = "bettschutzeinlage"
+  title             = "Bettschutzeinlage"
+  status            = "ACTIVE"                 # optional, unset = unmanaged (created as ACTIVE)
+  vendor            = "pflege.de"              # optional, unset = unmanaged (Shopify sets the shop name)
+  product_type      = "Pflegehilfsmittel"
+  tags              = ["pflegehilfsmittel", "waschbar"]
+  description_html  = file("${path.module}/products/bettschutzeinlage.html")
+  seo_title         = "Waschbare Bettschutzeinlage"
+  publication_ids   = [data.shopify_publication.online_store.id] # §9k.3
+
+  options = [
+    { name = "Größe", values = ["S", "M"] },
+  ]
+
+  variants = [
+    { option_values = { "Größe" = "S" }, price = "19.90", sku = "BSE-S" },
+    { option_values = { "Größe" = "M" }, price = "24.90", sku = "BSE-M", compare_at_price = "29.90" },
+  ]
+
+  allow_data_deletion = false
+}
+```
+
+**Granularity: one resource per product, holding its options, variants, publications and (later) media.** Every product has at least one variant, Shopify creates and deletes variants together with option values, and `productSet` writes options and variants of one product in a single synchronous call. Separate variant resources would split one `productSet` call over many resources, with no natural key of their own (a variant is identified by its option values within its product) and constant ordering trouble. Publishing is a set of IDs on the product (§9k.3), not a resource, so only one resource ever writes a product's publications. Media is a list of file IDs on the product (§9k.4).
+
+The work is split into four tasks (implementation order): §9k.1 core, §9k.2 options and variants, §9l collection (next section), §9k.3 publishing for both products and collections, §9k.4 media (after the files type, step 13 part b).
+
+### 9k.1 Product core
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `Product` GID. Computed, UseStateForUnknown |
+| `handle` | string | Required, import key. Updatable in place. Validated: no upper-case letters and no whitespace, since Shopify normalises them (`TF-Design Probe_3` became `tf-design-probe_3`, checked), which would otherwise plan forever |
+| `title` | string | Required |
+| `status` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `ACTIVE`, `DRAFT`, `ARCHIVED`, `UNLISTED` (2026-10 has all four). Create without it gives `ACTIVE` (checked) |
+| `description_html` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. See "HTML normalisation" |
+| `vendor` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. Shopify sets the shop name when it is missing (checked) |
+| `product_type` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. Free text; Shopify returns `""` when unset |
+| `category_id` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `TaxonomyCategory` GID (`gid://shopify/TaxonomyCategory/aa-1`) |
+| `tags` | set(string) | Optional + Computed, UseStateForUnknown; unset = unmanaged. Shopify trims, de-duplicates case-insensitively and sorts (`["Zeta"," spaced ","zeta"]` read back as `["spaced","Zeta"]`, checked); a validator rejects leading or trailing whitespace and case-insensitive duplicates so the read matches the config |
+| `seo_title`, `seo_description` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. Null when Shopify uses the defaults |
+| `template_suffix` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged |
+| `gift_card` | bool | Optional + Computed, UseStateForUnknown, **RequiresReplace** (`GIFT_CARD_ATTRIBUTE_CANNOT_BE_CHANGED`). Gift card *products* are catalogue entries; issued gift cards stay out of scope |
+| `adopt_existing` | bool | Pattern A, see below |
+| `allow_data_deletion` | bool | Pattern B, see below |
+
+Import key: the handle (`bettschutzeinlage`). Handles are unique per shop (`productSet` and `productCreate` both fail with `HANDLE_NOT_UNIQUE` / "already in use" on a taken handle, checked; no `-1` suffix as with menus). Read: `product(id:)` first; if it is gone, `productByIdentifier(identifier: { handle })` (not search-indexed, unlike `products(query:)`); `MutableIdentity` is set. `productByHandle` is deprecated and not used.
+
+**Writes go through `productSet` (synchronous), never `productCreate`/`productUpdate`.** One mutation covers the core fields, options and variants, so §9k.2 extends the same call instead of adding a second write path.
+- Create: `productSet(input)` without `identifier`; a taken handle fails with `HANDLE_NOT_UNIQUE`, mapped to `handle`. With `adopt_existing = true`, Create looks the handle up first and, if found, writes the config with `identifier: { id }`.
+- Update: `productSet(identifier: { id }, input)`. `ProductSetInput` has no `id`; the identifier alone selects the product, and a new `handle` in `input` renames it in place (checked). With `identifier: { handle }`, `input.handle` is required (`MISSING_FIELD_REQUIRED`), so the provider never uses the handle identifier.
+- **Omit, don't empty:** keys left out of `ProductSetInput` are unchanged, list fields included: omitting `metafields`, `collections`, `productOptions` and `variants` kept all of them (checked). `tags`, `metafields` and `collections` given as a list are replaced as a whole. The provider sends only attributes that are set in config, and never sends `collections` (§9l owns membership), `metafields` (metafield values are a separate roadmap type), `files` (until §9k.4), `requiresSellingPlan`, `claimOwnership` or `combinedListingRole`.
+- `redirectNewHandle` is not sent: a handle change creates no URL redirect (checked: none was created). URL redirects are a roadmap type.
+- Large products: `synchronous: true` may time out for products with many variants; Shopify's answer is `synchronous: false` plus `productOperation` polling. `TODO(verify)`: whether any staging/production product needs it. v1 is synchronous only.
+
+**HTML normalisation.** Shopify repairs `descriptionHtml`: `<p>Hi<br>there<b>bold</p>` came back as `<p>Hi<br>there<b>bold</b></p>` (checked); well-formed HTML, `<script>` tags and trailing whitespace come back verbatim. To avoid a permanent diff for HTML Shopify rewrites, Create and Update store the value Shopify returned in private state (`description_html_written`). Read keeps the configured value in state while the live value equals that stored value, and takes the live value otherwise (an admin edit then shows as drift). Pure logic, unit-tested first.
+
+**Pattern A: `adopt_existing` only.** Products have no store defaults. With `adopt_existing = true`, Create updates the product with that handle (above), and destroy only removes it from state with a warning.
+
+**Pattern B: deleting a product destroys data.** `productDelete` removes the product's variants and their inventory items with all stock levels, media not used by another product, option values, publications, metafield values and translations (schema description). Checked on the dev store: after `productDelete`, the product's only `MediaImage` was gone from `files`, and the variant's `InventoryItem` returned `null` a few seconds later. Completed orders and refunds keep their copy of the product data; draft orders lose the reference (schema). So Delete, or a replace that would delete (only `gift_card` forces one), fails unless `allow_data_deletion = true`; ModifyPlan warns on a planned replace. The docs suggest `status = "ARCHIVED"` instead of destroy, and `lifecycle { prevent_destroy = true }`. A missing product on delete (`Product does not exist`, plain `UserError`, `field = ["id"]`, checked) means already gone: removed from state without error.
+
+Notes:
+- **Not managed in v1** (left out of `ProductSetInput`, so admin values stay): metafield values (roadmap type; `metafields` would replace all of them), translations (roadmap), inventory quantities (`inventoryQuantities`; inventory levels are a roadmap type), collections (§9l), selling plans (`requiresSellingPlan`, `productJoinSellingPlanGroups`; selling plan groups are on the roadmap), combined listings and bundles (`combinedListingRole`, `productBundle*`), `claimOwnership`, `giftCardTemplateSuffix`. Deprecated fields (`bodyHtml`, `productCategory`, `customProductType`, `productChangeStatus`, `productPublish`, `productCreateMedia`, `productByHandle`) are not used.
+- The dev store put two of three new `DRAFT` probe products into its `frontpage` collection without being asked (an `ACTIVE` one stayed out). `TODO(verify)`: the cause. The product never reads or writes collections, so it doesn't drift; a `shopify_collection` for `frontpage` would (§9l).
+- **genqlient:** `Money` needs a string binding in `internal/client/genqlient.yaml` (like `Decimal`); `HTML` and `Decimal` already have one.
+- Errors: `ProductSetUserError` (`code`, `field` relative to `input`): `HANDLE_NOT_UNIQUE` (`handle`), `INVALID_PRODUCT`, `INVALID_INPUT`, `PRODUCT_DOES_NOT_EXIST` (Read handles the gone case before writing), `PRODUCT_SUSPENDED`, `GIFT_CARDS_NOT_ACTIVATED` / `GIFT_CARD_ATTRIBUTE_CANNOT_BE_CHANGED` (`gift_card`), `CAPABILITY_VIOLATION`, `GENERIC_ERROR`, plus the option and variant codes in §9k.2. `productDelete`: plain `UserError`. None is retried.
+- **Fit: volatile.** The description says so: products are usually owned by merchants or a PIM; managing them here means every admin edit to a managed attribute is reverted on the next apply. Unset attributes stay unmanaged to keep that small.
+- **Scopes:** `read_products` / `write_products` (`docs/bootstrapping.md` already lists products). `TODO(verify)`: whether `read_inventory` is needed for the `inventoryItem` fields read in §9k.2; every scope is granted on the dev store, so it can't tell.
+- **Review Focus 1:** acceptance step reads the product back through the client after an adopted product's destroy and expects it unchanged. **Review Focus 2:** set `vendor` in one step, leave it out in the next, change it through the client in between: the config without `vendor` plans empty.
+- **Testing:** handles `tf-acc-product-<random>`; destroy with `allow_data_deletion = true` (allowed on the dev store). Unit tests first: the handle and tag validators, the description-HTML keep-or-take rule, input mapping (only set attributes are sent).
+
+**List:** no config. `products(first: 100)`, paged (`patterns.Paginate`); requested cost with options, variants (first 250) and publications was 366 for 50 products and 574 for 250 (checked), well below the 1,000 limit. `DisplayName`: `<title> (<handle>)`. Results carry `handle`, `title` and every Optional + Computed attribute that is not null, so generated config plans as import-only; with §9k.2 they also carry `options` and `variants` (generated config for 214 products is long, one block per variant). Gift card products are listed (`gift_card = true`).
+
+### 9k.2 Options and variants
+
+```hcl
+  options = [
+    { name = "Größe", values = ["S", "M", "L"] },
+    { name = "Farbe", values = ["Weiß"] },
+  ]
+
+  variants = [
+    {
+      option_values     = { "Größe" = "S", "Farbe" = "Weiß" }
+      price             = "19.90"
+      sku               = "BSE-S-W"
+      barcodes          = [{ value = "4012345678901", type = "EAN" }]
+      inventory_policy  = "DENY"
+      taxable           = true
+      tracked           = true
+      requires_shipping = true
+      weight            = { value = 0.4, unit = "KILOGRAMS" }
+    },
+    # ...
+  ]
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `options` | list(object) | Optional + Computed, UseStateForUnknown; unset = unmanaged together with `variants`. Up to 3 options (`OPTIONS_OVER_LIMIT`), order = position. `name` (string, Required), `values` (list(string), Required, order = position) |
+| `variants` | list(object) | Optional + Computed, UseStateForUnknown. Required when `options` is set. Order = position |
+| `variants[].option_values` | map(string) | Required. Option name → value; keys must equal the option names, values must be in that option's `values`, combinations unique (ValidateConfig). Empty for a product without options |
+| `variants[].id`, `variants[].inventory_item_id` | string | Computed. Carried forward by ModifyPlan from the matched prior variant (below), unknown for new variants |
+| `variants[].price`, `compare_at_price` | string | Optional + Computed; unset = unmanaged. Decimal strings; compared numerically (`"10"` reads back as `"10.00"`, checked), the configured spelling stays in state when equal |
+| `variants[].sku` | string | Optional + Computed; unset = unmanaged. Not an identity: SKUs can be empty or repeated |
+| `variants[].barcodes` | list(object) | Optional + Computed; unset = unmanaged. `value`, `type` (optional, `BarcodeType`). 2026-10 replaces the deprecated single `barcode` |
+| `variants[].inventory_policy` | string | Optional + Computed; `DENY` / `CONTINUE` |
+| `variants[].taxable` | bool | Optional + Computed |
+| `variants[].tracked`, `requires_shipping` | bool | Optional + Computed. Written through `inventoryItem` |
+| `variants[].weight` | object | Optional + Computed. `value` (number), `unit` (`WeightUnit`). Written through `inventoryItem.measurement.weight`; matters for weight-based shipping rates (§8) |
+
+**Unset `options` and `variants`:** neither is sent; Shopify keeps the existing ones (checked). A new product then has Shopify's default: one option `Title` with value `Default Title` and one variant. Read maps a product with `hasOnlyDefaultVariant = true` to `options = []` and one variant with empty `option_values`; writing that variant sends `productOptions: [{ name: "Title", values: [{ name: "Default Title" }] }]` and `optionValues: [{ optionName: "Title", name: "Default Title" }]`, which updated the default variant in place (checked, same variant GID). `productSet` refuses `variants` without `productOptions` (`PRODUCT_OPTIONS_INPUT_MISSING`, checked), so both are always sent together.
+
+**Variant identity is the option-value combination, not the SKU.** `productSet` matches variants without `id` by their option values: re-sending the same variants with a changed price kept every variant and inventory item GID (checked), and adding an option kept the existing variant (`S` → `S / Red`, same GID). But renaming an option without its `id` re-created every variant (new variant and inventory item GIDs, SKU lost; checked), and with the option, option-value and variant IDs the same rename kept all GIDs (checked). So Update always sends IDs:
+1. Read the live product (options with `optionValues { id name }`, variants with `id` and `selectedOptions`).
+2. Match planned options to prior-state options by name, then leftovers by position: same position and a new name is a rename. Within each matched option, match values the same way (name first, then position among the leftovers). Inserting `XS` before `S` therefore adds a value instead of shifting names.
+3. Map each prior variant's option values through those renames; a planned variant whose combination equals a mapped prior combination keeps that variant's `id`.
+4. Send `productOptions` with `id`s for matched options and values, and `variants` with `id`s for matched variants. Everything unmatched is created; prior variants without a match are deleted.
+
+The same matching runs in ModifyPlan to carry `id` and `inventory_item_id` (and the unset Optional + Computed variant fields) forward, so the plan shows which variants survive. Pure logic in `match.go`, unit-tested first. `ProductOption.values` lists only values that have variants; Read uses `optionValues` (a value without variants is allowed, `hasVariants = false`, checked).
+
+**Pattern B for variants.** Removing a variant, or an option value or option whose variants go with it, deletes those variants' inventory items and stock (checked: a removed variant's inventory item returned `null`). Like a removed metaobject field (§5), such an update fails unless `allow_data_deletion = true` (the planned value counts), and ModifyPlan warns, naming the variants by option values. Renames detected by the matching above don't count as removals.
+
+Notes:
+- Writes: options and variants go in the same `productSet` call as §9k.1. `productVariantsBulk*` and `productOption*` are not used: `productSet` covers creation, update, deletion and ordering in one synchronous call, and splitting writes across mutations would make a partly applied change possible.
+- Within a variant, unset fields are omitted and keep their value (checked: a variant sent without `price` and `sku` kept both).
+- Variant order = list order, sent as `position`; option and value order likewise. Reordering in the admin plans a change back.
+- **Not managed in v1:** inventory quantities (`inventoryQuantities`; inventory levels roadmap), cost, country/province of origin and HS codes, `unitPriceMeasurement` / `showUnitPrice`, `taxCode` (its read field is deprecated without replacement), `requiresComponents`, variant `metafields`, variant media (`file`; §9k.4 may add it), linked options (`linkedMetafield`). A product with a linked option fails Read with a clear error naming the option, since writing it without `linkedMetafield` would unlink it. `TODO(verify)`: whether staging or production products use linked options.
+- Read pages `variants(first: 250)` per product (up to 2,048 variants per product).
+- Errors (`ProductSetUserError`, `field` relative to `input`): `OPTIONS_OVER_LIMIT`, `OPTION_VALUES_OVER_LIMIT`, `OPTION_VALUES_MISSING`, `DUPLICATED_OPTION_NAME`, `DUPLICATED_OPTION_VALUE`, `OPTION_DOES_NOT_EXIST`, `OPTION_VALUE_DOES_NOT_EXIST` (`options`), `VARIANTS_OVER_LIMIT`, `INVALID_VARIANT`, `PRODUCT_VARIANT_DOES_NOT_EXIST`, `DUPLICATED_VALUE`, `INPUT_MISMATCH` (`variants`), the barcode codes (`INCOMPATIBLE_BARCODE_FIELDS`, `BLANK_BARCODE_VALUE`, `TOO_MANY_BARCODES`, `BARCODE_VALUE_TOO_LONG`, `DUPLICATE_BARCODE_VALUE`, `INVALID_BARCODE_TYPE`, `INVALID_BARCODE_SEPARATORS`, `INVALID_BARCODE_LENGTH`, `INVALID_BARCODE_PREFIX`, `INVALID_BARCODE_CHARACTERS`, `BARCODE_CHECKSUM_VALIDATION_FAILED`) mapped to the variant's `barcodes`. `field` paths carry list indexes (`["input","variants","1","price"]` expected); mapping indexes back to `variants[i]` is `TODO(verify)` against a real error. None is retried.
+- **Review Focus 2:** leave `sku` out of one variant, change it through the client: the plan stays empty.
+- **Testing:** acceptance steps for add variant, rename option and value (variant `id`s unchanged), remove variant with and without `allow_data_deletion`, default-variant product price change. Unit tests first for matching, validation and price comparison.
+
+### 9k.3 Publishing (products and collections)
+
+```hcl
+resource "shopify_product" "bettschutz" {
+  # ...
+  publication_ids = [data.shopify_publication.online_store.id]
+}
+
+resource "shopify_collection" "pflegehilfsmittel" {
+  # ...
+  publication_ids = [data.shopify_publication.online_store.id]
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `publication_ids` | set(string) | Optional + Computed, UseStateForUnknown; unset = unmanaged. `Publication` GIDs of sales channels, usually from `data.shopify_publication` (§9j) |
+
+**A set on the resource, not a separate resource.** A `shopify_product_publication` would write the same relation as this attribute; with only the attribute there is one writer per product or collection. The same attribute and the same small helper (`publishablePublish` / `publishableUnpublish`, `resourcePublicationsV2`) serve both types, so one task adds it to both after §9l.
+
+- Read: `resourcePublicationsV2(first: 50, onlyPublished: false) { nodes { publication { id } } }`. With `onlyPublished: false` a draft product shows its publications too (`isPublished = false` until it is `ACTIVE`; checked: publishing a `DRAFT` product listed both publications as unpublished, and `ACTIVE` flipped Online Store to published). Membership, not `isPublished`, is what the attribute holds, so a status change doesn't plan a publication change.
+- Update: publish the added IDs with `publishablePublish(id, input: [{ publicationId }])`, unpublish the removed ones with `publishableUnpublish` (both checked; publishing an already-published ID is a no-op). `publishDate` (scheduled publishing) is not managed. A new product is published nowhere (checked) and a new collection neither (schema), so Create calls `publishablePublish` after the create when the attribute is set.
+- **Channel publications only.** `resourcePublicationsV2` returns `APP` catalog publications unless `catalogType` is passed, and for collections only `APP`. A market catalog's publication ID (§9i) would publish but never read back, planning forever; the docs say to use channel publications, and Update fails with a clear error when Shopify accepts an ID that the follow-up read doesn't return. `TODO(verify)`: whether market-catalog product publishing is wanted; then a `catalogType: MARKET` read can be added.
+- Channels with `autoPublish = true` publish new products themselves (all three dev-store channels are `false`; staging and production unknown). With `publication_ids` set, the next plan removes such an automatic publication; unset, it stays unmanaged.
+- Errors: plain `UserError`, mapped to `publication_ids` (e.g. an unknown publication ID). Products sold only by subscription can be published to online stores only (schema), which surfaces as Shopify's error.
+- **Scopes:** `write_publications` (already in `docs/bootstrapping.md`, "publishing to channels"). `TODO(verify)`: whether `write_products` alone suffices for product publishing; all scopes are granted on the dev store.
+- **Fit: volatile**, like products: merchants publish and unpublish in the admin.
+- **Testing:** acceptance step adds and removes the Online Store publication for a product and a collection; Review Focus 2: publish through the client while the config leaves `publication_ids` unset, expect an empty plan. The list results include `publication_ids` when not empty.
+
+### 9k.4 Media (after the files type)
+
+`media_ids` (list(string), Optional + Computed, UseStateForUnknown, unset = unmanaged, order = position): file GIDs attached to the product, sent as `productSet(input: { files: [{ id }] })`. Product media are files: an image added through `productSet(files: [{ originalSource }])` showed up in `files` with the same `MediaImage` GID (checked). So a product references files from the planned `shopify_file` type (step 13 part b) instead of uploading its own, and this sub-task waits for it. `files` given as a list replaces all media (list semantics of `productSet`); omitted, it keeps them.
+
+Open for that task: whether detaching a file through `productSet` deletes it (deleting the product deleted its only image, checked; Pattern B of `shopify_file` must account for it), variant media (`ProductVariantSetInput.file`), and collection images (`CollectionCreateInput.image` takes an `ImageInput` URL, not a file ID; `TODO(verify)`). Deprecated `productCreateMedia`, `productUpdateMedia`, `productDeleteMedia` are not used.
+
+**Dev store (2026-10-26):** probes created three products (`tf-design-probe-1`, `-2`, `-3`) and published, unpublished and re-statused them; all three were deleted, along with the one image added to `-2`. Two probes landed in `frontpage`, which gained an empty `Untitled Source`; the source was removed again, so `frontpage` is back to `sources: []`, 0 products, `MOST_RELEVANT`. End state equals the start: 0 products, 0 files, 1 collection.
 
 ---
 
