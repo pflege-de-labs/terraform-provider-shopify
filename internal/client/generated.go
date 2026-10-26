@@ -322,6 +322,74 @@ func (v *AddLocationResponse) GetLocationAdd() *AddLocationLocationAddLocationAd
 	return v.LocationAdd
 }
 
+// CheckoutAndAccountsConfigurationFields includes the GraphQL fields of CheckoutAndAccountsConfiguration requested by the fragment CheckoutAndAccountsConfigurationFields.
+// The GraphQL type's documentation follows.
+//
+// A checkout and account configuration packages branding settings, UI extensions, and overrides for a shop's checkout.
+type CheckoutAndAccountsConfigurationFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The configuration name.
+	Name string `json:"name"`
+	// Whether the configuration is published or not.
+	IsPublished bool `json:"isPublished"`
+	// The branding configuration.
+	Branding json.RawMessage `json:"branding"`
+}
+
+// GetId returns CheckoutAndAccountsConfigurationFields.Id, and is useful for accessing the field via an interface.
+func (v *CheckoutAndAccountsConfigurationFields) GetId() string { return v.Id }
+
+// GetName returns CheckoutAndAccountsConfigurationFields.Name, and is useful for accessing the field via an interface.
+func (v *CheckoutAndAccountsConfigurationFields) GetName() string { return v.Name }
+
+// GetIsPublished returns CheckoutAndAccountsConfigurationFields.IsPublished, and is useful for accessing the field via an interface.
+func (v *CheckoutAndAccountsConfigurationFields) GetIsPublished() bool { return v.IsPublished }
+
+// GetBranding returns CheckoutAndAccountsConfigurationFields.Branding, and is useful for accessing the field via an interface.
+func (v *CheckoutAndAccountsConfigurationFields) GetBranding() json.RawMessage { return v.Branding }
+
+// The input fields for checkout and account configurations.
+type CheckoutAndAccountsConfigurationInput struct {
+	// The overrides to create/update in the configuration.
+	Overrides json.RawMessage `json:"overrides,omitempty"`
+	// The branding settings of the configuration.
+	Branding json.RawMessage `json:"branding,omitempty"`
+}
+
+// GetOverrides returns CheckoutAndAccountsConfigurationInput.Overrides, and is useful for accessing the field via an interface.
+func (v *CheckoutAndAccountsConfigurationInput) GetOverrides() json.RawMessage { return v.Overrides }
+
+// GetBranding returns CheckoutAndAccountsConfigurationInput.Branding, and is useful for accessing the field via an interface.
+func (v *CheckoutAndAccountsConfigurationInput) GetBranding() json.RawMessage { return v.Branding }
+
+// Possible error codes that can be returned by `CheckoutAndAccountsConfigurationUserError`.
+type CheckoutAndAccountsConfigurationUserErrorCode string
+
+const (
+	// The input value is invalid.
+	CheckoutAndAccountsConfigurationUserErrorCodeInvalid CheckoutAndAccountsConfigurationUserErrorCode = "INVALID"
+	// The input value is blank.
+	CheckoutAndAccountsConfigurationUserErrorCodeBlank CheckoutAndAccountsConfigurationUserErrorCode = "BLANK"
+	// Internal error. Looks like something went wrong on our end.
+	CheckoutAndAccountsConfigurationUserErrorCodeInternalServerError CheckoutAndAccountsConfigurationUserErrorCode = "INTERNAL_SERVER_ERROR"
+	// One or more required fields are missing in the input.
+	CheckoutAndAccountsConfigurationUserErrorCodeMissing CheckoutAndAccountsConfigurationUserErrorCode = "MISSING"
+	// One or more requested items couldn't be found.
+	CheckoutAndAccountsConfigurationUserErrorCodeNotFound CheckoutAndAccountsConfigurationUserErrorCode = "NOT_FOUND"
+	// The request could not be completed — please try again later.
+	CheckoutAndAccountsConfigurationUserErrorCodeTransient CheckoutAndAccountsConfigurationUserErrorCode = "TRANSIENT"
+)
+
+var AllCheckoutAndAccountsConfigurationUserErrorCode = []CheckoutAndAccountsConfigurationUserErrorCode{
+	CheckoutAndAccountsConfigurationUserErrorCodeInvalid,
+	CheckoutAndAccountsConfigurationUserErrorCodeBlank,
+	CheckoutAndAccountsConfigurationUserErrorCodeInternalServerError,
+	CheckoutAndAccountsConfigurationUserErrorCodeMissing,
+	CheckoutAndAccountsConfigurationUserErrorCodeNotFound,
+	CheckoutAndAccountsConfigurationUserErrorCodeTransient,
+}
+
 // Possible error codes that can be returned by `ConsentPolicyError`.
 type ConsentPolicyErrorCode string
 
@@ -5404,6 +5472,98 @@ func (v *FindLocationsResponse) GetLocations() FindLocationsLocationsLocationCon
 	return v.Locations
 }
 
+// GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration includes the requested fields of the GraphQL type CheckoutAndAccountsConfiguration.
+// The GraphQL type's documentation follows.
+//
+// A checkout and account configuration packages branding settings, UI extensions, and overrides for a shop's checkout.
+type GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration struct {
+	CheckoutAndAccountsConfigurationFields `json:"-"`
+}
+
+// GetId returns GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration.Id, and is useful for accessing the field via an interface.
+func (v *GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration) GetId() string {
+	return v.CheckoutAndAccountsConfigurationFields.Id
+}
+
+// GetName returns GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration.Name, and is useful for accessing the field via an interface.
+func (v *GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration) GetName() string {
+	return v.CheckoutAndAccountsConfigurationFields.Name
+}
+
+// GetIsPublished returns GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration.IsPublished, and is useful for accessing the field via an interface.
+func (v *GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration) GetIsPublished() bool {
+	return v.CheckoutAndAccountsConfigurationFields.IsPublished
+}
+
+// GetBranding returns GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration.Branding, and is useful for accessing the field via an interface.
+func (v *GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration) GetBranding() json.RawMessage {
+	return v.CheckoutAndAccountsConfigurationFields.Branding
+}
+
+func (v *GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CheckoutAndAccountsConfigurationFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	IsPublished bool `json:"isPublished"`
+
+	Branding json.RawMessage `json:"branding"`
+}
+
+func (v *GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration) __premarshalJSON() (*__premarshalGetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration, error) {
+	var retval __premarshalGetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration
+
+	retval.Id = v.CheckoutAndAccountsConfigurationFields.Id
+	retval.Name = v.CheckoutAndAccountsConfigurationFields.Name
+	retval.IsPublished = v.CheckoutAndAccountsConfigurationFields.IsPublished
+	retval.Branding = v.CheckoutAndAccountsConfigurationFields.Branding
+	return &retval, nil
+}
+
+// GetCheckoutAndAccountsConfigurationResponse is returned by GetCheckoutAndAccountsConfiguration on success.
+type GetCheckoutAndAccountsConfigurationResponse struct {
+	// A checkout and accounts configuration for a shop.
+	CheckoutAndAccountsConfiguration *GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration `json:"checkoutAndAccountsConfiguration"`
+}
+
+// GetCheckoutAndAccountsConfiguration returns GetCheckoutAndAccountsConfigurationResponse.CheckoutAndAccountsConfiguration, and is useful for accessing the field via an interface.
+func (v *GetCheckoutAndAccountsConfigurationResponse) GetCheckoutAndAccountsConfiguration() *GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration {
+	return v.CheckoutAndAccountsConfiguration
+}
+
 // GetConsentPolicyByIDConsentPolicy includes the requested fields of the GraphQL type ConsentPolicy.
 // The GraphQL type's documentation follows.
 //
@@ -6988,6 +7148,142 @@ var AllInclusiveTaxPricingStrategy = []InclusiveTaxPricingStrategy{
 	InclusiveTaxPricingStrategyAddTaxesAtCheckout,
 	InclusiveTaxPricingStrategyIncludesTaxesInPrice,
 	InclusiveTaxPricingStrategyIncludesTaxesInPriceBasedOnCountry,
+}
+
+// ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection includes the requested fields of the GraphQL type CheckoutAndAccountsConfigurationConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple CheckoutAndAccountsConfigurations.
+type ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection struct {
+	// A list of nodes that are contained in CheckoutAndAccountsConfigurationEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection) GetNodes() []ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection) GetPageInfo() ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration includes the requested fields of the GraphQL type CheckoutAndAccountsConfiguration.
+// The GraphQL type's documentation follows.
+//
+// A checkout and account configuration packages branding settings, UI extensions, and overrides for a shop's checkout.
+type ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration struct {
+	CheckoutAndAccountsConfigurationFields `json:"-"`
+}
+
+// GetId returns ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration.Id, and is useful for accessing the field via an interface.
+func (v *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration) GetId() string {
+	return v.CheckoutAndAccountsConfigurationFields.Id
+}
+
+// GetName returns ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration.Name, and is useful for accessing the field via an interface.
+func (v *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration) GetName() string {
+	return v.CheckoutAndAccountsConfigurationFields.Name
+}
+
+// GetIsPublished returns ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration.IsPublished, and is useful for accessing the field via an interface.
+func (v *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration) GetIsPublished() bool {
+	return v.CheckoutAndAccountsConfigurationFields.IsPublished
+}
+
+// GetBranding returns ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration.Branding, and is useful for accessing the field via an interface.
+func (v *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration) GetBranding() json.RawMessage {
+	return v.CheckoutAndAccountsConfigurationFields.Branding
+}
+
+func (v *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CheckoutAndAccountsConfigurationFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	IsPublished bool `json:"isPublished"`
+
+	Branding json.RawMessage `json:"branding"`
+}
+
+func (v *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration) __premarshalJSON() (*__premarshalListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration, error) {
+	var retval __premarshalListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionNodesCheckoutAndAccountsConfiguration
+
+	retval.Id = v.CheckoutAndAccountsConfigurationFields.Id
+	retval.Name = v.CheckoutAndAccountsConfigurationFields.Name
+	retval.IsPublished = v.CheckoutAndAccountsConfigurationFields.IsPublished
+	retval.Branding = v.CheckoutAndAccountsConfigurationFields.Branding
+	return &retval, nil
+}
+
+// ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// ListCheckoutAndAccountsConfigurationsResponse is returned by ListCheckoutAndAccountsConfigurations on success.
+type ListCheckoutAndAccountsConfigurationsResponse struct {
+	// List of checkout and accounts configurations on a shop.
+	CheckoutAndAccountsConfigurations *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection `json:"checkoutAndAccountsConfigurations"`
+}
+
+// GetCheckoutAndAccountsConfigurations returns ListCheckoutAndAccountsConfigurationsResponse.CheckoutAndAccountsConfigurations, and is useful for accessing the field via an interface.
+func (v *ListCheckoutAndAccountsConfigurationsResponse) GetCheckoutAndAccountsConfigurations() *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection {
+	return v.CheckoutAndAccountsConfigurations
 }
 
 // ListConsentPoliciesConsentPolicy includes the requested fields of the GraphQL type ConsentPolicy.
@@ -12494,6 +12790,154 @@ var AllShopPolicyType = []ShopPolicyType{
 	ShopPolicyTypeContactInformation,
 }
 
+// UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload includes the requested fields of the GraphQL type CheckoutAndAccountsConfigurationUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `checkoutAndAccountsConfigurationUpdate` mutation.
+type UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload struct {
+	// The updated configuration.
+	Configuration *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration `json:"configuration"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadUserErrorsCheckoutAndAccountsConfigurationUserError `json:"userErrors"`
+}
+
+// GetConfiguration returns UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload.Configuration, and is useful for accessing the field via an interface.
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload) GetConfiguration() *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration {
+	return v.Configuration
+}
+
+// GetUserErrors returns UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload) GetUserErrors() []UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadUserErrorsCheckoutAndAccountsConfigurationUserError {
+	return v.UserErrors
+}
+
+// UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration includes the requested fields of the GraphQL type CheckoutAndAccountsConfiguration.
+// The GraphQL type's documentation follows.
+//
+// A checkout and account configuration packages branding settings, UI extensions, and overrides for a shop's checkout.
+type UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration struct {
+	CheckoutAndAccountsConfigurationFields `json:"-"`
+}
+
+// GetId returns UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration.Id, and is useful for accessing the field via an interface.
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration) GetId() string {
+	return v.CheckoutAndAccountsConfigurationFields.Id
+}
+
+// GetName returns UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration.Name, and is useful for accessing the field via an interface.
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration) GetName() string {
+	return v.CheckoutAndAccountsConfigurationFields.Name
+}
+
+// GetIsPublished returns UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration.IsPublished, and is useful for accessing the field via an interface.
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration) GetIsPublished() bool {
+	return v.CheckoutAndAccountsConfigurationFields.IsPublished
+}
+
+// GetBranding returns UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration.Branding, and is useful for accessing the field via an interface.
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration) GetBranding() json.RawMessage {
+	return v.CheckoutAndAccountsConfigurationFields.Branding
+}
+
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CheckoutAndAccountsConfigurationFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	IsPublished bool `json:"isPublished"`
+
+	Branding json.RawMessage `json:"branding"`
+}
+
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration) __premarshalJSON() (*__premarshalUpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration, error) {
+	var retval __premarshalUpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadConfigurationCheckoutAndAccountsConfiguration
+
+	retval.Id = v.CheckoutAndAccountsConfigurationFields.Id
+	retval.Name = v.CheckoutAndAccountsConfigurationFields.Name
+	retval.IsPublished = v.CheckoutAndAccountsConfigurationFields.IsPublished
+	retval.Branding = v.CheckoutAndAccountsConfigurationFields.Branding
+	return &retval, nil
+}
+
+// UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadUserErrorsCheckoutAndAccountsConfigurationUserError includes the requested fields of the GraphQL type CheckoutAndAccountsConfigurationUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of a mutation for managing checkout and accounts configurations.
+type UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadUserErrorsCheckoutAndAccountsConfigurationUserError struct {
+	// The error code.
+	Code *CheckoutAndAccountsConfigurationUserErrorCode `json:"code"`
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The reason for the error.
+	Reason string `json:"reason"`
+}
+
+// GetCode returns UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadUserErrorsCheckoutAndAccountsConfigurationUserError.Code, and is useful for accessing the field via an interface.
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadUserErrorsCheckoutAndAccountsConfigurationUserError) GetCode() *CheckoutAndAccountsConfigurationUserErrorCode {
+	return v.Code
+}
+
+// GetField returns UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadUserErrorsCheckoutAndAccountsConfigurationUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadUserErrorsCheckoutAndAccountsConfigurationUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadUserErrorsCheckoutAndAccountsConfigurationUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadUserErrorsCheckoutAndAccountsConfigurationUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetReason returns UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadUserErrorsCheckoutAndAccountsConfigurationUserError.Reason, and is useful for accessing the field via an interface.
+func (v *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayloadUserErrorsCheckoutAndAccountsConfigurationUserError) GetReason() string {
+	return v.Reason
+}
+
+// UpdateCheckoutAndAccountsConfigurationResponse is returned by UpdateCheckoutAndAccountsConfiguration on success.
+type UpdateCheckoutAndAccountsConfigurationResponse struct {
+	// Updates a checkout and accounts configuration.
+	CheckoutAndAccountsConfigurationUpdate *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload `json:"checkoutAndAccountsConfigurationUpdate"`
+}
+
+// GetCheckoutAndAccountsConfigurationUpdate returns UpdateCheckoutAndAccountsConfigurationResponse.CheckoutAndAccountsConfigurationUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateCheckoutAndAccountsConfigurationResponse) GetCheckoutAndAccountsConfigurationUpdate() *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload {
+	return v.CheckoutAndAccountsConfigurationUpdate
+}
+
 // UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayload includes the requested fields of the GraphQL type ConsentPolicyUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -14247,6 +14691,14 @@ type __FindLocationsInput struct {
 // GetQuery returns __FindLocationsInput.Query, and is useful for accessing the field via an interface.
 func (v *__FindLocationsInput) GetQuery() string { return v.Query }
 
+// __GetCheckoutAndAccountsConfigurationInput is used internally by genqlient
+type __GetCheckoutAndAccountsConfigurationInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetCheckoutAndAccountsConfigurationInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetCheckoutAndAccountsConfigurationInput) GetId() string { return v.Id }
+
 // __GetConsentPolicyByIDInput is used internally by genqlient
 type __GetConsentPolicyByIDInput struct {
 	Id string `json:"id"`
@@ -14341,6 +14793,18 @@ type __GetWebPresenceInput struct {
 // GetId returns __GetWebPresenceInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetWebPresenceInput) GetId() string { return v.Id }
 
+// __ListCheckoutAndAccountsConfigurationsInput is used internally by genqlient
+type __ListCheckoutAndAccountsConfigurationsInput struct {
+	Query *string `json:"query"`
+	After *string `json:"after"`
+}
+
+// GetQuery returns __ListCheckoutAndAccountsConfigurationsInput.Query, and is useful for accessing the field via an interface.
+func (v *__ListCheckoutAndAccountsConfigurationsInput) GetQuery() *string { return v.Query }
+
+// GetAfter returns __ListCheckoutAndAccountsConfigurationsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListCheckoutAndAccountsConfigurationsInput) GetAfter() *string { return v.After }
+
 // __ListDeliveryProfilesInput is used internally by genqlient
 type __ListDeliveryProfilesInput struct {
 	After *string `json:"after"`
@@ -14404,6 +14868,20 @@ type __ListWebPresencesInput struct {
 
 // GetAfter returns __ListWebPresencesInput.After, and is useful for accessing the field via an interface.
 func (v *__ListWebPresencesInput) GetAfter() *string { return v.After }
+
+// __UpdateCheckoutAndAccountsConfigurationInput is used internally by genqlient
+type __UpdateCheckoutAndAccountsConfigurationInput struct {
+	Id            string                                `json:"id"`
+	Configuration CheckoutAndAccountsConfigurationInput `json:"configuration"`
+}
+
+// GetId returns __UpdateCheckoutAndAccountsConfigurationInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateCheckoutAndAccountsConfigurationInput) GetId() string { return v.Id }
+
+// GetConfiguration returns __UpdateCheckoutAndAccountsConfigurationInput.Configuration, and is useful for accessing the field via an interface.
+func (v *__UpdateCheckoutAndAccountsConfigurationInput) GetConfiguration() CheckoutAndAccountsConfigurationInput {
+	return v.Configuration
+}
 
 // __UpdateConsentPolicyInput is used internally by genqlient
 type __UpdateConsentPolicyInput struct {
@@ -15497,6 +15975,1291 @@ func FindLocations(
 	return data_, err_
 }
 
+// The query executed by GetCheckoutAndAccountsConfiguration.
+const GetCheckoutAndAccountsConfiguration_Operation = `
+query GetCheckoutAndAccountsConfiguration ($id: ID!) {
+	checkoutAndAccountsConfiguration(id: $id) {
+		... CheckoutAndAccountsConfigurationFields
+	}
+}
+fragment CheckoutAndAccountsConfigurationFields on CheckoutAndAccountsConfiguration {
+	id
+	name
+	isPublished
+	branding {
+		components {
+			checkbox {
+				cornerRadius
+			}
+			choiceList {
+				group {
+					spacing
+				}
+			}
+			control {
+				border
+				cornerRadius
+				labelPosition
+			}
+			divider {
+				borderStyle
+				borderWidth
+			}
+			footer {
+				alignment
+				background
+				colors {
+					base {
+						accent
+						background
+						border
+						decorative
+						icon
+						text
+					}
+					control {
+						accent
+						background
+						border
+						decorative
+						icon
+						selected {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						text
+					}
+					primaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+					secondaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+				}
+				content {
+					visibility
+				}
+				divided
+				padding
+			}
+			header {
+				alignment
+				background
+				colors {
+					base {
+						accent
+						background
+						border
+						decorative
+						icon
+						text
+					}
+					control {
+						accent
+						background
+						border
+						decorative
+						icon
+						selected {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						text
+					}
+					primaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+					secondaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+				}
+				divided
+				logo {
+					maxWidth
+					visibility
+				}
+				padding
+			}
+			headingLevel1 {
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			headingLevel2 {
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			headingLevel3 {
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			main {
+				colors {
+					base {
+						accent
+						background
+						border
+						decorative
+						icon
+						text
+					}
+					control {
+						accent
+						background
+						border
+						decorative
+						icon
+						selected {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						text
+					}
+					primaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+					secondaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+				}
+				divider {
+					borderStyle
+					borderWidth
+					visibility
+				}
+				section {
+					background
+					border
+					borderStyle
+					borderWidth
+					colors {
+						base {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						control {
+							accent
+							background
+							border
+							decorative
+							icon
+							selected {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							text
+						}
+						primaryButton {
+							accent
+							background
+							border
+							decorative
+							hover {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							icon
+							text
+						}
+						secondaryButton {
+							accent
+							background
+							border
+							decorative
+							hover {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							icon
+							text
+						}
+					}
+					cornerRadius
+					padding
+					shadow
+				}
+			}
+			merchandiseThumbnail {
+				badge {
+					background
+				}
+				border
+				cornerRadius
+				fit
+			}
+			primaryButton {
+				blockPadding
+				border
+				cornerRadius
+				inlinePadding
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			secondaryButton {
+				blockPadding
+				border
+				cornerRadius
+				inlinePadding
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			select {
+				border
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			shared {
+				colors {
+					accent
+					button
+					control
+					critical
+					decorative
+					info
+					success
+					warning
+				}
+				cornerRadius
+				typography {
+					kerning
+					letterCase
+				}
+			}
+			textField {
+				border
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+		}
+		designTokens {
+			colors {
+				palette {
+					color1
+					color10
+					color11
+					color12
+					color13
+					color14
+					color15
+					color16
+					color17
+					color18
+					color19
+					color2
+					color20
+					color3
+					color4
+					color5
+					color6
+					color7
+					color8
+					color9
+				}
+			}
+			cornerRadius {
+				base
+				large
+				small
+			}
+			typography {
+				size {
+					base
+					ratio
+				}
+			}
+		}
+		surfaces {
+			checkout {
+				components {
+					buyerJourney {
+						visibility
+					}
+					cartLink {
+						visibility
+					}
+					content {
+						divider {
+							borderStyle
+							borderWidth
+							visibility
+						}
+					}
+					expressCheckout {
+						button {
+							cornerRadius
+						}
+					}
+					footer {
+						alignment
+						background
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						content {
+							visibility
+						}
+						divided
+						padding
+						position
+					}
+					header {
+						alignment
+						background
+						cartLink {
+							contentType
+						}
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						divided
+						logo {
+							maxWidth
+							visibility
+						}
+						padding
+						position
+					}
+					main {
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						divider {
+							borderStyle
+							borderWidth
+							visibility
+						}
+						section {
+							background
+							border
+							borderStyle
+							borderWidth
+							colors {
+								base {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								control {
+									accent
+									background
+									border
+									decorative
+									icon
+									selected {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									text
+								}
+								primaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+								secondaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+							}
+							cornerRadius
+							padding
+							shadow
+						}
+					}
+					orderSummary {
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						divider {
+							borderStyle
+							borderWidth
+							visibility
+						}
+						section {
+							background
+							border
+							borderStyle
+							borderWidth
+							colors {
+								base {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								control {
+									accent
+									background
+									border
+									decorative
+									icon
+									selected {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									text
+								}
+								primaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+								secondaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+							}
+							cornerRadius
+							padding
+							shadow
+						}
+					}
+				}
+			}
+			customerAccounts {
+				components {
+					footer {
+						alignment
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						padding
+					}
+					header {
+						alignment
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						logo {
+							maxWidth
+						}
+						padding
+					}
+					main {
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						section {
+							background
+							border
+							borderStyle
+							borderWidth
+							colors {
+								base {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								control {
+									accent
+									background
+									border
+									decorative
+									icon
+									selected {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									text
+								}
+								primaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+								secondaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+							}
+							cornerRadius
+							padding
+							shadow
+						}
+					}
+				}
+			}
+			signIn {
+				components {
+					header {
+						logo {
+							maxWidth
+						}
+						padding
+					}
+					main {
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						section {
+							background
+							border
+							borderStyle
+							borderWidth
+							colors {
+								base {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								control {
+									accent
+									background
+									border
+									decorative
+									icon
+									selected {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									text
+								}
+								primaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+								secondaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+							}
+							cornerRadius
+							padding
+							shadow
+						}
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+func GetCheckoutAndAccountsConfiguration(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetCheckoutAndAccountsConfigurationResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCheckoutAndAccountsConfiguration",
+		Query:  GetCheckoutAndAccountsConfiguration_Operation,
+		Variables: &__GetCheckoutAndAccountsConfigurationInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetCheckoutAndAccountsConfigurationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetConsentPolicyByID.
 const GetConsentPolicyByID_Operation = `
 query GetConsentPolicyByID ($id: ID!) {
@@ -16267,6 +18030,1300 @@ func GetWebPresence(
 	return data_, err_
 }
 
+// The query executed by ListCheckoutAndAccountsConfigurations.
+const ListCheckoutAndAccountsConfigurations_Operation = `
+query ListCheckoutAndAccountsConfigurations ($query: String, $after: String) {
+	checkoutAndAccountsConfigurations(first: 10, after: $after, query: $query) {
+		nodes {
+			... CheckoutAndAccountsConfigurationFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment CheckoutAndAccountsConfigurationFields on CheckoutAndAccountsConfiguration {
+	id
+	name
+	isPublished
+	branding {
+		components {
+			checkbox {
+				cornerRadius
+			}
+			choiceList {
+				group {
+					spacing
+				}
+			}
+			control {
+				border
+				cornerRadius
+				labelPosition
+			}
+			divider {
+				borderStyle
+				borderWidth
+			}
+			footer {
+				alignment
+				background
+				colors {
+					base {
+						accent
+						background
+						border
+						decorative
+						icon
+						text
+					}
+					control {
+						accent
+						background
+						border
+						decorative
+						icon
+						selected {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						text
+					}
+					primaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+					secondaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+				}
+				content {
+					visibility
+				}
+				divided
+				padding
+			}
+			header {
+				alignment
+				background
+				colors {
+					base {
+						accent
+						background
+						border
+						decorative
+						icon
+						text
+					}
+					control {
+						accent
+						background
+						border
+						decorative
+						icon
+						selected {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						text
+					}
+					primaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+					secondaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+				}
+				divided
+				logo {
+					maxWidth
+					visibility
+				}
+				padding
+			}
+			headingLevel1 {
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			headingLevel2 {
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			headingLevel3 {
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			main {
+				colors {
+					base {
+						accent
+						background
+						border
+						decorative
+						icon
+						text
+					}
+					control {
+						accent
+						background
+						border
+						decorative
+						icon
+						selected {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						text
+					}
+					primaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+					secondaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+				}
+				divider {
+					borderStyle
+					borderWidth
+					visibility
+				}
+				section {
+					background
+					border
+					borderStyle
+					borderWidth
+					colors {
+						base {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						control {
+							accent
+							background
+							border
+							decorative
+							icon
+							selected {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							text
+						}
+						primaryButton {
+							accent
+							background
+							border
+							decorative
+							hover {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							icon
+							text
+						}
+						secondaryButton {
+							accent
+							background
+							border
+							decorative
+							hover {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							icon
+							text
+						}
+					}
+					cornerRadius
+					padding
+					shadow
+				}
+			}
+			merchandiseThumbnail {
+				badge {
+					background
+				}
+				border
+				cornerRadius
+				fit
+			}
+			primaryButton {
+				blockPadding
+				border
+				cornerRadius
+				inlinePadding
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			secondaryButton {
+				blockPadding
+				border
+				cornerRadius
+				inlinePadding
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			select {
+				border
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			shared {
+				colors {
+					accent
+					button
+					control
+					critical
+					decorative
+					info
+					success
+					warning
+				}
+				cornerRadius
+				typography {
+					kerning
+					letterCase
+				}
+			}
+			textField {
+				border
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+		}
+		designTokens {
+			colors {
+				palette {
+					color1
+					color10
+					color11
+					color12
+					color13
+					color14
+					color15
+					color16
+					color17
+					color18
+					color19
+					color2
+					color20
+					color3
+					color4
+					color5
+					color6
+					color7
+					color8
+					color9
+				}
+			}
+			cornerRadius {
+				base
+				large
+				small
+			}
+			typography {
+				size {
+					base
+					ratio
+				}
+			}
+		}
+		surfaces {
+			checkout {
+				components {
+					buyerJourney {
+						visibility
+					}
+					cartLink {
+						visibility
+					}
+					content {
+						divider {
+							borderStyle
+							borderWidth
+							visibility
+						}
+					}
+					expressCheckout {
+						button {
+							cornerRadius
+						}
+					}
+					footer {
+						alignment
+						background
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						content {
+							visibility
+						}
+						divided
+						padding
+						position
+					}
+					header {
+						alignment
+						background
+						cartLink {
+							contentType
+						}
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						divided
+						logo {
+							maxWidth
+							visibility
+						}
+						padding
+						position
+					}
+					main {
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						divider {
+							borderStyle
+							borderWidth
+							visibility
+						}
+						section {
+							background
+							border
+							borderStyle
+							borderWidth
+							colors {
+								base {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								control {
+									accent
+									background
+									border
+									decorative
+									icon
+									selected {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									text
+								}
+								primaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+								secondaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+							}
+							cornerRadius
+							padding
+							shadow
+						}
+					}
+					orderSummary {
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						divider {
+							borderStyle
+							borderWidth
+							visibility
+						}
+						section {
+							background
+							border
+							borderStyle
+							borderWidth
+							colors {
+								base {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								control {
+									accent
+									background
+									border
+									decorative
+									icon
+									selected {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									text
+								}
+								primaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+								secondaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+							}
+							cornerRadius
+							padding
+							shadow
+						}
+					}
+				}
+			}
+			customerAccounts {
+				components {
+					footer {
+						alignment
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						padding
+					}
+					header {
+						alignment
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						logo {
+							maxWidth
+						}
+						padding
+					}
+					main {
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						section {
+							background
+							border
+							borderStyle
+							borderWidth
+							colors {
+								base {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								control {
+									accent
+									background
+									border
+									decorative
+									icon
+									selected {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									text
+								}
+								primaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+								secondaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+							}
+							cornerRadius
+							padding
+							shadow
+						}
+					}
+				}
+			}
+			signIn {
+				components {
+					header {
+						logo {
+							maxWidth
+						}
+						padding
+					}
+					main {
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						section {
+							background
+							border
+							borderStyle
+							borderWidth
+							colors {
+								base {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								control {
+									accent
+									background
+									border
+									decorative
+									icon
+									selected {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									text
+								}
+								primaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+								secondaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+							}
+							cornerRadius
+							padding
+							shadow
+						}
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+// first is small because the branding selection makes each node cost about 85 points (request limit 1,000).
+func ListCheckoutAndAccountsConfigurations(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	query *string,
+	after *string,
+) (data_ *ListCheckoutAndAccountsConfigurationsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListCheckoutAndAccountsConfigurations",
+		Query:  ListCheckoutAndAccountsConfigurations_Operation,
+		Variables: &__ListCheckoutAndAccountsConfigurationsInput{
+			Query: query,
+			After: after,
+		},
+	}
+
+	data_ = &ListCheckoutAndAccountsConfigurationsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListConsentPolicies.
 const ListConsentPolicies_Operation = `
 query ListConsentPolicies {
@@ -16813,6 +19870,1302 @@ func ListWebPresences(
 	}
 
 	data_ = &ListWebPresencesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateCheckoutAndAccountsConfiguration.
+const UpdateCheckoutAndAccountsConfiguration_Operation = `
+mutation UpdateCheckoutAndAccountsConfiguration ($id: ID!, $configuration: CheckoutAndAccountsConfigurationInput!) {
+	checkoutAndAccountsConfigurationUpdate(id: $id, configuration: $configuration) {
+		configuration {
+			... CheckoutAndAccountsConfigurationFields
+		}
+		userErrors {
+			code
+			field
+			message
+			reason
+		}
+	}
+}
+fragment CheckoutAndAccountsConfigurationFields on CheckoutAndAccountsConfiguration {
+	id
+	name
+	isPublished
+	branding {
+		components {
+			checkbox {
+				cornerRadius
+			}
+			choiceList {
+				group {
+					spacing
+				}
+			}
+			control {
+				border
+				cornerRadius
+				labelPosition
+			}
+			divider {
+				borderStyle
+				borderWidth
+			}
+			footer {
+				alignment
+				background
+				colors {
+					base {
+						accent
+						background
+						border
+						decorative
+						icon
+						text
+					}
+					control {
+						accent
+						background
+						border
+						decorative
+						icon
+						selected {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						text
+					}
+					primaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+					secondaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+				}
+				content {
+					visibility
+				}
+				divided
+				padding
+			}
+			header {
+				alignment
+				background
+				colors {
+					base {
+						accent
+						background
+						border
+						decorative
+						icon
+						text
+					}
+					control {
+						accent
+						background
+						border
+						decorative
+						icon
+						selected {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						text
+					}
+					primaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+					secondaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+				}
+				divided
+				logo {
+					maxWidth
+					visibility
+				}
+				padding
+			}
+			headingLevel1 {
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			headingLevel2 {
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			headingLevel3 {
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			main {
+				colors {
+					base {
+						accent
+						background
+						border
+						decorative
+						icon
+						text
+					}
+					control {
+						accent
+						background
+						border
+						decorative
+						icon
+						selected {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						text
+					}
+					primaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+					secondaryButton {
+						accent
+						background
+						border
+						decorative
+						hover {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						icon
+						text
+					}
+				}
+				divider {
+					borderStyle
+					borderWidth
+					visibility
+				}
+				section {
+					background
+					border
+					borderStyle
+					borderWidth
+					colors {
+						base {
+							accent
+							background
+							border
+							decorative
+							icon
+							text
+						}
+						control {
+							accent
+							background
+							border
+							decorative
+							icon
+							selected {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							text
+						}
+						primaryButton {
+							accent
+							background
+							border
+							decorative
+							hover {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							icon
+							text
+						}
+						secondaryButton {
+							accent
+							background
+							border
+							decorative
+							hover {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							icon
+							text
+						}
+					}
+					cornerRadius
+					padding
+					shadow
+				}
+			}
+			merchandiseThumbnail {
+				badge {
+					background
+				}
+				border
+				cornerRadius
+				fit
+			}
+			primaryButton {
+				blockPadding
+				border
+				cornerRadius
+				inlinePadding
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			secondaryButton {
+				blockPadding
+				border
+				cornerRadius
+				inlinePadding
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			select {
+				border
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+			shared {
+				colors {
+					accent
+					button
+					control
+					critical
+					decorative
+					info
+					success
+					warning
+				}
+				cornerRadius
+				typography {
+					kerning
+					letterCase
+				}
+			}
+			textField {
+				border
+				typography {
+					font
+					kerning
+					letterCase
+					size
+					weight
+				}
+			}
+		}
+		designTokens {
+			colors {
+				palette {
+					color1
+					color10
+					color11
+					color12
+					color13
+					color14
+					color15
+					color16
+					color17
+					color18
+					color19
+					color2
+					color20
+					color3
+					color4
+					color5
+					color6
+					color7
+					color8
+					color9
+				}
+			}
+			cornerRadius {
+				base
+				large
+				small
+			}
+			typography {
+				size {
+					base
+					ratio
+				}
+			}
+		}
+		surfaces {
+			checkout {
+				components {
+					buyerJourney {
+						visibility
+					}
+					cartLink {
+						visibility
+					}
+					content {
+						divider {
+							borderStyle
+							borderWidth
+							visibility
+						}
+					}
+					expressCheckout {
+						button {
+							cornerRadius
+						}
+					}
+					footer {
+						alignment
+						background
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						content {
+							visibility
+						}
+						divided
+						padding
+						position
+					}
+					header {
+						alignment
+						background
+						cartLink {
+							contentType
+						}
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						divided
+						logo {
+							maxWidth
+							visibility
+						}
+						padding
+						position
+					}
+					main {
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						divider {
+							borderStyle
+							borderWidth
+							visibility
+						}
+						section {
+							background
+							border
+							borderStyle
+							borderWidth
+							colors {
+								base {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								control {
+									accent
+									background
+									border
+									decorative
+									icon
+									selected {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									text
+								}
+								primaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+								secondaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+							}
+							cornerRadius
+							padding
+							shadow
+						}
+					}
+					orderSummary {
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						divider {
+							borderStyle
+							borderWidth
+							visibility
+						}
+						section {
+							background
+							border
+							borderStyle
+							borderWidth
+							colors {
+								base {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								control {
+									accent
+									background
+									border
+									decorative
+									icon
+									selected {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									text
+								}
+								primaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+								secondaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+							}
+							cornerRadius
+							padding
+							shadow
+						}
+					}
+				}
+			}
+			customerAccounts {
+				components {
+					footer {
+						alignment
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						padding
+					}
+					header {
+						alignment
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						logo {
+							maxWidth
+						}
+						padding
+					}
+					main {
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						section {
+							background
+							border
+							borderStyle
+							borderWidth
+							colors {
+								base {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								control {
+									accent
+									background
+									border
+									decorative
+									icon
+									selected {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									text
+								}
+								primaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+								secondaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+							}
+							cornerRadius
+							padding
+							shadow
+						}
+					}
+				}
+			}
+			signIn {
+				components {
+					header {
+						logo {
+							maxWidth
+						}
+						padding
+					}
+					main {
+						colors {
+							base {
+								accent
+								background
+								border
+								decorative
+								icon
+								text
+							}
+							control {
+								accent
+								background
+								border
+								decorative
+								icon
+								selected {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								text
+							}
+							primaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+							secondaryButton {
+								accent
+								background
+								border
+								decorative
+								hover {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								icon
+								text
+							}
+						}
+						section {
+							background
+							border
+							borderStyle
+							borderWidth
+							colors {
+								base {
+									accent
+									background
+									border
+									decorative
+									icon
+									text
+								}
+								control {
+									accent
+									background
+									border
+									decorative
+									icon
+									selected {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									text
+								}
+								primaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+								secondaryButton {
+									accent
+									background
+									border
+									decorative
+									hover {
+										accent
+										background
+										border
+										decorative
+										icon
+										text
+									}
+									icon
+									text
+								}
+							}
+							cornerRadius
+							padding
+							shadow
+						}
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+// Branding is raw JSON so the keys the user wrote, null included, are sent as is. Overrides are never sent.
+func UpdateCheckoutAndAccountsConfiguration(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	configuration CheckoutAndAccountsConfigurationInput,
+) (data_ *UpdateCheckoutAndAccountsConfigurationResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateCheckoutAndAccountsConfiguration",
+		Query:  UpdateCheckoutAndAccountsConfiguration_Operation,
+		Variables: &__UpdateCheckoutAndAccountsConfigurationInput{
+			Id:            id,
+			Configuration: configuration,
+		},
+	}
+
+	data_ = &UpdateCheckoutAndAccountsConfigurationResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
