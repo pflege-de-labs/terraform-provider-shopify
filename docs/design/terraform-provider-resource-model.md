@@ -392,8 +392,6 @@ Notes:
 
 ## 9a. Resource: `shopify_web_presence`
 
-> **Blocked: needs `read_locales` (or `read_markets_home`), pending user decision.** The scope change requires an app redeploy plus a reinstall on the dev, staging and production stores. Nothing is implemented yet.
-
 ```hcl
 resource "shopify_web_presence" "ch" {
   subfolder_suffix  = "ch"         # or domain_id, exactly one
@@ -410,14 +408,14 @@ resource "shopify_market" "dach" {
 | Attribute | Type | Behaviour |
 |---|---|---|
 | `id` | string | `MarketWebPresence` GID. Computed, UseStateForUnknown |
-| `subfolder_suffix` | string | Optional; exactly one of this or `domain_id`. Updatable in place (confirmed on the dev store). Switching between a subfolder and a domain forces replace, because `WebPresenceUpdateInput.subfolderSuffix` "must be null if subfolder suffix is not already defined" |
+| `subfolder_suffix` | string | Optional; exactly one of this or `domain_id`. Validated as 2 or more lowercase ASCII letters (Shopify rejects digits and hyphens, and lowercases the value, which would otherwise show as a perpetual diff). Updatable in place (confirmed on the dev store). Switching between a subfolder and a domain forces replace, because `WebPresenceUpdateInput.subfolderSuffix` "must be null if subfolder suffix is not already defined" |
 | `domain_id` | string | Optional. **RequiresReplace**: `WebPresenceUpdateInput` has no `domainId`. It only references an existing `Domain` GID; domains are never created or managed (out of scope) |
 | `default_locale` | string | Required. Updatable |
 | `alternate_locales` | set(string) | Optional + Computed, UseStateForUnknown; unset = unmanaged |
 | `root_urls` | map(string) | Computed, locale → URL. Informational |
 | `adopt_existing` | bool | Pattern A, see below |
 
-Import key: the subfolder suffix for subfolder presences, the domain host (e.g. `shop.example.ch`) for domain presences. A host contains dots and a suffix is ASCII letters only, so they can't be confused. Read looks up by GID first, then pages through `webPresences` and matches the key, because the query has no `query:` filter.
+Import key: the subfolder suffix for subfolder presences, the domain host (e.g. `shop.example.ch`) for domain presences. A host contains dots and a suffix is ASCII letters only, so they can't be confused. Import pages through `webPresences` (the query has no `query:` filter), matches the key and sets the GID. Read looks up by GID first, then falls back to `subfolder_suffix` or `domain_id`.
 
 Notes:
 - Uses `webPresenceCreate` / `webPresenceUpdate` / `webPresenceDelete` and the top-level `webPresences` query. The `marketWebPresence*` mutations are deprecated and not used. Linking to markets stays on `shopify_market.web_presence_ids`.
@@ -425,6 +423,15 @@ Notes:
 - **No Pattern B:** deleting a presence removes routing/SEO configuration, not stored data.
 - Errors are reported as returned and not retried: `CANNOT_HAVE_SUBFOLDER_AND_DOMAIN`, `REQUIRES_DOMAIN_OR_SUBFOLDER`, `SUBFOLDER_SUFFIX_MUST_BE_AT_LEAST_2_LETTERS`, `SUBFOLDER_SUFFIX_CANNOT_BE_SCRIPT_CODE`, `DISABLED_LANGUAGE`, `REGION_SPECIFIC_LANGUAGE`, `DOMAIN_NOT_FOUND`, `CANNOT_ADD_CUSTOMER_DOMAIN`.
 - No enum-typed attributes, so there's no output-only enum mapping.
+- **Checked on the dev store (2026-10-26, `read_locales`/`write_locales` granted):**
+  - `defaultLocale { locale }` and `alternateLocales { locale }` are readable. The ⚠ locale points are confirmed, the schema stays as designed.
+  - A locale can be a default or alternate locale only if it is enabled **and published** on the shop: an enabled but unpublished one fails with `DISABLED_LANGUAGE` (alternate) or `UNPUBLISHED_LANGUAGE` (default), and a locale that isn't enabled fails with `DISABLED_LANGUAGE` or, on update, sometimes a bare "Internal error". Enabling and publishing locales is not part of this resource (planned as the shop locale type).
+  - **Omit, don't null:** an explicit `null` for `subfolderSuffix` in `webPresenceUpdate` fails with `REQUIRES_DOMAIN_OR_SUBFOLDER` on a subfolder presence and with `CANNOT_HAVE_SUBFOLDER_AND_DOMAIN` on the primary-domain presence; `defaultLocale: null` fails with `CANNOT_SET_DEFAULT_LOCALE_TO_NULL`. All optional inputs are omitted when unset, and `subfolderSuffix` is only sent when it changes. `alternateLocales: []` clears the list, so an empty set is sent as `[]` while an unset one is omitted.
+  - **Create is idempotent for subfolders:** `webPresenceCreate` with a suffix that already exists returns the existing presence instead of an error, so Create checks existence itself (needed for `adopt_existing` semantics). A taken domain fails with `TAKEN`.
+  - The primary-domain presence cannot be deleted: `SHOP_MUST_HAVE_PRIMARY_DOMAIN_WEB_PRESENCE`, "The shop must have a web presence that uses the primary domain." Delete treats this code as "remove from state only" even without `adopt_existing`. Adopting looks the presence up by `domain_id` (the list returns it).
+  - Suffix rules: letters only (`SUBFOLDER_SUFFIX_MUST_CONTAIN_ONLY_LETTERS`), at least 2 (`SUBFOLDER_SUFFIX_MUST_BE_AT_LEAST_2_LETTERS`).
+  - `webPresences` has no `webPresence(id:)` root field, so Read by GID uses `node(id:)`. The list is not search-indexed and showed new presences immediately.
+  - Unverified: deleting a presence that is still linked to a market (`TODO(verify)` in the resource).
 - **Scopes observed on the dev store (2026-10-23):**
   - `read_markets`: `webPresences { id subfolderSuffix domain { id host } rootUrls { locale url } markets }` works.
   - `write_markets`: `webPresenceCreate`, `webPresenceUpdate` (subfolder suffix change) and `webPresenceDelete` all work.

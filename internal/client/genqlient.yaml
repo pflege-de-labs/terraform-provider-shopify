@@ -11,3 +11,6 @@ bindings:
   # Decimal is a JSON string; kept as string to avoid float rounding.
   Decimal:
     type: string
+  # URL is a plain string; kept as string to avoid parse failures on odd values.
+  URL:
+    type: string

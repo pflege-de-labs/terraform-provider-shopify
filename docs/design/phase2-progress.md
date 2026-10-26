@@ -45,3 +45,16 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 2: complete. #13 closed, branch deleted.
 - D1 still blocks Phase B: merge provider #20 first (so `app/shopify.app.toml` has `include_config_on_deploy`), then link + deploy the dev app and reinstall it on the dev store.
 - Task list revised for D4–D6 (in Phase 2 step order): 4 web presence (7); 5 shop locales, 6 shop policies, 7 privacy settings + consent policy, 8 checkout and accounts configuration, 9 checkout branding (8); 10 data sources `shopify_metafield_definition` + `shopify_metaobject_definition` (9); 11 data source `shopify_fulfillment_service` (10); 12 catalogs, 13 data source `shopify_publication` (11); 14 products, 15 collections, 16 pages, 17 blogs, 18 files, 19 discounts, 20 customer segments, 21 data source `shopify_metaobject` (13).
+- Task 3: branch layout: `feat/phase2-07-web-presence` from `feat/phase2-resources` @ fa5cdc0 (main merged in at fa5cdc0). Plain git stacking; pushes over HTTPS (gh token) while the SSH key is unavailable.
+- Task 3: complete
+- Ruling T4-1: §9a (web presence) was designed and reviewed on 2026-10-23; the implementer only drops the stale "blocked on scope" note, re-checks the locale ⚠ with `read_locales` now granted, and continues to code without a controller stop — design is unchanged apart from that — costs a late design change if the locale check contradicts §9a.
+- Task 4: dispatched (base 40d5910, branch feat/phase2-07-web-presence, model sonnet)
+- Task 4: implemented 40d5910..d7a4b93 (DONE_WITH_CONCERNS: list code lands in the step 4 commit because resource.go shares `listPage`; acc tests skip unless TF_ACC; worktree has no `.envrc`, run via `direnv exec <main checkout>`; TODO(verify) delete of a presence still linked to a market). Review dispatched (opus).
+- Task 4: review: spec ✅, quality Approved, 0 Critical/Important.
+- Task 4: minor (deferred): model §9a line 422 still says the primary-delete userError text was not captured (contradicts line 431)
+- Task 4: minor (deferred): no test for destroying the primary presence without `adopt_existing` (state-only removal on SHOP_MUST_HAVE_PRIMARY_DOMAIN_WEB_PRESENCE, resource.go:260) — Pattern A safety path, triage before merge
+- Task 4: minor (deferred): Review Focus 2 step uses `PlanOnly` instead of `plancheck.ExpectEmptyPlan()` (resource_test.go:220)
+- Task 4: minor (deferred): test helpers: `findBySuffix` nil deref (resource_test.go:208), `publishLocale` ignores userErrors (83-91), first-page-only lookup (96-108)
+- Task 4: minor (deferred): primary-domain error drops other userErrors in the same response (resource.go:260-266)
+- Task 4: ⚠️ resolved: `make fmt lint test` + `make generate` re-run by controller, clean, no diff. Review Focus 4 list-path generate-config: same identity-import workaround as the earlier list resources (cross-task, known). Suffix validator `^[a-z]{2,}$` vs legacy suffixes on staging/production: check at the first import.
+- Task 4: complete (commits 40d5910..d7a4b93, review clean)
