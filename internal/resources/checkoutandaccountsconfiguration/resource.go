@@ -106,7 +106,9 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 					"`surfaces.{checkout,customerAccounts,signIn}.components.header.logo.image`, `surfaces.checkout.components.header.cartLink.image`, " +
 					"`surfaces.checkout.components.orderSummary.backgroundImage`, `surfaces.signIn.components.main.backgroundImage`), " +
 					"fonts (`designTokens.typography.primary`, `designTokens.typography.secondary`) and `components.merchandiseThumbnail.aspectRatio`. " +
-					"Import and `terraform query` leave them out. Shopify checks keys and values; an invalid value rejects the whole update.",
+					"Import and `terraform query` leave them out. Shopify checks keys and values; an invalid value rejects the whole update. " +
+					"`terraform import` brings in the whole live branding, so a config that manages a subset plans one update right after import, which writes only the configured keys. " +
+					"A JSON string written by hand instead of with `jsonencode()` plans an update whenever its text changes, even if the values don't.",
 				Optional:   true,
 				Validators: []validator.String{jsonObjectValidator{}},
 			},

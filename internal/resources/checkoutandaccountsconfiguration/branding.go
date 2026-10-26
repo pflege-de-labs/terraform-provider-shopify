@@ -12,6 +12,7 @@ import (
 
 // writeOnly are input paths the read can't compare: images and font groups read back as other types, aspectRatio isn't readable.
 var writeOnly = []string{
+	// TODO(verify): whether media image IDs and font handles can be derived from the read value, making these readable.
 	"components.favicon",
 	"components.header.logo.image",
 	"components.merchandiseThumbnail.aspectRatio",
