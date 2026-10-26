@@ -21546,9 +21546,25 @@ fragment CollectionFields on Collection {
 	sources {
 		__typename
 		id
+		app {
+			id
+		}
 		... on CollectionConditionsSource {
 			shareable
 			targetType
+			exclusion {
+				conditions {
+					__typename
+					id
+				}
+				selections(first: 1) {
+					nodes {
+						product {
+							id
+						}
+					}
+				}
+			}
 			inclusion {
 				matchType
 				conditions {
@@ -23955,9 +23971,25 @@ fragment CollectionFields on Collection {
 	sources {
 		__typename
 		id
+		app {
+			id
+		}
 		... on CollectionConditionsSource {
 			shareable
 			targetType
+			exclusion {
+				conditions {
+					__typename
+					id
+				}
+				selections(first: 1) {
+					nodes {
+						product {
+							id
+						}
+					}
+				}
+			}
 			inclusion {
 				matchType
 				conditions {
@@ -24133,9 +24165,25 @@ fragment CollectionFields on Collection {
 	sources {
 		__typename
 		id
+		app {
+			id
+		}
 		... on CollectionConditionsSource {
 			shareable
 			targetType
+			exclusion {
+				conditions {
+					__typename
+					id
+				}
+				selections(first: 1) {
+					nodes {
+						product {
+							id
+						}
+					}
+				}
+			}
 			inclusion {
 				matchType
 				conditions {
@@ -26763,9 +26811,25 @@ fragment CollectionFields on Collection {
 	sources {
 		__typename
 		id
+		app {
+			id
+		}
 		... on CollectionConditionsSource {
 			shareable
 			targetType
+			exclusion {
+				conditions {
+					__typename
+					id
+				}
+				selections(first: 1) {
+					nodes {
+						product {
+							id
+						}
+					}
+				}
+			}
 			inclusion {
 				matchType
 				conditions {
@@ -29072,9 +29136,25 @@ fragment CollectionFields on Collection {
 	sources {
 		__typename
 		id
+		app {
+			id
+		}
 		... on CollectionConditionsSource {
 			shareable
 			targetType
+			exclusion {
+				conditions {
+					__typename
+					id
+				}
+				selections(first: 1) {
+					nodes {
+						product {
+							id
+						}
+					}
+				}
+			}
 			inclusion {
 				matchType
 				conditions {

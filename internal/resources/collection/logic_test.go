@@ -1,12 +1,14 @@
 package collection
 
 import (
+	"context"
 	"encoding/json"
 	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 )
@@ -37,17 +39,21 @@ func TestMembershipOf(t *testing.T) {
 	}{
 		{"no source", `[]`, nil, ""},
 		{"empty source (frontpage)", "[" + conditionsSource("null", "", "") + "]",
-			&membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{}}, ""},
+			&membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{}, ShopifyMade: true}, ""},
 		{"manual", "[" + conditionsSource("null", "", selection("P2")+","+selection("P1")) + "]",
-			&membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{"P1", "P2"}}, ""},
+			&membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{"P1", "P2"}, ShopifyMade: true}, ""},
 		{"smart", "[" + conditionsSource(`"ALL"`, tagCondition, "") + "]",
-			&membership{SourceID: "S1", MatchType: ptr("ALL"), Conditions: mustInput(tagInput), ConditionIDs: []string{"gid://shopify/C/1"}, ProductIDs: []string{}}, ""},
+			&membership{SourceID: "S1", MatchType: ptr("ALL"), Conditions: mustInput(tagInput), ConditionIDs: []string{"gid://shopify/C/1"}, ProductIDs: []string{}, ShopifyMade: true}, ""},
 		{"two sources", "[" + conditionsSource("null", "", "") + `,{"__typename":"CollectionSubCollectionsSource","id":"S2","app":null}]`,
 			nil, "CollectionConditionsSource, CollectionSubCollectionsSource"},
 		{"sub-collection source", `[{"__typename":"CollectionSubCollectionsSource","id":"S2","app":null}]`, nil, "CollectionSubCollectionsSource"},
 		// S13-8: a non-shareable source created by an app, this provider's own included, is managed.
 		{"app-created", `[` + strings.Replace(conditionsSource("null", "", selection("P1")), `"app":null`, `"app":{"id":"gid://shopify/App/1"}`, 1) + `]`,
 			&membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{"P1"}}, ""},
+		{"exclusions", `[` + strings.Replace(conditionsSource("null", "", selection("P1")), `"targetType":"PRODUCTS"`, `"targetType":"PRODUCTS","exclusion":{"conditions":[{"__typename":"CollectionSourceExclusionConditionProductTag","id":"X1"}],"selections":{"nodes":[]}}`, 1) + `]`,
+			&membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{"P1"}, ShopifyMade: true, Exclusions: true}, ""},
+		{"empty exclusion", `[` + strings.Replace(conditionsSource("null", "", selection("P1")), `"targetType":"PRODUCTS"`, `"targetType":"PRODUCTS","exclusion":{"conditions":[],"selections":{"nodes":[]}}`, 1) + `]`,
+			&membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{"P1"}, ShopifyMade: true}, ""},
 		{"shareable", `[` + strings.Replace(conditionsSource("null", "", ""), `"shareable":false`, `"shareable":true`, 1) + `]`, nil, "shareable"},
 		{"variant target", `[` + strings.Replace(conditionsSource("null", "", ""), `"PRODUCTS"`, `"VARIANTS"`, 1) + `]`, nil, "VARIANTS"},
 		{"variant selection", "[" + conditionsSource("null", "", `{"product":{"id":"P1"},"variantIds":["V1"]}`) + "]", nil, "variant"},
@@ -104,7 +110,9 @@ func TestPlanSource(t *testing.T) {
 	anyOf := client.CollectionConditionMatchTypeAny
 	smart := &membership{SourceID: "S1", MatchType: ptr("ALL"), Conditions: mustInput(tagInput), ConditionIDs: []string{"C1"}, ProductIDs: []string{}}
 	manual := &membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{"P1", "P2"}}
-	empty := &membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{}}
+	empty := &membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{}, ShopifyMade: true}
+	shopifyManual := &membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{"P1"}, ShopifyMade: true}
+	excluding := &membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{"P1"}, Exclusions: true}
 	cases := []struct {
 		name    string
 		live    *membership
@@ -129,6 +137,10 @@ func TestPlanSource(t *testing.T) {
 		{"conditions swapped for products", smart, desired{Conditions: json.RawMessage(`[]`), ProductIDs: []string{"P1"}},
 			sourceChanges{Update: &client.CollectionUpdateSourceInclusionInput{ConditionsToDelete: []string{"C1"}, SelectionsToAdd: sel("P1")}}, ""},
 		{"emptied: delete the source", manual, desired{ProductIDs: []string{}}, sourceChanges{Delete: true}, ""},
+		{"emptied Shopify-made source: refused (S13-9)", shopifyManual, desired{ProductIDs: []string{}}, sourceChanges{}, "Shopify made"},
+		{"emptied source with exclusions: refused (S13-9)", excluding, desired{ProductIDs: []string{}}, sourceChanges{}, "exclusions"},
+		{"Shopify-made source keeps an entry", shopifyManual, desired{ProductIDs: []string{"P2"}},
+			sourceChanges{Update: &client.CollectionUpdateSourceInclusionInput{SelectionsToAdd: sel("P2"), SelectionsToRemove: sel("P1")}}, ""},
 		{"emptied, conditions unmanaged but live", smart, desired{ProductIDs: []string{}}, sourceChanges{}, ""},
 		{"emptied with match type", smart, desired{MatchType: ptr("ALL"), Conditions: json.RawMessage(`[]`)}, sourceChanges{}, "match_type"},
 		{"empty source stays (frontpage)", empty, desired{ProductIDs: []string{}}, sourceChanges{}, ""},
@@ -189,5 +201,41 @@ func TestErrorPath(t *testing.T) {
 		if ok != c.ok || !got.Equal(c.want) {
 			t.Errorf("errorPath(%v, %q) = %s, %t; want %s, %t", c.field, c.message, got, ok, c.want, c.ok)
 		}
+	}
+}
+
+// Unset attributes are unmanaged, so the write inputs never carry them, whatever state holds.
+func TestInputsSendOnlyConfigured(t *testing.T) {
+	cfg := model{
+		Handle: types.StringValue("h"), Title: types.StringValue("T"),
+		DescriptionHTML: types.StringNull(), SortOrder: types.StringNull(), SEOTitle: types.StringNull(), SEODescription: types.StringNull(),
+		TemplateSuffix: types.StringNull(), MatchType: types.StringNull(), Conditions: conditionsNull(), ProductIDs: types.SetNull(types.StringType),
+	}
+	asJSON := func(v any) string {
+		b, err := json.Marshal(v)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return string(b)
+	}
+	if got := asJSON(cfg.createInput()); got != `{"handle":"h","title":"T"}` {
+		t.Errorf("createInput = %s", got)
+	}
+	if got := asJSON(cfg.updateInput("C1")); got != `{"handle":"h","id":"C1","title":"T"}` {
+		t.Errorf("updateInput = %s", got)
+	}
+	if cfg.membershipConfigured() {
+		t.Error("no membership attribute is configured")
+	}
+	want, d := cfg.desired(context.Background())
+	if d.HasError() || want.MatchType != nil || want.Conditions != nil || want.ProductIDs != nil {
+		t.Errorf("desired = %+v %v, want nothing managed", want, d)
+	}
+	cfg.SortOrder, cfg.ProductIDs = types.StringValue("MANUAL"), types.SetValueMust(types.StringType, nil)
+	if got := asJSON(cfg.updateInput("C1")); got != `{"handle":"h","id":"C1","sortOrder":"MANUAL","title":"T"}` {
+		t.Errorf("updateInput with sort_order = %s", got)
+	}
+	if want, _ := cfg.desired(context.Background()); want.ProductIDs == nil || len(want.ProductIDs) != 0 {
+		t.Errorf("product_ids = [] must be managed and empty, got %#v", want.ProductIDs)
 	}
 }

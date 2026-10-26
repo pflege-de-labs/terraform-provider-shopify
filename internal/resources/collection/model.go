@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
@@ -113,9 +112,6 @@ func setFromAPI(ctx context.Context, m *model, c *liveCollection, written *strin
 
 	mem, unsupported := membershipOf(c.sources)
 	if unsupported != nil {
-		if !m.Conditions.IsNull() {
-			diags.AddAttributeError(path.Root("conditions"), "Membership can't be managed", unsupportedDetail(unsupported))
-		}
 		m.MatchType, m.Conditions, m.ProductIDs, m.SourceID = types.StringNull(), conditionsNull(), types.SetNull(types.StringType), types.StringNull()
 		return diags, unsupported
 	}
@@ -140,5 +136,5 @@ func setFromAPI(ctx context.Context, m *model, c *liveCollection, written *strin
 }
 
 func unsupportedDetail(err error) string {
-	return fmt.Sprintf("Membership of this collection can't be managed yet: %s. Remove match_type, conditions and product_ids from the configuration; Shopify keeps the membership as it is.", err)
+	return fmt.Sprintf("Membership of this collection can't be managed yet: %s. match_type, conditions and product_ids are left null and Shopify keeps the membership as it is; leave them out of the configuration.", err)
 }

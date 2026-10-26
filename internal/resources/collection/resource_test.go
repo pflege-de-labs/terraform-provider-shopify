@@ -92,7 +92,7 @@ func mustSource(t *testing.T, c *client.CollectionFields) liveSource {
 }
 
 // mustCreate makes a collection through the client, outside Terraform.
-func mustCreate(t *testing.T, in client.CollectionCreateInput) *client.CollectionFields {
+func mustCreate(t *testing.T, in client.CollectionCreateInput) {
 	t.Helper()
 	res, err := client.CreateCollection(context.Background(), acctest.Client(t), in)
 	if err != nil {
@@ -104,7 +104,6 @@ func mustCreate(t *testing.T, in client.CollectionCreateInput) *client.Collectio
 	if res.CollectionCreate.Collection == nil {
 		t.Fatal("collectionCreate returned no collection")
 	}
-	return &res.CollectionCreate.Collection.CollectionFields
 }
 
 // mustUpdate changes a collection through the client, outside Terraform.
@@ -450,6 +449,137 @@ resource "shopify_collection" "test" {
 					stateValue("sort_order", str("BEST_SELLING")),
 					stateValue("source_id", knownvalue.Null()),
 					stateValue("adopt_existing", knownvalue.Bool(true)),
+				},
+			},
+		},
+	})
+}
+
+// twoSources are two condition sources, which v1 can't manage.
+func twoSources(tag string) []client.CollectionCreateSourceTargetInput {
+	all := client.CollectionConditionMatchTypeAll
+	out := make([]client.CollectionCreateSourceTargetInput, 2)
+	for i, title := range []string{"tf-acc source a", "tf-acc source b"} {
+		out[i].Source = &client.CollectionCreateConditionsSourceInput{Title: title, Inclusion: &client.CollectionCreateSourceInclusionInput{
+			MatchType:  &all,
+			Conditions: json.RawMessage(`[{"productTag":{"relation":"TAGGED_WITH","values":["` + tag + `"],"matchType":"ANY"}}]`),
+		}}
+	}
+	return out
+}
+
+func sourceCount(t *testing.T, c *client.CollectionFields) int {
+	t.Helper()
+	var sources []json.RawMessage
+	if err := json.Unmarshal(c.Sources, &sources); err != nil {
+		t.Fatal(err)
+	}
+	return len(sources)
+}
+
+// Adopting and importing a collection whose membership can't be managed works while config leaves membership unset.
+func TestAccCollection_unsupportedAdopt(t *testing.T) {
+	accSetup(t)
+	handle := testHandle()
+	cleanup(t, handle)
+	mustCreate(t, client.CollectionCreateInput{Title: "tf-acc unsupported (client)", Handle: &handle, Sources: twoSources("tf-acc-unsupported")})
+	body := func(extra string) string {
+		return fmt.Sprintf(`
+resource "shopify_collection" "test" {
+  handle         = %q
+  title          = "tf-acc unsupported (terraform)"
+  adopt_existing = true
+%s
+}
+`, handle, extra)
+	}
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy: func(*terraform.State) error {
+			c := lookup(t, handle)
+			if c == nil || c.Title != "tf-acc unsupported (terraform)" || sourceCount(t, c) != 2 {
+				return fmt.Errorf("adopted collection changed on destroy: %+v", c)
+			}
+			return nil
+		},
+		Steps: []resource.TestStep{
+			{
+				Config: body(""),
+				Check: func(*terraform.State) error {
+					if n := sourceCount(t, mustLookup(t, handle)); n != 2 {
+						return fmt.Errorf("live collection has %d sources after adopt, want both kept", n)
+					}
+					return nil
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					stateValue("title", str("tf-acc unsupported (terraform)")),
+					stateValue("product_ids", knownvalue.Null()),
+					stateValue("conditions", knownvalue.Null()),
+					stateValue("match_type", knownvalue.Null()),
+					stateValue("source_id", knownvalue.Null()),
+				},
+			},
+			{Config: body("  product_ids = []"), PlanOnly: true, ExpectError: regexp.MustCompile(`Membership can't be managed`)},
+			{
+				Config:                               body(""),
+				ResourceName:                         addr,
+				ImportState:                          true,
+				ImportStateId:                        handle,
+				ImportStateVerify:                    true,
+				ImportStateVerifyIdentifierAttribute: "handle",
+				ImportStateVerifyIgnore:              []string{"adopt_existing"},
+			},
+		},
+	})
+}
+
+// A managed collection that gains a second source outside Terraform still refreshes; only config that sets membership fails.
+func TestAccCollection_becomesUnsupported(t *testing.T) {
+	accSetup(t)
+	handle := testHandle()
+	cleanup(t, handle)
+	managed := fmt.Sprintf(`
+resource "shopify_collection" "test" {
+  handle     = %q
+  title      = "tf-acc becomes unsupported"
+  match_type = "ALL"
+  conditions = jsonencode([%s])
+}
+`, handle, tagCondition)
+	unmanaged := fmt.Sprintf(`
+resource "shopify_collection" "test" {
+  handle = %q
+  title  = "tf-acc becomes unsupported (renamed)"
+}
+`, handle)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkGone(t, handle),
+		Steps: []resource.TestStep{
+			{Config: managed, ConfigStateChecks: []statecheck.StateCheck{stateValue("source_id", knownvalue.StringRegexp(sourceRe))}},
+			{
+				PreConfig: func() {
+					c := mustLookup(t, handle)
+					mustUpdate(t, client.CollectionUpdateInput{Id: &c.Id, SourcesToCreate: twoSources("tf-acc-second")[:1]})
+				},
+				Config:      managed,
+				ExpectError: regexp.MustCompile(`sources other than\s+one non-shareable conditions source`),
+			},
+			{
+				Config: unmanaged,
+				ConfigStateChecks: []statecheck.StateCheck{
+					stateValue("title", str("tf-acc becomes unsupported (renamed)")),
+					stateValue("conditions", knownvalue.Null()),
+					stateValue("product_ids", knownvalue.Null()),
+					stateValue("source_id", knownvalue.Null()),
+				},
+				Check: func(*terraform.State) error {
+					if n := sourceCount(t, mustLookup(t, handle)); n != 2 {
+						return fmt.Errorf("live collection has %d sources, want both kept", n)
+					}
+					return nil
 				},
 			},
 		},

@@ -16,9 +16,26 @@ fragment CollectionFields on Collection {
   sources {
     __typename
     id
+    # A source without an app is Shopify's own; the provider never deletes it (S13-9).
+    app {
+      id
+    }
     ... on CollectionConditionsSource {
       shareable
       targetType
+      # Only whether exclusions exist: deleting the source would lose them (S13-9).
+      exclusion {
+        conditions {
+          id
+        }
+        selections(first: 1) {
+          nodes {
+            product {
+              id
+            }
+          }
+        }
+      }
       inclusion {
         matchType
         conditions {

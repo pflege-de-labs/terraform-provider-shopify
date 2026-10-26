@@ -56,6 +56,9 @@ func (r *Resource) IdentitySchema(ctx context.Context, req resource.IdentitySche
 // TODO(verify): whether selections of large collections ever come back only after the collectionUpdate job.
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	unmanaged := " Unset means unmanaged: the value set in the admin is kept."
+	emptying := " Removing the last condition and the last product deletes the collection's source, since Shopify keeps no empty one. " +
+		"That is refused when the source has exclusions, which Terraform doesn't manage (remove them in the admin first), " +
+		"and when Shopify made the source itself (no app, such as `frontpage`'s or one migrated from an older API version), because it can't be recreated (leave the attribute unset or keep one entry)."
 	membership := " Unset means unmanaged. Null when the collection's membership can't be managed (see the resource description). A source another app created is managed too, but Shopify may reject changes to it."
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "A collection: title, handle, description, sort order and which products it holds, by hand (`product_ids`) or by rules (`conditions`). " +
@@ -129,12 +132,12 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 					"[`CollectionSourceInclusionConditionInput`](https://shopify.dev/docs/api/admin-graphql/2026-10/input-objects/CollectionSourceInclusionConditionInput) objects in the API's camelCase, one key each, written with `jsonencode([...])`, " +
 					"for example `{ productTag = { relation = \"TAGGED_WITH\", values = [\"sale\"], matchType = \"ANY\" } }`. Shopify validates kinds and values. " +
 					"Order matters; amounts and values compare numerically, so `\"5\"` matches Shopify's `\"5.0\"`. Reference metafield definitions and metaobjects by their resource or data source IDs, which differ per store. " +
-					"Products match asynchronously, so a new rule can take a moment to fill the collection. `jsonencode([])` removes all conditions. Unset means unmanaged. A source another app created is managed too, but Shopify may reject changes to it.",
+					"Products match asynchronously, so a new rule can take a moment to fill the collection. `jsonencode([])` removes all conditions." + emptying + " Unset means unmanaged. A source another app created is managed too, but Shopify may reject changes to it.",
 				Optional: true,
 			},
 			"product_ids": schema.SetAttribute{
 				MarkdownDescription: "Product GIDs included by hand, whatever the conditions say. Reference `shopify_product` IDs, so products are created first and their GIDs never sit in the configuration. " +
-					"A product deleted elsewhere drops out and shows as drift. `[]` removes them all." + membership,
+					"A product deleted elsewhere drops out and shows as drift. `[]` removes them all." + emptying + membership,
 				ElementType:   types.StringType,
 				Optional:      true,
 				Computed:      true,
@@ -213,8 +216,9 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 }
 
 func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan model
+	var plan, cfg model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &cfg)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -232,9 +236,9 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	}
 	var c *client.CollectionFields
 	if existing != nil {
-		c = r.update(ctx, existing, &plan, &resp.Diagnostics)
+		c = r.update(ctx, existing, &cfg, &resp.Diagnostics)
 	} else {
-		c = r.create(ctx, &plan, &resp.Diagnostics)
+		c = r.create(ctx, &cfg, &resp.Diagnostics)
 	}
 	r.finish(ctx, c, &plan, &resp.Diagnostics, resp.Private)
 	if resp.Diagnostics.HasError() {
@@ -279,9 +283,11 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	}
 	written, d := patterns.WrittenHTML(ctx, req.Private)
 	resp.Diagnostics.Append(d...)
+	wasManaged := !state.ProductIDs.IsNull() || !state.Conditions.IsNull()
 	d, unsupported := setFromAPI(ctx, &state, c, written, importing)
 	resp.Diagnostics.Append(d...)
-	if unsupported != nil && importing {
+	// Warn once: on import, or when a collection's membership stops being manageable; ModifyPlan errors if config still sets it.
+	if unsupported != nil && (importing || wasManaged) {
 		resp.Diagnostics.AddWarning("Membership is not managed", unsupportedDetail(unsupported))
 	}
 	if resp.Diagnostics.HasError() {
@@ -292,15 +298,16 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 }
 
 func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan model
+	var plan, cfg model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &cfg)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 	id := plan.ID.ValueString()
 	// Condition IDs and the current selections come from the live collection, never from state.
 	live := &liveCollection{CollectionFields: &client.CollectionFields{Id: id}}
-	if plan.membershipConfigured() {
+	if cfg.membershipConfigured() {
 		var err error
 		if live, err = r.getByID(ctx, id); err != nil {
 			resp.Diagnostics.AddError("Failed to read "+what+" before the update", err.Error())
@@ -311,7 +318,7 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 			return
 		}
 	}
-	c := r.update(ctx, live, &plan, &resp.Diagnostics)
+	c := r.update(ctx, live, &cfg, &resp.Diagnostics)
 	r.finish(ctx, c, &plan, &resp.Diagnostics, resp.Private)
 	if resp.Diagnostics.HasError() {
 		return
@@ -372,13 +379,13 @@ func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequ
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, id)...)
 }
 
-// create sends collectionCreate with the configured attributes and membership.
-func (r *Resource) create(ctx context.Context, plan *model, diags *diag.Diagnostics) *client.CollectionFields {
-	changes, ok := planChanges(ctx, nil, plan, diags)
+// create sends collectionCreate with the configured attributes and membership; cfg is the config, so unset attributes are never sent.
+func (r *Resource) create(ctx context.Context, cfg *model, diags *diag.Diagnostics) *client.CollectionFields {
+	changes, ok := planChanges(ctx, nil, cfg, diags)
 	if !ok {
 		return nil
 	}
-	in := plan.createInput()
+	in := cfg.createInput()
 	if changes.Create != nil {
 		in.Sources = []client.CollectionCreateSourceTargetInput{{Source: &client.CollectionCreateConditionsSourceInput{Title: sourceTitle, Inclusion: changes.Create}}}
 	}
@@ -398,21 +405,21 @@ func (r *Resource) create(ctx context.Context, plan *model, diags *diag.Diagnost
 	return &res.CollectionCreate.Collection.CollectionFields
 }
 
-// update sends collectionUpdate for live with the configured attributes and the membership difference.
-func (r *Resource) update(ctx context.Context, live *liveCollection, plan *model, diags *diag.Diagnostics) *client.CollectionFields {
+// update sends collectionUpdate for live with the configured attributes and the membership difference; cfg is the config, as in create.
+func (r *Resource) update(ctx context.Context, live *liveCollection, cfg *model, diags *diag.Diagnostics) *client.CollectionFields {
 	var mem *membership
-	if plan.membershipConfigured() {
+	if cfg.membershipConfigured() {
 		var err error
 		if mem, err = membershipOf(live.sources); err != nil {
 			diags.AddError("Membership can't be managed", unsupportedDetail(err))
 			return nil
 		}
 	}
-	changes, ok := planChanges(ctx, mem, plan, diags)
+	changes, ok := planChanges(ctx, mem, cfg, diags)
 	if !ok {
 		return nil
 	}
-	in := plan.updateInput(live.Id)
+	in := cfg.updateInput(live.Id)
 	switch {
 	case changes.Create != nil:
 		in.SourcesToCreate = []client.CollectionCreateSourceTargetInput{{Source: &client.CollectionCreateConditionsSourceInput{Title: sourceTitle, Inclusion: changes.Create}}}
@@ -438,15 +445,15 @@ func (r *Resource) update(ctx context.Context, live *liveCollection, plan *model
 	return &res.CollectionUpdate.Collection.CollectionFields
 }
 
-func planChanges(ctx context.Context, mem *membership, plan *model, diags *diag.Diagnostics) (sourceChanges, bool) {
-	want, d := plan.desired(ctx)
+func planChanges(ctx context.Context, mem *membership, cfg *model, diags *diag.Diagnostics) (sourceChanges, bool) {
+	want, d := cfg.desired(ctx)
 	diags.Append(d...)
 	if diags.HasError() {
 		return sourceChanges{}, false
 	}
 	changes, err := planSource(mem, want)
 	if err != nil {
-		diags.AddAttributeError(path.Root("match_type"), "Invalid membership", err.Error())
+		diags.AddError("Invalid membership", err.Error())
 		return sourceChanges{}, false
 	}
 	return changes, true

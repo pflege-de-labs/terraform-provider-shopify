@@ -14,15 +14,22 @@ import (
 
 // source is one entry of Collection.sources as CollectionFields reads it.
 type source struct {
-	Typename   string `json:"__typename"`
-	ID         string `json:"id"`
-	Shareable  bool   `json:"shareable"`
-	TargetType string `json:"targetType"`
+	Typename   string               `json:"__typename"`
+	ID         string               `json:"id"`
+	App        *struct{ ID string } `json:"app"`
+	Shareable  bool                 `json:"shareable"`
+	TargetType string               `json:"targetType"`
 	Inclusion  *struct {
 		MatchType  *string          `json:"matchType"`
 		Conditions []map[string]any `json:"conditions"`
 		Selections selectionPage    `json:"selections"`
 	} `json:"inclusion"`
+	Exclusion *struct {
+		Conditions []json.RawMessage `json:"conditions"`
+		Selections struct {
+			Nodes []json.RawMessage `json:"nodes"`
+		} `json:"selections"`
+	} `json:"exclusion"`
 }
 
 type selectionPage struct {
@@ -51,6 +58,10 @@ type membership struct {
 	Conditions   []any // input shape
 	ConditionIDs []string
 	ProductIDs   []string // sorted
+	// ShopifyMade marks a source without an app, which Shopify made and the provider can't recreate.
+	ShopifyMade bool
+	// Exclusions marks unmanaged exclusion conditions or products, which deleting the source would lose.
+	Exclusions bool
 }
 
 // membershipOf returns the managed membership, nil without a source, or an error saying why the sources can't be managed.
@@ -78,7 +89,8 @@ func membershipOf(sources []source) (*membership, error) {
 	if err != nil {
 		return nil, err
 	}
-	m := &membership{SourceID: s.ID, MatchType: s.Inclusion.MatchType, Conditions: conds, ConditionIDs: ids, ProductIDs: []string{}}
+	m := &membership{SourceID: s.ID, MatchType: s.Inclusion.MatchType, Conditions: conds, ConditionIDs: ids, ProductIDs: []string{},
+		ShopifyMade: s.App == nil, Exclusions: s.Exclusion != nil && (len(s.Exclusion.Conditions) > 0 || len(s.Exclusion.Selections.Nodes) > 0)}
 	for _, n := range s.Inclusion.Selections.Nodes {
 		if len(n.VariantIDs) > 0 {
 			return nil, fmt.Errorf("the collection selects variants of product %s", n.Product.ID)
@@ -145,8 +157,19 @@ func planSource(live *membership, want desired) (sourceChanges, error) {
 		if want.MatchType != nil {
 			return sourceChanges{}, errors.New("match_type needs at least one condition or product in the collection; Shopify keeps no source without them")
 		}
-		// An empty source, such as frontpage's, stays: Shopify made it and it can't be recreated.
-		return sourceChanges{Delete: live != nil && (len(cur.Conditions) > 0 || len(cur.ProductIDs) > 0)}, nil
+		// An already empty source, such as frontpage's, stays as it is.
+		if live == nil || (len(cur.Conditions) == 0 && len(cur.ProductIDs) == 0) {
+			return sourceChanges{}, nil
+		}
+		// S13-9: deleting the source must not lose what Terraform doesn't manage or can't recreate.
+		// TODO(verify): whether a source with exclusions but no inclusion can exist, and how Shopify treats it.
+		switch {
+		case cur.Exclusions:
+			return sourceChanges{}, errors.New("removing the last condition and product deletes the collection's source, which also has exclusions; Terraform doesn't manage exclusions, so remove them in the admin first")
+		case cur.ShopifyMade:
+			return sourceChanges{}, errors.New("removing the last condition and product would delete the collection's source, which Shopify made and Terraform can't recreate; leave product_ids and conditions unset, or keep at least one entry")
+		}
+		return sourceChanges{Delete: true}, nil
 	}
 	matchType := (*client.CollectionConditionMatchType)(want.MatchType)
 	if live == nil {
