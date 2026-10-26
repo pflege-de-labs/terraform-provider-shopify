@@ -56,6 +56,7 @@ provider "shopify" {
 | `shopify_shop_policy` | `<TYPE>`, e.g. `TERMS_OF_SERVICE` |
 | `shopify_privacy_settings` | `default` (singleton; `id` is the shop GID) |
 | `shopify_consent_policy` | `<COUNTRY>` or `<COUNTRY>/<REGION>`, e.g. `DE`, `US/USCA` |
+| `shopify_checkout_and_accounts_configuration` | `published`, or the configuration `<name>` |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -616,6 +617,49 @@ Notes:
 **List (`shopify_privacy_settings`):** no config. One result, `DisplayName` `Privacy settings`, with the three `*_auto_managed` values.
 
 **List (`shopify_consent_policy`):** no config. Lists only rows whose ID has no `SD-` prefix (the schema documents the prefix as "system default"), so Shopify's 316 untouched defaults stay out; on the dev store that leaves `DE`, `IS`, `LI`. `DisplayName`: `DE` or `US/USCA`, the import key. Results carry the key and both booleans; importing them plans as import-only even while the banner is on (no write).
+
+---
+
+## 9e. Resource: `shopify_checkout_and_accounts_configuration`
+
+```hcl
+resource "shopify_checkout_and_accounts_configuration" "live" {
+  # name unset: the published configuration
+  branding = jsonencode({
+    designTokens = {
+      colors       = { palette = { color1 = "#1A4D8F" } }
+      cornerRadius = { base = 6 }
+    }
+    components = { checkbox = { cornerRadius = "LARGE" } }
+  })
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `CheckoutAndAccountsConfiguration` GID. Computed, UseStateForUnknown |
+| `name` | string | Optional + Computed. Selects the configuration by name; unset = the published one. **RequiresReplace**: the API can't rename, and a different name means a different configuration (replace is harmless, destroy only drops state) |
+| `is_published` | bool | Computed |
+| `branding` | string (JSON) | Optional; unset = branding unmanaged. Model and drift handling in §9f |
+| `adopt_existing` | — | Not offered: the object can't be created, so it is always adopted |
+
+Import key: `published` for the published configuration, otherwise its `name`. Names come from the shop name (dev store: `terraform-provider-test configuration`), so `published` is the key that works on every store. Read: `checkoutAndAccountsConfiguration(id:)` first; if it is gone, `checkoutAndAccountsConfigurations(query: "is_published:true")` when `name` is unset, otherwise page through the list and match `name` (no name filter exists). `MutableIdentity` is set. A name that matches more than one configuration is an error that lists the GIDs. After a different configuration is published in the admin, the resource keeps following its GID (now a draft); `is_published = false` shows it, and the docs say to re-import.
+
+Granularity: one resource per configuration, holding its branding. Checkout branding is not a resource of its own (decision in §9f).
+
+Notes:
+- Uses `checkoutAndAccountsConfiguration(s)` and `checkoutAndAccountsConfigurationUpdate(id:, configuration:)`. The deprecated `checkoutProfiles`, `checkoutBranding` and `checkoutBrandingUpsert` are not used.
+- **What is writable:** `CheckoutAndAccountsConfigurationInput` has only `branding` and `overrides`. There is no create, delete, rename or publish mutation; publishing goes through rollouts (`RolloutCheckoutAndAccountsConfigurationPublishChange`), which are out of scope here.
+- **Overrides are not managed in this task.** `CheckoutAndAccountsConfigurationOverrideInput` is `{ id, branding }`: it says nothing about what an override applies to, so a new override can't be targeted. The dev store has none, and discovery didn't count them on staging/production. `TODO(verify)`: what overrides target and how they are created; until then they are left alone (never sent).
+- **Pattern A (implicit):** configurations are created in the checkout editor and can't be deleted through the API. Create = find (published or by name), then update branding. Destroy only removes the resource from state with a warning; it never sends `branding: null` or resets anything (Review Focus 1).
+- **No Pattern B.**
+- Errors: `CheckoutAndAccountsConfigurationUserError` has `code` (`INVALID`, `BLANK`, `MISSING`, `NOT_FOUND`, `INTERNAL_SERVER_ERROR`, `TRANSIENT`), `reason` (e.g. `branding_invalid_hex_color`) and `field` (`["configuration","branding",…]`). They map to `branding`, and the message includes the JSON path from `field` and the `reason`. Unknown keys or wrong types in the JSON fail as GraphQL variable errors before execution and are reported as such. Nothing is retried; `TRANSIENT` asks the user to re-apply.
+- **Checked on the dev store (2026-10-26):** one configuration, published, no overrides; branding only has three surface background colours (`#FFFFFF`). Update semantics in §9f.
+- **Fit: volatile.** Branding is usually edited in the admin's checkout editor. The description says so.
+- **Scopes:** `read_checkout_and_accounts_configurations` / `write_checkout_and_accounts_configurations`. `TODO(verify)`: whether branding also needs `*_checkout_branding_settings`; both are already in `app/*.toml` and granted on the dev store, so the dev store can't tell them apart.
+- **Review Focus 2:** branding sets path A; path B is changed through the client; expect an empty plan.
+
+**List:** no config. Lists every configuration, published or not. `DisplayName`: the name, with ` (published)` appended for the published one. Results carry `name` and `branding` (live branding as described in §9f), which plan as import-only.
 
 ---
 
