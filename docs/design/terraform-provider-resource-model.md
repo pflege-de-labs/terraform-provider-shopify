@@ -62,6 +62,7 @@ provider "shopify" {
 | `shopify_collection` | `<handle>` (unique per shop, see §9l) |
 | `shopify_page` | `<handle>` (unique per shop, see §9m) |
 | `shopify_blog` | `<handle>` (unique per shop; Shopify suffixes a taken handle, see §9n) |
+| `shopify_file` | `<filename>`, e.g. `logo.png` (unique per shop); an external video by its URL, see §9o |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -1258,6 +1259,80 @@ Notes:
 **List:** no config. `blogs(first: 250)`, paged. `DisplayName`: `<title> (<handle>)`. Results carry `handle`, `title`, `comment_policy` and `template_suffix` when not null, and plan as import-only.
 
 **Dev store (2026-10-26):** probes created blogs `tf-probe_blog` and `news-1` (the suffix probe) and one article; `news-1` was deleted, the probe blog was renamed (`news-1`, then `tf-probe-blog-2`) and deleted with its article. End state equals the start: only `news`, 0 articles.
+
+---
+
+## 9o. Resource: `shopify_file`
+
+Discovery: 269 files on staging, 432 on production, merchant-owned (D2: build). Files are the store's media library: product images, theme and page assets, downloads. They are content, uploaded and replaced in the admin all the time, so the type is volatile. Product media (§9k.4) references files of this type by ID.
+
+```hcl
+resource "shopify_file" "logo" {
+  filename     = "logo.png"
+  content_type = "IMAGE"
+  source       = "${path.module}/assets/logo.png" # local file (staged upload) or https URL
+  source_hash  = filesha256("${path.module}/assets/logo.png")
+  alt          = "pflege.de Logo"                 # optional, unset = unmanaged
+
+  allow_data_deletion = false
+}
+
+resource "shopify_file" "howto" {
+  content_type = "EXTERNAL_VIDEO"
+  source       = "https://www.youtube.com/watch?v=..."
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | File GID; the kind follows the content type: `MediaImage`, `GenericFile`, `Video`, `ExternalVideo`, `Model3d`. Computed, UseStateForUnknown |
+| `content_type` | string | Required, **RequiresReplace** (a file can't change kind). `FileContentType`: `IMAGE`, `FILE`, `VIDEO`, `EXTERNAL_VIDEO`, `MODEL_3D`. Read maps `__typename` back. Required because the duplicate check needs it (below) |
+| `filename` | string | Optional in the schema; ValidateConfig requires it for every type except `EXTERNAL_VIDEO`, where it must be unset (external videos have no filename). Import key. Updatable in place (`fileUpdate`, same GID, checked), but the CDN URL changes with it (`…/files/tf-probe.png` → `…/files/tf-probe-renamed.png`, checked), so ModifyPlan warns that links to the old URL in pages and themes break. A different **extension forces replace**: `fileUpdate` rejects it with `INVALID_FILENAME_EXTENSION` (checked). Validated: ASCII letters, digits, `.`, `_`, `-`, and an extension, since Shopify rewrites anything else (`TF Probe ä.png` became `TF_Probe_a.png`, checked) |
+| `source` | string | Optional, but Create fails without it (ModifyPlan, on create only). A local file path (uploaded through a staged upload) or an `http(s)://` URL (Shopify fetches it). See "Sources". Not readable for hosted files: Read keeps the state value, import leaves it null (unmanaged). For `EXTERNAL_VIDEO` it is the video URL and is read back (`originUrl`) |
+| `source_hash` | string | Optional. Not interpreted; any change re-uploads the content, like a `source` change. Meant for `filesha256(<path>)`, since a changed file under the same path or URL is otherwise invisible to Terraform (the `aws_s3_object.source_hash` pattern) |
+| `alt` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `""` clears it (checked) |
+| `url` | string | Computed. The public URL: `image.url` (`MediaImage`), `url` (`GenericFile`), `originalSource.url` (`Video`, `Model3d`; `TODO(verify)` that it is the public URL), `originUrl` (`ExternalVideo`). UseStateForUnknown, except ModifyPlan marks it unknown when `filename`, `source` or `source_hash` change (a content update changes the `?v=` query, checked) |
+| `adopt_existing` | bool | Pattern A, see below |
+| `allow_data_deletion` | bool | Pattern B, see below |
+| `timeouts` | block | `create`, `update` (durations, default `10m`). How long Create and Update wait for processing. Hand-rolled block (two strings parsed with `time.ParseDuration`): the `terraform-plugin-framework-timeouts` module would be a new dependency |
+
+**Sources: staged uploads for local files, `originalSource` URLs otherwise.** The brief asked for `originalSource` URLs only if they cover every file type. They don't: `FileCreateInput.originalSource` takes "an external URL … for images, generic files, or external videos. Videos and 3D models require a staged upload URL" (schema). Staged uploads cover every hosted type (`StagedUploadTargetGenerateUploadResource` has `IMAGE`, `FILE`, `VIDEO`, `MODEL_3D`), and a file kept in the repository is the usual Terraform workflow (`file()`, `filesha256()`), so they are the main path. A URL source stays because external videos (YouTube, Vimeo) have nothing to upload, and for images and generic files it is the same call minus the upload. The provider tells the two apart by the `http://` / `https://` prefix.
+- **Local path:** `stagedUploadsCreate(input: [{ resource: <content_type>, filename, mimeType, fileSize, httpMethod: PUT }])` → PUT the bytes to the returned `url` with the returned `parameters` as headers → `fileCreate(originalSource: <resourceUrl>)`. `mimeType` from the extension (`mime.TypeByExtension`); `fileSize` is required for videos and 3D models. Plain `net/http`, no new dependency. `TODO(verify)` on the dev store at implementation: the PUT flow, and whether `fileUpdate(originalSource: <resourceUrl>)` replaces the content as a URL does. Not probed here: no upload outside the brief's tiny public image.
+- **URL:** sent as `originalSource` as is. ValidateConfig rejects a URL for `VIDEO` and `MODEL_3D`, and a local path for `EXTERNAL_VIDEO`, with the schema's reason.
+- A file at a URL that changes later is not noticed unless `source_hash` changes (the URL itself isn't fetched at plan time).
+
+**Create, processing and the filename key.**
+- Create sends `filename`, `contentType`, `alt` (when set) and `duplicateResolutionMode: RAISE_ERROR`. The default, `APPEND_UUID`, would silently create `logo_<uuid>.png` and break the key. A taken filename then fails at once with `FILENAME_ALREADY_EXISTS`, `field = ["files","0","filename"]` (checked), mapped to `filename`. `RAISE_ERROR` without `contentType` fails with `INVALID_DUPLICATE_MODE_FOR_TYPE` ("not supported for 'MISSING' media type", checked), which is why `content_type` is required. External videos get neither `filename` nor `duplicateResolutionMode` (`TODO(verify)`: whether `RAISE_ERROR` is rejected for them).
+- **Processing is asynchronous.** `fileCreate` returns `fileStatus: UPLOADED` with `image: null`; the 1×1 PNG was `READY` with its URL about a second later (checked). Create and Update (after a content change) poll `node(id:)` every 2 s until `READY` or `FAILED`, within the `timeouts` value. `FAILED`: the file is deleted again (`fileDelete`, otherwise the next apply hits `FILENAME_ALREADY_EXISTS`) and Create fails with each `fileErrors` entry (`code`, `message`, `details`). Timeout: the file stays, state gets its ID (so the next plan sees it), and Create fails saying it is still processing.
+- `adopt_existing = true`: Create looks the filename up (below) and, if found, updates it to the config (`alt`, and the content when `source` is set) instead of creating.
+
+Import key: the filename (`logo.png`); for an external video, its URL (contains `://`, so it can't be a filename). Read: `node(id:)` first, bound to `json.RawMessage` with `... on MediaImage`, `... on GenericFile`, `... on Video`, `... on Model3d`, `... on ExternalVideo` fragments, like web presences (§9a); there is no `file(id:)` root field. If it is gone: `files(first: 10, query: "filename:<filename>")`, then an exact match on the derived filename. `MutableIdentity` is set.
+- `MediaImage` and `GenericFile` have no `filename` field; it is the last path segment of `image.url` / `url` without the query (`…/files/tf-probe.png?v=…` → `tf-probe.png`, checked for `MediaImage`; `TODO(verify)` for `GenericFile`). `Video` and `Model3d` have `filename`.
+- The search is token-based (`filename:tf-probe` and `filename:tf-probe.png` both found `tf-probe.png`) and search-indexed: right after `fileCreate` it returned nothing, a few seconds later the file (checked). Import and adopt of a file made moments ago can therefore miss it; the error says so.
+- External videos: `files(query: "media_type:EXTERNAL_VIDEO")`, paged, exact `originUrl` match (`TODO(verify)` the filter value).
+- **Duplicates:** with `RAISE_ERROR` Shopify keeps filenames unique, and `APPEND_UUID` uploads (the admin's default) get unique names too. More than one exact match (possible for external videos with the same URL; `TODO(verify)`: whether case-only differences count as distinct filenames, and whether production has duplicates) is an error listing the GIDs, never a pick.
+
+**Update:** `fileUpdate(files: [{ id, … }])` with only the changed fields: `alt`, `filename`, and `originalSource` when `source` or `source_hash` changed. Replacing the content works in place for `IMAGE` and `FILE` only ("the source from which to update a media image or generic file", schema): same GID, same URL path, new `?v=` (checked for an image from a URL). For `VIDEO`, `MODEL_3D` and `EXTERNAL_VIDEO` a content change forces replace. Never sent: `referencesToAdd` / `referencesToRemove` (only product IDs; the product owns that link through `productSet(files:)`, §9k.4, one writer) and `previewImageSource` (roadmap).
+
+**Pattern A: `adopt_existing` only.** Shopify creates no default files (dev store: 0 files).
+
+**Pattern B: deleting a file destroys data and breaks references.** `fileDelete` is permanent; Shopify removes the file from every product that uses it, and links from themes, pages and blog posts break (schema). A recreate uploads the content again, but under a new GID and URL. So Delete, and every replace (`content_type`, a new extension, a content change of a video, 3D model or external video), fail unless `allow_data_deletion = true`, with no exception for unused files; ModifyPlan warns on a planned replace. `FILE_DOES_NOT_EXIST` on delete (checked) means already gone: removed from state without error.
+
+**Product media (§9k.4).** `id` is the file's own GID (`gid://shopify/MediaImage/…`), which `FileSetInput.id` of `productSet(files:)` takes, so `media_ids = [shopify_file.logo.id]` works without a conversion. Deleting a product deletes media that no other product uses (§9k.1, checked), files of this type included; the file then plans a create. Open for §9k.4: whether removing a file from `productSet(files:)` deletes it.
+
+Notes:
+- Uses `node(id:)`, `files(first:, after:, query:)`, `fileCreate`, `fileUpdate`, `fileDelete`, `stagedUploadsCreate`. Deprecated `stagedUploadTargetGenerate(s)` are not used.
+- Errors (`FilesUserError`, `field` like `["files","0","filename"]`): `FILENAME_ALREADY_EXISTS`, `INVALID_FILENAME`, `INVALID_FILENAME_EXTENSION`, `UNSUPPORTED_MEDIA_TYPE_FOR_FILENAME_UPDATE` (`filename`); `INVALID_IMAGE_SOURCE_URL`, `MISMATCHED_FILENAME_AND_ORIGINAL_SOURCE`, `UNACCEPTABLE_ASSET`, `UNACCEPTABLE_TRIAL_ASSET`, `UNACCEPTABLE_UNVERIFIED_TRIAL_ASSET` (`source`); `ALT_VALUE_LIMIT_EXCEEDED` (`alt`); `INVALID_DUPLICATE_MODE_FOR_TYPE`, `NON_IMAGE_MEDIA_PER_SHOP_LIMIT_EXCEEDED`, `FILE_LOCKED`, `NON_READY_STATE`, `MEDIA_CANNOT_BE_MODIFIED`, `INVALID` (resource level); `FILE_DOES_NOT_EXIST` (gone). Processing errors come later as `FileError` codes (`IMAGE_DOWNLOAD_FAILURE`, `GENERIC_FILE_DOWNLOAD_FAILURE`, `UNSUPPORTED_IMAGE_FILE_TYPE`, `FILE_STORAGE_LIMIT_EXCEEDED`, the `VIDEO_*` and `MODEL3D_*` codes, …), reported with `details`. None is retried; `FILE_LOCKED` / `NON_READY_STATE` ask the user to re-apply.
+- **Fit: volatile.** The description says so: most stores upload files in the admin or through product media; managing a few assets kept in the repository (logos, downloads) fits, mirroring the whole library doesn't.
+- **Scopes:** `read_files` / `write_files` (`docs/bootstrapping.md`). `TODO(verify)`: whether `files` also works with `read_themes` or `read_products` alone (Shopify's docs list alternatives); checked only with every scope granted.
+- **Review Focus 1:** after destroy of an adopted file, read it back through the client and expect it unchanged. **Review Focus 2:** set `alt` in one step, leave it out in the next, change it through the client in between: the config without `alt` plans empty.
+- **Testing:** filenames `tf-acc-file-<random>.png`. Steps: create from a URL (the 1×1 PNG at `upload.wikimedia.org`) and from a local `testdata/` PNG (13b-3b), alt change, rename (URL changes, GID stays), content change through `source_hash` (GID and URL path stay), extension change plans a replace and fails without `allow_data_deletion`, import by filename and identity, adopt, Pattern B. Unit tests first: the filename validator, filename-from-URL, import-key parsing (filename vs URL), source routing and the type/source checks, the poll loop (READY, FAILED with cleanup, timeout).
+
+**List:** optional config `query`, passed to `files(query:)` in Shopify's search syntax (for example `media_type:IMAGE` or `filename:logo`), so a store with hundreds of files can be imported in parts. `files(first: 250)`, paged; requested cost 24 per page with every field the resource reads (checked), so production's 432 files take two calls. `DisplayName`: `<filename> (<content_type>)`, `<url> (EXTERNAL_VIDEO)` for external videos. Results carry `filename`, `content_type`, `alt` when not null, and `source` for external videos only; hosted files come without `source` (unmanaged), which passes validation and plans as import-only. Files that failed processing are listed too.
+
+**Dev store (2026-10-26):** one probe image (`tf-probe.png` from the 1×1 PNG URL) was created, renamed twice, given a new alt, re-sourced from the same URL, and deleted; a duplicate create was refused. End state equals the start: 0 files.
+
+**Task split:** 13b-3a the resource with URL sources (everything above except the local-path upload); 13b-3b staged uploads of local files. 13b-3a alone is usable for images, generic files and external videos; videos and 3D models need 13b-3b.
 
 ---
 
