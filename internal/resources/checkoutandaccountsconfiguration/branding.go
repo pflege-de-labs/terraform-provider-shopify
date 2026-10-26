@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"reflect"
 	"regexp"
 	"strings"
@@ -51,7 +52,7 @@ func decode(raw []byte) (any, error) {
 func brandingObjectError(s string) error {
 	v, err := decode([]byte(s))
 	if err != nil {
-		return err
+		return fmt.Errorf("branding must be a JSON object: %w", err)
 	}
 	if _, ok := v.(map[string]any); !ok {
 		return errors.New("branding must be a JSON object")
