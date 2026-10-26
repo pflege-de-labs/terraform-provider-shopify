@@ -164,8 +164,10 @@ func optionsAttribute() schema.ListNestedAttribute {
 	return schema.ListNestedAttribute{
 		MarkdownDescription: "Options in position order, at most 3, each with its values in position order. Set together with `variants`; when both are unset they are unmanaged. " +
 			"`[]` is a product without options, which has one default variant. " +
-			"Renaming an option or value where it stands keeps its variants. A new name at another position counts as removing the old value and adding a new one, so rename and reorder in separate applies. " +
-			"Dropping an option while adding another in the same apply deletes and recreates every variant. " +
+			"A new option or value name at the same position is a rename: its variants and their stock carry over to the new name, matched by position. " +
+			"A new name at another position counts as removing the old value and adding a new one, so rename and reorder in separate applies. " +
+			"Dropping an option while adding one at a different position deletes and recreates every variant, guarded by `allow_data_deletion`. " +
+			"To really replace an option, remove it in one apply and add the new one in the next. " +
 			"A product with an option linked to a metafield (such as a category metafield) can't have its options and variants managed yet; they are read only, and setting them fails.",
 		Optional:      true,
 		Computed:      true,
