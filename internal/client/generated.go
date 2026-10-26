@@ -322,24 +322,6 @@ func (v *AddLocationResponse) GetLocationAdd() *AddLocationLocationAddLocationAd
 	return v.LocationAdd
 }
 
-// The input fields for barcodes that are associated with a product variant. A variant accepts up to
-// 20 barcodes, and a given variant input can't
-// set both `barcode` and `barcodes`. Refer to the
-// [`ProductVariantBarcode`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariantBarcode)
-// object for how these barcodes are returned.
-type BarcodeInput struct {
-	// The value of the barcode. For example, `9780262033848`. Maximum length: 255 characters.
-	Value string `json:"value"`
-	// The associated standard that the barcode conforms to. Barcode types are validated against their respective format standards. A `null` format denotes no type provided on write and the value is stored as entered.
-	Type *BarcodeType `json:"type"`
-}
-
-// GetValue returns BarcodeInput.Value, and is useful for accessing the field via an interface.
-func (v *BarcodeInput) GetValue() string { return v.Value }
-
-// GetType returns BarcodeInput.Type, and is useful for accessing the field via an interface.
-func (v *BarcodeInput) GetType() *BarcodeType { return v.Type }
-
 // The identifier standard that a barcode value conforms to. A single value can satisfy more than one
 // standard, so declare the standard that the merchant or supplier assigned. If no `BarcodeType` is provided,
 // then no standard was declared and the value is stored as entered.
@@ -7544,6 +7526,21 @@ func (v *GetProductByHandleProductByIdentifierProduct) GetIsGiftCard() bool {
 	return v.ProductFields.IsGiftCard
 }
 
+// GetHasOnlyDefaultVariant returns GetProductByHandleProductByIdentifierProduct.HasOnlyDefaultVariant, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetHasOnlyDefaultVariant() bool {
+	return v.ProductFields.HasOnlyDefaultVariant
+}
+
+// GetOptions returns GetProductByHandleProductByIdentifierProduct.Options, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetOptions() []ProductFieldsOptionsProductOption {
+	return v.ProductFields.Options
+}
+
+// GetVariants returns GetProductByHandleProductByIdentifierProduct.Variants, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetVariants() ProductFieldsVariantsProductVariantConnection {
+	return v.ProductFields.Variants
+}
+
 func (v *GetProductByHandleProductByIdentifierProduct) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -7593,6 +7590,12 @@ type __premarshalGetProductByHandleProductByIdentifierProduct struct {
 	TemplateSuffix *string `json:"templateSuffix"`
 
 	IsGiftCard bool `json:"isGiftCard"`
+
+	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
+
+	Options []ProductFieldsOptionsProductOption `json:"options"`
+
+	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
 }
 
 func (v *GetProductByHandleProductByIdentifierProduct) MarshalJSON() ([]byte, error) {
@@ -7618,6 +7621,9 @@ func (v *GetProductByHandleProductByIdentifierProduct) __premarshalJSON() (*__pr
 	retval.Seo = v.ProductFields.Seo
 	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
 	retval.IsGiftCard = v.ProductFields.IsGiftCard
+	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
+	retval.Options = v.ProductFields.Options
+	retval.Variants = v.ProductFields.Variants
 	return &retval, nil
 }
 
@@ -7686,6 +7692,21 @@ func (v *GetProductProduct) GetTemplateSuffix() *string { return v.ProductFields
 // GetIsGiftCard returns GetProductProduct.IsGiftCard, and is useful for accessing the field via an interface.
 func (v *GetProductProduct) GetIsGiftCard() bool { return v.ProductFields.IsGiftCard }
 
+// GetHasOnlyDefaultVariant returns GetProductProduct.HasOnlyDefaultVariant, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetHasOnlyDefaultVariant() bool {
+	return v.ProductFields.HasOnlyDefaultVariant
+}
+
+// GetOptions returns GetProductProduct.Options, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetOptions() []ProductFieldsOptionsProductOption {
+	return v.ProductFields.Options
+}
+
+// GetVariants returns GetProductProduct.Variants, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetVariants() ProductFieldsVariantsProductVariantConnection {
+	return v.ProductFields.Variants
+}
+
 func (v *GetProductProduct) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -7735,6 +7756,12 @@ type __premarshalGetProductProduct struct {
 	TemplateSuffix *string `json:"templateSuffix"`
 
 	IsGiftCard bool `json:"isGiftCard"`
+
+	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
+
+	Options []ProductFieldsOptionsProductOption `json:"options"`
+
+	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
 }
 
 func (v *GetProductProduct) MarshalJSON() ([]byte, error) {
@@ -7760,6 +7787,9 @@ func (v *GetProductProduct) __premarshalJSON() (*__premarshalGetProductProduct, 
 	retval.Seo = v.ProductFields.Seo
 	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
 	retval.IsGiftCard = v.ProductFields.IsGiftCard
+	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
+	retval.Options = v.ProductFields.Options
+	retval.Variants = v.ProductFields.Variants
 	return &retval, nil
 }
 
@@ -7781,6 +7811,239 @@ type GetProductResponse struct {
 
 // GetProduct returns GetProductResponse.Product, and is useful for accessing the field via an interface.
 func (v *GetProductResponse) GetProduct() *GetProductProduct { return v.Product }
+
+// GetProductVariantsProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductVariantsProduct struct {
+	// A list of [variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) associated with the product.
+	// If querying a single product at the root, you can fetch up to 2048 variants.
+	Variants GetProductVariantsProductVariantsProductVariantConnection `json:"variants"`
+}
+
+// GetVariants returns GetProductVariantsProduct.Variants, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProduct) GetVariants() GetProductVariantsProductVariantsProductVariantConnection {
+	return v.Variants
+}
+
+// GetProductVariantsProductVariantsProductVariantConnection includes the requested fields of the GraphQL type ProductVariantConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ProductVariants.
+type GetProductVariantsProductVariantsProductVariantConnection struct {
+	// A list of nodes that are contained in ProductVariantEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetProductVariantsProductVariantsProductVariantConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetProductVariantsProductVariantsProductVariantConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnection) GetNodes() []GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetProductVariantsProductVariantsProductVariantConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnection) GetPageInfo() GetProductVariantsProductVariantsProductVariantConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant struct {
+	VariantFields `json:"-"`
+}
+
+// GetId returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.Id, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetId() string {
+	return v.VariantFields.Id
+}
+
+// GetPrice returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.Price, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetPrice() string {
+	return v.VariantFields.Price
+}
+
+// GetCompareAtPrice returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.CompareAtPrice, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetCompareAtPrice() *string {
+	return v.VariantFields.CompareAtPrice
+}
+
+// GetSku returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.Sku, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetSku() *string {
+	return v.VariantFields.Sku
+}
+
+// GetBarcodes returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.Barcodes, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetBarcodes() VariantFieldsBarcodesProductVariantBarcodeConnection {
+	return v.VariantFields.Barcodes
+}
+
+// GetInventoryPolicy returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.InventoryPolicy, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetInventoryPolicy() ProductVariantInventoryPolicy {
+	return v.VariantFields.InventoryPolicy
+}
+
+// GetTaxable returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.Taxable, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetTaxable() bool {
+	return v.VariantFields.Taxable
+}
+
+// GetSelectedOptions returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.SelectedOptions, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetSelectedOptions() []VariantFieldsSelectedOptionsSelectedOption {
+	return v.VariantFields.SelectedOptions
+}
+
+// GetInventoryItem returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.InventoryItem, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetInventoryItem() VariantFieldsInventoryItem {
+	return v.VariantFields.InventoryItem
+}
+
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.VariantFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant struct {
+	Id string `json:"id"`
+
+	Price string `json:"price"`
+
+	CompareAtPrice *string `json:"compareAtPrice"`
+
+	Sku *string `json:"sku"`
+
+	Barcodes VariantFieldsBarcodesProductVariantBarcodeConnection `json:"barcodes"`
+
+	InventoryPolicy ProductVariantInventoryPolicy `json:"inventoryPolicy"`
+
+	Taxable bool `json:"taxable"`
+
+	SelectedOptions []VariantFieldsSelectedOptionsSelectedOption `json:"selectedOptions"`
+
+	InventoryItem VariantFieldsInventoryItem `json:"inventoryItem"`
+}
+
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) __premarshalJSON() (*__premarshalGetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant, error) {
+	var retval __premarshalGetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant
+
+	retval.Id = v.VariantFields.Id
+	retval.Price = v.VariantFields.Price
+	retval.CompareAtPrice = v.VariantFields.CompareAtPrice
+	retval.Sku = v.VariantFields.Sku
+	retval.Barcodes = v.VariantFields.Barcodes
+	retval.InventoryPolicy = v.VariantFields.InventoryPolicy
+	retval.Taxable = v.VariantFields.Taxable
+	retval.SelectedOptions = v.VariantFields.SelectedOptions
+	retval.InventoryItem = v.VariantFields.InventoryItem
+	return &retval, nil
+}
+
+// GetProductVariantsProductVariantsProductVariantConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetProductVariantsProductVariantsProductVariantConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetProductVariantsProductVariantsProductVariantConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetProductVariantsProductVariantsProductVariantConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetProductVariantsResponse is returned by GetProductVariants on success.
+type GetProductVariantsResponse struct {
+	// Retrieves a [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) by its ID.
+	// A product is an item that a merchant can sell in their store.
+	//
+	// Use the `product` query when you need to:
+	//
+	// - Access essential product data (for example, title, description, price, images, SEO metadata, and metafields).
+	// - Build product detail pages and manage inventory.
+	// - Handle international sales with localized pricing and content.
+	// - Manage product variants and product options.
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Product *GetProductVariantsProduct `json:"product"`
+}
+
+// GetProduct returns GetProductVariantsResponse.Product, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsResponse) GetProduct() *GetProductVariantsProduct { return v.Product }
 
 // GetShopResponse is returned by GetShop on success.
 type GetShopResponse struct {
@@ -7916,23 +8179,23 @@ var AllInclusiveTaxPricingStrategy = []InclusiveTaxPricingStrategy{
 // The input fields for an inventory item.
 type InventoryItemInput struct {
 	// The SKU (stock keeping unit) of the inventory item.
-	Sku *string `json:"sku"`
+	Sku *string `json:"sku,omitempty"`
 	// Unit cost associated with the inventory item, the currency is the shop's default currency.
-	Cost *string `json:"cost"`
+	Cost *string `json:"cost,omitempty"`
 	// Whether the inventory item is tracked.
-	Tracked *bool `json:"tracked"`
+	Tracked *bool `json:"tracked,omitempty"`
 	// The country where the item was manufactured or produced, specified using the standard two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code.
-	CountryCodeOfOrigin *CountryCode `json:"countryCodeOfOrigin"`
+	CountryCodeOfOrigin *CountryCode `json:"countryCodeOfOrigin,omitempty"`
 	// The harmonized system code of the inventory item. This must be a number between 6 and 13 digits.
-	HarmonizedSystemCode *string `json:"harmonizedSystemCode"`
+	HarmonizedSystemCode *string `json:"harmonizedSystemCode,omitempty"`
 	// List of country-specific harmonized system codes.
-	CountryHarmonizedSystemCodes []CountryHarmonizedSystemCodeInput `json:"countryHarmonizedSystemCodes"`
+	CountryHarmonizedSystemCodes []CountryHarmonizedSystemCodeInput `json:"countryHarmonizedSystemCodes,omitempty"`
 	// The province where the item was manufactured or produced, specified using the standard two-letter [ISO 3166-2 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-2) province code.
-	ProvinceCodeOfOrigin *string `json:"provinceCodeOfOrigin"`
+	ProvinceCodeOfOrigin *string `json:"provinceCodeOfOrigin,omitempty"`
 	// The measurements of an inventory item.
-	Measurement *InventoryItemMeasurementInput `json:"measurement"`
+	Measurement *InventoryItemMeasurementInput `json:"measurement,omitempty"`
 	// Whether the inventory item needs to be physically shipped to the customer. Items that require shipping are physical products, while digital goods and services typically don't require shipping and can be fulfilled electronically.
-	RequiresShipping *bool `json:"requiresShipping"`
+	RequiresShipping *bool `json:"requiresShipping,omitempty"`
 }
 
 // GetSku returns InventoryItemInput.Sku, and is useful for accessing the field via an interface.
@@ -7967,9 +8230,9 @@ func (v *InventoryItemInput) GetRequiresShipping() *bool { return v.RequiresShip
 // The input fields for an inventory item measurement.
 type InventoryItemMeasurementInput struct {
 	// The weight of the inventory item.
-	Weight *WeightInput `json:"weight"`
+	Weight *WeightInput `json:"weight,omitempty"`
 	// Shipping package associated with inventory item.
-	ShippingPackageId *string `json:"shippingPackageId"`
+	ShippingPackageId *string `json:"shippingPackageId,omitempty"`
 }
 
 // GetWeight returns InventoryItemMeasurementInput.Weight, and is useful for accessing the field via an interface.
@@ -8990,6 +9253,21 @@ func (v *ListProductsProductsProductConnectionNodesProduct) GetIsGiftCard() bool
 	return v.ProductFields.IsGiftCard
 }
 
+// GetHasOnlyDefaultVariant returns ListProductsProductsProductConnectionNodesProduct.HasOnlyDefaultVariant, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetHasOnlyDefaultVariant() bool {
+	return v.ProductFields.HasOnlyDefaultVariant
+}
+
+// GetOptions returns ListProductsProductsProductConnectionNodesProduct.Options, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetOptions() []ProductFieldsOptionsProductOption {
+	return v.ProductFields.Options
+}
+
+// GetVariants returns ListProductsProductsProductConnectionNodesProduct.Variants, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetVariants() ProductFieldsVariantsProductVariantConnection {
+	return v.ProductFields.Variants
+}
+
 func (v *ListProductsProductsProductConnectionNodesProduct) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -9039,6 +9317,12 @@ type __premarshalListProductsProductsProductConnectionNodesProduct struct {
 	TemplateSuffix *string `json:"templateSuffix"`
 
 	IsGiftCard bool `json:"isGiftCard"`
+
+	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
+
+	Options []ProductFieldsOptionsProductOption `json:"options"`
+
+	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
 }
 
 func (v *ListProductsProductsProductConnectionNodesProduct) MarshalJSON() ([]byte, error) {
@@ -9064,6 +9348,9 @@ func (v *ListProductsProductsProductConnectionNodesProduct) __premarshalJSON() (
 	retval.Seo = v.ProductFields.Seo
 	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
 	retval.IsGiftCard = v.ProductFields.IsGiftCard
+	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
+	retval.Options = v.ProductFields.Options
+	retval.Variants = v.ProductFields.Variants
 	return &retval, nil
 }
 
@@ -13216,15 +13503,15 @@ func (v *MoneyInput) GetCurrencyCode() CurrencyCode { return v.CurrencyCode }
 // The input fields for creating or updating a product option.
 type OptionSetInput struct {
 	// Specifies the product option to update.
-	Id *string `json:"id"`
+	Id *string `json:"id,omitempty"`
 	// Name of the option.
-	Name *string `json:"name"`
+	Name *string `json:"name,omitempty"`
 	// Position of the option.
-	Position *int `json:"position"`
+	Position *int `json:"position,omitempty"`
 	// Value associated with an option.
-	Values []OptionValueSetInput `json:"values"`
+	Values []OptionValueSetInput `json:"values,omitempty"`
 	// Specifies the metafield the option is linked to.
-	LinkedMetafield *LinkedMetafieldCreateInput `json:"linkedMetafield"`
+	LinkedMetafield *LinkedMetafieldCreateInput `json:"linkedMetafield,omitempty"`
 }
 
 // GetId returns OptionSetInput.Id, and is useful for accessing the field via an interface.
@@ -13245,9 +13532,9 @@ func (v *OptionSetInput) GetLinkedMetafield() *LinkedMetafieldCreateInput { retu
 // The input fields for creating or updating a product option value.
 type OptionValueSetInput struct {
 	// Specifies the product option value.
-	Id *string `json:"id"`
+	Id *string `json:"id,omitempty"`
 	// Value associated with an option.
-	Name *string `json:"name"`
+	Name *string `json:"name,omitempty"`
 }
 
 // GetId returns OptionValueSetInput.Id, and is useful for accessing the field via an interface.
@@ -14127,6 +14414,14 @@ type ProductFields struct {
 	TemplateSuffix *string `json:"templateSuffix"`
 	// Whether the product is a gift card.
 	IsGiftCard bool `json:"isGiftCard"`
+	// Whether the product has only a single variant with the default option and value.
+	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
+	// A list of product options. The limit is defined by the
+	// [shop's resource limits for product options](https://shopify.dev/docs/api/admin-graphql/latest/objects/Shop#field-resourcelimits) (`Shop.resourceLimits.maxProductOptions`).
+	Options []ProductFieldsOptionsProductOption `json:"options"`
+	// A list of [variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) associated with the product.
+	// If querying a single product at the root, you can fetch up to 2048 variants.
+	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
 }
 
 // GetId returns ProductFields.Id, and is useful for accessing the field via an interface.
@@ -14165,6 +14460,17 @@ func (v *ProductFields) GetTemplateSuffix() *string { return v.TemplateSuffix }
 // GetIsGiftCard returns ProductFields.IsGiftCard, and is useful for accessing the field via an interface.
 func (v *ProductFields) GetIsGiftCard() bool { return v.IsGiftCard }
 
+// GetHasOnlyDefaultVariant returns ProductFields.HasOnlyDefaultVariant, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetHasOnlyDefaultVariant() bool { return v.HasOnlyDefaultVariant }
+
+// GetOptions returns ProductFields.Options, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetOptions() []ProductFieldsOptionsProductOption { return v.Options }
+
+// GetVariants returns ProductFields.Variants, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetVariants() ProductFieldsVariantsProductVariantConnection {
+	return v.Variants
+}
+
 // ProductFieldsCategoryTaxonomyCategory includes the requested fields of the GraphQL type TaxonomyCategory.
 // The GraphQL type's documentation follows.
 //
@@ -14178,6 +14484,79 @@ type ProductFieldsCategoryTaxonomyCategory struct {
 
 // GetId returns ProductFieldsCategoryTaxonomyCategory.Id, and is useful for accessing the field via an interface.
 func (v *ProductFieldsCategoryTaxonomyCategory) GetId() string { return v.Id }
+
+// ProductFieldsOptionsProductOption includes the requested fields of the GraphQL type ProductOption.
+// The GraphQL type's documentation follows.
+//
+// A product attribute that customers can choose from, such as "Size", "Color", or "Material". [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) objects use options to define the different variations available for purchase. Each option has a name and a set of possible values that combine to create [`ProductVariant`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) objects.
+//
+// The option includes its display position, associated values, and optional [`LinkedMetafield`](https://shopify.dev/docs/api/admin-graphql/latest/objects/LinkedMetafield) for structured data. Options support translations for international selling and track which [`ProductOptionValue`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOptionValue) objects that variants actively use versus unused values that exist without associated variants.
+type ProductFieldsOptionsProductOption struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The product option’s name.
+	Name string `json:"name"`
+	// The metafield identifier linked to this option.
+	LinkedMetafield *ProductFieldsOptionsProductOptionLinkedMetafield `json:"linkedMetafield"`
+	// Similar to values, option_values returns all the corresponding option value objects to the product option, including values not assigned to any variants.
+	OptionValues []ProductFieldsOptionsProductOptionOptionValuesProductOptionValue `json:"optionValues"`
+}
+
+// GetId returns ProductFieldsOptionsProductOption.Id, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOption) GetId() string { return v.Id }
+
+// GetName returns ProductFieldsOptionsProductOption.Name, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOption) GetName() string { return v.Name }
+
+// GetLinkedMetafield returns ProductFieldsOptionsProductOption.LinkedMetafield, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOption) GetLinkedMetafield() *ProductFieldsOptionsProductOptionLinkedMetafield {
+	return v.LinkedMetafield
+}
+
+// GetOptionValues returns ProductFieldsOptionsProductOption.OptionValues, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOption) GetOptionValues() []ProductFieldsOptionsProductOptionOptionValuesProductOptionValue {
+	return v.OptionValues
+}
+
+// ProductFieldsOptionsProductOptionLinkedMetafield includes the requested fields of the GraphQL type LinkedMetafield.
+// The GraphQL type's documentation follows.
+//
+// The identifier for the metafield linked to this option.
+//
+// This API is currently in early access. See [Metafield-linked product options](https://shopify.dev/docs/api/admin/migrate/new-product-model/metafield-linked) for more details.
+type ProductFieldsOptionsProductOptionLinkedMetafield struct {
+	// Namespace of the metafield the option is linked to.
+	Namespace *string `json:"namespace"`
+	// Key of the metafield the option is linked to.
+	Key *string `json:"key"`
+}
+
+// GetNamespace returns ProductFieldsOptionsProductOptionLinkedMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOptionLinkedMetafield) GetNamespace() *string { return v.Namespace }
+
+// GetKey returns ProductFieldsOptionsProductOptionLinkedMetafield.Key, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOptionLinkedMetafield) GetKey() *string { return v.Key }
+
+// ProductFieldsOptionsProductOptionOptionValuesProductOptionValue includes the requested fields of the GraphQL type ProductOptionValue.
+// The GraphQL type's documentation follows.
+//
+// A specific value for a [`ProductOption`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption), such as "Red" or "Blue" for a "Color" option. Each value can be assigned to [`ProductVariant`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) objects to create different versions of a [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product).
+//
+// The value tracks whether any variants currently use it through the [`hasVariants`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOptionValue#field-hasVariants) field. Values can include visual representations through swatches that display colors or images. When linked to a [`Metafield`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metafield), the [`linkedMetafieldValue`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOptionValue#field-linkedMetafieldValue) provides additional structured data for the option value.
+type ProductFieldsOptionsProductOptionOptionValuesProductOptionValue struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The name of the product option value.
+	Name string `json:"name"`
+}
+
+// GetId returns ProductFieldsOptionsProductOptionOptionValuesProductOptionValue.Id, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOptionOptionValuesProductOptionValue) GetId() string { return v.Id }
+
+// GetName returns ProductFieldsOptionsProductOptionOptionValuesProductOptionValue.Name, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOptionOptionValuesProductOptionValue) GetName() string {
+	return v.Name
+}
 
 // ProductFieldsSeoSEO includes the requested fields of the GraphQL type SEO.
 // The GraphQL type's documentation follows.
@@ -14195,6 +14574,197 @@ func (v *ProductFieldsSeoSEO) GetTitle() *string { return v.Title }
 
 // GetDescription returns ProductFieldsSeoSEO.Description, and is useful for accessing the field via an interface.
 func (v *ProductFieldsSeoSEO) GetDescription() *string { return v.Description }
+
+// ProductFieldsVariantsProductVariantConnection includes the requested fields of the GraphQL type ProductVariantConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ProductVariants.
+type ProductFieldsVariantsProductVariantConnection struct {
+	// A list of nodes that are contained in ProductVariantEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ProductFieldsVariantsProductVariantConnectionNodesProductVariant `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ProductFieldsVariantsProductVariantConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ProductFieldsVariantsProductVariantConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnection) GetNodes() []ProductFieldsVariantsProductVariantConnectionNodesProductVariant {
+	return v.Nodes
+}
+
+// GetPageInfo returns ProductFieldsVariantsProductVariantConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnection) GetPageInfo() ProductFieldsVariantsProductVariantConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ProductFieldsVariantsProductVariantConnectionNodesProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type ProductFieldsVariantsProductVariantConnectionNodesProductVariant struct {
+	VariantFields `json:"-"`
+}
+
+// GetId returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.Id, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetId() string {
+	return v.VariantFields.Id
+}
+
+// GetPrice returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.Price, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetPrice() string {
+	return v.VariantFields.Price
+}
+
+// GetCompareAtPrice returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.CompareAtPrice, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetCompareAtPrice() *string {
+	return v.VariantFields.CompareAtPrice
+}
+
+// GetSku returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.Sku, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetSku() *string {
+	return v.VariantFields.Sku
+}
+
+// GetBarcodes returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.Barcodes, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetBarcodes() VariantFieldsBarcodesProductVariantBarcodeConnection {
+	return v.VariantFields.Barcodes
+}
+
+// GetInventoryPolicy returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.InventoryPolicy, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetInventoryPolicy() ProductVariantInventoryPolicy {
+	return v.VariantFields.InventoryPolicy
+}
+
+// GetTaxable returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.Taxable, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetTaxable() bool {
+	return v.VariantFields.Taxable
+}
+
+// GetSelectedOptions returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.SelectedOptions, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetSelectedOptions() []VariantFieldsSelectedOptionsSelectedOption {
+	return v.VariantFields.SelectedOptions
+}
+
+// GetInventoryItem returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.InventoryItem, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetInventoryItem() VariantFieldsInventoryItem {
+	return v.VariantFields.InventoryItem
+}
+
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ProductFieldsVariantsProductVariantConnectionNodesProductVariant
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ProductFieldsVariantsProductVariantConnectionNodesProductVariant = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.VariantFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalProductFieldsVariantsProductVariantConnectionNodesProductVariant struct {
+	Id string `json:"id"`
+
+	Price string `json:"price"`
+
+	CompareAtPrice *string `json:"compareAtPrice"`
+
+	Sku *string `json:"sku"`
+
+	Barcodes VariantFieldsBarcodesProductVariantBarcodeConnection `json:"barcodes"`
+
+	InventoryPolicy ProductVariantInventoryPolicy `json:"inventoryPolicy"`
+
+	Taxable bool `json:"taxable"`
+
+	SelectedOptions []VariantFieldsSelectedOptionsSelectedOption `json:"selectedOptions"`
+
+	InventoryItem VariantFieldsInventoryItem `json:"inventoryItem"`
+}
+
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) __premarshalJSON() (*__premarshalProductFieldsVariantsProductVariantConnectionNodesProductVariant, error) {
+	var retval __premarshalProductFieldsVariantsProductVariantConnectionNodesProductVariant
+
+	retval.Id = v.VariantFields.Id
+	retval.Price = v.VariantFields.Price
+	retval.CompareAtPrice = v.VariantFields.CompareAtPrice
+	retval.Sku = v.VariantFields.Sku
+	retval.Barcodes = v.VariantFields.Barcodes
+	retval.InventoryPolicy = v.VariantFields.InventoryPolicy
+	retval.Taxable = v.VariantFields.Taxable
+	retval.SelectedOptions = v.VariantFields.SelectedOptions
+	retval.InventoryItem = v.VariantFields.InventoryItem
+	return &retval, nil
+}
+
+// ProductFieldsVariantsProductVariantConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ProductFieldsVariantsProductVariantConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ProductFieldsVariantsProductVariantConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ProductFieldsVariantsProductVariantConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
 
 // The input fields required to identify a resource.
 type ProductSetIdentifiers struct {
@@ -14560,13 +15130,13 @@ var AllProductVariantInventoryPolicy = []ProductVariantInventoryPolicy{
 // The input fields for specifying a product variant to create or update.
 type ProductVariantSetInput struct {
 	// Specifies the product variant to update or create a new variant if absent.
-	Id *string `json:"id"`
+	Id *string `json:"id,omitempty"`
 	// The custom properties that a shop owner uses to define product variants.
 	OptionValues []VariantOptionValueInput `json:"optionValues"`
 	// The price of the variant.
-	Price *string `json:"price"`
+	Price *string `json:"price,omitempty"`
 	// The SKU for the variant. Case-sensitive string.
-	Sku *string `json:"sku"`
+	Sku *string `json:"sku,omitempty"`
 	// The barcodes to associate with the product variant. Replaces the entire barcode set. A variant
 	// accepts up to 20 barcodes, and a given
 	// variant input can't set both `barcode` and `barcodes`. Refer to the
@@ -14574,45 +15144,45 @@ type ProductVariantSetInput struct {
 	// object for how these barcodes are returned.
 	//
 	// Complexity cost: 0.0114 per barcode.
-	Barcodes []BarcodeInput `json:"barcodes"`
+	Barcodes json.RawMessage `json:"barcodes,omitempty"`
 	// The order of the product variant in the list of product variants. The first position in the list is 1.
-	Position *int `json:"position"`
+	Position *int `json:"position,omitempty"`
 	// The file to associate with the variant.
 	//
 	// Complexity cost: 0.6 per variant file.
 	//
 	// Any file specified here must also be specified in the `files` input for the product.
-	File *FileSetInput `json:"file"`
+	File *FileSetInput `json:"file,omitempty"`
 	// Additional customizable information about the product variant.
 	//
 	// Complexity cost: 0.4 per variant metafield.
-	Metafields []MetafieldInput `json:"metafields"`
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
 	// Indicates whether the product variant is created as published or unpublished. This option is only available for new product variants.
-	Published *bool `json:"published"`
+	Published *bool `json:"published,omitempty"`
 	// The compare-at price of the variant.
-	CompareAtPrice *string `json:"compareAtPrice"`
+	CompareAtPrice *string `json:"compareAtPrice,omitempty"`
 	// Whether a product variant requires components. The default value is `false`.
 	// If `true`, then the product variant can only be purchased as a parent bundle with components and it will be omitted
 	// from channels that don't support bundles.
-	RequiresComponents *bool `json:"requiresComponents"`
+	RequiresComponents *bool `json:"requiresComponents,omitempty"`
 	// Whether customers are allowed to place an order for the product variant when it's out of stock. Defaults to `DENY`.
-	InventoryPolicy *ProductVariantInventoryPolicy `json:"inventoryPolicy"`
+	InventoryPolicy *ProductVariantInventoryPolicy `json:"inventoryPolicy,omitempty"`
 	// The inventory quantities at each location where the variant is stocked.
 	// If you're updating an existing variant, then you can only update the
 	// quantities at locations where the variant is already stocked.
 	//
 	// The total number of inventory quantities across all variants in the mutation can't exceed 50000.
-	InventoryQuantities []ProductSetInventoryInput `json:"inventoryQuantities"`
+	InventoryQuantities []ProductSetInventoryInput `json:"inventoryQuantities,omitempty"`
 	// The inventory item associated with the variant, used for unit cost.
-	InventoryItem *InventoryItemInput `json:"inventoryItem"`
+	InventoryItem *InventoryItemInput `json:"inventoryItem,omitempty"`
 	// Whether the variant is taxable.
-	Taxable *bool `json:"taxable"`
+	Taxable *bool `json:"taxable,omitempty"`
 	// The tax code associated with the variant.
-	TaxCode *string `json:"taxCode"`
+	TaxCode *string `json:"taxCode,omitempty"`
 	// The unit price measurement for the product variant.
-	UnitPriceMeasurement *UnitPriceMeasurementInput `json:"unitPriceMeasurement"`
+	UnitPriceMeasurement *UnitPriceMeasurementInput `json:"unitPriceMeasurement,omitempty"`
 	// Whether or not unit price should be shown for this product variant.
-	ShowUnitPrice *bool `json:"showUnitPrice"`
+	ShowUnitPrice *bool `json:"showUnitPrice,omitempty"`
 }
 
 // GetId returns ProductVariantSetInput.Id, and is useful for accessing the field via an interface.
@@ -14628,7 +15198,7 @@ func (v *ProductVariantSetInput) GetPrice() *string { return v.Price }
 func (v *ProductVariantSetInput) GetSku() *string { return v.Sku }
 
 // GetBarcodes returns ProductVariantSetInput.Barcodes, and is useful for accessing the field via an interface.
-func (v *ProductVariantSetInput) GetBarcodes() []BarcodeInput { return v.Barcodes }
+func (v *ProductVariantSetInput) GetBarcodes() json.RawMessage { return v.Barcodes }
 
 // GetPosition returns ProductVariantSetInput.Position, and is useful for accessing the field via an interface.
 func (v *ProductVariantSetInput) GetPosition() *int { return v.Position }
@@ -14784,6 +15354,21 @@ func (v *SetProductProductSetProductSetPayloadProduct) GetIsGiftCard() bool {
 	return v.ProductFields.IsGiftCard
 }
 
+// GetHasOnlyDefaultVariant returns SetProductProductSetProductSetPayloadProduct.HasOnlyDefaultVariant, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetHasOnlyDefaultVariant() bool {
+	return v.ProductFields.HasOnlyDefaultVariant
+}
+
+// GetOptions returns SetProductProductSetProductSetPayloadProduct.Options, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetOptions() []ProductFieldsOptionsProductOption {
+	return v.ProductFields.Options
+}
+
+// GetVariants returns SetProductProductSetProductSetPayloadProduct.Variants, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetVariants() ProductFieldsVariantsProductVariantConnection {
+	return v.ProductFields.Variants
+}
+
 func (v *SetProductProductSetProductSetPayloadProduct) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -14833,6 +15418,12 @@ type __premarshalSetProductProductSetProductSetPayloadProduct struct {
 	TemplateSuffix *string `json:"templateSuffix"`
 
 	IsGiftCard bool `json:"isGiftCard"`
+
+	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
+
+	Options []ProductFieldsOptionsProductOption `json:"options"`
+
+	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
 }
 
 func (v *SetProductProductSetProductSetPayloadProduct) MarshalJSON() ([]byte, error) {
@@ -14858,6 +15449,9 @@ func (v *SetProductProductSetProductSetPayloadProduct) __premarshalJSON() (*__pr
 	retval.Seo = v.ProductFields.Seo
 	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
 	retval.IsGiftCard = v.ProductFields.IsGiftCard
+	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
+	retval.Options = v.ProductFields.Options
+	retval.Variants = v.ProductFields.Variants
 	return &retval, nil
 }
 
@@ -16759,18 +17353,232 @@ func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMa
 	return &retval, nil
 }
 
+// VariantFields includes the GraphQL fields of ProductVariant requested by the fragment VariantFields.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type VariantFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The price of the product variant in the default shop currency.
+	Price string `json:"price"`
+	// The compare-at price of the variant in the default shop currency.
+	CompareAtPrice *string `json:"compareAtPrice"`
+	// A case-sensitive identifier for the product variant in the shop.
+	// Required in order to connect to a fulfillment service.
+	Sku *string `json:"sku"`
+	// The barcodes associated with the product variant.
+	//
+	// A variant supports up to 20 barcodes, each of
+	// which can have a
+	// [type](https://shopify.dev/docs/api/admin-graphql/latest/enums/BarcodeType).
+	// Barcode types are validated against their respective format standards.
+	Barcodes VariantFieldsBarcodesProductVariantBarcodeConnection `json:"barcodes"`
+	// Whether customers are allowed to place an order for the product variant when it's out of stock.
+	InventoryPolicy ProductVariantInventoryPolicy `json:"inventoryPolicy"`
+	// Whether a tax is charged when the product variant is sold.
+	Taxable bool `json:"taxable"`
+	// List of product options applied to the variant.
+	SelectedOptions []VariantFieldsSelectedOptionsSelectedOption `json:"selectedOptions"`
+	// The inventory item, which is used to query for inventory information.
+	InventoryItem VariantFieldsInventoryItem `json:"inventoryItem"`
+}
+
+// GetId returns VariantFields.Id, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetId() string { return v.Id }
+
+// GetPrice returns VariantFields.Price, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetPrice() string { return v.Price }
+
+// GetCompareAtPrice returns VariantFields.CompareAtPrice, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetCompareAtPrice() *string { return v.CompareAtPrice }
+
+// GetSku returns VariantFields.Sku, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetSku() *string { return v.Sku }
+
+// GetBarcodes returns VariantFields.Barcodes, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetBarcodes() VariantFieldsBarcodesProductVariantBarcodeConnection {
+	return v.Barcodes
+}
+
+// GetInventoryPolicy returns VariantFields.InventoryPolicy, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetInventoryPolicy() ProductVariantInventoryPolicy { return v.InventoryPolicy }
+
+// GetTaxable returns VariantFields.Taxable, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetTaxable() bool { return v.Taxable }
+
+// GetSelectedOptions returns VariantFields.SelectedOptions, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetSelectedOptions() []VariantFieldsSelectedOptionsSelectedOption {
+	return v.SelectedOptions
+}
+
+// GetInventoryItem returns VariantFields.InventoryItem, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetInventoryItem() VariantFieldsInventoryItem { return v.InventoryItem }
+
+// VariantFieldsBarcodesProductVariantBarcodeConnection includes the requested fields of the GraphQL type ProductVariantBarcodeConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ProductVariantBarcodes.
+type VariantFieldsBarcodesProductVariantBarcodeConnection struct {
+	// A list of nodes that are contained in ProductVariantBarcodeEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode `json:"nodes"`
+}
+
+// GetNodes returns VariantFieldsBarcodesProductVariantBarcodeConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *VariantFieldsBarcodesProductVariantBarcodeConnection) GetNodes() []VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode {
+	return v.Nodes
+}
+
+// VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode includes the requested fields of the GraphQL type ProductVariantBarcode.
+// The GraphQL type's documentation follows.
+//
+// A barcode associated with a product variant.
+//
+// A variant supports up to 20 barcodes, each of
+// which can have a
+// [type](https://shopify.dev/docs/api/admin-graphql/latest/enums/BarcodeType).
+// Barcode types are validated against their respective format standards.
+type VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode struct {
+	// The value of the barcode. For example, `9780262033848`. Maximum length: 255 characters.
+	Value string `json:"value"`
+	// The associated standard that the barcode conforms to. Barcode types are validated against their
+	// respective format standards. A `null` format denotes no type provided on write and the value is
+	// stored as entered.
+	Type *BarcodeType `json:"type"`
+}
+
+// GetValue returns VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode.Value, and is useful for accessing the field via an interface.
+func (v *VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode) GetValue() string {
+	return v.Value
+}
+
+// GetType returns VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode.Type, and is useful for accessing the field via an interface.
+func (v *VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode) GetType() *BarcodeType {
+	return v.Type
+}
+
+// VariantFieldsInventoryItem includes the requested fields of the GraphQL type InventoryItem.
+// The GraphQL type's documentation follows.
+//
+// An inventory item represents the inventory for a [product variant](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant). It holds the stock keeping unit (SKU), whether quantities are tracked, shipping requirements, and customs information.
+//
+// Use the [`inventoryLevels`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem#field-InventoryItem.fields.inventoryLevels) field to get the [inventory level](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryLevel) for each location that stocks the item, and the level's [`quantities`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryLevel#field-InventoryLevel.fields.quantities) field to read its inventory quantities by name. Quantity names represent the [inventory states](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps#inventory-states) that merchants use to track inventory.
+//
+// Learn more about [inventory object relationships](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps/manage-quantities-states#inventory-object-relationships).
+type VariantFieldsInventoryItem struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// Whether inventory levels are tracked for the item.
+	Tracked bool `json:"tracked"`
+	// Whether a customer needs to provide a shipping address when placing an order containing the inventory item.
+	RequiresShipping bool `json:"requiresShipping"`
+	// The packaging dimensions of the inventory item.
+	Measurement VariantFieldsInventoryItemMeasurement `json:"measurement"`
+}
+
+// GetId returns VariantFieldsInventoryItem.Id, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItem) GetId() string { return v.Id }
+
+// GetTracked returns VariantFieldsInventoryItem.Tracked, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItem) GetTracked() bool { return v.Tracked }
+
+// GetRequiresShipping returns VariantFieldsInventoryItem.RequiresShipping, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItem) GetRequiresShipping() bool { return v.RequiresShipping }
+
+// GetMeasurement returns VariantFieldsInventoryItem.Measurement, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItem) GetMeasurement() VariantFieldsInventoryItemMeasurement {
+	return v.Measurement
+}
+
+// VariantFieldsInventoryItemMeasurement includes the requested fields of the GraphQL type InventoryItemMeasurement.
+// The GraphQL type's documentation follows.
+//
+// Weight information for an [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem) when packaged. Provides the weight specification used for inventory management and shipping calculations. Learn more about [managing inventory](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps).
+type VariantFieldsInventoryItemMeasurement struct {
+	// The weight of the inventory item.
+	Weight *VariantFieldsInventoryItemMeasurementWeight `json:"weight"`
+}
+
+// GetWeight returns VariantFieldsInventoryItemMeasurement.Weight, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItemMeasurement) GetWeight() *VariantFieldsInventoryItemMeasurementWeight {
+	return v.Weight
+}
+
+// VariantFieldsInventoryItemMeasurementWeight includes the requested fields of the GraphQL type Weight.
+// The GraphQL type's documentation follows.
+//
+// A weight measurement with its numeric value and unit. Used throughout the API, for example in shipping calculations, delivery conditions, order line items, and inventory measurements.
+//
+// The weight combines a decimal value with a standard unit of measurement to ensure consistent weight handling across different regional systems.
+type VariantFieldsInventoryItemMeasurementWeight struct {
+	// The weight value using the unit system specified with `unit`.
+	Value float64 `json:"value"`
+	// The unit of measurement for `value`.
+	Unit WeightUnit `json:"unit"`
+}
+
+// GetValue returns VariantFieldsInventoryItemMeasurementWeight.Value, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItemMeasurementWeight) GetValue() float64 { return v.Value }
+
+// GetUnit returns VariantFieldsInventoryItemMeasurementWeight.Unit, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItemMeasurementWeight) GetUnit() WeightUnit { return v.Unit }
+
+// VariantFieldsSelectedOptionsSelectedOption includes the requested fields of the GraphQL type SelectedOption.
+// The GraphQL type's documentation follows.
+//
+// Properties used by customers to select a product variant.
+// Products can have multiple options, like different sizes or colors.
+type VariantFieldsSelectedOptionsSelectedOption struct {
+	// The product option’s name.
+	Name string `json:"name"`
+	// The product option’s value.
+	Value string `json:"value"`
+}
+
+// GetName returns VariantFieldsSelectedOptionsSelectedOption.Name, and is useful for accessing the field via an interface.
+func (v *VariantFieldsSelectedOptionsSelectedOption) GetName() string { return v.Name }
+
+// GetValue returns VariantFieldsSelectedOptionsSelectedOption.Value, and is useful for accessing the field via an interface.
+func (v *VariantFieldsSelectedOptionsSelectedOption) GetValue() string { return v.Value }
+
 // The input fields required to create or modify a product variant's option value.
 type VariantOptionValueInput struct {
 	// Specifies the product option value by ID.
-	Id *string `json:"id"`
+	Id *string `json:"id,omitempty"`
 	// Specifies the product option value by name.
-	Name *string `json:"name"`
+	Name *string `json:"name,omitempty"`
 	// Metafield value associated with an option.
-	LinkedMetafieldValue *string `json:"linkedMetafieldValue"`
+	LinkedMetafieldValue *string `json:"linkedMetafieldValue,omitempty"`
 	// Specifies the product option by ID.
-	OptionId *string `json:"optionId"`
+	OptionId *string `json:"optionId,omitempty"`
 	// Specifies the product option by name.
-	OptionName *string `json:"optionName"`
+	OptionName *string `json:"optionName,omitempty"`
 }
 
 // GetId returns VariantOptionValueInput.Id, and is useful for accessing the field via an interface.
@@ -17289,6 +18097,18 @@ type __GetProductInput struct {
 
 // GetId returns __GetProductInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetProductInput) GetId() string { return v.Id }
+
+// __GetProductVariantsInput is used internally by genqlient
+type __GetProductVariantsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetProductVariantsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetProductVariantsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetProductVariantsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetProductVariantsInput) GetAfter() *string { return v.After }
 
 // __GetWebPresenceInput is used internally by genqlient
 type __GetWebPresenceInput struct {
@@ -20571,6 +21391,57 @@ fragment ProductFields on Product {
 	}
 	templateSuffix
 	isGiftCard
+	hasOnlyDefaultVariant
+	options {
+		id
+		name
+		linkedMetafield {
+			namespace
+			key
+		}
+		optionValues {
+			id
+			name
+		}
+	}
+	variants(first: 250) {
+		nodes {
+			... VariantFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment VariantFields on ProductVariant {
+	id
+	price
+	compareAtPrice
+	sku
+	barcodes(first: 20) {
+		nodes {
+			value
+			type
+		}
+	}
+	inventoryPolicy
+	taxable
+	selectedOptions {
+		name
+		value
+	}
+	inventoryItem {
+		id
+		tracked
+		requiresShipping
+		measurement {
+			weight {
+				value
+				unit
+			}
+		}
+	}
 }
 `
 
@@ -20624,6 +21495,57 @@ fragment ProductFields on Product {
 	}
 	templateSuffix
 	isGiftCard
+	hasOnlyDefaultVariant
+	options {
+		id
+		name
+		linkedMetafield {
+			namespace
+			key
+		}
+		optionValues {
+			id
+			name
+		}
+	}
+	variants(first: 250) {
+		nodes {
+			... VariantFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment VariantFields on ProductVariant {
+	id
+	price
+	compareAtPrice
+	sku
+	barcodes(first: 20) {
+		nodes {
+			value
+			type
+		}
+	}
+	inventoryPolicy
+	taxable
+	selectedOptions {
+		name
+		value
+	}
+	inventoryItem {
+		id
+		tracked
+		requiresShipping
+		measurement {
+			weight {
+				value
+				unit
+			}
+		}
+	}
 }
 `
 
@@ -20642,6 +21564,80 @@ func GetProductByHandle(
 	}
 
 	data_ = &GetProductByHandleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetProductVariants.
+const GetProductVariants_Operation = `
+query GetProductVariants ($id: ID!, $after: String) {
+	product(id: $id) {
+		variants(first: 250, after: $after) {
+			nodes {
+				... VariantFields
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+fragment VariantFields on ProductVariant {
+	id
+	price
+	compareAtPrice
+	sku
+	barcodes(first: 20) {
+		nodes {
+			value
+			type
+		}
+	}
+	inventoryPolicy
+	taxable
+	selectedOptions {
+		name
+		value
+	}
+	inventoryItem {
+		id
+		tracked
+		requiresShipping
+		measurement {
+			weight {
+				value
+				unit
+			}
+		}
+	}
+}
+`
+
+// Pages variants after the first 250 that ProductFields carries.
+func GetProductVariants(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetProductVariantsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetProductVariants",
+		Query:  GetProductVariants_Operation,
+		Variables: &__GetProductVariantsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetProductVariantsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -22468,7 +23464,7 @@ func ListMetaobjectDefinitions(
 // The query executed by ListProducts.
 const ListProducts_Operation = `
 query ListProducts ($after: String) {
-	products(first: 100, after: $after) {
+	products(first: 50, after: $after) {
 		nodes {
 			... ProductFields
 		}
@@ -22496,6 +23492,57 @@ fragment ProductFields on Product {
 	}
 	templateSuffix
 	isGiftCard
+	hasOnlyDefaultVariant
+	options {
+		id
+		name
+		linkedMetafield {
+			namespace
+			key
+		}
+		optionValues {
+			id
+			name
+		}
+	}
+	variants(first: 250) {
+		nodes {
+			... VariantFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment VariantFields on ProductVariant {
+	id
+	price
+	compareAtPrice
+	sku
+	barcodes(first: 20) {
+		nodes {
+			value
+			type
+		}
+	}
+	inventoryPolicy
+	taxable
+	selectedOptions {
+		name
+		value
+	}
+	inventoryItem {
+		id
+		tracked
+		requiresShipping
+		measurement {
+			weight {
+				value
+				unit
+			}
+		}
+	}
 }
 `
 
@@ -22739,6 +23786,57 @@ fragment ProductFields on Product {
 	}
 	templateSuffix
 	isGiftCard
+	hasOnlyDefaultVariant
+	options {
+		id
+		name
+		linkedMetafield {
+			namespace
+			key
+		}
+		optionValues {
+			id
+			name
+		}
+	}
+	variants(first: 250) {
+		nodes {
+			... VariantFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment VariantFields on ProductVariant {
+	id
+	price
+	compareAtPrice
+	sku
+	barcodes(first: 20) {
+		nodes {
+			value
+			type
+		}
+	}
+	inventoryPolicy
+	taxable
+	selectedOptions {
+		name
+		value
+	}
+	inventoryItem {
+		id
+		tracked
+		requiresShipping
+		measurement {
+			weight {
+				value
+				unit
+			}
+		}
+	}
 }
 `
 

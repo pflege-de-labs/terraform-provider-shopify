@@ -16,6 +16,58 @@ fragment ProductFields on Product {
   }
   templateSuffix
   isGiftCard
+  hasOnlyDefaultVariant
+  options {
+    id
+    name
+    linkedMetafield {
+      namespace
+      key
+    }
+    optionValues {
+      id
+      name
+    }
+  }
+  variants(first: 250) {
+    nodes {
+      ...VariantFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+fragment VariantFields on ProductVariant {
+  id
+  price
+  compareAtPrice
+  sku
+  barcodes(first: 20) {
+    nodes {
+      value
+      type
+    }
+  }
+  inventoryPolicy
+  taxable
+  selectedOptions {
+    name
+    value
+  }
+  inventoryItem {
+    id
+    tracked
+    requiresShipping
+    measurement {
+      weight {
+        value
+        unit
+      }
+    }
+  }
 }
 
 query GetProduct(
@@ -35,10 +87,28 @@ query GetProductByHandle(
   }
 }
 
+# Pages variants after the first 250 that ProductFields carries.
+query GetProductVariants(
+  $id: ID!
+  $after: String
+) {
+  product(id: $id) {
+    variants(first: 250, after: $after) {
+      nodes {
+        ...VariantFields
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
 query ListProducts(
   $after: String
 ) {
-  products(first: 100, after: $after) {
+  products(first: 50, after: $after) {
     nodes {
       ...ProductFields
     }
@@ -71,6 +141,47 @@ query ListProducts(
 # @genqlient(for: "ProductSetInput.requiresSellingPlan", omitempty: true)
 # @genqlient(for: "ProductSetInput.claimOwnership", omitempty: true)
 # @genqlient(for: "ProductSetInput.combinedListingRole", omitempty: true)
+# @genqlient(for: "OptionSetInput.id", omitempty: true)
+# @genqlient(for: "OptionSetInput.name", omitempty: true)
+# @genqlient(for: "OptionSetInput.position", omitempty: true)
+# @genqlient(for: "OptionSetInput.values", omitempty: true)
+# @genqlient(for: "OptionSetInput.linkedMetafield", omitempty: true)
+# @genqlient(for: "OptionValueSetInput.id", omitempty: true)
+# @genqlient(for: "OptionValueSetInput.name", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.id", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.price", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.sku", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.barcodes", omitempty: true, bind: "encoding/json.RawMessage")
+# @genqlient(for: "ProductVariantSetInput.position", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.file", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.metafields", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.published", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.compareAtPrice", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.requiresComponents", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.inventoryPolicy", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.inventoryQuantities", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.inventoryItem", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.taxable", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.taxCode", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.unitPriceMeasurement", omitempty: true)
+# @genqlient(for: "ProductVariantSetInput.showUnitPrice", omitempty: true)
+# @genqlient(for: "VariantOptionValueInput.id", omitempty: true)
+# @genqlient(for: "VariantOptionValueInput.name", omitempty: true)
+# @genqlient(for: "VariantOptionValueInput.linkedMetafieldValue", omitempty: true)
+# @genqlient(for: "VariantOptionValueInput.optionId", omitempty: true)
+# @genqlient(for: "VariantOptionValueInput.optionName", omitempty: true)
+# @genqlient(for: "BarcodeInput.type", omitempty: true)
+# @genqlient(for: "InventoryItemInput.sku", omitempty: true)
+# @genqlient(for: "InventoryItemInput.cost", omitempty: true)
+# @genqlient(for: "InventoryItemInput.tracked", omitempty: true)
+# @genqlient(for: "InventoryItemInput.countryCodeOfOrigin", omitempty: true)
+# @genqlient(for: "InventoryItemInput.harmonizedSystemCode", omitempty: true)
+# @genqlient(for: "InventoryItemInput.countryHarmonizedSystemCodes", omitempty: true)
+# @genqlient(for: "InventoryItemInput.provinceCodeOfOrigin", omitempty: true)
+# @genqlient(for: "InventoryItemInput.measurement", omitempty: true)
+# @genqlient(for: "InventoryItemInput.requiresShipping", omitempty: true)
+# @genqlient(for: "InventoryItemMeasurementInput.weight", omitempty: true)
+# @genqlient(for: "InventoryItemMeasurementInput.shippingPackageId", omitempty: true)
 # @genqlient(for: "SEOInput.title", omitempty: true)
 # @genqlient(for: "SEOInput.description", omitempty: true)
 # @genqlient(for: "ProductSetIdentifiers.id", omitempty: true)
