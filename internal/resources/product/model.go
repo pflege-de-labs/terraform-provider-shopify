@@ -30,8 +30,7 @@ type model struct {
 	AllowDataDeletion types.Bool   `tfsdk:"allow_data_deletion"`
 }
 
-// buildInput maps the configured attributes to the productSet input; unset ones stay out so the admin values stay.
-// Later steps (options, variants, publishing, media) add their keys here.
+// buildInput is the one place that maps config to productSet; later steps add their keys here, and unset ones stay out.
 func buildInput(ctx context.Context, cfg *model) (client.ProductSetInput, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	in := client.ProductSetInput{

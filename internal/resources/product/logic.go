@@ -79,8 +79,7 @@ func (tagsValidator) ValidateSet(ctx context.Context, req validator.SetRequest, 
 	}
 }
 
-// keepOrTake decides the description_html state value. Shopify repairs HTML, so the configured value stays
-// while the live value is still what Shopify returned at our last write; any other live value is drift.
+// keepOrTake keeps the configured HTML while live is what Shopify returned at our last write (repaired, not drifted).
 func keepOrTake(configured types.String, written *string, live string) types.String {
 	if configured.IsNull() || configured.IsUnknown() || written == nil || *written != live {
 		return types.StringValue(live)

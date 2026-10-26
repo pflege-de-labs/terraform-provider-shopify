@@ -22742,8 +22742,7 @@ fragment ProductFields on Product {
 }
 `
 
-// Keys left out of ProductSetInput stay unchanged, so every field is omitempty; null would not mean "unchanged".
-// tags is raw JSON so an empty list (clear) is sent while nil (unmanaged) is omitted.
+// Omitted keys stay unchanged, so every field is omitempty; tags is raw JSON so [] clears while nil is omitted.
 func SetProduct(
 	ctx_ context.Context,
 	client_ graphql.Client,
