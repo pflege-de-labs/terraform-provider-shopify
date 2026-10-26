@@ -3,6 +3,7 @@ package metafielddefinition_test
 import (
 	"context"
 	"fmt"
+	"os"
 	"regexp"
 	"testing"
 
@@ -71,7 +72,7 @@ data "shopify_metafield_definition" "test" {
 
 // The dev store has no Shopify-standard metafield definitions unless one was enabled in the admin.
 func TestAccMetafieldDefinitionDataSource_shopifyStandard(t *testing.T) {
-	acctest.PreCheck(t)
+	accSetup(t)
 	ns := "shopify"
 	res, err := client.GetMetafieldDefinition(context.Background(), acctest.Client(t), client.MetafieldDefinitionIdentifierInput{
 		OwnerType: client.MetafieldOwnerTypeProduct, Namespace: &ns, Key: "material",
@@ -83,7 +84,6 @@ func TestAccMetafieldDefinitionDataSource_shopifyStandard(t *testing.T) {
 		t.Skip("dev store has no standard metafield definition PRODUCT/shopify/material")
 	}
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
 		Steps: []resource.TestStep{{
 			Config: `
@@ -114,6 +114,15 @@ data "shopify_metafield_definition" "test" {
 			ExpectError: regexp.MustCompile(`no\s+metafield\s+definition\s+PRODUCT/tfacc_missing/nope`),
 		}},
 	})
+}
+
+// accSetup skips without TF_ACC, because the standard-definition tests call the API before resource.Test would skip them.
+func accSetup(t *testing.T) {
+	t.Helper()
+	if os.Getenv(resource.EnvTfAcc) == "" {
+		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
+	}
+	acctest.PreCheck(t)
 }
 
 func checkDestroyed(t *testing.T, ns string) resource.TestCheckFunc {

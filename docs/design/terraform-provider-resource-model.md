@@ -735,7 +735,7 @@ data "shopify_metaobject_definition" "material" {
 }
 ```
 
-**Arguments (Required):** `shopify_metafield_definition`: `owner_type` (any `MetafieldOwnerType`, not only `PRODUCT`), `namespace`, `key`. `shopify_metaobject_definition`: `type`, exactly as the API returns it (`shopify--material`, `app--123--foo`, or a merchant type). `TODO(verify)`: whether the API resolves `$app:foo` to the caller's prefix on lookup.
+**Arguments (Required):** `shopify_metafield_definition`: `owner_type` (any `MetafieldOwnerType`, not only `PRODUCT`), `namespace`, `key`. `shopify_metaobject_definition`: `type`, exactly as the API returns it (`shopify--material`, `app--123--foo`, or a merchant type). `TODO(verify)`: whether the API resolves `$app:foo` to the caller's prefix on lookup; the same is unverified for a metafield `namespace` of `$app:…`.
 
 **Attributes (all Computed):** every other attribute of the resource of the same name, with the same names, types and nested shapes, so a value can be passed from data source to resource. Left out: the provider-only `adopt_existing`, `allow_data_deletion` and `timeouts`. `id` is the GID. The `field` list of a metaobject definition is a computed list of objects (data sources can't have computed blocks), with the resource block's attributes (`key`, `type`, `name`, `description`, `required`, `validations`); to build a resource from it, use `dynamic "field"`. As on the resource, empty values read back as `""` (top-level strings), `null` (field description and validations), and Shopify-set access values the API won't accept as input (`admin = PUBLIC_READ_WRITE`) as `null`.
 
