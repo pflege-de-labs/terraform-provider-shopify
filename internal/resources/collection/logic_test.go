@@ -45,7 +45,9 @@ func TestMembershipOf(t *testing.T) {
 		{"two sources", "[" + conditionsSource("null", "", "") + `,{"__typename":"CollectionSubCollectionsSource","id":"S2","app":null}]`,
 			nil, "CollectionConditionsSource, CollectionSubCollectionsSource"},
 		{"sub-collection source", `[{"__typename":"CollectionSubCollectionsSource","id":"S2","app":null}]`, nil, "CollectionSubCollectionsSource"},
-		{"app-owned", `[` + strings.Replace(conditionsSource("null", "", ""), `"app":null`, `"app":{"id":"gid://shopify/App/1"}`, 1) + `]`, nil, "app"},
+		// S13-8: a non-shareable source created by an app, this provider's own included, is managed.
+		{"app-created", `[` + strings.Replace(conditionsSource("null", "", selection("P1")), `"app":null`, `"app":{"id":"gid://shopify/App/1"}`, 1) + `]`,
+			&membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{"P1"}}, ""},
 		{"shareable", `[` + strings.Replace(conditionsSource("null", "", ""), `"shareable":false`, `"shareable":true`, 1) + `]`, nil, "shareable"},
 		{"variant target", `[` + strings.Replace(conditionsSource("null", "", ""), `"PRODUCTS"`, `"VARIANTS"`, 1) + `]`, nil, "VARIANTS"},
 		{"variant selection", "[" + conditionsSource("null", "", `{"product":{"id":"P1"},"variantIds":["V1"]}`) + "]", nil, "variant"},

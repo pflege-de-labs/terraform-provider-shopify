@@ -14,11 +14,10 @@ import (
 
 // source is one entry of Collection.sources as CollectionFields reads it.
 type source struct {
-	Typename   string               `json:"__typename"`
-	ID         string               `json:"id"`
-	App        *struct{ ID string } `json:"app"`
-	Shareable  bool                 `json:"shareable"`
-	TargetType string               `json:"targetType"`
+	Typename   string `json:"__typename"`
+	ID         string `json:"id"`
+	Shareable  bool   `json:"shareable"`
+	TargetType string `json:"targetType"`
 	Inclusion  *struct {
 		MatchType  *string          `json:"matchType"`
 		Conditions []map[string]any `json:"conditions"`
@@ -70,8 +69,6 @@ func membershipOf(sources []source) (*membership, error) {
 	switch {
 	case s.Typename != "CollectionConditionsSource" || s.Inclusion == nil:
 		return nil, fmt.Errorf("the collection has a %s source; only a conditions source can be managed", s.Typename)
-	case s.App != nil:
-		return nil, errors.New("the collection's source belongs to an app")
 	case s.Shareable:
 		return nil, errors.New("the collection's source is shareable")
 	case s.TargetType != "PRODUCTS":

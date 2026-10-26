@@ -21546,9 +21546,6 @@ fragment CollectionFields on Collection {
 	sources {
 		__typename
 		id
-		app {
-			id
-		}
 		... on CollectionConditionsSource {
 			shareable
 			targetType
@@ -23958,9 +23955,6 @@ fragment CollectionFields on Collection {
 	sources {
 		__typename
 		id
-		app {
-			id
-		}
 		... on CollectionConditionsSource {
 			shareable
 			targetType
@@ -24139,9 +24133,6 @@ fragment CollectionFields on Collection {
 	sources {
 		__typename
 		id
-		app {
-			id
-		}
 		... on CollectionConditionsSource {
 			shareable
 			targetType
@@ -26772,9 +26763,6 @@ fragment CollectionFields on Collection {
 	sources {
 		__typename
 		id
-		app {
-			id
-		}
 		... on CollectionConditionsSource {
 			shareable
 			targetType
@@ -29084,9 +29072,6 @@ fragment CollectionFields on Collection {
 	sources {
 		__typename
 		id
-		app {
-			id
-		}
 		... on CollectionConditionsSource {
 			shareable
 			targetType

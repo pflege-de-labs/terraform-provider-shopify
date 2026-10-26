@@ -56,13 +56,14 @@ func (r *Resource) IdentitySchema(ctx context.Context, req resource.IdentitySche
 // TODO(verify): whether selections of large collections ever come back only after the collectionUpdate job.
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	unmanaged := " Unset means unmanaged: the value set in the admin is kept."
-	membership := " Unset means unmanaged. Null when the collection's membership can't be managed (see the resource description)."
+	membership := " Unset means unmanaged. Null when the collection's membership can't be managed (see the resource description). A source another app created is managed too, but Shopify may reject changes to it."
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "A collection: title, handle, description, sort order and which products it holds, by hand (`product_ids`) or by rules (`conditions`). " +
 			"**A poor fit for Terraform unless you bootstrap a store or keep a few collections in a repository:** collections back navigation, but their texts and products are edited in the admin all the time, " +
 			"and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed; the rules of a smart collection suit Terraform best. " +
-			"Membership is managed for collections with at most one plain conditions source, which every collection made in the admin or with the older API has. " +
-			"Collections with several sources, a sub-collection, shareable or app-owned source, variant-level selections or a condition Shopify can't express as input are read without membership: " +
+			"Membership is managed for collections with at most one non-shareable conditions source, which every collection made in the admin, with the older API or by this provider has. " +
+			"That includes a source another app created; Shopify may reject changes to it. " +
+			"Collections with several sources, a sub-collection or shareable source, variant-level selections or a condition Shopify can't express as input are read without membership: " +
 			"setting `match_type`, `conditions` or `product_ids` for them fails. Exclusions, the product order of `MANUAL` collections, the image, publishing and metafields are not managed. " +
 			"Destroying a collection deletes it with its publications and translations; the products stay. " +
 			"Menu items pointing at it lose their target, so add `lifecycle { prevent_destroy = true }` to collections that back navigation. " +
@@ -128,7 +129,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 					"[`CollectionSourceInclusionConditionInput`](https://shopify.dev/docs/api/admin-graphql/2026-10/input-objects/CollectionSourceInclusionConditionInput) objects in the API's camelCase, one key each, written with `jsonencode([...])`, " +
 					"for example `{ productTag = { relation = \"TAGGED_WITH\", values = [\"sale\"], matchType = \"ANY\" } }`. Shopify validates kinds and values. " +
 					"Order matters; amounts and values compare numerically, so `\"5\"` matches Shopify's `\"5.0\"`. Reference metafield definitions and metaobjects by their resource or data source IDs, which differ per store. " +
-					"Products match asynchronously, so a new rule can take a moment to fill the collection. `jsonencode([])` removes all conditions. Unset means unmanaged.",
+					"Products match asynchronously, so a new rule can take a moment to fill the collection. `jsonencode([])` removes all conditions. Unset means unmanaged. A source another app created is managed too, but Shopify may reject changes to it.",
 				Optional: true,
 			},
 			"product_ids": schema.SetAttribute{
@@ -198,7 +199,7 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 	// Read leaves product_ids null only when the membership can't be managed.
 	if state.ProductIDs.IsNull() && cfg.membershipConfigured() {
 		resp.Diagnostics.AddError("Membership can't be managed",
-			"Membership of this collection can't be managed yet: it has sources other than one plain conditions source (see the resource description). Remove match_type, conditions and product_ids from the configuration.")
+			"Membership of this collection can't be managed yet: it has sources other than one non-shareable conditions source (see the resource description). Remove match_type, conditions and product_ids from the configuration.")
 		return
 	}
 	if plan.Conditions.Equal(state.Conditions) && plan.ProductIDs.Equal(state.ProductIDs) && plan.MatchType.Equal(state.MatchType) {
@@ -420,6 +421,7 @@ func (r *Resource) update(ctx context.Context, live *liveCollection, plan *model
 	case changes.Delete:
 		in.SourcesToDelete = []string{mem.SourceID}
 	}
+	// TODO(verify): whether Shopify rejects writes to a source created by another app; a rejection arrives as a userError below.
 	res, err := client.UpdateCollection(ctx, r.client, in)
 	if err != nil {
 		diags.AddError("Failed to update "+what, err.Error())
