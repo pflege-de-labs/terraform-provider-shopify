@@ -45,19 +45,25 @@ type Resource struct {
 	client *client.Client
 }
 
-type model struct {
-	ID                types.String `tfsdk:"id"`
-	Type              types.String `tfsdk:"type"`
-	Name              types.String `tfsdk:"name"`
-	Description       types.String `tfsdk:"description"`
-	DisplayNameKey    types.String `tfsdk:"display_name_key"`
-	Access            types.Object `tfsdk:"access"`
-	Capabilities      types.Object `tfsdk:"capabilities"`
-	Fields            []fieldModel `tfsdk:"field"`
-	AllowDataDeletion types.Bool   `tfsdk:"allow_data_deletion"`
+// Definition holds the attributes mirrored from the API; the data source shares it.
+type Definition struct {
+	ID             types.String `tfsdk:"id"`
+	Type           types.String `tfsdk:"type"`
+	Name           types.String `tfsdk:"name"`
+	Description    types.String `tfsdk:"description"`
+	DisplayNameKey types.String `tfsdk:"display_name_key"`
+	Access         types.Object `tfsdk:"access"`
+	Capabilities   types.Object `tfsdk:"capabilities"`
+	Fields         []FieldModel `tfsdk:"field"`
 }
 
-type fieldModel struct {
+type model struct {
+	Definition
+	AllowDataDeletion types.Bool `tfsdk:"allow_data_deletion"`
+}
+
+// FieldModel is one entry of `field`.
+type FieldModel struct {
 	Key         types.String `tfsdk:"key"`
 	Type        types.String `tfsdk:"type"`
 	Name        types.String `tfsdk:"name"`
@@ -297,7 +303,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	resp.Diagnostics.Append(setFromAPI(ctx, &plan, &res.MetaobjectDefinitionCreate.MetaobjectDefinition.MetaobjectDefinitionFields)...)
+	resp.Diagnostics.Append(SetFromAPI(ctx, &plan.Definition, &res.MetaobjectDefinitionCreate.MetaobjectDefinition.MetaobjectDefinitionFields)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
@@ -337,7 +343,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	if state.AllowDataDeletion.IsNull() {
 		state.AllowDataDeletion = types.BoolValue(false)
 	}
-	resp.Diagnostics.Append(setFromAPI(ctx, &state, def)...)
+	resp.Diagnostics.Append(SetFromAPI(ctx, &state.Definition, def)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: state.ID})...)
 }
@@ -424,7 +430,7 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	resp.Diagnostics.Append(setFromAPI(ctx, &plan, &res.MetaobjectDefinitionUpdate.MetaobjectDefinition.MetaobjectDefinitionFields)...)
+	resp.Diagnostics.Append(SetFromAPI(ctx, &plan.Definition, &res.MetaobjectDefinitionUpdate.MetaobjectDefinition.MetaobjectDefinitionFields)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
@@ -471,7 +477,8 @@ func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequ
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("type"), typ)...)
 }
 
-func setFromAPI(ctx context.Context, m *model, d *client.MetaobjectDefinitionFields) diag.Diagnostics {
+// SetFromAPI copies server values into m.
+func SetFromAPI(ctx context.Context, m *Definition, d *client.MetaobjectDefinitionFields) diag.Diagnostics {
 	var diags, dd diag.Diagnostics
 	m.ID = types.StringValue(d.Id)
 	m.Type = types.StringValue(d.Type)
@@ -493,9 +500,9 @@ func setFromAPI(ctx context.Context, m *model, d *client.MetaobjectDefinitionFie
 	m.Capabilities, dd = types.ObjectValueFrom(ctx, capabilitiesAttrTypes, caps)
 	diags.Append(dd...)
 
-	m.Fields = make([]fieldModel, len(d.FieldDefinitions))
+	m.Fields = make([]FieldModel, len(d.FieldDefinitions))
 	for i, f := range d.FieldDefinitions {
-		fm := fieldModel{
+		fm := FieldModel{
 			Key:         types.StringValue(f.Key),
 			Type:        types.StringValue(f.Type.Name),
 			Name:        types.StringValue(f.Name),
@@ -521,7 +528,7 @@ func setFromAPI(ctx context.Context, m *model, d *client.MetaobjectDefinitionFie
 }
 
 // toFields converts field blocks; ok is false while any value is still unknown.
-func toFields(ctx context.Context, in []fieldModel, diags *diag.Diagnostics) ([]field, bool) {
+func toFields(ctx context.Context, in []FieldModel, diags *diag.Diagnostics) ([]field, bool) {
 	out := make([]field, len(in))
 	for i, f := range in {
 		if f.Key.IsUnknown() || f.Type.IsUnknown() || f.Name.IsUnknown() || f.Description.IsUnknown() || f.Required.IsUnknown() || f.Validations.IsUnknown() {

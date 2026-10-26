@@ -82,7 +82,7 @@ func listResult(ctx context.Context, req list.ListRequest, d *client.MetafieldDe
 	res.Diagnostics.Append(res.Identity.Set(ctx, patterns.IDIdentity{ID: types.StringValue(d.Id)})...)
 	if req.IncludeResource {
 		m := model{AllowDataDeletion: types.BoolValue(false)}
-		res.Diagnostics.Append(setFromAPI(ctx, &m, d)...)
+		res.Diagnostics.Append(SetFromAPI(ctx, &m.Definition, d)...)
 		res.Diagnostics.Append(res.Resource.Set(ctx, &m)...)
 	}
 	return res

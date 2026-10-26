@@ -49,7 +49,8 @@ type Resource struct {
 	client *client.Client
 }
 
-type model struct {
+// Definition holds the attributes mirrored from the API; the data source shares it.
+type Definition struct {
 	ID                       types.String `tfsdk:"id"`
 	OwnerType                types.String `tfsdk:"owner_type"`
 	Namespace                types.String `tfsdk:"namespace"`
@@ -61,7 +62,11 @@ type model struct {
 	Access                   types.Object `tfsdk:"access"`
 	Pin                      types.Bool   `tfsdk:"pin"`
 	UseAsCollectionCondition types.Bool   `tfsdk:"use_as_collection_condition"`
-	AllowDataDeletion        types.Bool   `tfsdk:"allow_data_deletion"`
+}
+
+type model struct {
+	Definition
+	AllowDataDeletion types.Bool `tfsdk:"allow_data_deletion"`
 }
 
 type accessModel struct {
@@ -243,7 +248,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	resp.Diagnostics.Append(setFromAPI(ctx, &plan, &res.MetafieldDefinitionCreate.CreatedDefinition.MetafieldDefinitionFields)...)
+	resp.Diagnostics.Append(SetFromAPI(ctx, &plan.Definition, &res.MetafieldDefinitionCreate.CreatedDefinition.MetafieldDefinitionFields)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
@@ -272,7 +277,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	if state.AllowDataDeletion.IsNull() {
 		state.AllowDataDeletion = types.BoolValue(false)
 	}
-	resp.Diagnostics.Append(setFromAPI(ctx, &state, &res.MetafieldDefinition.MetafieldDefinitionFields)...)
+	resp.Diagnostics.Append(SetFromAPI(ctx, &state.Definition, &res.MetafieldDefinition.MetafieldDefinitionFields)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: state.ID})...)
 }
@@ -318,7 +323,7 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	resp.Diagnostics.Append(setFromAPI(ctx, &plan, &res.MetafieldDefinitionUpdate.UpdatedDefinition.MetafieldDefinitionFields)...)
+	resp.Diagnostics.Append(SetFromAPI(ctx, &plan.Definition, &res.MetafieldDefinitionUpdate.UpdatedDefinition.MetafieldDefinitionFields)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
@@ -384,8 +389,8 @@ func getByID(ctx context.Context, c *client.Client, id string) (*client.Metafiel
 	return &d, nil
 }
 
-// setFromAPI copies server values into m; allow_data_deletion is provider-only and left as is.
-func setFromAPI(ctx context.Context, m *model, d *client.MetafieldDefinitionFields) diag.Diagnostics {
+// SetFromAPI copies server values into m.
+func SetFromAPI(ctx context.Context, m *Definition, d *client.MetafieldDefinitionFields) diag.Diagnostics {
 	var diags diag.Diagnostics
 	m.ID = types.StringValue(d.Id)
 	m.OwnerType = types.StringValue(string(d.OwnerType))
