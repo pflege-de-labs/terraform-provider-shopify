@@ -150,3 +150,8 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 13: complete (commits 5ec58c0..61aa4c2, review clean)
 - Step 11 complete (Task 12 deferred to roadmap, S11-2).
 - Ruling S13-1: step 13 design runs in two sequential design-only dispatches (opus), each reviewed by the controller before implementation: (a) products + collections, (b) pages, blogs, files, discounts, customer segments, metaobject data source — products alone are large (variants, options, media), and parallel design dispatches would race on the same model doc — costs one extra dispatch.
+- Step 13: branch feat/phase2-13-content from step 11 @ e63ae96; design (a) products + collections dispatched (opus).
+- Step 13 design (a): 00e251d..89bbbd7 (§9k product with sub-sections 9k.1–9k.4, §9l collection), report step13a-design-report.md. Controller review: approved. Dev store restored (probe products deleted, frontpage restored).
+- Ruling S13-2: products split into sub-tasks 14a core (§9k.1), 14b options + variants (§9k.2), 14c publishing on product and collection (§9k.3, after Task 15), 14d product media (§9k.4, after files Task 18); collection is Task 15 — one task can't hold productSet + variants + publishing + media, and media needs file IDs — costs more task overhead.
+- Ruling S13-3: collections v1 manage exactly one membership source (2026-10 replaced ruleSet with sources); exclusions, sub-collections and shared sources stay unmanaged — the API change makes multi-source modelling a guess today — costs a schema extension later.
+- Step 13 design (b) (pages, blogs, files, discounts, customer segments, metaobject data source): dispatched (opus).
