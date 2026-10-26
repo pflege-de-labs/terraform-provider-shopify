@@ -60,6 +60,7 @@ provider "shopify" {
 | `shopify_catalog` | `<title>` (unique across all catalogs; market catalogs only, see §9i) |
 | `shopify_product` | `<handle>` (unique per shop, see §9k) |
 | `shopify_collection` | `<handle>` (unique per shop, see §9l) |
+| `shopify_page` | `<handle>` (unique per shop, see §9m) |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -1156,6 +1157,54 @@ Notes:
 **List:** no config. `collections(first: 100)`, paged; requested cost with sources, `selections(first: 250)` and publications was 380 for 100 collections (checked). `DisplayName`: `<title> (<handle>)`. Results carry `handle`, `title`, the non-null Optional + Computed attributes, and `match_type` / `conditions` / `product_ids` when the source is supported; generated config then holds product GIDs, which tie it to the store (the docs say to replace them with references). App-owned collections aren't distinguishable in the schema; all collections are listed.
 
 **Dev store (2026-10-26):** probes created four collections (`tf-probe-legacy-smart` and `tf-probe-legacy-manual` with API 2026-07, `tf-probe-new` and `tf-probe-empty` with 2026-10) and deleted all four. `frontpage` gained an empty source twice through the product probes; both were removed with `sourcesToDelete`, so it is back to `sources: []`, 0 products, `MOST_RELEVANT`.
+
+---
+
+## 9m. Resource: `shopify_page`
+
+Discovery: 8 pages on staging, 9 on production, merchant-owned (D2: build). Online store pages are content (imprint, about us, landing pages), edited in the admin by people outside the infrastructure team, so the type is volatile.
+
+```hcl
+resource "shopify_page" "impressum" {
+  handle          = "impressum"
+  title           = "Impressum"
+  body            = file("${path.module}/pages/impressum.html") # optional, unset = unmanaged
+  published       = true                                       # optional, unset = unmanaged (created as true)
+  template_suffix = "legal"                                    # optional, unset = unmanaged
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `Page` GID. Computed, UseStateForUnknown |
+| `handle` | string | Required, import key. Updatable in place. Same validator as `shopify_product.handle` (§9k.1): Shopify normalises pages the same way (`TF Probe_1` became `tf-probe_1`, checked) |
+| `title` | string | Required. `title: ""` fails with `BLANK` (checked) |
+| `body` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. HTML. Same keep-or-take rule as `shopify_product.description_html` (§9k.1): Shopify repairs page bodies the same way (`<p>Hi<br>there<b>bold</p>` came back as `<p>Hi<br>there<b>bold</b></p>`, trailing whitespace kept, checked) |
+| `published` | bool | Optional + Computed, UseStateForUnknown; unset = unmanaged. `isPublished`. Create without it gives `true` (checked) |
+| `template_suffix` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `""` and `null` both mean the default template, but they read back as given (`""` stays `""`, never set reads `null`; checked), so no normalisation is needed |
+| `adopt_existing` | bool | Pattern A, see below |
+
+Import key: the handle (`impressum`). Handles are unique per shop: a taken handle fails with `TAKEN`, `field = ["page","handle"]`, on create and on update (checked; no `-1` suffix, unlike blogs and menus). Read: `page(id:)` first. If it is gone, `pages(first: 5, query: "handle:<handle>")` and an exact handle match; there is no `pageByHandle` or `pageByIdentifier` root field, so the fallback is search-indexed (a new page was found right away in the probe; `TODO(verify)`: whether the index lags under load, as it does for menus). `MutableIdentity` is set.
+
+**Publishing: `published` only, no `publishDate`.** `Page` is not `Publishable`: there is no `publication_ids` as on products (§9k.3), and pages are visible on the online store only. `isPublished` is the switch. `publishDate` (scheduled publishing) is not managed and never sent: it is an admin workflow, and it fights with `isPublished` (`isPublished: true` with a future `publishDate` fails with `INVALID_PUBLISH_DATE`, checked). A scheduled page reads as `published = false` (checked: a future `publishDate` gave `isPublished = false` and `publishedAt` = that date), so a config with `published = true` publishes it at the next apply. `publishedAt` is not exposed.
+
+**Pattern A: `adopt_existing` only.** Every store has a `contact` page (`templateSuffix = "contact"`, created with the shop; on the dev store the only page). The schema doesn't mark it (no `isDefault`), so it is handled like `frontpage` (§9l): `adopt_existing = true` updates it in place, destroy only removes it from state with a warning. Without the flag, Create fails on the taken handle. `TODO(verify)`: whether `contact` can be deleted; not tried, it couldn't be restored with its GID.
+
+**No Pattern B.** `pageDelete` removes the page, its metafield values and translations. The body and settings come from config, so a recreate restores the page with a new GID; unmanaged metafield values and translations are lost, as for collections (§9l). Menu items of type `PAGE` lose their target (`TODO(verify)`, same open point as collections). `NOT_FOUND` on delete ("Page does not exist", checked) means already gone: removed from state without error.
+
+Notes:
+- Uses `page(id:)`, `pages(first:, query:)`, `pageCreate(page:)`, `pageUpdate(id:, page:)`, `pageDelete(id:)`.
+- Update sends only changed attributes. Never sent: `metafields` (metafield values are a roadmap type), `publishDate`, `redirectNewHandle` (a handle change creates no redirect; URL redirects are a roadmap type). Renaming the handle in place works (checked).
+- genqlient: `body` has the `HTML` scalar, already bound to `string`.
+- Errors (`PageCreateUserError` / `PageUpdateUserError`, `field` relative to `page`): `TAKEN` (`handle`), `BLANK` (`title`), `TOO_LONG`, `TOO_SHORT`, `TOO_BIG` (`body`), `INVALID`, `INVALID_PUBLISH_DATE` (can't happen, `publishDate` is never sent), `INVALID_VALUE` / `INVALID_TYPE` (metafields, never sent), `NOT_FOUND`. `pageDelete`: `NOT_FOUND`. None is retried.
+- **Fit: volatile.** The description says so: page texts are usually maintained in the admin; with `body` unset, Terraform can own the handle, title and template while editors own the text.
+- **Scopes:** `read_content` / `write_content` (`docs/bootstrapping.md`). `TODO(verify)`: checked only with every scope granted.
+- **Review Focus 1:** after destroy of the adopted page, read it back through the client and expect it unchanged. **Review Focus 2:** set `template_suffix` in one step, leave it out in the next, change it through the client in between: the config without it plans empty; likewise `body` unset while the client edits the body.
+- **Testing:** handles `tf-acc-page-<random>`. Steps: create, update `title`/`body`/`published`, handle rename, import by handle and by identity, adopt (`adopt_existing` on a page made through the client). Unit tests first: the handle validator (shared with products), the body keep-or-take rule (shared helper with §9k.1).
+
+**List:** no config. `pages(first: 250)`, paged; requested cost with all attributes was low (149 for pages, blogs and segments together at 250 each, checked). `DisplayName`: `<title> (<handle>)`. Results carry `handle`, `title`, `body`, `published` and `template_suffix` when not null; they pass the validators (Shopify-normalised handles) and plan as import-only.
+
+**Dev store (2026-10-26):** one probe page (`tf-probe_1`, renamed to `tf-probe-renamed`) was created, updated (publish toggles, template suffix, a future `publishDate`) and deleted. End state equals the start: only `contact`.
 
 ---
 
