@@ -53,6 +53,7 @@ provider "shopify" {
 | `shopify_delivery_profile` | `<name>`, or `default` for the general profile |
 | `shopify_menu` | `<handle>` |
 | `shopify_shop_locale` | `<locale>`, e.g. `fr` (no GID exists; `id` is the locale code) |
+| `shopify_shop_policy` | `<TYPE>`, e.g. `TERMS_OF_SERVICE` |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -485,6 +486,48 @@ Notes:
 - **Review Focus 2:** set `published` only in one step and leave it out in another, change it through the client in between: the config without `published` plans empty.
 
 **List:** no config. Lists every enabled locale, the primary included. `DisplayName`: `fr (French)`, primary as `en (English, primary)`. Results carry `locale` and `published`, which pass validation and plan as import-only.
+
+---
+
+## 9c. Resource: `shopify_shop_policy`
+
+```hcl
+resource "shopify_shop_policy" "terms" {
+  type           = "TERMS_OF_SERVICE"
+  body           = file("${path.module}/policies/agb.html")
+  adopt_existing = true # needed when the policy already has text
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `ShopPolicy` GID. Computed, UseStateForUnknown |
+| `type` | string | Required, **RequiresReplace** (the key; `ShopPolicyInput` selects the policy by type). One of `REFUND_POLICY`, `SHIPPING_POLICY`, `PRIVACY_POLICY`, `TERMS_OF_SERVICE`, `TERMS_OF_SALE`, `LEGAL_NOTICE`, `SUBSCRIPTION_POLICY`, `CONTACT_INFORMATION` |
+| `body` | string | Required, at least 1 character. HTML, stored and returned verbatim (no normalisation needed) |
+| `title` | string | Computed, UseStateForUnknown. Set by Shopify, translated (`Legal notice`) |
+| `url` | string | Computed, UseStateForUnknown. Public URL of the policy page |
+| `adopt_existing` | bool | Pattern A, see below |
+
+Import key: the type (`TERMS_OF_SERVICE`). Read queries `shop { shopPolicies { id type title body url } }` (one query, at most eight rows), matches the GID first and falls back to the type, so `MutableIdentity` is set. A policy with an empty body counts as absent.
+
+Granularity: one resource per policy type. The API addresses policies one type at a time, and they are written and owned separately (legal notice vs. shipping policy).
+
+Notes:
+- Uses `shopPolicyUpdate` only; there is no create or delete mutation. `shopPolicyUpdate` creates the policy row when the type has none yet (checked).
+- **Pattern A:** a policy exists once per type and can't be deleted.
+  - Create looks the type up. Missing or empty body: write it. Non-empty body: fail unless `adopt_existing = true`, because the text is usually written by legal or the merchant and must not be overwritten silently.
+  - Destroy only removes it from state, with a warning, whatever `adopt_existing` says. It never sends `body: ""`: an empty body doesn't delete the row (checked), it just blanks the policy (Review Focus 1). Replace (a `type` change) therefore leaves the old policy as it is.
+- **No Pattern B:** nothing is deleted.
+- **`PRIVACY_POLICY` and Shopify's auto-managed privacy policy.** `privacySettings.privacyPolicy.autoManaged` is `true` on the dev store, which means Shopify generates that text. `TODO(verify)`: whether `shopPolicyUpdate` on `PRIVACY_POLICY` is rejected, flips `autoManaged`, or gets regenerated over. Not tried, because the generated text and the auto-managed flag can't be restored through the API. Docs: turn auto-management off first (`privacy_policy_auto_managed = false` on `shopify_privacy_settings`, §9d) and reference it with `depends_on`.
+- Translations of policy bodies (`HasPublishedTranslations`) are not managed (translations are a separate roadmap type).
+- Errors: `ShopPolicyUserError`, only code `TOO_BIG` (body too large), mapped to `body`. Not retried.
+- genqlient: `body` has the `HTML` scalar, so `internal/client/genqlient.yaml` needs `HTML: type: string`, like `URL`.
+- **Checked on the dev store (2026-10-26):** the store has one policy, `PRIVACY_POLICY`, Shopify-generated. `shopPolicyUpdate` for `LEGAL_NOTICE` created the row (new GID) and returned the body byte for byte, including `&amp;`, `<br>` and a `<script>` tag; the same body again didn't touch `updatedAt`; plain text is accepted as is. `body: ""` keeps the row (same GID, empty body, still listed in `shopPolicies`), so it can't be removed again. `node(id:)` resolves a `ShopPolicy` GID.
+- **Fit: volatile.** Policies are legal texts, often edited in the admin by people outside the infrastructure team, and Shopify generates the privacy policy. The resource description says so ("poor fit for Terraform unless the texts are maintained in the repository").
+- **Scopes:** `read_legal_policies` / `write_legal_policies` (checked with `write_legal_policies`).
+- **Review Focus 1:** acceptance step reads the policy back through the client after destroy and expects the body unchanged. **Review Focus 2:** `body` is the only writable attribute, so the step doesn't apply; the test instead edits another type's policy through the client and expects an empty plan.
+
+**List:** no config. Lists every policy with a non-empty body; empty rows are skipped, since they fail the `body` validator and mean "no policy". `DisplayName`: `TERMS_OF_SERVICE (Terms of service)`, from `type` and `title`. Results carry `type` and `body`.
 
 ---
 
