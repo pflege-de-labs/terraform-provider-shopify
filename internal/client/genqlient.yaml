@@ -14,3 +14,6 @@ bindings:
   # URL is a plain string; kept as string to avoid parse failures on odd values.
   URL:
     type: string
+  # HTML is a plain string; policy bodies are stored and returned verbatim.
+  HTML:
+    type: string

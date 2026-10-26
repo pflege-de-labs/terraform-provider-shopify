@@ -7298,6 +7298,115 @@ func (v *ListShopLocalesShopLocalesShopLocale) __premarshalJSON() (*__premarshal
 	return &retval, nil
 }
 
+// ListShopPoliciesResponse is returned by ListShopPolicies on success.
+type ListShopPoliciesResponse struct {
+	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
+	// business and store management settings for the shop.
+	Shop ListShopPoliciesShop `json:"shop"`
+}
+
+// GetShop returns ListShopPoliciesResponse.Shop, and is useful for accessing the field via an interface.
+func (v *ListShopPoliciesResponse) GetShop() ListShopPoliciesShop { return v.Shop }
+
+// ListShopPoliciesShop includes the requested fields of the GraphQL type Shop.
+// The GraphQL type's documentation follows.
+//
+// The central configuration and settings hub for a Shopify store. Access business information, operational preferences, feature availability, and store-wide settings that control how the shop operates.
+//
+// Includes core business details like the shop name, contact emails, billing address, and currency settings. The shop configuration determines customer account requirements, available sales channels, enabled features, payment settings, and policy documents. Also provides access to shop-level resources such as staff members, fulfillment services, navigation settings, and storefront access tokens.
+type ListShopPoliciesShop struct {
+	// The list of all legal policies associated with a shop.
+	ShopPolicies []ListShopPoliciesShopShopPoliciesShopPolicy `json:"shopPolicies"`
+}
+
+// GetShopPolicies returns ListShopPoliciesShop.ShopPolicies, and is useful for accessing the field via an interface.
+func (v *ListShopPoliciesShop) GetShopPolicies() []ListShopPoliciesShopShopPoliciesShopPolicy {
+	return v.ShopPolicies
+}
+
+// ListShopPoliciesShopShopPoliciesShopPolicy includes the requested fields of the GraphQL type ShopPolicy.
+// The GraphQL type's documentation follows.
+//
+// Policy that a merchant has configured for their store, such as their refund or privacy policy.
+type ListShopPoliciesShopShopPoliciesShopPolicy struct {
+	ShopPolicyFields `json:"-"`
+}
+
+// GetId returns ListShopPoliciesShopShopPoliciesShopPolicy.Id, and is useful for accessing the field via an interface.
+func (v *ListShopPoliciesShopShopPoliciesShopPolicy) GetId() string { return v.ShopPolicyFields.Id }
+
+// GetType returns ListShopPoliciesShopShopPoliciesShopPolicy.Type, and is useful for accessing the field via an interface.
+func (v *ListShopPoliciesShopShopPoliciesShopPolicy) GetType() ShopPolicyType {
+	return v.ShopPolicyFields.Type
+}
+
+// GetTitle returns ListShopPoliciesShopShopPoliciesShopPolicy.Title, and is useful for accessing the field via an interface.
+func (v *ListShopPoliciesShopShopPoliciesShopPolicy) GetTitle() string {
+	return v.ShopPolicyFields.Title
+}
+
+// GetBody returns ListShopPoliciesShopShopPoliciesShopPolicy.Body, and is useful for accessing the field via an interface.
+func (v *ListShopPoliciesShopShopPoliciesShopPolicy) GetBody() string { return v.ShopPolicyFields.Body }
+
+// GetUrl returns ListShopPoliciesShopShopPoliciesShopPolicy.Url, and is useful for accessing the field via an interface.
+func (v *ListShopPoliciesShopShopPoliciesShopPolicy) GetUrl() string { return v.ShopPolicyFields.Url }
+
+func (v *ListShopPoliciesShopShopPoliciesShopPolicy) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListShopPoliciesShopShopPoliciesShopPolicy
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListShopPoliciesShopShopPoliciesShopPolicy = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ShopPolicyFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListShopPoliciesShopShopPoliciesShopPolicy struct {
+	Id string `json:"id"`
+
+	Type ShopPolicyType `json:"type"`
+
+	Title string `json:"title"`
+
+	Body string `json:"body"`
+
+	Url string `json:"url"`
+}
+
+func (v *ListShopPoliciesShopShopPoliciesShopPolicy) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListShopPoliciesShopShopPoliciesShopPolicy) __premarshalJSON() (*__premarshalListShopPoliciesShopShopPoliciesShopPolicy, error) {
+	var retval __premarshalListShopPoliciesShopShopPoliciesShopPolicy
+
+	retval.Id = v.ShopPolicyFields.Id
+	retval.Type = v.ShopPolicyFields.Type
+	retval.Title = v.ShopPolicyFields.Title
+	retval.Body = v.ShopPolicyFields.Body
+	retval.Url = v.ShopPolicyFields.Url
+	return &retval, nil
+}
+
 // ListWebPresencesResponse is returned by ListWebPresences on success.
 type ListWebPresencesResponse struct {
 	// The web presences for the shop.
@@ -10948,6 +11057,97 @@ func (v *ShopLocaleInput) GetPublished() *bool { return v.Published }
 // GetMarketWebPresenceIds returns ShopLocaleInput.MarketWebPresenceIds, and is useful for accessing the field via an interface.
 func (v *ShopLocaleInput) GetMarketWebPresenceIds() []string { return v.MarketWebPresenceIds }
 
+// Possible error codes that can be returned by `ShopPolicyUserError`.
+type ShopPolicyErrorCode string
+
+const (
+	// The input value is too big.
+	ShopPolicyErrorCodeTooBig ShopPolicyErrorCode = "TOO_BIG"
+)
+
+var AllShopPolicyErrorCode = []ShopPolicyErrorCode{
+	ShopPolicyErrorCodeTooBig,
+}
+
+// ShopPolicyFields includes the GraphQL fields of ShopPolicy requested by the fragment ShopPolicyFields.
+// The GraphQL type's documentation follows.
+//
+// Policy that a merchant has configured for their store, such as their refund or privacy policy.
+type ShopPolicyFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The shop policy type.
+	Type ShopPolicyType `json:"type"`
+	// The translated title of the policy. For example, Refund Policy or Politique de remboursement.
+	Title string `json:"title"`
+	// The text of the policy. The maximum size is 512kb.
+	Body string `json:"body"`
+	// The public URL of the policy.
+	Url string `json:"url"`
+}
+
+// GetId returns ShopPolicyFields.Id, and is useful for accessing the field via an interface.
+func (v *ShopPolicyFields) GetId() string { return v.Id }
+
+// GetType returns ShopPolicyFields.Type, and is useful for accessing the field via an interface.
+func (v *ShopPolicyFields) GetType() ShopPolicyType { return v.Type }
+
+// GetTitle returns ShopPolicyFields.Title, and is useful for accessing the field via an interface.
+func (v *ShopPolicyFields) GetTitle() string { return v.Title }
+
+// GetBody returns ShopPolicyFields.Body, and is useful for accessing the field via an interface.
+func (v *ShopPolicyFields) GetBody() string { return v.Body }
+
+// GetUrl returns ShopPolicyFields.Url, and is useful for accessing the field via an interface.
+func (v *ShopPolicyFields) GetUrl() string { return v.Url }
+
+// The input fields required to update a policy.
+type ShopPolicyInput struct {
+	// The shop policy type.
+	Type ShopPolicyType `json:"type"`
+	// Policy text, maximum size of 512kb.
+	Body string `json:"body"`
+}
+
+// GetType returns ShopPolicyInput.Type, and is useful for accessing the field via an interface.
+func (v *ShopPolicyInput) GetType() ShopPolicyType { return v.Type }
+
+// GetBody returns ShopPolicyInput.Body, and is useful for accessing the field via an interface.
+func (v *ShopPolicyInput) GetBody() string { return v.Body }
+
+// Available shop policy types.
+type ShopPolicyType string
+
+const (
+	// The refund policy.
+	ShopPolicyTypeRefundPolicy ShopPolicyType = "REFUND_POLICY"
+	// The shipping policy.
+	ShopPolicyTypeShippingPolicy ShopPolicyType = "SHIPPING_POLICY"
+	// The privacy policy.
+	ShopPolicyTypePrivacyPolicy ShopPolicyType = "PRIVACY_POLICY"
+	// The terms of service.
+	ShopPolicyTypeTermsOfService ShopPolicyType = "TERMS_OF_SERVICE"
+	// The terms of sale.
+	ShopPolicyTypeTermsOfSale ShopPolicyType = "TERMS_OF_SALE"
+	// The legal notice.
+	ShopPolicyTypeLegalNotice ShopPolicyType = "LEGAL_NOTICE"
+	// The cancellation policy.
+	ShopPolicyTypeSubscriptionPolicy ShopPolicyType = "SUBSCRIPTION_POLICY"
+	// The contact information.
+	ShopPolicyTypeContactInformation ShopPolicyType = "CONTACT_INFORMATION"
+)
+
+var AllShopPolicyType = []ShopPolicyType{
+	ShopPolicyTypeRefundPolicy,
+	ShopPolicyTypeShippingPolicy,
+	ShopPolicyTypePrivacyPolicy,
+	ShopPolicyTypeTermsOfService,
+	ShopPolicyTypeTermsOfSale,
+	ShopPolicyTypeLegalNotice,
+	ShopPolicyTypeSubscriptionPolicy,
+	ShopPolicyTypeContactInformation,
+}
+
 // UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayload includes the requested fields of the GraphQL type DeliveryProfileUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -11850,6 +12050,155 @@ func (v *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadUserErrorsUserEr
 	return v.Message
 }
 
+// UpdateShopPolicyResponse is returned by UpdateShopPolicy on success.
+type UpdateShopPolicyResponse struct {
+	// Updates a shop policy.
+	ShopPolicyUpdate *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayload `json:"shopPolicyUpdate"`
+}
+
+// GetShopPolicyUpdate returns UpdateShopPolicyResponse.ShopPolicyUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateShopPolicyResponse) GetShopPolicyUpdate() *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayload {
+	return v.ShopPolicyUpdate
+}
+
+// UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayload includes the requested fields of the GraphQL type ShopPolicyUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `shopPolicyUpdate` mutation.
+type UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayload struct {
+	// The shop policy that has been updated.
+	ShopPolicy *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy `json:"shopPolicy"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadUserErrorsShopPolicyUserError `json:"userErrors"`
+}
+
+// GetShopPolicy returns UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayload.ShopPolicy, and is useful for accessing the field via an interface.
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayload) GetShopPolicy() *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy {
+	return v.ShopPolicy
+}
+
+// GetUserErrors returns UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayload) GetUserErrors() []UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadUserErrorsShopPolicyUserError {
+	return v.UserErrors
+}
+
+// UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy includes the requested fields of the GraphQL type ShopPolicy.
+// The GraphQL type's documentation follows.
+//
+// Policy that a merchant has configured for their store, such as their refund or privacy policy.
+type UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy struct {
+	ShopPolicyFields `json:"-"`
+}
+
+// GetId returns UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy.Id, and is useful for accessing the field via an interface.
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy) GetId() string {
+	return v.ShopPolicyFields.Id
+}
+
+// GetType returns UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy.Type, and is useful for accessing the field via an interface.
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy) GetType() ShopPolicyType {
+	return v.ShopPolicyFields.Type
+}
+
+// GetTitle returns UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy.Title, and is useful for accessing the field via an interface.
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy) GetTitle() string {
+	return v.ShopPolicyFields.Title
+}
+
+// GetBody returns UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy.Body, and is useful for accessing the field via an interface.
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy) GetBody() string {
+	return v.ShopPolicyFields.Body
+}
+
+// GetUrl returns UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy.Url, and is useful for accessing the field via an interface.
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy) GetUrl() string {
+	return v.ShopPolicyFields.Url
+}
+
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ShopPolicyFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy struct {
+	Id string `json:"id"`
+
+	Type ShopPolicyType `json:"type"`
+
+	Title string `json:"title"`
+
+	Body string `json:"body"`
+
+	Url string `json:"url"`
+}
+
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy) __premarshalJSON() (*__premarshalUpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy, error) {
+	var retval __premarshalUpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadShopPolicy
+
+	retval.Id = v.ShopPolicyFields.Id
+	retval.Type = v.ShopPolicyFields.Type
+	retval.Title = v.ShopPolicyFields.Title
+	retval.Body = v.ShopPolicyFields.Body
+	retval.Url = v.ShopPolicyFields.Url
+	return &retval, nil
+}
+
+// UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadUserErrorsShopPolicyUserError includes the requested fields of the GraphQL type ShopPolicyUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of a shop policy mutation.
+type UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadUserErrorsShopPolicyUserError struct {
+	// The error code.
+	Code *ShopPolicyErrorCode `json:"code"`
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetCode returns UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadUserErrorsShopPolicyUserError.Code, and is useful for accessing the field via an interface.
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadUserErrorsShopPolicyUserError) GetCode() *ShopPolicyErrorCode {
+	return v.Code
+}
+
+// GetField returns UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadUserErrorsShopPolicyUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadUserErrorsShopPolicyUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadUserErrorsShopPolicyUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadUserErrorsShopPolicyUserError) GetMessage() string {
+	return v.Message
+}
+
 // UpdateWebPresenceResponse is returned by UpdateWebPresence on success.
 type UpdateWebPresenceResponse struct {
 	// Updates a web presence.
@@ -12611,6 +12960,14 @@ func (v *__UpdateShopLocaleInput) GetLocale() string { return v.Locale }
 
 // GetInput returns __UpdateShopLocaleInput.Input, and is useful for accessing the field via an interface.
 func (v *__UpdateShopLocaleInput) GetInput() ShopLocaleInput { return v.Input }
+
+// __UpdateShopPolicyInput is used internally by genqlient
+type __UpdateShopPolicyInput struct {
+	Input ShopPolicyInput `json:"input"`
+}
+
+// GetInput returns __UpdateShopPolicyInput.Input, and is useful for accessing the field via an interface.
+func (v *__UpdateShopPolicyInput) GetInput() ShopPolicyInput { return v.Input }
 
 // __UpdateWebPresenceInput is used internally by genqlient
 type __UpdateWebPresenceInput struct {
@@ -14630,6 +14987,46 @@ func ListShopLocales(
 	return data_, err_
 }
 
+// The query executed by ListShopPolicies.
+const ListShopPolicies_Operation = `
+query ListShopPolicies {
+	shop {
+		shopPolicies {
+			... ShopPolicyFields
+		}
+	}
+}
+fragment ShopPolicyFields on ShopPolicy {
+	id
+	type
+	title
+	body
+	url
+}
+`
+
+// At most eight rows, one per policy type; a type without text may be missing or have an empty body.
+func ListShopPolicies(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *ListShopPoliciesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListShopPolicies",
+		Query:  ListShopPolicies_Operation,
+	}
+
+	data_ = &ListShopPoliciesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListWebPresences.
 const ListWebPresences_Operation = `
 query ListWebPresences ($after: String) {
@@ -15059,6 +15456,55 @@ func UpdateShopLocale(
 	}
 
 	data_ = &UpdateShopLocaleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateShopPolicy.
+const UpdateShopPolicy_Operation = `
+mutation UpdateShopPolicy ($input: ShopPolicyInput!) {
+	shopPolicyUpdate(shopPolicy: $input) {
+		shopPolicy {
+			... ShopPolicyFields
+		}
+		userErrors {
+			code
+			field
+			message
+		}
+	}
+}
+fragment ShopPolicyFields on ShopPolicy {
+	id
+	type
+	title
+	body
+	url
+}
+`
+
+// There is no create or delete: this creates the row for a type that has none.
+func UpdateShopPolicy(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input ShopPolicyInput,
+) (data_ *UpdateShopPolicyResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateShopPolicy",
+		Query:  UpdateShopPolicy_Operation,
+		Variables: &__UpdateShopPolicyInput{
+			Input: input,
+		},
+	}
+
+	data_ = &UpdateShopPolicyResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
