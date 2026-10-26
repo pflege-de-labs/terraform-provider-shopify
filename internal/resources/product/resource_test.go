@@ -159,6 +159,8 @@ func TestAccProduct_basic(t *testing.T) {
   seo_description     = "tf-acc seo description"
   allow_data_deletion = true
 `, renamed))
+	// Without allow_data_deletion = true, which an import can't know, so the import plans as a no-op.
+	imported := strings.Replace(updated, "  allow_data_deletion = true\n", "", 1)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
@@ -210,10 +212,10 @@ func TestAccProduct_basic(t *testing.T) {
 				Config:            updated,
 				ConfigStateChecks: []statecheck.StateCheck{expectIdentity},
 			},
-			{Config: updated, ResourceName: addr, ImportState: true, ImportStateKind: resource.ImportBlockWithResourceIdentity},
+			{Config: imported, ResourceName: addr, ImportState: true, ImportStateKind: resource.ImportBlockWithResourceIdentity},
 			{
 				// Generated config must pass validation and plan as import-only, without adopt_existing.
-				Config:          updated,
+				Config:          imported,
 				ResourceName:    addr,
 				ImportState:     true,
 				ImportStateKind: resource.ImportBlockWithResourceIdentity,
