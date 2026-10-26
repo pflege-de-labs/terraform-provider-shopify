@@ -48,3 +48,5 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 3: branch layout: `feat/phase2-07-web-presence` from `feat/phase2-resources` @ fa5cdc0 (main merged in at fa5cdc0). Plain git stacking; pushes over HTTPS (gh token) while the SSH key is unavailable.
 - Task 3: complete
 - Ruling T4-1: §9a (web presence) was designed and reviewed on 2026-10-23; the implementer only drops the stale "blocked on scope" note, re-checks the locale ⚠ with `read_locales` now granted, and continues to code without a controller stop — design is unchanged apart from that — costs a late design change if the locale check contradicts §9a.
+- Task 4: dispatched (base 40d5910, branch feat/phase2-07-web-presence, model sonnet)
+- Task 4: implemented 40d5910..d7a4b93 (DONE_WITH_CONCERNS: list code lands in the step 4 commit because resource.go shares `listPage`; acc tests skip unless TF_ACC; worktree has no `.envrc`, run via `direnv exec <main checkout>`; TODO(verify) delete of a presence still linked to a market). Review dispatched (opus).
