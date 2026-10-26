@@ -194,6 +194,8 @@ func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListR
 		deliveryprofile.NewListResource,
 		market.NewListResource,
 		shoplocale.NewListResource,
+		privacysettings.NewPrivacySettingsList,
+		privacysettings.NewConsentPolicyList,
 		shoppolicy.NewListResource,
 		webpresence.NewListResource,
 	}
