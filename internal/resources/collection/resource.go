@@ -18,6 +18,7 @@ import (
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/publishing"
 )
 
 const (
@@ -67,7 +68,8 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"Membership is managed for collections with at most one non-shareable conditions source, which every collection made in the admin, with the older API or by this provider has. " +
 			"That includes a source another app created; Shopify may reject changes to it. " +
 			"Collections with several sources, a sub-collection or shareable source, variant-level selections or a condition Shopify can't express as input are read without membership: " +
-			"setting `match_type`, `conditions` or `product_ids` for them fails. Exclusions, the product order of `MANUAL` collections, the image, publishing and metafields are not managed. " +
+			"setting `match_type`, `conditions` or `product_ids` for them fails. Exclusions, the product order of `MANUAL` collections, the image and metafields are not managed. " +
+			"`publication_ids` publishes it to sales channels; removing an ID unpublishes it there. " +
 			"Destroying a collection deletes it with its publications and translations; the products stay. " +
 			"Menu items pointing at it lose their target, so add `lifecycle { prevent_destroy = true }` to collections that back navigation. " +
 			"A collection that already has the handle, such as `frontpage` which every store has, needs `adopt_existing = true`; destroy then leaves it in place. " +
@@ -149,7 +151,8 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				Computed:      true,
 				PlanModifiers: []planmodifier.String{patterns.UseStateForUnknownIncludingNull()},
 			},
-			"adopt_existing": patterns.AdoptExistingAttribute(what),
+			"publication_ids": publishing.Attribute(what),
+			"adopt_existing":  patterns.AdoptExistingAttribute(what),
 		},
 	}
 }
@@ -240,12 +243,15 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	} else {
 		c = r.create(ctx, &cfg, &resp.Diagnostics)
 	}
-	r.finish(ctx, c, &plan, &resp.Diagnostics, resp.Private)
-	if resp.Diagnostics.HasError() {
+	if !r.finish(ctx, c, &plan, &cfg, &resp.Diagnostics, resp.Private) {
 		return
 	}
+	// The collection exists even if publishing failed, so it goes into state, tainted.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
+	if resp.Diagnostics.HasError() {
+		resp.Diagnostics.AddWarning("The collection was created", publishing.CreateFailedNote(what))
+	}
 }
 
 func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -319,10 +325,10 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 		}
 	}
 	c := r.update(ctx, live, &cfg, &resp.Diagnostics)
-	r.finish(ctx, c, &plan, &resp.Diagnostics, resp.Private)
-	if resp.Diagnostics.HasError() {
+	if !r.finish(ctx, c, &plan, &cfg, &resp.Diagnostics, resp.Private) {
 		return
 	}
+	// Written even if publishing failed: the collection changed, and plan holds the publications it really has.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
@@ -459,19 +465,22 @@ func planChanges(ctx context.Context, mem *membership, cfg *model, diags *diag.D
 	return changes, true
 }
 
-// finish writes the collection a write returned into plan and remembers its description.
-func (r *Resource) finish(ctx context.Context, c *client.CollectionFields, plan *model, diags *diag.Diagnostics, private patterns.PrivateSetter) {
+// finish writes the collection a write returned into plan, remembers its description and publishes it as configured.
+// It reports whether the collection was written; publishing errors still land in diags after that.
+func (r *Resource) finish(ctx context.Context, c *client.CollectionFields, plan, cfg *model, diags *diag.Diagnostics, private patterns.PrivateSetter) bool {
 	if c == nil || diags.HasError() {
-		return
+		return false
 	}
 	l, err := completeCollection(ctx, r.client, c)
 	if err != nil {
 		diags.AddError("Failed to read the written "+what, err.Error())
-		return
+		return false
 	}
 	d, _ := setFromAPI(ctx, plan, l, &c.DescriptionHtml, false)
 	diags.Append(d...)
 	diags.Append(patterns.RememberWrittenHTML(ctx, private, c.DescriptionHtml)...)
+	diags.Append(r.publish(ctx, l, plan, cfg)...)
+	return true
 }
 
 // getByID returns the collection, or nil when it doesn't exist.
@@ -496,6 +505,9 @@ func (r *Resource) getByHandle(ctx context.Context, handle string) (*liveCollect
 func completeCollection(ctx context.Context, cl *client.Client, c *client.CollectionFields) (*liveCollection, error) {
 	sources, err := decodeSources(c.Sources)
 	if err != nil {
+		return nil, err
+	}
+	if err := publishing.Complete(ctx, &c.ResourcePublicationsV2, morePublications(ctx, cl, c.Id)); err != nil {
 		return nil, err
 	}
 	l := &liveCollection{CollectionFields: c, sources: sources}

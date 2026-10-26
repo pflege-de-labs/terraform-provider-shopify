@@ -11,6 +11,7 @@ import (
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/publishing"
 )
 
 var _ list.ListResourceWithConfigure = &ListResource{}
@@ -70,6 +71,7 @@ func listResult(ctx context.Context, req list.ListRequest, c *liveCollection) li
 	if req.IncludeResource {
 		m := model{Conditions: conditionsNull(), AdoptExisting: types.BoolValue(false)}
 		d, unsupported := setFromAPI(ctx, &m, c, nil, true)
+		m.PublicationIDs = publishing.NullIfEmpty(m.PublicationIDs)
 		res.Diagnostics.Append(d...)
 		if unsupported != nil {
 			res.Diagnostics.AddWarning(fmt.Sprintf("Membership of %s is not managed", c.Handle), unsupportedDetail(unsupported))

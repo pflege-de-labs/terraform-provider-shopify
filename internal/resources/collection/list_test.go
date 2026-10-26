@@ -28,11 +28,13 @@ func TestAccListCollection(t *testing.T) {
 	handleA, handleB := testHandle(), testHandle()
 	productHandle := handleA + "-p"
 	cleanup(t, handleA, handleB, productHandle)
-	collections := product(productHandle) + fmt.Sprintf(`
+	online := acctest.PublicationID(t, "Online Store")
+	collections := publicationData + product(productHandle) + fmt.Sprintf(`
 resource "shopify_collection" "a" {
-  handle      = %q
-  title       = "tf-acc list a"
-  product_ids = [shopify_product.p.id]
+  handle          = %q
+  title           = "tf-acc list a"
+  product_ids     = [shopify_product.p.id]
+  publication_ids = [data.shopify_publication.online.id]
 }
 
 resource "shopify_collection" "b" {
@@ -67,6 +69,7 @@ resource "shopify_collection" "b" {
 						{Path: tfjsonpath.New("conditions"), KnownValue: knownvalue.Null()},
 						{Path: tfjsonpath.New("match_type"), KnownValue: knownvalue.Null()},
 						{Path: tfjsonpath.New("source_id"), KnownValue: knownvalue.StringRegexp(sourceRe)},
+						{Path: tfjsonpath.New("publication_ids"), KnownValue: knownvalue.SetExact([]knownvalue.Check{knownvalue.StringExact(online)})},
 						{Path: tfjsonpath.New("adopt_existing"), KnownValue: knownvalue.Bool(false)},
 					}),
 					querycheck.ExpectResourceKnownValues("shopify_collection.all", byName("tf-acc list b", handleB), []querycheck.KnownValueCheck{
@@ -74,6 +77,8 @@ resource "shopify_collection" "b" {
 						{Path: tfjsonpath.New("match_type"), KnownValue: knownvalue.StringExact("ALL")},
 						{Path: tfjsonpath.New("conditions"), KnownValue: knownvalue.StringExact(`[{"productTag":{"matchType":"ANY","relation":"TAGGED_WITH","values":["tf-acc-collection"]}}]`)},
 						{Path: tfjsonpath.New("product_ids"), KnownValue: knownvalue.SetExact([]knownvalue.Check{})},
+						// An unpublished collection lists no publication_ids, so generated config doesn't claim to manage them.
+						{Path: tfjsonpath.New("publication_ids"), KnownValue: knownvalue.Null()},
 					}),
 				},
 			},

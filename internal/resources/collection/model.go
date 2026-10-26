@@ -10,6 +10,7 @@ import (
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/publishing"
 )
 
 // conditionsEquality makes conditions a semantic JSON attribute.
@@ -40,6 +41,7 @@ type model struct {
 	Conditions      conditionsValue `tfsdk:"conditions"`
 	ProductIDs      types.Set       `tfsdk:"product_ids"`
 	SourceID        types.String    `tfsdk:"source_id"`
+	PublicationIDs  types.Set       `tfsdk:"publication_ids"`
 	AdoptExisting   types.Bool      `tfsdk:"adopt_existing"`
 }
 
@@ -109,6 +111,9 @@ func setFromAPI(ctx context.Context, m *model, c *liveCollection, written *strin
 	m.SEOTitle = types.StringPointerValue(c.Seo.Title)
 	m.SEODescription = types.StringPointerValue(c.Seo.Description)
 	m.TemplateSuffix = types.StringPointerValue(c.TemplateSuffix)
+	var pd diag.Diagnostics
+	m.PublicationIDs, pd = publishing.Value(ctx, publishing.IDs(c.GetResourcePublicationsV2()))
+	diags.Append(pd...)
 
 	mem, unsupported := membershipOf(c.sources)
 	if unsupported != nil {
