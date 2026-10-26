@@ -135,8 +135,13 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	}
 	var p *client.PageFields
 	if existing != nil {
-		in, _ := cfg.updateInput(&model{})
-		p = r.update(ctx, existing.Id, in, &resp.Diagnostics)
+		// Only what differs is sent, so a page that already matches stays untouched.
+		var live model
+		setFromAPI(&live, existing, nil)
+		in, has := cfg.updateInput(&live)
+		if p = existing; has {
+			p = r.update(ctx, existing.Id, in, &resp.Diagnostics)
+		}
 	} else {
 		p = r.create(ctx, cfg.createInput(), &resp.Diagnostics)
 	}

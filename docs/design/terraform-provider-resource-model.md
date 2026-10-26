@@ -1238,6 +1238,16 @@ Notes:
 
 **Dev store (2026-10-26):** one probe page (`tf-probe_1`, renamed to `tf-probe-renamed`) was created, updated (publish toggles, template suffix, a future `publishDate`) and deleted. End state equals the start: only `contact`.
 
+**Implemented (§9m, verified on the dev store, 2026-10-26):**
+- Everything above held in the acceptance tests: create without `published` gives `true`; the body repair is no diff (`<p>Hi<br>there<b>bold</p>` stays configured, `...</b></p>` lives); `template_suffix` `""` reads back as `""`; a handle rename keeps the GID; import by handle, by identity and from generated config; the list shows `body`, `published` and `template_suffix` (null stays null).
+- `template_suffix` uses `UseStateForUnknownIncludingNull`, not plain `UseStateForUnknown`: a never-set suffix reads `null`, and plain keeps the plan unknown on every run.
+- The handle fallback sends `pages(first: 5, query: "handle:\"<handle>\"")` (quoted) and compares handles exactly; the quoted form found new pages immediately. `TODO(verify)` on index lag stays in `Create`.
+- Update sends only attributes that are configured and differ from state; a plan that changes only `adopt_existing` makes no API call. Adopt does the same against the live page, so a page that already matches is not written at all: adopting `contact` with its live title left it byte-identical (`TestAccPage_adoptContact`, Review Focus 1).
+- Review Focus 2 passed: `template_suffix`, `published` and `body` changed through the client while unset in config plan empty, and state takes the live values.
+- `pageDelete` is not preceded by a lookup: `NOT_FOUND` is recognised by its `code` and tolerated (a page deleted before destroy, tested). A page deleted outside Terraform is planned for recreation.
+- Not verified, still `TODO(verify)`: whether `contact` can be deleted (not tried), menu items of type `PAGE` losing their target, search-index lag under load.
+- End state of the dev store equals the start: only `contact`.
+
 ---
 
 ## 9n. Resource: `shopify_blog`
