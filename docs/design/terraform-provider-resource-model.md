@@ -641,7 +641,6 @@ resource "shopify_checkout_and_accounts_configuration" "live" {
 | `name` | string | Optional + Computed. Selects the configuration by name; unset = the published one. **RequiresReplace**: the API can't rename, and a different name means a different configuration (replace is harmless, destroy only drops state) |
 | `is_published` | bool | Computed |
 | `branding` | string (JSON) | Optional; unset = branding unmanaged. Model and drift handling in §9f |
-| `adopt_existing` | — | Not offered: the object can't be created, so it is always adopted |
 
 Import key: `published` for the published configuration, otherwise its `name`. Names come from the shop name (dev store: `terraform-provider-test configuration`), so `published` is the key that works on every store. Read: `checkoutAndAccountsConfiguration(id:)` first; if it is gone, `checkoutAndAccountsConfigurations(query: "is_published:true")` when `name` is unset, otherwise page through the list and match `name` (no name filter exists). `MutableIdentity` is set. A name that matches more than one configuration is an error that lists the GIDs. After a different configuration is published in the admin, the resource keeps following its GID (now a draft); `is_published = false` shows it, and the docs say to re-import.
 
@@ -651,7 +650,7 @@ Notes:
 - Uses `checkoutAndAccountsConfiguration(s)` and `checkoutAndAccountsConfigurationUpdate(id:, configuration:)`. The deprecated `checkoutProfiles`, `checkoutBranding` and `checkoutBrandingUpsert` are not used.
 - **What is writable:** `CheckoutAndAccountsConfigurationInput` has only `branding` and `overrides`. There is no create, delete, rename or publish mutation; publishing goes through rollouts (`RolloutCheckoutAndAccountsConfigurationPublishChange`), which are out of scope here.
 - **Overrides are not managed in this task.** `CheckoutAndAccountsConfigurationOverrideInput` is `{ id, branding }`: it says nothing about what an override applies to, so a new override can't be targeted. The dev store has none, and discovery didn't count them on staging/production. `TODO(verify)`: what overrides target and how they are created; until then they are left alone (never sent).
-- **Pattern A (implicit):** configurations are created in the checkout editor and can't be deleted through the API. Create = find (published or by name), then update branding. Destroy only removes the resource from state with a warning; it never sends `branding: null` or resets anything (Review Focus 1).
+- **Pattern A (implicit, no `adopt_existing` flag):** configurations are created in the checkout editor and can't be deleted through the API. Create = find (published or by name), then update branding. Destroy only removes the resource from state with a warning; it never sends `branding: null` or resets anything (Review Focus 1).
 - **No Pattern B.**
 - Errors: `CheckoutAndAccountsConfigurationUserError` has `code` (`INVALID`, `BLANK`, `MISSING`, `NOT_FOUND`, `INTERNAL_SERVER_ERROR`, `TRANSIENT`), `reason` (e.g. `branding_invalid_hex_color`) and `field` (`["configuration","branding",…]`). They map to `branding`, and the message includes the JSON path from `field` and the `reason`. Unknown keys or wrong types in the JSON fail as GraphQL variable errors before execution and are reported as such. Nothing is retried; `TRANSIENT` asks the user to re-apply.
 - **Checked on the dev store (2026-10-26):** one configuration, published, no overrides; branding only has three surface background colours (`#FFFFFF`). Update semantics in §9f.
@@ -660,6 +659,44 @@ Notes:
 - **Review Focus 2:** branding sets path A; path B is changed through the client; expect an empty plan.
 
 **List:** no config. Lists every configuration, published or not. `DisplayName`: the name, with ` (published)` appended for the published one. Results carry `name` and `branding` (live branding as described in §9f), which plan as import-only.
+
+---
+
+## 9f. Checkout branding: the `branding` attribute of §9e
+
+Checkout branding is **not a resource of its own**. In 2026-10 the non-deprecated path is `CheckoutAndAccountsConfiguration.branding`, written with `checkoutAndAccountsConfigurationUpdate(configuration: { branding })`; `checkoutBranding(checkoutProfileId:)` and `checkoutBrandingUpsert` are deprecated in favour of it. Branding is the configuration's only writable content (§9e), so a separate `shopify_checkout_branding` would be the same object under two resources, both writing through the same mutation. Discovery's "1 per configuration" is this field.
+
+**Modelling: one JSON string, in the API's camelCase, following `CheckoutAndAccountsConfigurationBrandingInput`.**
+- A typed schema doesn't fit one task: the input tree has 871 leaves over 66 input types and 25 enums, and every generated config would carry all of them.
+- A curated typed subset (design tokens only) would miss `components` and `surfaces`, which is where the dev store's only values are.
+- JSON keeps the two states the API distinguishes: a missing key is not managed, an explicit `null` resets that value to Shopify's default (both checked). Optional typed attributes can't tell "unset" from "reset". Keys match Shopify's docs one to one; users write `jsonencode({...})`.
+
+**Update semantics (checked on the dev store, 2026-10-26):**
+- Deep merge: setting `designTokens.cornerRadius.base` and then only `components.checkbox.cornerRadius` kept both.
+- `null` resets: `base: null` cleared that leaf; `checkbox: null` cleared the whole subtree.
+- Atomic: an invalid value anywhere rejects the whole update (`INVALID`, reason `branding_invalid_hex_color`, for `red` and `#abc`), and nothing is written.
+- Hex colours come back uppercased (`#abcdef` → `#ABCDEF`).
+- An unknown key fails GraphQL variable validation (top-level `errors`).
+- After a reset, the read returns empty containers (`designTokens.cornerRadius: { small: null, base: null, large: null }`) where it returned `null` before.
+
+**Write:** the configured JSON is sent as is, only when it differs from state (`# @genqlient(for: "CheckoutAndAccountsConfigurationInput.branding", bind: "encoding/json.RawMessage")`, as in `web_presence.graphql`). Removing a key from config stops managing it; the live value stays, and the docs say to set it to `null` first to reset it. `branding` unset sends nothing.
+
+**Read and drift (pure logic, unit tests first):**
+1. Fetch the live branding with a selection over the whole output type, bound to `json.RawMessage`. The selection is written once from the schema (about 1,250 lines; requested cost 846 for `first: 10`, actual 29).
+2. Normalise it: drop `null` values and objects left empty.
+3. With prior state: build the result from the paths in the state's JSON only. A write-only path keeps the state value; any other path takes the live value (`null` if absent). If every leaf is equal, state keeps its string unchanged; otherwise the projected object is written and the drift shows. Paths not in state are ignored, so admin edits elsewhere don't plan (Review Focus 2).
+4. Without prior state (import, list): the normalised live branding.
+
+Leaf equality: numbers numerically, `#RRGGBB` strings case-insensitively, everything else exactly. The attribute uses a custom string type with semantic equality (`basetypes.StringValuableWithSemanticEquals`, part of the framework, no new dependency), so key order and whitespace never plan. ValidateConfig only checks that the value is a JSON object; Shopify validates keys and values.
+
+**Write-only paths.** Comparing the output and input trees: 846 leaf paths match, and three groups differ. v1 treats them as write-only: never drift-checked, never emitted on import or list. The docs list them.
+- **Images** (7 paths: `components.favicon`, `components.header.logo.image`, `surfaces.{checkout,customerAccounts,signIn}.components.header.logo.image`, `surfaces.checkout.components.header.cartLink.image`, `surfaces.checkout.components.orderSummary.backgroundImage`, `surfaces.signIn.components.main.backgroundImage`). The input takes `{ mediaImageId }`; the output is a union over `Image`, whose `id` isn't a `MediaImage` GID. `TODO(verify)`: whether the media image can be resolved from the read value.
+- **Fonts** (`designTokens.typography.{primary,secondary}`). The input takes `shopifyFontGroup { baseFontHandle boldFontHandle loadingStrategy }` or `customFontGroup { base { weight genericFileId } bold { … } loadingStrategy }`; the output is a union with `name`, `sources` and `weight`, but no handles. `TODO(verify)`: whether the handle can be derived from name and weight.
+- **`components.merchandiseThumbnail.aspectRatio`**: input only.
+
+**Scope of the task:** one task, together with §9e. The pure logic (normalise, project, compare, the write-only list) is a small file with table tests. If it turns out too large, split §9e into "configuration without branding" (lookup, import, identity, list) and "branding", in that order.
+
+**Dev store:** the experiments above were undone by sending `null` for every leaf set. The three original leaves are unchanged. Left behind: three empty containers in the read and new `editedAt`/`updatedAt` timestamps.
 
 ---
 
