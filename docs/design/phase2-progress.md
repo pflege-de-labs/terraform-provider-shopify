@@ -231,3 +231,15 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 16: minor (deferred): no unit case for configured `body = ""`
 - Task 16: minor (deferred): §9m attribute table row for `template_suffix` still says plain UseStateForUnknown
 - Task 16: complete (commits 0bfcf2d..7005d81, review clean)
+- Task 17 (shopify_blog, §9n): dispatched (base 30e52fa, model sonnet)
+- Task 17: implemented d34226e..abc6bf7 (DONE_WITH_CONCERNS: lost-race suffix path only unit-tested via handleDrift; NOT_FOUND-on-delete unit-only; test-only articleCreate/article ops in blog.graphql; controller re-ran checks green); review dispatched (model sonnet)
+- Task 17: review: spec ✅, 1 Important (Pattern B guard fails open on nil articlesCount); fix round 1 dispatched (resume implementer)
+- Task 17: minor (deferred): Create control flow assigns inside if headers (resource.go ~3086-3100), hard to read
+- Task 17: minor (deferred): `removeDuplicate` drops userErrors messages on refused cleanup delete; no unit test; race paths only via handleDrift
+- Task 17: minor (deferred): test-only CreateArticle/GetArticle ops in blog.graphql add ~500 generated lines (reusable by roadmap articles type)
+- Task 17: minor (deferred): §9n spec line says fallback `first: 5`, query uses 25; update the spec line
+- Task 17: fix round 1 implemented (4645fc1: articlesAtRisk fails closed on nil count, TestArticlesAtRisk); scoped re-review dispatched (model haiku)
+- Task 17: fix round 1/5 (1 addressed, 0 open — Pattern B guard fails closed on nil articlesCount; commits abc6bf7..4645fc1)
+- Task 17: re-review concern (empty blog blocked if Shopify returns null for 0) resolved by controller: full blog acceptance suite re-run on 4645fc1, all 7 pass; TestAccBlog_basic destroys an empty blog with allow_data_deletion=false, so an empty blog reads a non-null 0
+- Task 17: minor (deferred): §9n Pattern B text says "above 0" and doesn't describe the nil-count (fail closed) case; summary text changed to "The blog may have articles"
+- Task 17: complete (commits d34226e..4645fc1, review clean after 1 fix round)
