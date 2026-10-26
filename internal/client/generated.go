@@ -4791,6 +4791,59 @@ func (v *DeliveryWeightConditionInput) GetCriteria() *WeightInput { return v.Cri
 // GetOperator returns DeliveryWeightConditionInput.Operator, and is useful for accessing the field via an interface.
 func (v *DeliveryWeightConditionInput) GetOperator() *DeliveryConditionOperator { return v.Operator }
 
+// DisableShopLocaleResponse is returned by DisableShopLocale on success.
+type DisableShopLocaleResponse struct {
+	// Deletes a locale for a shop. This also deletes all translations of this locale.
+	ShopLocaleDisable *DisableShopLocaleShopLocaleDisableShopLocaleDisablePayload `json:"shopLocaleDisable"`
+}
+
+// GetShopLocaleDisable returns DisableShopLocaleResponse.ShopLocaleDisable, and is useful for accessing the field via an interface.
+func (v *DisableShopLocaleResponse) GetShopLocaleDisable() *DisableShopLocaleShopLocaleDisableShopLocaleDisablePayload {
+	return v.ShopLocaleDisable
+}
+
+// DisableShopLocaleShopLocaleDisableShopLocaleDisablePayload includes the requested fields of the GraphQL type ShopLocaleDisablePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `shopLocaleDisable` mutation.
+type DisableShopLocaleShopLocaleDisableShopLocaleDisablePayload struct {
+	// ISO code of the locale that was deleted.
+	Locale *string `json:"locale"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DisableShopLocaleShopLocaleDisableShopLocaleDisablePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetLocale returns DisableShopLocaleShopLocaleDisableShopLocaleDisablePayload.Locale, and is useful for accessing the field via an interface.
+func (v *DisableShopLocaleShopLocaleDisableShopLocaleDisablePayload) GetLocale() *string {
+	return v.Locale
+}
+
+// GetUserErrors returns DisableShopLocaleShopLocaleDisableShopLocaleDisablePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DisableShopLocaleShopLocaleDisableShopLocaleDisablePayload) GetUserErrors() []DisableShopLocaleShopLocaleDisableShopLocaleDisablePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// DisableShopLocaleShopLocaleDisableShopLocaleDisablePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type DisableShopLocaleShopLocaleDisableShopLocaleDisablePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DisableShopLocaleShopLocaleDisableShopLocaleDisablePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DisableShopLocaleShopLocaleDisableShopLocaleDisablePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DisableShopLocaleShopLocaleDisableShopLocaleDisablePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DisableShopLocaleShopLocaleDisableShopLocaleDisablePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
 // EditLocationLocationEditLocationEditPayload includes the requested fields of the GraphQL type LocationEditPayload.
 // The GraphQL type's documentation follows.
 //
@@ -4948,6 +5001,140 @@ type EditLocationResponse struct {
 // GetLocationEdit returns EditLocationResponse.LocationEdit, and is useful for accessing the field via an interface.
 func (v *EditLocationResponse) GetLocationEdit() *EditLocationLocationEditLocationEditPayload {
 	return v.LocationEdit
+}
+
+// EnableShopLocaleResponse is returned by EnableShopLocale on success.
+type EnableShopLocaleResponse struct {
+	// Adds a locale for a shop. The newly added locale is in the unpublished state.
+	ShopLocaleEnable *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayload `json:"shopLocaleEnable"`
+}
+
+// GetShopLocaleEnable returns EnableShopLocaleResponse.ShopLocaleEnable, and is useful for accessing the field via an interface.
+func (v *EnableShopLocaleResponse) GetShopLocaleEnable() *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayload {
+	return v.ShopLocaleEnable
+}
+
+// EnableShopLocaleShopLocaleEnableShopLocaleEnablePayload includes the requested fields of the GraphQL type ShopLocaleEnablePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `shopLocaleEnable` mutation.
+type EnableShopLocaleShopLocaleEnableShopLocaleEnablePayload struct {
+	// ISO code of the locale that was enabled.
+	ShopLocale *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale `json:"shopLocale"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetShopLocale returns EnableShopLocaleShopLocaleEnableShopLocaleEnablePayload.ShopLocale, and is useful for accessing the field via an interface.
+func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayload) GetShopLocale() *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale {
+	return v.ShopLocale
+}
+
+// GetUserErrors returns EnableShopLocaleShopLocaleEnableShopLocaleEnablePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayload) GetUserErrors() []EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale includes the requested fields of the GraphQL type ShopLocale.
+// The GraphQL type's documentation follows.
+//
+// A locale that's been enabled on a shop.
+type EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale struct {
+	ShopLocaleFields `json:"-"`
+}
+
+// GetLocale returns EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale.Locale, and is useful for accessing the field via an interface.
+func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale) GetLocale() string {
+	return v.ShopLocaleFields.Locale
+}
+
+// GetName returns EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale.Name, and is useful for accessing the field via an interface.
+func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale) GetName() string {
+	return v.ShopLocaleFields.Name
+}
+
+// GetPrimary returns EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale.Primary, and is useful for accessing the field via an interface.
+func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale) GetPrimary() bool {
+	return v.ShopLocaleFields.Primary
+}
+
+// GetPublished returns EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale.Published, and is useful for accessing the field via an interface.
+func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale) GetPublished() bool {
+	return v.ShopLocaleFields.Published
+}
+
+func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ShopLocaleFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalEnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale struct {
+	Locale string `json:"locale"`
+
+	Name string `json:"name"`
+
+	Primary bool `json:"primary"`
+
+	Published bool `json:"published"`
+}
+
+func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale) __premarshalJSON() (*__premarshalEnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale, error) {
+	var retval __premarshalEnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadShopLocale
+
+	retval.Locale = v.ShopLocaleFields.Locale
+	retval.Name = v.ShopLocaleFields.Name
+	retval.Primary = v.ShopLocaleFields.Primary
+	retval.Published = v.ShopLocaleFields.Published
+	return &retval, nil
+}
+
+// EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
 }
 
 // FindLocationsLocationsLocationConnection includes the requested fields of the GraphQL type LocationConnection.
@@ -7021,6 +7208,94 @@ type ListMetaobjectDefinitionsResponse struct {
 // GetMetaobjectDefinitions returns ListMetaobjectDefinitionsResponse.MetaobjectDefinitions, and is useful for accessing the field via an interface.
 func (v *ListMetaobjectDefinitionsResponse) GetMetaobjectDefinitions() ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnection {
 	return v.MetaobjectDefinitions
+}
+
+// ListShopLocalesResponse is returned by ListShopLocales on success.
+type ListShopLocalesResponse struct {
+	// Returns the locales enabled on a shop. Each locale represents a language for translations and determines how content displays to customers in different markets.
+	//
+	// Use the optional `published` argument to filter for only the locales that are visible to customers. The response includes the ISO locale code, whether it's the shop's primary locale, and which [`MarketWebPresence`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MarketWebPresence) objects use each locale.
+	ShopLocales []ListShopLocalesShopLocalesShopLocale `json:"shopLocales"`
+}
+
+// GetShopLocales returns ListShopLocalesResponse.ShopLocales, and is useful for accessing the field via an interface.
+func (v *ListShopLocalesResponse) GetShopLocales() []ListShopLocalesShopLocalesShopLocale {
+	return v.ShopLocales
+}
+
+// ListShopLocalesShopLocalesShopLocale includes the requested fields of the GraphQL type ShopLocale.
+// The GraphQL type's documentation follows.
+//
+// A locale that's been enabled on a shop.
+type ListShopLocalesShopLocalesShopLocale struct {
+	ShopLocaleFields `json:"-"`
+}
+
+// GetLocale returns ListShopLocalesShopLocalesShopLocale.Locale, and is useful for accessing the field via an interface.
+func (v *ListShopLocalesShopLocalesShopLocale) GetLocale() string { return v.ShopLocaleFields.Locale }
+
+// GetName returns ListShopLocalesShopLocalesShopLocale.Name, and is useful for accessing the field via an interface.
+func (v *ListShopLocalesShopLocalesShopLocale) GetName() string { return v.ShopLocaleFields.Name }
+
+// GetPrimary returns ListShopLocalesShopLocalesShopLocale.Primary, and is useful for accessing the field via an interface.
+func (v *ListShopLocalesShopLocalesShopLocale) GetPrimary() bool { return v.ShopLocaleFields.Primary }
+
+// GetPublished returns ListShopLocalesShopLocalesShopLocale.Published, and is useful for accessing the field via an interface.
+func (v *ListShopLocalesShopLocalesShopLocale) GetPublished() bool {
+	return v.ShopLocaleFields.Published
+}
+
+func (v *ListShopLocalesShopLocalesShopLocale) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListShopLocalesShopLocalesShopLocale
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListShopLocalesShopLocalesShopLocale = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ShopLocaleFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListShopLocalesShopLocalesShopLocale struct {
+	Locale string `json:"locale"`
+
+	Name string `json:"name"`
+
+	Primary bool `json:"primary"`
+
+	Published bool `json:"published"`
+}
+
+func (v *ListShopLocalesShopLocalesShopLocale) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListShopLocalesShopLocalesShopLocale) __premarshalJSON() (*__premarshalListShopLocalesShopLocalesShopLocale, error) {
+	var retval __premarshalListShopLocalesShopLocalesShopLocale
+
+	retval.Locale = v.ShopLocaleFields.Locale
+	retval.Name = v.ShopLocaleFields.Name
+	retval.Primary = v.ShopLocaleFields.Primary
+	retval.Published = v.ShopLocaleFields.Published
+	return &retval, nil
 }
 
 // ListWebPresencesResponse is returned by ListWebPresences on success.
@@ -10632,6 +10907,47 @@ func (v *ShippingConfigurationUpdateInput) GetOptionDefinitionsToDelete() []stri
 	return v.OptionDefinitionsToDelete
 }
 
+// ShopLocaleFields includes the GraphQL fields of ShopLocale requested by the fragment ShopLocaleFields.
+// The GraphQL type's documentation follows.
+//
+// A locale that's been enabled on a shop.
+type ShopLocaleFields struct {
+	// The locale ISO code.
+	Locale string `json:"locale"`
+	// The human-readable locale name.
+	Name string `json:"name"`
+	// Whether the locale is the default locale for the shop.
+	Primary bool `json:"primary"`
+	// Whether the locale is visible to buyers.
+	Published bool `json:"published"`
+}
+
+// GetLocale returns ShopLocaleFields.Locale, and is useful for accessing the field via an interface.
+func (v *ShopLocaleFields) GetLocale() string { return v.Locale }
+
+// GetName returns ShopLocaleFields.Name, and is useful for accessing the field via an interface.
+func (v *ShopLocaleFields) GetName() string { return v.Name }
+
+// GetPrimary returns ShopLocaleFields.Primary, and is useful for accessing the field via an interface.
+func (v *ShopLocaleFields) GetPrimary() bool { return v.Primary }
+
+// GetPublished returns ShopLocaleFields.Published, and is useful for accessing the field via an interface.
+func (v *ShopLocaleFields) GetPublished() bool { return v.Published }
+
+// The input fields for a shop locale.
+type ShopLocaleInput struct {
+	// Whether the locale is published. Only published locales are visible to the buyer.
+	Published *bool `json:"published,omitempty"`
+	// The market web presences on which the locale should be enabled. Pass in an empty array to remove the locale across all market web presences.
+	MarketWebPresenceIds []string `json:"marketWebPresenceIds,omitempty"`
+}
+
+// GetPublished returns ShopLocaleInput.Published, and is useful for accessing the field via an interface.
+func (v *ShopLocaleInput) GetPublished() *bool { return v.Published }
+
+// GetMarketWebPresenceIds returns ShopLocaleInput.MarketWebPresenceIds, and is useful for accessing the field via an interface.
+func (v *ShopLocaleInput) GetMarketWebPresenceIds() []string { return v.MarketWebPresenceIds }
+
 // UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayload includes the requested fields of the GraphQL type DeliveryProfileUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -11400,6 +11716,140 @@ func (v *UpdateMetaobjectDefinitionResponse) GetMetaobjectDefinitionUpdate() *Up
 	return v.MetaobjectDefinitionUpdate
 }
 
+// UpdateShopLocaleResponse is returned by UpdateShopLocale on success.
+type UpdateShopLocaleResponse struct {
+	// Updates a locale for a shop.
+	ShopLocaleUpdate *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayload `json:"shopLocaleUpdate"`
+}
+
+// GetShopLocaleUpdate returns UpdateShopLocaleResponse.ShopLocaleUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateShopLocaleResponse) GetShopLocaleUpdate() *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayload {
+	return v.ShopLocaleUpdate
+}
+
+// UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayload includes the requested fields of the GraphQL type ShopLocaleUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `shopLocaleUpdate` mutation.
+type UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayload struct {
+	// The locale that was updated.
+	ShopLocale *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale `json:"shopLocale"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetShopLocale returns UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayload.ShopLocale, and is useful for accessing the field via an interface.
+func (v *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayload) GetShopLocale() *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale {
+	return v.ShopLocale
+}
+
+// GetUserErrors returns UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayload) GetUserErrors() []UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale includes the requested fields of the GraphQL type ShopLocale.
+// The GraphQL type's documentation follows.
+//
+// A locale that's been enabled on a shop.
+type UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale struct {
+	ShopLocaleFields `json:"-"`
+}
+
+// GetLocale returns UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale.Locale, and is useful for accessing the field via an interface.
+func (v *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale) GetLocale() string {
+	return v.ShopLocaleFields.Locale
+}
+
+// GetName returns UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale.Name, and is useful for accessing the field via an interface.
+func (v *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale) GetName() string {
+	return v.ShopLocaleFields.Name
+}
+
+// GetPrimary returns UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale.Primary, and is useful for accessing the field via an interface.
+func (v *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale) GetPrimary() bool {
+	return v.ShopLocaleFields.Primary
+}
+
+// GetPublished returns UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale.Published, and is useful for accessing the field via an interface.
+func (v *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale) GetPublished() bool {
+	return v.ShopLocaleFields.Published
+}
+
+func (v *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ShopLocaleFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale struct {
+	Locale string `json:"locale"`
+
+	Name string `json:"name"`
+
+	Primary bool `json:"primary"`
+
+	Published bool `json:"published"`
+}
+
+func (v *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale) __premarshalJSON() (*__premarshalUpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale, error) {
+	var retval __premarshalUpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadShopLocale
+
+	retval.Locale = v.ShopLocaleFields.Locale
+	retval.Name = v.ShopLocaleFields.Name
+	retval.Primary = v.ShopLocaleFields.Primary
+	retval.Published = v.ShopLocaleFields.Published
+	return &retval, nil
+}
+
+// UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateShopLocaleShopLocaleUpdateShopLocaleUpdatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
 // UpdateWebPresenceResponse is returned by UpdateWebPresence on success.
 type UpdateWebPresenceResponse struct {
 	// Updates a web presence.
@@ -11908,6 +12358,14 @@ type __DeleteWebPresenceInput struct {
 // GetId returns __DeleteWebPresenceInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteWebPresenceInput) GetId() string { return v.Id }
 
+// __DisableShopLocaleInput is used internally by genqlient
+type __DisableShopLocaleInput struct {
+	Locale string `json:"locale"`
+}
+
+// GetLocale returns __DisableShopLocaleInput.Locale, and is useful for accessing the field via an interface.
+func (v *__DisableShopLocaleInput) GetLocale() string { return v.Locale }
+
 // __EditLocationInput is used internally by genqlient
 type __EditLocationInput struct {
 	Id    string            `json:"id"`
@@ -11919,6 +12377,14 @@ func (v *__EditLocationInput) GetId() string { return v.Id }
 
 // GetInput returns __EditLocationInput.Input, and is useful for accessing the field via an interface.
 func (v *__EditLocationInput) GetInput() LocationEditInput { return v.Input }
+
+// __EnableShopLocaleInput is used internally by genqlient
+type __EnableShopLocaleInput struct {
+	Locale string `json:"locale"`
+}
+
+// GetLocale returns __EnableShopLocaleInput.Locale, and is useful for accessing the field via an interface.
+func (v *__EnableShopLocaleInput) GetLocale() string { return v.Locale }
 
 // __FindLocationsInput is used internally by genqlient
 type __FindLocationsInput struct {
@@ -12133,6 +12599,18 @@ func (v *__UpdateMetaobjectDefinitionInput) GetId() string { return v.Id }
 func (v *__UpdateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinitionUpdateInput {
 	return v.Definition
 }
+
+// __UpdateShopLocaleInput is used internally by genqlient
+type __UpdateShopLocaleInput struct {
+	Locale string          `json:"locale"`
+	Input  ShopLocaleInput `json:"input"`
+}
+
+// GetLocale returns __UpdateShopLocaleInput.Locale, and is useful for accessing the field via an interface.
+func (v *__UpdateShopLocaleInput) GetLocale() string { return v.Locale }
+
+// GetInput returns __UpdateShopLocaleInput.Input, and is useful for accessing the field via an interface.
+func (v *__UpdateShopLocaleInput) GetInput() ShopLocaleInput { return v.Input }
 
 // __UpdateWebPresenceInput is used internally by genqlient
 type __UpdateWebPresenceInput struct {
@@ -12894,6 +13372,44 @@ func DeleteWebPresence(
 	return data_, err_
 }
 
+// The mutation executed by DisableShopLocale.
+const DisableShopLocale_Operation = `
+mutation DisableShopLocale ($locale: String!) {
+	shopLocaleDisable(locale: $locale) {
+		locale
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DisableShopLocale(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	locale string,
+) (data_ *DisableShopLocaleResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DisableShopLocale",
+		Query:  DisableShopLocale_Operation,
+		Variables: &__DisableShopLocaleInput{
+			Locale: locale,
+		},
+	}
+
+	data_ = &DisableShopLocaleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by EditLocation.
 const EditLocation_Operation = `
 mutation EditLocation ($id: ID!, $input: LocationEditInput!) {
@@ -12941,6 +13457,53 @@ func EditLocation(
 	}
 
 	data_ = &EditLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by EnableShopLocale.
+const EnableShopLocale_Operation = `
+mutation EnableShopLocale ($locale: String!) {
+	shopLocaleEnable(locale: $locale) {
+		shopLocale {
+			... ShopLocaleFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment ShopLocaleFields on ShopLocale {
+	locale
+	name
+	primary
+	published
+}
+`
+
+// marketWebPresenceIds is never sent: shopify_web_presence owns that relation.
+func EnableShopLocale(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	locale string,
+) (data_ *EnableShopLocaleResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "EnableShopLocale",
+		Query:  EnableShopLocale_Operation,
+		Variables: &__EnableShopLocaleInput{
+			Locale: locale,
+		},
+	}
+
+	data_ = &EnableShopLocaleResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -14030,6 +14593,43 @@ func ListMetaobjectDefinitions(
 	return data_, err_
 }
 
+// The query executed by ListShopLocales.
+const ListShopLocales_Operation = `
+query ListShopLocales {
+	shopLocales {
+		... ShopLocaleFields
+	}
+}
+fragment ShopLocaleFields on ShopLocale {
+	locale
+	name
+	primary
+	published
+}
+`
+
+// published: false is the schema default and returns published and unpublished locales; the list has no pagination.
+func ListShopLocales(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *ListShopLocalesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListShopLocales",
+		Query:  ListShopLocales_Operation,
+	}
+
+	data_ = &ListShopLocalesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListWebPresences.
 const ListWebPresences_Operation = `
 query ListWebPresences ($after: String) {
@@ -14410,6 +15010,55 @@ func UpdateMetaobjectDefinition(
 	}
 
 	data_ = &UpdateMetaobjectDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateShopLocale.
+const UpdateShopLocale_Operation = `
+mutation UpdateShopLocale ($locale: String!, $input: ShopLocaleInput!) {
+	shopLocaleUpdate(locale: $locale, shopLocale: $input) {
+		shopLocale {
+			... ShopLocaleFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment ShopLocaleFields on ShopLocale {
+	locale
+	name
+	primary
+	published
+}
+`
+
+// Only published is sent; unset means unmanaged.
+func UpdateShopLocale(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	locale string,
+	input ShopLocaleInput,
+) (data_ *UpdateShopLocaleResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateShopLocale",
+		Query:  UpdateShopLocale_Operation,
+		Variables: &__UpdateShopLocaleInput{
+			Locale: locale,
+			Input:  input,
+		},
+	}
+
+	data_ = &UpdateShopLocaleResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
