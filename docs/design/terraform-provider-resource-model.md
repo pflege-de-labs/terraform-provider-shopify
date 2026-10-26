@@ -52,6 +52,7 @@ provider "shopify" {
 | `shopify_location` | `<name>` (no handle exists; unique among active locations, see §7). A numeric `legacyResourceId` is accepted as fallback |
 | `shopify_delivery_profile` | `<name>`, or `default` for the general profile |
 | `shopify_menu` | `<handle>` |
+| `shopify_shop_locale` | `<locale>`, e.g. `fr` (no GID exists; `id` is the locale code) |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -436,6 +437,54 @@ Notes:
   - `read_markets`: `webPresences { id subfolderSuffix domain { id host } rootUrls { locale url } markets }` works.
   - `write_markets`: `webPresenceCreate`, `webPresenceUpdate` (subfolder suffix change) and `webPresenceDelete` all work.
   - `read_locales` or `read_markets_home`: needed for `defaultLocale` and `alternateLocales` (type `ShopLocale`) and for top-level `shopLocales`. With `read_markets` only, these return "Access denied … Required access: `read_locales` access scope or `read_markets_home` access scope". `rootUrls[].locale` lists the locales but doesn't mark the default, so it can't stand in for them.
+
+---
+
+## 9b. Resource: `shopify_shop_locale`
+
+```hcl
+resource "shopify_shop_locale" "fr" {
+  locale    = "fr"
+  published = true # optional, unset = unmanaged
+}
+
+resource "shopify_web_presence" "ch" {
+  subfolder_suffix  = "ch"
+  default_locale    = "de"
+  alternate_locales = [shopify_shop_locale.fr.locale]
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | Computed, UseStateForUnknown. The locale code: `ShopLocale` is not a `Node` and has no GID |
+| `locale` | string | Required, **RequiresReplace** (no rename; the key of every mutation). ISO code, case-sensitive: `pt-BR` is valid, `pt-br` fails with "Locale is invalid". Not validated locally, Shopify's error is clear |
+| `published` | bool | Optional + Computed, UseStateForUnknown; unset = unmanaged. A new locale starts unpublished |
+| `name` | string | Computed, UseStateForUnknown. English display name (`French`) |
+| `primary` | bool | Computed. True for the shop's primary locale |
+| `adopt_existing` | bool | Pattern A, see below |
+| `allow_data_deletion` | bool | Pattern B, see below |
+
+Import key: the locale code (`fr`, `pt-BR`). Identity `{ id = "fr" }`; the acceptance test checks identity with a locale regex instead of the GID regex. Read lists `shopLocales` (all enabled locales, `published: false` is the default and returns published and unpublished ones) and matches by code. There is no GID, so there is no GID-first lookup and no `MutableIdentity`.
+
+Granularity: one resource per locale. Each locale is enabled, published and disabled on its own, so locales have independent lifecycles.
+
+Notes:
+- Uses `shopLocales`, `shopLocaleEnable`, `shopLocaleUpdate` (only `published`) and `shopLocaleDisable`.
+- **Web presences are not managed here.** `ShopLocaleInput.marketWebPresenceIds` and `shopLocaleEnable(marketWebPresenceIds:)` overlap with `shopify_web_presence.default_locale`/`alternate_locales`. That resource owns the relation; this one never sends `marketWebPresenceIds`, so the two can't fight. A locale must be enabled and published here before a web presence can use it (§9a).
+- **Create:** look the locale up first. If it exists, adopt it with `adopt_existing = true`, otherwise fail (as the API would: "Locale has already been taken"). Then `shopLocaleEnable(locale)` and, if `published` is set and differs from the result, `shopLocaleUpdate`.
+- **Update:** only `published` can change; `shopLocaleUpdate` is called only when it does.
+- **Primary locale (Pattern A, always):** the API can't change or disable it. `ShopLocaleInput` has no primary field, and `shopLocaleUpdate` on it fails with "The primary locale of your store can't be changed through this endpoint." It can only be adopted (`adopt_existing = true`). Its destroy only removes it from state with a warning, regardless of flags; `shopLocaleDisable` is never called for it. Changing the primary locale is an admin task; whether `webPresenceUpdate(defaultLocale:)` on the primary-domain presence does it is `TODO(verify)` and not part of this resource.
+- **Adopted non-primary locale:** with `adopt_existing = true`, destroy only removes it from state with a warning.
+- **Pattern B:** `shopLocaleDisable` "deletes all translations of this locale" (schema). Destroying or replacing a non-adopted, non-primary locale fails unless `allow_data_deletion = true` is in state; ModifyPlan warns when `locale` changes.
+- Unverified: what `shopLocaleDisable` does to a locale that a web presence still uses (`TODO(verify)`). Terraform's dependency order removes it from `shopify_web_presence` first when the config references `shopify_shop_locale.<x>.locale`.
+- Errors come as plain `UserError` (no code), `field = ["locale"]`, mapped to `locale`: "Locale has already been taken", "Locale is invalid", "The locale doesn't exist.", "The primary locale of your store can't be changed through this endpoint." None is retried.
+- **Checked on the dev store (2026-10-26):** enable `fr` → unpublished, `marketWebPresences = []`; enabling again fails as above; `xx` and `pt-br` are invalid, `pt-BR` works; publish, an empty `ShopLocaleInput` (no-op) and unpublish work; unpublishing `en` (primary) fails with the message above; update and disable of a locale that isn't enabled fail with "The locale doesn't exist."; disable works. Not tried: disabling the primary locale.
+- **Fit:** good. Locales change rarely and are configuration.
+- **Scopes:** `read_locales` / `write_locales` (reads and all four operations above work with `write_locales`).
+- **Review Focus 2:** set `published` only in one step and leave it out in another, change it through the client in between: the config without `published` plans empty.
+
+**List:** no config. Lists every enabled locale, the primary included. `DisplayName`: `fr (French)`, primary as `en (English, primary)`. Results carry `locale` and `published`, which pass validation and plan as import-only.
 
 ---
 
