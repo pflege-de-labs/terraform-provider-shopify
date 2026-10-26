@@ -1,10 +1,13 @@
 package privacysettings
 
 import (
+	"context"
 	"reflect"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 )
@@ -197,5 +200,26 @@ func TestConsentErrorPath(t *testing.T) {
 		p, ok := consentErrorPath(tt.code)
 		eq(t, ok, tt.ok, tt.code)
 		eq(t, p, tt.path, tt.code)
+	}
+}
+
+func TestKeepIDUnlessDefault(t *testing.T) {
+	const numeric, sd = "gid://shopify/ConsentPolicy/1", "gid://shopify/ConsentPolicy/SD-DE"
+	tests := []struct {
+		name        string
+		state, plan types.String
+		want        types.String
+	}{
+		{"numeric id is kept", types.StringValue(numeric), types.StringUnknown(), types.StringValue(numeric)},
+		{"system default stays unknown: its first write changes the ID", types.StringValue(sd), types.StringUnknown(), types.StringUnknown()},
+		{"create has no state", types.StringNull(), types.StringUnknown(), types.StringUnknown()},
+		{"a known plan value is left alone", types.StringValue(numeric), types.StringValue("x"), types.StringValue("x")},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp := &planmodifier.StringResponse{PlanValue: tt.plan}
+			keepIDUnlessDefault{}.PlanModifyString(context.Background(), planmodifier.StringRequest{StateValue: tt.state, PlanValue: tt.plan}, resp)
+			eq(t, resp.PlanValue, tt.want)
+		})
 	}
 }
