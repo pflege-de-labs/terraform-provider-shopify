@@ -98,4 +98,19 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 7: fix round 1/5 (1 addressed, 0 open — regional-write side effect now in resource, region_code and list descriptions; commits efa6ce9..5a99542). Controller re-ran `make fmt lint test` (0 issues) + `make generate`: clean.
 - Task 7: minor (deferred): regional side-effect wording claims all countries; only US verified (CA TODO(verify))
 - Task 7: complete (commits 2e77eb6..5a99542, review clean after 1 fix round)
-- Task 8 (checkout and accounts configuration + branding JSON): dispatched (model opus — custom semantic-equality type and JSON projection need judgment)
+- Task 8 (checkout and accounts configuration + branding JSON): dispatched (base 616af0c, model opus — custom semantic-equality type and JSON projection need judgment)
+- Task 8: implemented 616af0c..a90527e (DONE_WITH_CONCERNS: whitespace/key-order of hand-written branding JSON plans one no-op update (semantic equality not applied at plan time; jsonencode avoids it); import into a partial-branding config plans one harmless update; write-only paths unit-tested only; TODO(verify) branding scope, images/fonts read-back, overrides). Review dispatched (opus).
+- Task 8: review: spec ✅, quality Approved, 0 Critical/Important (opus).
+- Task 8: ⚠️ resolved: controller probed `checkoutAndAccountsConfiguration(id:)` with an unknown GID on the dev store: returns `null`, no error, so `getByID`'s gone detection holds. `make fmt lint test` (0 issues) + `make generate`: clean.
+- Task 8: minor (deferred): §9f still says "key order and whitespace never plan" next to the finding that hand-written JSON plans once
+- Task 8: minor (deferred): `branding` description "colours compare case-insensitively" true for drift only; editing config hex case plans one update (resource.go:106)
+- Task 8: minor (deferred): `follows_published` edge case (dropping `name` alone keeps name fallback) only in §9f, not in the `name` description
+- Task 8: minor (deferred): 3-line comment in the GraphQL file before `branding {`
+- Task 8: minor (deferred): `prune` in helpers_test.go mirrors `normalise` (independent oracle; add a comment)
+- Task 8: minor (deferred): a configuration named `published` can't be imported by name (undocumented)
+- Task 8: minor (deferred): transport/throttle errors attached to `branding` attribute (resource.go:307)
+- Task 8: minor (deferred): test style `!= true` (brandingtype_test.go:35)
+- Task 8: complete (commits 616af0c..a90527e, review clean)
+- Task 9: merged into Task 8 (ruling S8-2), nothing separate to do.
+- Step 8 complete on feat/phase2-08-shop-settings.
+- Ruling S9-1: Task 10 data sources mirror the existing resources' schemas as read-only attributes; the implementer writes the model section and code in one dispatch, and the task review checks the section — a data source has no identity, import, list or Pattern A/B, so there are no open design questions to settle before code — costs a rework if the reviewer rejects the schema shape.
