@@ -17,3 +17,6 @@ bindings:
   # HTML is a plain string; policy bodies are stored and returned verbatim.
   HTML:
     type: string
+  # Money is a decimal string without currency; kept as string to avoid float rounding.
+  Money:
+    type: string

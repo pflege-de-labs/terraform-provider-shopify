@@ -322,6 +322,53 @@ func (v *AddLocationResponse) GetLocationAdd() *AddLocationLocationAddLocationAd
 	return v.LocationAdd
 }
 
+// The input fields for barcodes that are associated with a product variant. A variant accepts up to
+// 20 barcodes, and a given variant input can't
+// set both `barcode` and `barcodes`. Refer to the
+// [`ProductVariantBarcode`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariantBarcode)
+// object for how these barcodes are returned.
+type BarcodeInput struct {
+	// The value of the barcode. For example, `9780262033848`. Maximum length: 255 characters.
+	Value string `json:"value"`
+	// The associated standard that the barcode conforms to. Barcode types are validated against their respective format standards. A `null` format denotes no type provided on write and the value is stored as entered.
+	Type *BarcodeType `json:"type"`
+}
+
+// GetValue returns BarcodeInput.Value, and is useful for accessing the field via an interface.
+func (v *BarcodeInput) GetValue() string { return v.Value }
+
+// GetType returns BarcodeInput.Type, and is useful for accessing the field via an interface.
+func (v *BarcodeInput) GetType() *BarcodeType { return v.Type }
+
+// The identifier standard that a barcode value conforms to. A single value can satisfy more than one
+// standard, so declare the standard that the merchant or supplier assigned. If no `BarcodeType` is provided,
+// then no standard was declared and the value is stored as entered.
+type BarcodeType string
+
+const (
+	// Universal Product Code. Used mainly in North America, as a 12-digit UPC-A or an 8-digit UPC-E.
+	BarcodeTypeUpc BarcodeType = "UPC"
+	// International Article Number. Used mainly outside North America, as a 13-digit EAN-13 or an 8-digit EAN-8.
+	BarcodeTypeEan BarcodeType = "EAN"
+	// International Standard Book Number. The 10-digit or 13-digit code assigned to a book. A 13-digit ISBN is also an EAN-13.
+	BarcodeTypeIsbn BarcodeType = "ISBN"
+	// Global Trade Item Number. Accepts 8, 12, 13, and 14-digit codes. Use `GTIN` when the code is registered with GS1. Acceptable formats are GTIN-8, GTIN-12 (UPC) GTIN-13 (EAN) and GTIN-14.
+	BarcodeTypeGtin BarcodeType = "GTIN"
+	// Amazon Standard Identification Number. Assigned by Amazon and unique to its catalog.
+	BarcodeTypeAsin BarcodeType = "ASIN"
+	// Non-standardised manufacturer Product Identifier. A code assigned by the manufacturer or supplier, such as a model or part number, used to identify a product in EU customs declarations. It follows no published standard, so the value is stored as entered.
+	BarcodeTypeNsPid BarcodeType = "NS_PID"
+)
+
+var AllBarcodeType = []BarcodeType{
+	BarcodeTypeUpc,
+	BarcodeTypeEan,
+	BarcodeTypeIsbn,
+	BarcodeTypeGtin,
+	BarcodeTypeAsin,
+	BarcodeTypeNsPid,
+}
+
 // CheckoutAndAccountsConfigurationFields includes the GraphQL fields of CheckoutAndAccountsConfiguration requested by the fragment CheckoutAndAccountsConfigurationFields.
 // The GraphQL type's documentation follows.
 //
@@ -388,6 +435,21 @@ var AllCheckoutAndAccountsConfigurationUserErrorCode = []CheckoutAndAccountsConf
 	CheckoutAndAccountsConfigurationUserErrorCodeMissing,
 	CheckoutAndAccountsConfigurationUserErrorCodeNotFound,
 	CheckoutAndAccountsConfigurationUserErrorCodeTransient,
+}
+
+// The role of the combined listing.
+type CombinedListingsRole string
+
+const (
+	// The product is the parent of a combined listing.
+	CombinedListingsRoleParent CombinedListingsRole = "PARENT"
+	// The product is the child of a combined listing.
+	CombinedListingsRoleChild CombinedListingsRole = "CHILD"
+)
+
+var AllCombinedListingsRole = []CombinedListingsRole{
+	CombinedListingsRoleParent,
+	CombinedListingsRoleChild,
 }
 
 // Possible error codes that can be returned by `ConsentPolicyError`.
@@ -1217,6 +1279,22 @@ var AllCountryCode = []CountryCode{
 	CountryCodeZw,
 	CountryCodeZz,
 }
+
+// The input fields required to specify a harmonized system code.
+type CountryHarmonizedSystemCodeInput struct {
+	// Country specific harmonized system code.
+	HarmonizedSystemCode string `json:"harmonizedSystemCode"`
+	// The ISO 3166-1 alpha-2 country code for the country that issued the specified harmonized system code. Represents global harmonized system code when set to null.
+	CountryCode *CountryCode `json:"countryCode"`
+}
+
+// GetHarmonizedSystemCode returns CountryHarmonizedSystemCodeInput.HarmonizedSystemCode, and is useful for accessing the field via an interface.
+func (v *CountryHarmonizedSystemCodeInput) GetHarmonizedSystemCode() string {
+	return v.HarmonizedSystemCode
+}
+
+// GetCountryCode returns CountryHarmonizedSystemCodeInput.CountryCode, and is useful for accessing the field via an interface.
+func (v *CountryHarmonizedSystemCodeInput) GetCountryCode() *CountryCode { return v.CountryCode }
 
 // CreateMarketMarketCreateMarketCreatePayload includes the requested fields of the GraphQL type MarketCreatePayload.
 // The GraphQL type's documentation follows.
@@ -3000,6 +3078,102 @@ type DeleteMetaobjectDefinitionResponse struct {
 // GetMetaobjectDefinitionDelete returns DeleteMetaobjectDefinitionResponse.MetaobjectDefinitionDelete, and is useful for accessing the field via an interface.
 func (v *DeleteMetaobjectDefinitionResponse) GetMetaobjectDefinitionDelete() *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload {
 	return v.MetaobjectDefinitionDelete
+}
+
+// DeleteProductProductDeleteProductDeletePayload includes the requested fields of the GraphQL type ProductDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `productDelete` mutation.
+type DeleteProductProductDeleteProductDeletePayload struct {
+	// The ID of the deleted product.
+	DeletedProductId *string `json:"deletedProductId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetDeletedProductId returns DeleteProductProductDeleteProductDeletePayload.DeletedProductId, and is useful for accessing the field via an interface.
+func (v *DeleteProductProductDeleteProductDeletePayload) GetDeletedProductId() *string {
+	return v.DeletedProductId
+}
+
+// GetUserErrors returns DeleteProductProductDeleteProductDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteProductProductDeleteProductDeletePayload) GetUserErrors() []DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// DeleteProductResponse is returned by DeleteProduct on success.
+type DeleteProductResponse struct {
+	// Permanently deletes a product and all its associated data, including variants, media, publications, and inventory items.
+	//
+	// Use the `productDelete` mutation to programmatically remove products from your store when they need to be
+	// permanently deleted from your catalog, such as when removing discontinued items, cleaning up test data, or
+	// synchronizing with external inventory management systems.
+	//
+	// The `productDelete` mutation removes the product from all associated collections,
+	// and removes all associated data for the product, including:
+	//
+	// - All product variants and their inventory items
+	// - Product media (images, videos) that are not referenced by other products
+	// - [Product options](https://shopify.dev/api/admin-graphql/latest/objects/ProductOption) and [option values](https://shopify.dev/api/admin-graphql/latest/objects/ProductOptionValue)
+	// - Product publications across all sales channels
+	// - Product tags and metadata associations
+	//
+	// The `productDelete` mutation also has the following effects on existing orders and transactions:
+	//
+	// - **Draft orders**: Existing draft orders that reference this product will retain the product information as stored data, but the product reference will be removed. Draft orders can still be completed with the stored product details.
+	// - **Completed orders and refunds**: Previously completed orders that included this product aren't affected. The product information in completed orders is preserved for record-keeping, and existing refunds for this product remain valid and processable.
+	//
+	// > Caution:
+	// > Product deletion is irreversible. After a product is deleted, it can't be recovered. Consider archiving
+	// > or unpublishing products instead if you might need to restore them later.
+	//
+	// If you need to delete a large product, such as one that has many
+	// [variants](https://shopify.dev/api/admin-graphql/latest/objects/ProductVariant)
+	// that are active at several
+	// [locations](https://shopify.dev/api/admin-graphql/latest/objects/Location),
+	// you might encounter timeout errors. To avoid these timeout errors, you can set the
+	// [`synchronous`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productDelete#arguments-synchronous)
+	// parameter to `false` to run the deletion asynchronously, which returns a
+	// [`ProductDeleteOperation`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductDeleteOperation)
+	// that you can monitor for completion status.
+	//
+	// If you need more granular control over product cleanup, consider using these alternative mutations:
+	//
+	// - [`productUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productUpdate):
+	// Update the product status to archived or unpublished instead of deleting.
+	// - [`productVariantsBulkDelete`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productVariantsBulkDelete):
+	// Delete specific variants while keeping the product.
+	// - [`productOptionsDelete`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productOptionsDelete):
+	// Delete the choices available for a product, such as size, color, or material.
+	//
+	// Learn more about the [product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model).
+	ProductDelete *DeleteProductProductDeleteProductDeletePayload `json:"productDelete"`
+}
+
+// GetProductDelete returns DeleteProductResponse.ProductDelete, and is useful for accessing the field via an interface.
+func (v *DeleteProductResponse) GetProductDelete() *DeleteProductProductDeleteProductDeletePayload {
+	return v.ProductDelete
 }
 
 // DeleteWebPresenceResponse is returned by DeleteWebPresence on success.
@@ -5346,6 +5520,87 @@ func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadUserErrorsUserEr
 	return v.Message
 }
 
+// The possible content types for a file object.
+type FileContentType string
+
+const (
+	// A Shopify-hosted image.
+	FileContentTypeImage FileContentType = "IMAGE"
+	// A Shopify-hosted generic file.
+	FileContentTypeFile FileContentType = "FILE"
+	// A Shopify-hosted video file. It's recommended to use this type for all video files.
+	FileContentTypeVideo FileContentType = "VIDEO"
+	// An externally hosted video.
+	FileContentTypeExternalVideo FileContentType = "EXTERNAL_VIDEO"
+	// A Shopify-hosted 3D model.
+	FileContentTypeModel3d FileContentType = "MODEL_3D"
+)
+
+var AllFileContentType = []FileContentType{
+	FileContentTypeImage,
+	FileContentTypeFile,
+	FileContentTypeVideo,
+	FileContentTypeExternalVideo,
+	FileContentTypeModel3d,
+}
+
+// The input fields for handling if filename is already in use.
+type FileCreateInputDuplicateResolutionMode string
+
+const (
+	// Append a UUID if filename is already in use.
+	FileCreateInputDuplicateResolutionModeAppendUuid FileCreateInputDuplicateResolutionMode = "APPEND_UUID"
+	// Raise an error if filename is already in use.
+	FileCreateInputDuplicateResolutionModeRaiseError FileCreateInputDuplicateResolutionMode = "RAISE_ERROR"
+	// Replace the existing file if filename is already in use.
+	FileCreateInputDuplicateResolutionModeReplace FileCreateInputDuplicateResolutionMode = "REPLACE"
+)
+
+var AllFileCreateInputDuplicateResolutionMode = []FileCreateInputDuplicateResolutionMode{
+	FileCreateInputDuplicateResolutionModeAppendUuid,
+	FileCreateInputDuplicateResolutionModeRaiseError,
+	FileCreateInputDuplicateResolutionModeReplace,
+}
+
+// The input fields required to create or update a file object.
+type FileSetInput struct {
+	// The name of the file. If provided, then the file is created with the specified filename.
+	// If not provided, then the filename from the `originalSource` is used.
+	Filename *string `json:"filename"`
+	// The file content type. If omitted, then Shopify will attempt to determine the content type during file processing.
+	ContentType *FileContentType `json:"contentType"`
+	// The alt text description of the file for screen readers and accessibility.
+	Alt *string `json:"alt"`
+	// How to handle if filename is already in use.
+	DuplicateResolutionMode *FileCreateInputDuplicateResolutionMode `json:"duplicateResolutionMode"`
+	// The ID of an existing file.
+	Id *string `json:"id"`
+	// The source URL of the file. An external URL can be used for images, generic files, or external videos.
+	// Videos and 3D models require a
+	// [staged upload URL](https://shopify.dev/api/admin-graphql/latest/mutations/stageduploadscreate).
+	OriginalSource *string `json:"originalSource"`
+}
+
+// GetFilename returns FileSetInput.Filename, and is useful for accessing the field via an interface.
+func (v *FileSetInput) GetFilename() *string { return v.Filename }
+
+// GetContentType returns FileSetInput.ContentType, and is useful for accessing the field via an interface.
+func (v *FileSetInput) GetContentType() *FileContentType { return v.ContentType }
+
+// GetAlt returns FileSetInput.Alt, and is useful for accessing the field via an interface.
+func (v *FileSetInput) GetAlt() *string { return v.Alt }
+
+// GetDuplicateResolutionMode returns FileSetInput.DuplicateResolutionMode, and is useful for accessing the field via an interface.
+func (v *FileSetInput) GetDuplicateResolutionMode() *FileCreateInputDuplicateResolutionMode {
+	return v.DuplicateResolutionMode
+}
+
+// GetId returns FileSetInput.Id, and is useful for accessing the field via an interface.
+func (v *FileSetInput) GetId() *string { return v.Id }
+
+// GetOriginalSource returns FileSetInput.OriginalSource, and is useful for accessing the field via an interface.
+func (v *FileSetInput) GetOriginalSource() *string { return v.OriginalSource }
+
 // FindLocationsLocationsLocationConnection includes the requested fields of the GraphQL type LocationConnection.
 // The GraphQL type's documentation follows.
 //
@@ -7215,6 +7470,318 @@ type GetPrivacySettingsShop struct {
 // GetId returns GetPrivacySettingsShop.Id, and is useful for accessing the field via an interface.
 func (v *GetPrivacySettingsShop) GetId() string { return v.Id }
 
+// GetProductByHandleProductByIdentifierProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductByHandleProductByIdentifierProduct struct {
+	ProductFields `json:"-"`
+}
+
+// GetId returns GetProductByHandleProductByIdentifierProduct.Id, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetId() string { return v.ProductFields.Id }
+
+// GetHandle returns GetProductByHandleProductByIdentifierProduct.Handle, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetHandle() string {
+	return v.ProductFields.Handle
+}
+
+// GetTitle returns GetProductByHandleProductByIdentifierProduct.Title, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetTitle() string {
+	return v.ProductFields.Title
+}
+
+// GetStatus returns GetProductByHandleProductByIdentifierProduct.Status, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetStatus() ProductStatus {
+	return v.ProductFields.Status
+}
+
+// GetDescriptionHtml returns GetProductByHandleProductByIdentifierProduct.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetDescriptionHtml() string {
+	return v.ProductFields.DescriptionHtml
+}
+
+// GetVendor returns GetProductByHandleProductByIdentifierProduct.Vendor, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetVendor() string {
+	return v.ProductFields.Vendor
+}
+
+// GetProductType returns GetProductByHandleProductByIdentifierProduct.ProductType, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetProductType() string {
+	return v.ProductFields.ProductType
+}
+
+// GetCategory returns GetProductByHandleProductByIdentifierProduct.Category, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetCategory() *ProductFieldsCategoryTaxonomyCategory {
+	return v.ProductFields.Category
+}
+
+// GetTags returns GetProductByHandleProductByIdentifierProduct.Tags, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetTags() []string {
+	return v.ProductFields.Tags
+}
+
+// GetSeo returns GetProductByHandleProductByIdentifierProduct.Seo, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetSeo() ProductFieldsSeoSEO {
+	return v.ProductFields.Seo
+}
+
+// GetTemplateSuffix returns GetProductByHandleProductByIdentifierProduct.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetTemplateSuffix() *string {
+	return v.ProductFields.TemplateSuffix
+}
+
+// GetIsGiftCard returns GetProductByHandleProductByIdentifierProduct.IsGiftCard, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetIsGiftCard() bool {
+	return v.ProductFields.IsGiftCard
+}
+
+func (v *GetProductByHandleProductByIdentifierProduct) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetProductByHandleProductByIdentifierProduct
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetProductByHandleProductByIdentifierProduct = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ProductFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetProductByHandleProductByIdentifierProduct struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Status ProductStatus `json:"status"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	Vendor string `json:"vendor"`
+
+	ProductType string `json:"productType"`
+
+	Category *ProductFieldsCategoryTaxonomyCategory `json:"category"`
+
+	Tags []string `json:"tags"`
+
+	Seo ProductFieldsSeoSEO `json:"seo"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	IsGiftCard bool `json:"isGiftCard"`
+}
+
+func (v *GetProductByHandleProductByIdentifierProduct) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetProductByHandleProductByIdentifierProduct) __premarshalJSON() (*__premarshalGetProductByHandleProductByIdentifierProduct, error) {
+	var retval __premarshalGetProductByHandleProductByIdentifierProduct
+
+	retval.Id = v.ProductFields.Id
+	retval.Handle = v.ProductFields.Handle
+	retval.Title = v.ProductFields.Title
+	retval.Status = v.ProductFields.Status
+	retval.DescriptionHtml = v.ProductFields.DescriptionHtml
+	retval.Vendor = v.ProductFields.Vendor
+	retval.ProductType = v.ProductFields.ProductType
+	retval.Category = v.ProductFields.Category
+	retval.Tags = v.ProductFields.Tags
+	retval.Seo = v.ProductFields.Seo
+	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
+	retval.IsGiftCard = v.ProductFields.IsGiftCard
+	return &retval, nil
+}
+
+// GetProductByHandleResponse is returned by GetProductByHandle on success.
+type GetProductByHandleResponse struct {
+	// Return a product by an identifier.
+	ProductByIdentifier *GetProductByHandleProductByIdentifierProduct `json:"productByIdentifier"`
+}
+
+// GetProductByIdentifier returns GetProductByHandleResponse.ProductByIdentifier, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleResponse) GetProductByIdentifier() *GetProductByHandleProductByIdentifierProduct {
+	return v.ProductByIdentifier
+}
+
+// GetProductProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductProduct struct {
+	ProductFields `json:"-"`
+}
+
+// GetId returns GetProductProduct.Id, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetId() string { return v.ProductFields.Id }
+
+// GetHandle returns GetProductProduct.Handle, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetHandle() string { return v.ProductFields.Handle }
+
+// GetTitle returns GetProductProduct.Title, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetTitle() string { return v.ProductFields.Title }
+
+// GetStatus returns GetProductProduct.Status, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetStatus() ProductStatus { return v.ProductFields.Status }
+
+// GetDescriptionHtml returns GetProductProduct.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetDescriptionHtml() string { return v.ProductFields.DescriptionHtml }
+
+// GetVendor returns GetProductProduct.Vendor, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetVendor() string { return v.ProductFields.Vendor }
+
+// GetProductType returns GetProductProduct.ProductType, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetProductType() string { return v.ProductFields.ProductType }
+
+// GetCategory returns GetProductProduct.Category, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetCategory() *ProductFieldsCategoryTaxonomyCategory {
+	return v.ProductFields.Category
+}
+
+// GetTags returns GetProductProduct.Tags, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetTags() []string { return v.ProductFields.Tags }
+
+// GetSeo returns GetProductProduct.Seo, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetSeo() ProductFieldsSeoSEO { return v.ProductFields.Seo }
+
+// GetTemplateSuffix returns GetProductProduct.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetTemplateSuffix() *string { return v.ProductFields.TemplateSuffix }
+
+// GetIsGiftCard returns GetProductProduct.IsGiftCard, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetIsGiftCard() bool { return v.ProductFields.IsGiftCard }
+
+func (v *GetProductProduct) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetProductProduct
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetProductProduct = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ProductFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetProductProduct struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Status ProductStatus `json:"status"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	Vendor string `json:"vendor"`
+
+	ProductType string `json:"productType"`
+
+	Category *ProductFieldsCategoryTaxonomyCategory `json:"category"`
+
+	Tags []string `json:"tags"`
+
+	Seo ProductFieldsSeoSEO `json:"seo"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	IsGiftCard bool `json:"isGiftCard"`
+}
+
+func (v *GetProductProduct) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetProductProduct) __premarshalJSON() (*__premarshalGetProductProduct, error) {
+	var retval __premarshalGetProductProduct
+
+	retval.Id = v.ProductFields.Id
+	retval.Handle = v.ProductFields.Handle
+	retval.Title = v.ProductFields.Title
+	retval.Status = v.ProductFields.Status
+	retval.DescriptionHtml = v.ProductFields.DescriptionHtml
+	retval.Vendor = v.ProductFields.Vendor
+	retval.ProductType = v.ProductFields.ProductType
+	retval.Category = v.ProductFields.Category
+	retval.Tags = v.ProductFields.Tags
+	retval.Seo = v.ProductFields.Seo
+	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
+	retval.IsGiftCard = v.ProductFields.IsGiftCard
+	return &retval, nil
+}
+
+// GetProductResponse is returned by GetProduct on success.
+type GetProductResponse struct {
+	// Retrieves a [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) by its ID.
+	// A product is an item that a merchant can sell in their store.
+	//
+	// Use the `product` query when you need to:
+	//
+	// - Access essential product data (for example, title, description, price, images, SEO metadata, and metafields).
+	// - Build product detail pages and manage inventory.
+	// - Handle international sales with localized pricing and content.
+	// - Manage product variants and product options.
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Product *GetProductProduct `json:"product"`
+}
+
+// GetProduct returns GetProductResponse.Product, and is useful for accessing the field via an interface.
+func (v *GetProductResponse) GetProduct() *GetProductProduct { return v.Product }
+
 // GetShopResponse is returned by GetShop on success.
 type GetShopResponse struct {
 	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
@@ -7345,6 +7912,90 @@ var AllInclusiveTaxPricingStrategy = []InclusiveTaxPricingStrategy{
 	InclusiveTaxPricingStrategyIncludesTaxesInPrice,
 	InclusiveTaxPricingStrategyIncludesTaxesInPriceBasedOnCountry,
 }
+
+// The input fields for an inventory item.
+type InventoryItemInput struct {
+	// The SKU (stock keeping unit) of the inventory item.
+	Sku *string `json:"sku"`
+	// Unit cost associated with the inventory item, the currency is the shop's default currency.
+	Cost *string `json:"cost"`
+	// Whether the inventory item is tracked.
+	Tracked *bool `json:"tracked"`
+	// The country where the item was manufactured or produced, specified using the standard two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code.
+	CountryCodeOfOrigin *CountryCode `json:"countryCodeOfOrigin"`
+	// The harmonized system code of the inventory item. This must be a number between 6 and 13 digits.
+	HarmonizedSystemCode *string `json:"harmonizedSystemCode"`
+	// List of country-specific harmonized system codes.
+	CountryHarmonizedSystemCodes []CountryHarmonizedSystemCodeInput `json:"countryHarmonizedSystemCodes"`
+	// The province where the item was manufactured or produced, specified using the standard two-letter [ISO 3166-2 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-2) province code.
+	ProvinceCodeOfOrigin *string `json:"provinceCodeOfOrigin"`
+	// The measurements of an inventory item.
+	Measurement *InventoryItemMeasurementInput `json:"measurement"`
+	// Whether the inventory item needs to be physically shipped to the customer. Items that require shipping are physical products, while digital goods and services typically don't require shipping and can be fulfilled electronically.
+	RequiresShipping *bool `json:"requiresShipping"`
+}
+
+// GetSku returns InventoryItemInput.Sku, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetSku() *string { return v.Sku }
+
+// GetCost returns InventoryItemInput.Cost, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetCost() *string { return v.Cost }
+
+// GetTracked returns InventoryItemInput.Tracked, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetTracked() *bool { return v.Tracked }
+
+// GetCountryCodeOfOrigin returns InventoryItemInput.CountryCodeOfOrigin, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetCountryCodeOfOrigin() *CountryCode { return v.CountryCodeOfOrigin }
+
+// GetHarmonizedSystemCode returns InventoryItemInput.HarmonizedSystemCode, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetHarmonizedSystemCode() *string { return v.HarmonizedSystemCode }
+
+// GetCountryHarmonizedSystemCodes returns InventoryItemInput.CountryHarmonizedSystemCodes, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetCountryHarmonizedSystemCodes() []CountryHarmonizedSystemCodeInput {
+	return v.CountryHarmonizedSystemCodes
+}
+
+// GetProvinceCodeOfOrigin returns InventoryItemInput.ProvinceCodeOfOrigin, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetProvinceCodeOfOrigin() *string { return v.ProvinceCodeOfOrigin }
+
+// GetMeasurement returns InventoryItemInput.Measurement, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetMeasurement() *InventoryItemMeasurementInput { return v.Measurement }
+
+// GetRequiresShipping returns InventoryItemInput.RequiresShipping, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetRequiresShipping() *bool { return v.RequiresShipping }
+
+// The input fields for an inventory item measurement.
+type InventoryItemMeasurementInput struct {
+	// The weight of the inventory item.
+	Weight *WeightInput `json:"weight"`
+	// Shipping package associated with inventory item.
+	ShippingPackageId *string `json:"shippingPackageId"`
+}
+
+// GetWeight returns InventoryItemMeasurementInput.Weight, and is useful for accessing the field via an interface.
+func (v *InventoryItemMeasurementInput) GetWeight() *WeightInput { return v.Weight }
+
+// GetShippingPackageId returns InventoryItemMeasurementInput.ShippingPackageId, and is useful for accessing the field via an interface.
+func (v *InventoryItemMeasurementInput) GetShippingPackageId() *string { return v.ShippingPackageId }
+
+// The input fields required to link a product option to a metafield.
+type LinkedMetafieldCreateInput struct {
+	// The namespace of the metafield this option is linked to.
+	Namespace string `json:"namespace"`
+	// The key of the metafield this option is linked to.
+	Key string `json:"key"`
+	// Values associated with the option.
+	Values []string `json:"values"`
+}
+
+// GetNamespace returns LinkedMetafieldCreateInput.Namespace, and is useful for accessing the field via an interface.
+func (v *LinkedMetafieldCreateInput) GetNamespace() string { return v.Namespace }
+
+// GetKey returns LinkedMetafieldCreateInput.Key, and is useful for accessing the field via an interface.
+func (v *LinkedMetafieldCreateInput) GetKey() string { return v.Key }
+
+// GetValues returns LinkedMetafieldCreateInput.Values, and is useful for accessing the field via an interface.
+func (v *LinkedMetafieldCreateInput) GetValues() []string { return v.Values }
 
 // ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection includes the requested fields of the GraphQL type CheckoutAndAccountsConfigurationConnection.
 // The GraphQL type's documentation follows.
@@ -8243,6 +8894,229 @@ type ListMetaobjectDefinitionsResponse struct {
 func (v *ListMetaobjectDefinitionsResponse) GetMetaobjectDefinitions() ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnection {
 	return v.MetaobjectDefinitions
 }
+
+// ListProductsProductsProductConnection includes the requested fields of the GraphQL type ProductConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Products.
+type ListProductsProductsProductConnection struct {
+	// A list of nodes that are contained in ProductEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListProductsProductsProductConnectionNodesProduct `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListProductsProductsProductConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListProductsProductsProductConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnection) GetNodes() []ListProductsProductsProductConnectionNodesProduct {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListProductsProductsProductConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnection) GetPageInfo() ListProductsProductsProductConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListProductsProductsProductConnectionNodesProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type ListProductsProductsProductConnectionNodesProduct struct {
+	ProductFields `json:"-"`
+}
+
+// GetId returns ListProductsProductsProductConnectionNodesProduct.Id, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetId() string { return v.ProductFields.Id }
+
+// GetHandle returns ListProductsProductsProductConnectionNodesProduct.Handle, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetHandle() string {
+	return v.ProductFields.Handle
+}
+
+// GetTitle returns ListProductsProductsProductConnectionNodesProduct.Title, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetTitle() string {
+	return v.ProductFields.Title
+}
+
+// GetStatus returns ListProductsProductsProductConnectionNodesProduct.Status, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetStatus() ProductStatus {
+	return v.ProductFields.Status
+}
+
+// GetDescriptionHtml returns ListProductsProductsProductConnectionNodesProduct.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetDescriptionHtml() string {
+	return v.ProductFields.DescriptionHtml
+}
+
+// GetVendor returns ListProductsProductsProductConnectionNodesProduct.Vendor, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetVendor() string {
+	return v.ProductFields.Vendor
+}
+
+// GetProductType returns ListProductsProductsProductConnectionNodesProduct.ProductType, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetProductType() string {
+	return v.ProductFields.ProductType
+}
+
+// GetCategory returns ListProductsProductsProductConnectionNodesProduct.Category, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetCategory() *ProductFieldsCategoryTaxonomyCategory {
+	return v.ProductFields.Category
+}
+
+// GetTags returns ListProductsProductsProductConnectionNodesProduct.Tags, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetTags() []string {
+	return v.ProductFields.Tags
+}
+
+// GetSeo returns ListProductsProductsProductConnectionNodesProduct.Seo, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetSeo() ProductFieldsSeoSEO {
+	return v.ProductFields.Seo
+}
+
+// GetTemplateSuffix returns ListProductsProductsProductConnectionNodesProduct.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetTemplateSuffix() *string {
+	return v.ProductFields.TemplateSuffix
+}
+
+// GetIsGiftCard returns ListProductsProductsProductConnectionNodesProduct.IsGiftCard, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetIsGiftCard() bool {
+	return v.ProductFields.IsGiftCard
+}
+
+func (v *ListProductsProductsProductConnectionNodesProduct) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListProductsProductsProductConnectionNodesProduct
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListProductsProductsProductConnectionNodesProduct = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ProductFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListProductsProductsProductConnectionNodesProduct struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Status ProductStatus `json:"status"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	Vendor string `json:"vendor"`
+
+	ProductType string `json:"productType"`
+
+	Category *ProductFieldsCategoryTaxonomyCategory `json:"category"`
+
+	Tags []string `json:"tags"`
+
+	Seo ProductFieldsSeoSEO `json:"seo"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	IsGiftCard bool `json:"isGiftCard"`
+}
+
+func (v *ListProductsProductsProductConnectionNodesProduct) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListProductsProductsProductConnectionNodesProduct) __premarshalJSON() (*__premarshalListProductsProductsProductConnectionNodesProduct, error) {
+	var retval __premarshalListProductsProductsProductConnectionNodesProduct
+
+	retval.Id = v.ProductFields.Id
+	retval.Handle = v.ProductFields.Handle
+	retval.Title = v.ProductFields.Title
+	retval.Status = v.ProductFields.Status
+	retval.DescriptionHtml = v.ProductFields.DescriptionHtml
+	retval.Vendor = v.ProductFields.Vendor
+	retval.ProductType = v.ProductFields.ProductType
+	retval.Category = v.ProductFields.Category
+	retval.Tags = v.ProductFields.Tags
+	retval.Seo = v.ProductFields.Seo
+	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
+	retval.IsGiftCard = v.ProductFields.IsGiftCard
+	return &retval, nil
+}
+
+// ListProductsProductsProductConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListProductsProductsProductConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListProductsProductsProductConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ListProductsProductsProductConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
+
+// ListProductsResponse is returned by ListProducts on success.
+type ListProductsResponse struct {
+	// Retrieves a list of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// in a store. Products are the items that merchants can sell in their store.
+	//
+	// Use the `products` query when you need to:
+	//
+	// - Build a browsing interface for a product catalog.
+	// - Create product [searching](https://shopify.dev/docs/api/usage/search-syntax), [sorting](https://shopify.dev/docs/api/admin-graphql/latest/queries/products#arguments-sortKey), and [filtering](https://shopify.dev/docs/api/admin-graphql/latest/queries/products#arguments-query) experiences.
+	// - Implement product recommendations.
+	// - Sync product data with external systems.
+	//
+	// The `products` query supports [pagination](https://shopify.dev/docs/api/usage/pagination-graphql)
+	// to handle large product catalogs and [saved searches](https://shopify.dev/docs/api/admin-graphql/latest/queries/products#arguments-savedSearchId)
+	// for frequently used product queries.
+	//
+	// The `products` query returns products with their associated metadata, including:
+	//
+	// - Basic product information (for example, title, description, vendor, and type)
+	// - Product options and product variants, with their prices and inventory
+	// - Media attachments (for example, images and videos)
+	// - SEO metadata
+	// - Product categories and tags
+	// - Product availability and publishing statuses
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Products ListProductsProductsProductConnection `json:"products"`
+}
+
+// GetProducts returns ListProductsResponse.Products, and is useful for accessing the field via an interface.
+func (v *ListProductsResponse) GetProducts() ListProductsProductsProductConnection { return v.Products }
 
 // ListPublicationsPublicationsPublicationConnection includes the requested fields of the GraphQL type PublicationConnection.
 // The GraphQL type's documentation follows.
@@ -12339,6 +13213,49 @@ func (v *MoneyInput) GetAmount() string { return v.Amount }
 // GetCurrencyCode returns MoneyInput.CurrencyCode, and is useful for accessing the field via an interface.
 func (v *MoneyInput) GetCurrencyCode() CurrencyCode { return v.CurrencyCode }
 
+// The input fields for creating or updating a product option.
+type OptionSetInput struct {
+	// Specifies the product option to update.
+	Id *string `json:"id"`
+	// Name of the option.
+	Name *string `json:"name"`
+	// Position of the option.
+	Position *int `json:"position"`
+	// Value associated with an option.
+	Values []OptionValueSetInput `json:"values"`
+	// Specifies the metafield the option is linked to.
+	LinkedMetafield *LinkedMetafieldCreateInput `json:"linkedMetafield"`
+}
+
+// GetId returns OptionSetInput.Id, and is useful for accessing the field via an interface.
+func (v *OptionSetInput) GetId() *string { return v.Id }
+
+// GetName returns OptionSetInput.Name, and is useful for accessing the field via an interface.
+func (v *OptionSetInput) GetName() *string { return v.Name }
+
+// GetPosition returns OptionSetInput.Position, and is useful for accessing the field via an interface.
+func (v *OptionSetInput) GetPosition() *int { return v.Position }
+
+// GetValues returns OptionSetInput.Values, and is useful for accessing the field via an interface.
+func (v *OptionSetInput) GetValues() []OptionValueSetInput { return v.Values }
+
+// GetLinkedMetafield returns OptionSetInput.LinkedMetafield, and is useful for accessing the field via an interface.
+func (v *OptionSetInput) GetLinkedMetafield() *LinkedMetafieldCreateInput { return v.LinkedMetafield }
+
+// The input fields for creating or updating a product option value.
+type OptionValueSetInput struct {
+	// Specifies the product option value.
+	Id *string `json:"id"`
+	// Value associated with an option.
+	Name *string `json:"name"`
+}
+
+// GetId returns OptionValueSetInput.Id, and is useful for accessing the field via an interface.
+func (v *OptionValueSetInput) GetId() *string { return v.Id }
+
+// GetName returns OptionValueSetInput.Name, and is useful for accessing the field via an interface.
+func (v *OptionValueSetInput) GetName() *string { return v.Name }
+
 // A country code from the `ISO 3166` standard. e.g. `CA` for Canada.
 type PrivacyCountryCode string
 
@@ -13143,6 +14060,885 @@ var AllPrivacyFeaturesEnum = []PrivacyFeaturesEnum{
 	PrivacyFeaturesEnumPrivacyPolicy,
 }
 
+// The input fields to claim ownership for Product features such as Bundles.
+type ProductClaimOwnershipInput struct {
+	// Claiming ownership of bundles lets the app render a custom UI for the bundles' card on the
+	// products details page in the Shopify admin.
+	//
+	// Bundle ownership can only be claimed when creating the product. If you create `ProductVariantComponents`
+	// in any of its product variants, then the bundle ownership is automatically assigned to the app making the call.
+	//
+	// [Learn more](https://shopify.dev/docs/apps/selling-strategies/bundles/product-config).
+	Bundles *bool `json:"bundles"`
+}
+
+// GetBundles returns ProductClaimOwnershipInput.Bundles, and is useful for accessing the field via an interface.
+func (v *ProductClaimOwnershipInput) GetBundles() *bool { return v.Bundles }
+
+// ProductFields includes the GraphQL fields of Product requested by the fragment ProductFields.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type ProductFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A unique, human-readable string of the product's title. A handle can contain letters, hyphens (`-`), and numbers, but no spaces.
+	// The handle is used in the online store URL for the product.
+	Handle string `json:"handle"`
+	// The name for the product that displays to customers. The title is used to construct the product's handle.
+	// For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
+	Title string `json:"title"`
+	// The [product status](https://help.shopify.com/manual/products/details/product-details-page#product-status),
+	// which controls visibility across all sales channels.
+	Status ProductStatus `json:"status"`
+	// The description of the product, with
+	// HTML tags. For example, the description might include
+	// bold `<strong></strong>` and italic `<i></i>` text.
+	DescriptionHtml string `json:"descriptionHtml"`
+	// The name of the product's vendor.
+	Vendor string `json:"vendor"`
+	// The [product type](https://help.shopify.com/manual/products/details/product-type)
+	// that merchants define.
+	ProductType string `json:"productType"`
+	// The category of a product
+	// from [Shopify's Standard Product Taxonomy](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17).
+	Category *ProductFieldsCategoryTaxonomyCategory `json:"category"`
+	// A comma-separated list of searchable keywords that are
+	// associated with the product. For example, a merchant might apply the `sports`
+	// and `summer` tags to products that are associated with sportwear for summer.
+	//
+	// Updating `tags` overwrites
+	// any existing tags that were previously added to the product. To add new tags without overwriting
+	// existing tags, use the [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// mutation.
+	Tags []string `json:"tags"`
+	// The [SEO title and description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
+	// that are associated with a product.
+	Seo ProductFieldsSeoSEO `json:"seo"`
+	// The [theme template](https://shopify.dev/docs/storefronts/themes/architecture/templates) that's used when customers view the product in a store.
+	TemplateSuffix *string `json:"templateSuffix"`
+	// Whether the product is a gift card.
+	IsGiftCard bool `json:"isGiftCard"`
+}
+
+// GetId returns ProductFields.Id, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetId() string { return v.Id }
+
+// GetHandle returns ProductFields.Handle, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetHandle() string { return v.Handle }
+
+// GetTitle returns ProductFields.Title, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetTitle() string { return v.Title }
+
+// GetStatus returns ProductFields.Status, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetStatus() ProductStatus { return v.Status }
+
+// GetDescriptionHtml returns ProductFields.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetDescriptionHtml() string { return v.DescriptionHtml }
+
+// GetVendor returns ProductFields.Vendor, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetVendor() string { return v.Vendor }
+
+// GetProductType returns ProductFields.ProductType, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetProductType() string { return v.ProductType }
+
+// GetCategory returns ProductFields.Category, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetCategory() *ProductFieldsCategoryTaxonomyCategory { return v.Category }
+
+// GetTags returns ProductFields.Tags, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetTags() []string { return v.Tags }
+
+// GetSeo returns ProductFields.Seo, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetSeo() ProductFieldsSeoSEO { return v.Seo }
+
+// GetTemplateSuffix returns ProductFields.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetIsGiftCard returns ProductFields.IsGiftCard, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetIsGiftCard() bool { return v.IsGiftCard }
+
+// ProductFieldsCategoryTaxonomyCategory includes the requested fields of the GraphQL type TaxonomyCategory.
+// The GraphQL type's documentation follows.
+//
+// A product category within Shopify's [standardized product taxonomy](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17). Provides hierarchical organization through parent-child relationships, with each category tracking its ancestors, children, and level in the taxonomy tree.
+//
+// Categories include attributes specific to their product type and navigation properties like whether they're root, leaf, or archived categories. The taxonomy enables consistent product classification across Shopify and integrated marketplaces.
+type ProductFieldsCategoryTaxonomyCategory struct {
+	// The globally-unique ID of the TaxonomyCategory.
+	Id string `json:"id"`
+}
+
+// GetId returns ProductFieldsCategoryTaxonomyCategory.Id, and is useful for accessing the field via an interface.
+func (v *ProductFieldsCategoryTaxonomyCategory) GetId() string { return v.Id }
+
+// ProductFieldsSeoSEO includes the requested fields of the GraphQL type SEO.
+// The GraphQL type's documentation follows.
+//
+// SEO information.
+type ProductFieldsSeoSEO struct {
+	// SEO Title.
+	Title *string `json:"title"`
+	// SEO Description.
+	Description *string `json:"description"`
+}
+
+// GetTitle returns ProductFieldsSeoSEO.Title, and is useful for accessing the field via an interface.
+func (v *ProductFieldsSeoSEO) GetTitle() *string { return v.Title }
+
+// GetDescription returns ProductFieldsSeoSEO.Description, and is useful for accessing the field via an interface.
+func (v *ProductFieldsSeoSEO) GetDescription() *string { return v.Description }
+
+// The input fields required to identify a resource.
+type ProductSetIdentifiers struct {
+	// ID of product to update.
+	Id *string `json:"id,omitempty"`
+	// Handle of product to upsert.
+	Handle *string `json:"handle,omitempty"`
+	// Custom ID of product to upsert.
+	CustomId *UniqueMetafieldValueInput `json:"customId,omitempty"`
+}
+
+// GetId returns ProductSetIdentifiers.Id, and is useful for accessing the field via an interface.
+func (v *ProductSetIdentifiers) GetId() *string { return v.Id }
+
+// GetHandle returns ProductSetIdentifiers.Handle, and is useful for accessing the field via an interface.
+func (v *ProductSetIdentifiers) GetHandle() *string { return v.Handle }
+
+// GetCustomId returns ProductSetIdentifiers.CustomId, and is useful for accessing the field via an interface.
+func (v *ProductSetIdentifiers) GetCustomId() *UniqueMetafieldValueInput { return v.CustomId }
+
+// The input fields required to create or update a product via ProductSet mutation.
+type ProductSetInput struct {
+	// The description of the product, with HTML tags.
+	// For example, the description might include bold `<strong></strong>` and italic `<i></i>` text.
+	DescriptionHtml *string `json:"descriptionHtml,omitempty"`
+	// A unique, human-readable string that's used to identify the product in URLs. A handle can contain letters, hyphens (`-`), and numbers, but no spaces.
+	// If no handle is explicitly provided, then the title is used to construct the product's handle.
+	// For example, if a product is titled "Black Sunglasses" and no handle is provided, then the handle `black-sunglasses` is generated (unless that handle
+	// is already taken, in which case a suffix is added to make the handle unique).
+	Handle *string `json:"handle,omitempty"`
+	// The [SEO title and description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
+	// that are associated with a product.
+	Seo *SEOInput `json:"seo,omitempty"`
+	// The [product type](https://help.shopify.com/manual/products/details/product-type)
+	// that merchants define.
+	ProductType *string `json:"productType,omitempty"`
+	// A list of searchable keywords that are
+	// associated with the product. For example, a merchant might apply the `sports`
+	// and `summer` tags to products that are associated with sportwear for summer.
+	//
+	// Updating `tags` overwrites any existing tags that were previously added to the product.
+	// To add new tags without overwriting existing tags, use the
+	// [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// mutation.
+	Tags json.RawMessage `json:"tags,omitempty"`
+	// The [theme template](https://shopify.dev/docs/storefronts/themes/architecture/templates) that's used when customers view a product in a store.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// The [theme template](https://shopify.dev/docs/storefronts/themes/architecture/templates) that's used when customers view a gift card in a store.
+	GiftCardTemplateSuffix *string `json:"giftCardTemplateSuffix,omitempty"`
+	// The name for the product that displays to customers. If no handle is explicitly provided, then the title is used to construct the product's handle.
+	// For example, if a product is titled "Black Sunglasses" and no handle is provided, then the handle `black-sunglasses` is generated.
+	Title *string `json:"title,omitempty"`
+	// The name of the product's vendor.
+	Vendor *string `json:"vendor,omitempty"`
+	// The ID of the [category](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17)
+	// that's associated with the product.
+	Category *string `json:"category,omitempty"`
+	// Whether the product is a gift card.
+	GiftCard *bool `json:"giftCard,omitempty"`
+	// Whether a redirect is required after a new handle has been provided.
+	// If `true`, then the old handle is redirected to the new one automatically.
+	RedirectNewHandle *bool `json:"redirectNewHandle,omitempty"`
+	// The status of the product.
+	Status *ProductStatus `json:"status,omitempty"`
+	// The IDs of collections that this product will be a member of.
+	Collections []string `json:"collections,omitempty"`
+	// The metafields to associate with this product.
+	//
+	// Complexity cost: 0.4 per metafield.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// The files to associate with the product.
+	//
+	// Complexity cost: 1.9 per file.
+	Files []FileSetInput `json:"files,omitempty"`
+	// List of custom product options and option values (maximum of 3 per product).
+	ProductOptions []OptionSetInput `json:"productOptions,omitempty"`
+	// A list of variants associated with the product.
+	//
+	// Complexity cost: 0.2 per variant.
+	Variants []ProductVariantSetInput `json:"variants,omitempty"`
+	// Whether the product can only be purchased with a selling plan (subscription). Products that are sold exclusively on subscription can only be created on online stores. If set to `true` on an already existing product, then the product will be marked unavailable on channels that don't support subscriptions.
+	RequiresSellingPlan *bool `json:"requiresSellingPlan,omitempty"`
+	// The input field to enable an app to provide additional product features.
+	// For example, you can specify
+	// [`bundles: true`](https://shopify.dev/docs/api/admin-graphql/latest/input-objects/ProductClaimOwnershipInput#field-bundles)
+	// in the `claimOwnership` field to let an app add a
+	// [product configuration extension](https://shopify.dev/docs/apps/build/product-merchandising/bundles/product-configuration-extension/add-merchant-config-ui).
+	ClaimOwnership *ProductClaimOwnershipInput `json:"claimOwnership,omitempty"`
+	// The role of the product in a product grouping. It can only be set during creation.
+	CombinedListingRole *CombinedListingsRole `json:"combinedListingRole,omitempty"`
+}
+
+// GetDescriptionHtml returns ProductSetInput.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetDescriptionHtml() *string { return v.DescriptionHtml }
+
+// GetHandle returns ProductSetInput.Handle, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetHandle() *string { return v.Handle }
+
+// GetSeo returns ProductSetInput.Seo, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetSeo() *SEOInput { return v.Seo }
+
+// GetProductType returns ProductSetInput.ProductType, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetProductType() *string { return v.ProductType }
+
+// GetTags returns ProductSetInput.Tags, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetTags() json.RawMessage { return v.Tags }
+
+// GetTemplateSuffix returns ProductSetInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetGiftCardTemplateSuffix returns ProductSetInput.GiftCardTemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetGiftCardTemplateSuffix() *string { return v.GiftCardTemplateSuffix }
+
+// GetTitle returns ProductSetInput.Title, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetTitle() *string { return v.Title }
+
+// GetVendor returns ProductSetInput.Vendor, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetVendor() *string { return v.Vendor }
+
+// GetCategory returns ProductSetInput.Category, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetCategory() *string { return v.Category }
+
+// GetGiftCard returns ProductSetInput.GiftCard, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetGiftCard() *bool { return v.GiftCard }
+
+// GetRedirectNewHandle returns ProductSetInput.RedirectNewHandle, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetRedirectNewHandle() *bool { return v.RedirectNewHandle }
+
+// GetStatus returns ProductSetInput.Status, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetStatus() *ProductStatus { return v.Status }
+
+// GetCollections returns ProductSetInput.Collections, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetCollections() []string { return v.Collections }
+
+// GetMetafields returns ProductSetInput.Metafields, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetFiles returns ProductSetInput.Files, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetFiles() []FileSetInput { return v.Files }
+
+// GetProductOptions returns ProductSetInput.ProductOptions, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetProductOptions() []OptionSetInput { return v.ProductOptions }
+
+// GetVariants returns ProductSetInput.Variants, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetVariants() []ProductVariantSetInput { return v.Variants }
+
+// GetRequiresSellingPlan returns ProductSetInput.RequiresSellingPlan, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetRequiresSellingPlan() *bool { return v.RequiresSellingPlan }
+
+// GetClaimOwnership returns ProductSetInput.ClaimOwnership, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetClaimOwnership() *ProductClaimOwnershipInput { return v.ClaimOwnership }
+
+// GetCombinedListingRole returns ProductSetInput.CombinedListingRole, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetCombinedListingRole() *CombinedListingsRole {
+	return v.CombinedListingRole
+}
+
+// The input fields required to set inventory quantities using `productSet` mutation.
+type ProductSetInventoryInput struct {
+	// The ID of the location of the inventory quantity being set.
+	LocationId string `json:"locationId"`
+	// The name of the inventory quantity being set. Must be one of `available` or `on_hand`.
+	Name string `json:"name"`
+	// The values to which each quantities will be set.
+	Quantity int `json:"quantity"`
+}
+
+// GetLocationId returns ProductSetInventoryInput.LocationId, and is useful for accessing the field via an interface.
+func (v *ProductSetInventoryInput) GetLocationId() string { return v.LocationId }
+
+// GetName returns ProductSetInventoryInput.Name, and is useful for accessing the field via an interface.
+func (v *ProductSetInventoryInput) GetName() string { return v.Name }
+
+// GetQuantity returns ProductSetInventoryInput.Quantity, and is useful for accessing the field via an interface.
+func (v *ProductSetInventoryInput) GetQuantity() int { return v.Quantity }
+
+// Possible error codes that can be returned by `ProductSetUserError`.
+type ProductSetUserErrorCode string
+
+const (
+	// The id field is not allowed if identifier is provided.
+	ProductSetUserErrorCodeIdNotAllowed ProductSetUserErrorCode = "ID_NOT_ALLOWED"
+	// The input field corresponding to the identifier is required.
+	ProductSetUserErrorCodeMissingFieldRequired ProductSetUserErrorCode = "MISSING_FIELD_REQUIRED"
+	// The identifier value does not match the value of the corresponding field in the input.
+	ProductSetUserErrorCodeInputMismatch ProductSetUserErrorCode = "INPUT_MISMATCH"
+	// Resource matching the identifier was not found.
+	ProductSetUserErrorCodeNotFound ProductSetUserErrorCode = "NOT_FOUND"
+	// The input argument `metafields` (if present) must contain the `customId` value.
+	ProductSetUserErrorCodeMetafieldMismatch ProductSetUserErrorCode = "METAFIELD_MISMATCH"
+	// Something went wrong, please try again.
+	ProductSetUserErrorCodeGenericError ProductSetUserErrorCode = "GENERIC_ERROR"
+	// Metafield is not valid.
+	ProductSetUserErrorCodeInvalidMetafield ProductSetUserErrorCode = "INVALID_METAFIELD"
+	// Product variant is not valid.
+	ProductSetUserErrorCodeInvalidVariant ProductSetUserErrorCode = "INVALID_VARIANT"
+	// Product does not exist.
+	ProductSetUserErrorCodeProductDoesNotExist ProductSetUserErrorCode = "PRODUCT_DOES_NOT_EXIST"
+	// Product is suspended.
+	ProductSetUserErrorCodeProductSuspended ProductSetUserErrorCode = "PRODUCT_SUSPENDED"
+	// Product variant does not exist.
+	ProductSetUserErrorCodeProductVariantDoesNotExist ProductSetUserErrorCode = "PRODUCT_VARIANT_DOES_NOT_EXIST"
+	// Option does not exist.
+	ProductSetUserErrorCodeOptionDoesNotExist ProductSetUserErrorCode = "OPTION_DOES_NOT_EXIST"
+	// Option value does not exist.
+	ProductSetUserErrorCodeOptionValueDoesNotExist ProductSetUserErrorCode = "OPTION_VALUE_DOES_NOT_EXIST"
+	// Options over limit.
+	ProductSetUserErrorCodeOptionsOverLimit ProductSetUserErrorCode = "OPTIONS_OVER_LIMIT"
+	// Option values over limit.
+	ProductSetUserErrorCodeOptionValuesOverLimit ProductSetUserErrorCode = "OPTION_VALUES_OVER_LIMIT"
+	// Each option must have at least one option value specified.
+	ProductSetUserErrorCodeOptionValuesMissing ProductSetUserErrorCode = "OPTION_VALUES_MISSING"
+	// Duplicated option name.
+	ProductSetUserErrorCodeDuplicatedOptionName ProductSetUserErrorCode = "DUPLICATED_OPTION_NAME"
+	// Duplicated option value.
+	ProductSetUserErrorCodeDuplicatedOptionValue ProductSetUserErrorCode = "DUPLICATED_OPTION_VALUE"
+	// Number of product variants exceeds shop limit.
+	ProductSetUserErrorCodeVariantsOverLimit ProductSetUserErrorCode = "VARIANTS_OVER_LIMIT"
+	// Must specify product options when updating variants.
+	ProductSetUserErrorCodeProductOptionsInputMissing ProductSetUserErrorCode = "PRODUCT_OPTIONS_INPUT_MISSING"
+	// Must specify variants when updating options.
+	ProductSetUserErrorCodeVariantsInputMissing ProductSetUserErrorCode = "VARIANTS_INPUT_MISSING"
+	// Gift card products can only be created after they have been activated.
+	ProductSetUserErrorCodeGiftCardsNotActivated ProductSetUserErrorCode = "GIFT_CARDS_NOT_ACTIVATED"
+	// The product gift_card attribute cannot be changed after creation.
+	ProductSetUserErrorCodeGiftCardAttributeCannotBeChanged ProductSetUserErrorCode = "GIFT_CARD_ATTRIBUTE_CANNOT_BE_CHANGED"
+	// Product is not valid.
+	ProductSetUserErrorCodeInvalidProduct ProductSetUserErrorCode = "INVALID_PRODUCT"
+	// Input is not valid.
+	ProductSetUserErrorCodeInvalidInput ProductSetUserErrorCode = "INVALID_INPUT"
+	// Error processing request in the background job.
+	ProductSetUserErrorCodeJobError ProductSetUserErrorCode = "JOB_ERROR"
+	// The metafield violates a capability restriction.
+	ProductSetUserErrorCodeCapabilityViolation ProductSetUserErrorCode = "CAPABILITY_VIOLATION"
+	// An option cannot have both metafield linked and nonlinked option values.
+	ProductSetUserErrorCodeCannotCombineLinkedAndNonlinkedOptionValues ProductSetUserErrorCode = "CANNOT_COMBINE_LINKED_AND_NONLINKED_OPTION_VALUES"
+	// Invalid metafield value for linked option.
+	ProductSetUserErrorCodeInvalidMetafieldValueForLinkedOption ProductSetUserErrorCode = "INVALID_METAFIELD_VALUE_FOR_LINKED_OPTION"
+	// Cannot link multiple options to the same metafield.
+	ProductSetUserErrorCodeDuplicateLinkedOption ProductSetUserErrorCode = "DUPLICATE_LINKED_OPTION"
+	// Duplicated metafield value for linked option.
+	ProductSetUserErrorCodeDuplicatedMetafieldValue ProductSetUserErrorCode = "DUPLICATED_METAFIELD_VALUE"
+	// Linked options are currently not supported for this shop.
+	ProductSetUserErrorCodeLinkedOptionsNotSupportedForShop ProductSetUserErrorCode = "LINKED_OPTIONS_NOT_SUPPORTED_FOR_SHOP"
+	// No valid metafield definition found for linked option.
+	ProductSetUserErrorCodeLinkedMetafieldDefinitionNotFound ProductSetUserErrorCode = "LINKED_METAFIELD_DEFINITION_NOT_FOUND"
+	// Duplicated value.
+	ProductSetUserErrorCodeDuplicatedValue ProductSetUserErrorCode = "DUPLICATED_VALUE"
+	// Handle already in use. Please provide a new handle.
+	ProductSetUserErrorCodeHandleNotUnique ProductSetUserErrorCode = "HANDLE_NOT_UNIQUE"
+	// Cannot provide both 'barcode' and 'barcodes' for the same variant.
+	ProductSetUserErrorCodeIncompatibleBarcodeFields ProductSetUserErrorCode = "INCOMPATIBLE_BARCODE_FIELDS"
+	// Barcode value cannot be blank.
+	ProductSetUserErrorCodeBlankBarcodeValue ProductSetUserErrorCode = "BLANK_BARCODE_VALUE"
+	// Can only specify a maximum of 20 barcodes per variant.
+	ProductSetUserErrorCodeTooManyBarcodes ProductSetUserErrorCode = "TOO_MANY_BARCODES"
+	// Barcode value is too long.
+	ProductSetUserErrorCodeBarcodeValueTooLong ProductSetUserErrorCode = "BARCODE_VALUE_TOO_LONG"
+	// Duplicate barcode value within the same variant.
+	ProductSetUserErrorCodeDuplicateBarcodeValue ProductSetUserErrorCode = "DUPLICATE_BARCODE_VALUE"
+	// Barcode type is not supported. Allowed barcode types are: upc, ean, isbn, gtin, asin, ns-pid.
+	ProductSetUserErrorCodeInvalidBarcodeType ProductSetUserErrorCode = "INVALID_BARCODE_TYPE"
+	// Barcode value contains invalid spaces or hyphens for its type.
+	ProductSetUserErrorCodeInvalidBarcodeSeparators ProductSetUserErrorCode = "INVALID_BARCODE_SEPARATORS"
+	// Barcode value has an invalid length for its type.
+	ProductSetUserErrorCodeInvalidBarcodeLength ProductSetUserErrorCode = "INVALID_BARCODE_LENGTH"
+	// Barcode value has an invalid prefix for its type.
+	ProductSetUserErrorCodeInvalidBarcodePrefix ProductSetUserErrorCode = "INVALID_BARCODE_PREFIX"
+	// Barcode value contains invalid characters for its type.
+	ProductSetUserErrorCodeInvalidBarcodeCharacters ProductSetUserErrorCode = "INVALID_BARCODE_CHARACTERS"
+	// Barcode checksum validation failed.
+	ProductSetUserErrorCodeBarcodeChecksumValidationFailed ProductSetUserErrorCode = "BARCODE_CHECKSUM_VALIDATION_FAILED"
+	// Inventory quantity input exceeds the limit of 50000. Consider using separate `inventorySetQuantities` mutations.
+	ProductSetUserErrorCodeInventoryQuantitiesLimitExceeded ProductSetUserErrorCode = "INVENTORY_QUANTITIES_LIMIT_EXCEEDED"
+)
+
+var AllProductSetUserErrorCode = []ProductSetUserErrorCode{
+	ProductSetUserErrorCodeIdNotAllowed,
+	ProductSetUserErrorCodeMissingFieldRequired,
+	ProductSetUserErrorCodeInputMismatch,
+	ProductSetUserErrorCodeNotFound,
+	ProductSetUserErrorCodeMetafieldMismatch,
+	ProductSetUserErrorCodeGenericError,
+	ProductSetUserErrorCodeInvalidMetafield,
+	ProductSetUserErrorCodeInvalidVariant,
+	ProductSetUserErrorCodeProductDoesNotExist,
+	ProductSetUserErrorCodeProductSuspended,
+	ProductSetUserErrorCodeProductVariantDoesNotExist,
+	ProductSetUserErrorCodeOptionDoesNotExist,
+	ProductSetUserErrorCodeOptionValueDoesNotExist,
+	ProductSetUserErrorCodeOptionsOverLimit,
+	ProductSetUserErrorCodeOptionValuesOverLimit,
+	ProductSetUserErrorCodeOptionValuesMissing,
+	ProductSetUserErrorCodeDuplicatedOptionName,
+	ProductSetUserErrorCodeDuplicatedOptionValue,
+	ProductSetUserErrorCodeVariantsOverLimit,
+	ProductSetUserErrorCodeProductOptionsInputMissing,
+	ProductSetUserErrorCodeVariantsInputMissing,
+	ProductSetUserErrorCodeGiftCardsNotActivated,
+	ProductSetUserErrorCodeGiftCardAttributeCannotBeChanged,
+	ProductSetUserErrorCodeInvalidProduct,
+	ProductSetUserErrorCodeInvalidInput,
+	ProductSetUserErrorCodeJobError,
+	ProductSetUserErrorCodeCapabilityViolation,
+	ProductSetUserErrorCodeCannotCombineLinkedAndNonlinkedOptionValues,
+	ProductSetUserErrorCodeInvalidMetafieldValueForLinkedOption,
+	ProductSetUserErrorCodeDuplicateLinkedOption,
+	ProductSetUserErrorCodeDuplicatedMetafieldValue,
+	ProductSetUserErrorCodeLinkedOptionsNotSupportedForShop,
+	ProductSetUserErrorCodeLinkedMetafieldDefinitionNotFound,
+	ProductSetUserErrorCodeDuplicatedValue,
+	ProductSetUserErrorCodeHandleNotUnique,
+	ProductSetUserErrorCodeIncompatibleBarcodeFields,
+	ProductSetUserErrorCodeBlankBarcodeValue,
+	ProductSetUserErrorCodeTooManyBarcodes,
+	ProductSetUserErrorCodeBarcodeValueTooLong,
+	ProductSetUserErrorCodeDuplicateBarcodeValue,
+	ProductSetUserErrorCodeInvalidBarcodeType,
+	ProductSetUserErrorCodeInvalidBarcodeSeparators,
+	ProductSetUserErrorCodeInvalidBarcodeLength,
+	ProductSetUserErrorCodeInvalidBarcodePrefix,
+	ProductSetUserErrorCodeInvalidBarcodeCharacters,
+	ProductSetUserErrorCodeBarcodeChecksumValidationFailed,
+	ProductSetUserErrorCodeInventoryQuantitiesLimitExceeded,
+}
+
+// The possible product statuses.
+type ProductStatus string
+
+const (
+	// The product is ready to sell and can be published to sales channels and apps. Products with an active status aren't automatically published to sales channels, such as the online store, or apps. By default, existing products are set to active.
+	ProductStatusActive ProductStatus = "ACTIVE"
+	// The product is no longer being sold and isn't available to customers on sales channels and apps.
+	ProductStatusArchived ProductStatus = "ARCHIVED"
+	// The product isn't ready to sell and is unavailable to customers on sales channels and apps. By default, duplicated and unarchived products are set to draft.
+	ProductStatusDraft ProductStatus = "DRAFT"
+	// The product is active but you need a direct link to view it. The product doesn't show up in search, collections, or product recommendations. It will be returned in Storefront API and Liquid only when referenced individually by handle, id, or metafield reference.This status is only visible from 2025-10 and up, is translated to active in older versions and can't be changed from unlisted in older versions.
+	ProductStatusUnlisted ProductStatus = "UNLISTED"
+)
+
+var AllProductStatus = []ProductStatus{
+	ProductStatusActive,
+	ProductStatusArchived,
+	ProductStatusDraft,
+	ProductStatusUnlisted,
+}
+
+// The valid values for the inventory policy of a product variant once it is out of stock.
+type ProductVariantInventoryPolicy string
+
+const (
+	// Customers can't buy this product variant after it's out of stock.
+	ProductVariantInventoryPolicyDeny ProductVariantInventoryPolicy = "DENY"
+	// Customers can buy this product variant after it's out of stock.
+	ProductVariantInventoryPolicyContinue ProductVariantInventoryPolicy = "CONTINUE"
+)
+
+var AllProductVariantInventoryPolicy = []ProductVariantInventoryPolicy{
+	ProductVariantInventoryPolicyDeny,
+	ProductVariantInventoryPolicyContinue,
+}
+
+// The input fields for specifying a product variant to create or update.
+type ProductVariantSetInput struct {
+	// Specifies the product variant to update or create a new variant if absent.
+	Id *string `json:"id"`
+	// The custom properties that a shop owner uses to define product variants.
+	OptionValues []VariantOptionValueInput `json:"optionValues"`
+	// The price of the variant.
+	Price *string `json:"price"`
+	// The SKU for the variant. Case-sensitive string.
+	Sku *string `json:"sku"`
+	// The barcodes to associate with the product variant. Replaces the entire barcode set. A variant
+	// accepts up to 20 barcodes, and a given
+	// variant input can't set both `barcode` and `barcodes`. Refer to the
+	// [`ProductVariantBarcode`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariantBarcode)
+	// object for how these barcodes are returned.
+	//
+	// Complexity cost: 0.0114 per barcode.
+	Barcodes []BarcodeInput `json:"barcodes"`
+	// The order of the product variant in the list of product variants. The first position in the list is 1.
+	Position *int `json:"position"`
+	// The file to associate with the variant.
+	//
+	// Complexity cost: 0.6 per variant file.
+	//
+	// Any file specified here must also be specified in the `files` input for the product.
+	File *FileSetInput `json:"file"`
+	// Additional customizable information about the product variant.
+	//
+	// Complexity cost: 0.4 per variant metafield.
+	Metafields []MetafieldInput `json:"metafields"`
+	// Indicates whether the product variant is created as published or unpublished. This option is only available for new product variants.
+	Published *bool `json:"published"`
+	// The compare-at price of the variant.
+	CompareAtPrice *string `json:"compareAtPrice"`
+	// Whether a product variant requires components. The default value is `false`.
+	// If `true`, then the product variant can only be purchased as a parent bundle with components and it will be omitted
+	// from channels that don't support bundles.
+	RequiresComponents *bool `json:"requiresComponents"`
+	// Whether customers are allowed to place an order for the product variant when it's out of stock. Defaults to `DENY`.
+	InventoryPolicy *ProductVariantInventoryPolicy `json:"inventoryPolicy"`
+	// The inventory quantities at each location where the variant is stocked.
+	// If you're updating an existing variant, then you can only update the
+	// quantities at locations where the variant is already stocked.
+	//
+	// The total number of inventory quantities across all variants in the mutation can't exceed 50000.
+	InventoryQuantities []ProductSetInventoryInput `json:"inventoryQuantities"`
+	// The inventory item associated with the variant, used for unit cost.
+	InventoryItem *InventoryItemInput `json:"inventoryItem"`
+	// Whether the variant is taxable.
+	Taxable *bool `json:"taxable"`
+	// The tax code associated with the variant.
+	TaxCode *string `json:"taxCode"`
+	// The unit price measurement for the product variant.
+	UnitPriceMeasurement *UnitPriceMeasurementInput `json:"unitPriceMeasurement"`
+	// Whether or not unit price should be shown for this product variant.
+	ShowUnitPrice *bool `json:"showUnitPrice"`
+}
+
+// GetId returns ProductVariantSetInput.Id, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetId() *string { return v.Id }
+
+// GetOptionValues returns ProductVariantSetInput.OptionValues, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetOptionValues() []VariantOptionValueInput { return v.OptionValues }
+
+// GetPrice returns ProductVariantSetInput.Price, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetPrice() *string { return v.Price }
+
+// GetSku returns ProductVariantSetInput.Sku, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetSku() *string { return v.Sku }
+
+// GetBarcodes returns ProductVariantSetInput.Barcodes, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetBarcodes() []BarcodeInput { return v.Barcodes }
+
+// GetPosition returns ProductVariantSetInput.Position, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetPosition() *int { return v.Position }
+
+// GetFile returns ProductVariantSetInput.File, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetFile() *FileSetInput { return v.File }
+
+// GetMetafields returns ProductVariantSetInput.Metafields, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetPublished returns ProductVariantSetInput.Published, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetPublished() *bool { return v.Published }
+
+// GetCompareAtPrice returns ProductVariantSetInput.CompareAtPrice, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetCompareAtPrice() *string { return v.CompareAtPrice }
+
+// GetRequiresComponents returns ProductVariantSetInput.RequiresComponents, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetRequiresComponents() *bool { return v.RequiresComponents }
+
+// GetInventoryPolicy returns ProductVariantSetInput.InventoryPolicy, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetInventoryPolicy() *ProductVariantInventoryPolicy {
+	return v.InventoryPolicy
+}
+
+// GetInventoryQuantities returns ProductVariantSetInput.InventoryQuantities, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetInventoryQuantities() []ProductSetInventoryInput {
+	return v.InventoryQuantities
+}
+
+// GetInventoryItem returns ProductVariantSetInput.InventoryItem, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetInventoryItem() *InventoryItemInput { return v.InventoryItem }
+
+// GetTaxable returns ProductVariantSetInput.Taxable, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetTaxable() *bool { return v.Taxable }
+
+// GetTaxCode returns ProductVariantSetInput.TaxCode, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetTaxCode() *string { return v.TaxCode }
+
+// GetUnitPriceMeasurement returns ProductVariantSetInput.UnitPriceMeasurement, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetUnitPriceMeasurement() *UnitPriceMeasurementInput {
+	return v.UnitPriceMeasurement
+}
+
+// GetShowUnitPrice returns ProductVariantSetInput.ShowUnitPrice, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetShowUnitPrice() *bool { return v.ShowUnitPrice }
+
+// The input fields for SEO information.
+type SEOInput struct {
+	// SEO title of the product.
+	Title *string `json:"title,omitempty"`
+	// SEO description of the product.
+	Description *string `json:"description,omitempty"`
+}
+
+// GetTitle returns SEOInput.Title, and is useful for accessing the field via an interface.
+func (v *SEOInput) GetTitle() *string { return v.Title }
+
+// GetDescription returns SEOInput.Description, and is useful for accessing the field via an interface.
+func (v *SEOInput) GetDescription() *string { return v.Description }
+
+// SetProductProductSetProductSetPayload includes the requested fields of the GraphQL type ProductSetPayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `productSet` mutation.
+type SetProductProductSetProductSetPayload struct {
+	// The product object.
+	Product *SetProductProductSetProductSetPayloadProduct `json:"product"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []SetProductProductSetProductSetPayloadUserErrorsProductSetUserError `json:"userErrors"`
+}
+
+// GetProduct returns SetProductProductSetProductSetPayload.Product, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayload) GetProduct() *SetProductProductSetProductSetPayloadProduct {
+	return v.Product
+}
+
+// GetUserErrors returns SetProductProductSetProductSetPayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayload) GetUserErrors() []SetProductProductSetProductSetPayloadUserErrorsProductSetUserError {
+	return v.UserErrors
+}
+
+// SetProductProductSetProductSetPayloadProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type SetProductProductSetProductSetPayloadProduct struct {
+	ProductFields `json:"-"`
+}
+
+// GetId returns SetProductProductSetProductSetPayloadProduct.Id, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetId() string { return v.ProductFields.Id }
+
+// GetHandle returns SetProductProductSetProductSetPayloadProduct.Handle, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetHandle() string {
+	return v.ProductFields.Handle
+}
+
+// GetTitle returns SetProductProductSetProductSetPayloadProduct.Title, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetTitle() string {
+	return v.ProductFields.Title
+}
+
+// GetStatus returns SetProductProductSetProductSetPayloadProduct.Status, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetStatus() ProductStatus {
+	return v.ProductFields.Status
+}
+
+// GetDescriptionHtml returns SetProductProductSetProductSetPayloadProduct.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetDescriptionHtml() string {
+	return v.ProductFields.DescriptionHtml
+}
+
+// GetVendor returns SetProductProductSetProductSetPayloadProduct.Vendor, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetVendor() string {
+	return v.ProductFields.Vendor
+}
+
+// GetProductType returns SetProductProductSetProductSetPayloadProduct.ProductType, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetProductType() string {
+	return v.ProductFields.ProductType
+}
+
+// GetCategory returns SetProductProductSetProductSetPayloadProduct.Category, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetCategory() *ProductFieldsCategoryTaxonomyCategory {
+	return v.ProductFields.Category
+}
+
+// GetTags returns SetProductProductSetProductSetPayloadProduct.Tags, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetTags() []string {
+	return v.ProductFields.Tags
+}
+
+// GetSeo returns SetProductProductSetProductSetPayloadProduct.Seo, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetSeo() ProductFieldsSeoSEO {
+	return v.ProductFields.Seo
+}
+
+// GetTemplateSuffix returns SetProductProductSetProductSetPayloadProduct.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetTemplateSuffix() *string {
+	return v.ProductFields.TemplateSuffix
+}
+
+// GetIsGiftCard returns SetProductProductSetProductSetPayloadProduct.IsGiftCard, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetIsGiftCard() bool {
+	return v.ProductFields.IsGiftCard
+}
+
+func (v *SetProductProductSetProductSetPayloadProduct) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SetProductProductSetProductSetPayloadProduct
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SetProductProductSetProductSetPayloadProduct = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ProductFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSetProductProductSetProductSetPayloadProduct struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Status ProductStatus `json:"status"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	Vendor string `json:"vendor"`
+
+	ProductType string `json:"productType"`
+
+	Category *ProductFieldsCategoryTaxonomyCategory `json:"category"`
+
+	Tags []string `json:"tags"`
+
+	Seo ProductFieldsSeoSEO `json:"seo"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	IsGiftCard bool `json:"isGiftCard"`
+}
+
+func (v *SetProductProductSetProductSetPayloadProduct) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SetProductProductSetProductSetPayloadProduct) __premarshalJSON() (*__premarshalSetProductProductSetProductSetPayloadProduct, error) {
+	var retval __premarshalSetProductProductSetProductSetPayloadProduct
+
+	retval.Id = v.ProductFields.Id
+	retval.Handle = v.ProductFields.Handle
+	retval.Title = v.ProductFields.Title
+	retval.Status = v.ProductFields.Status
+	retval.DescriptionHtml = v.ProductFields.DescriptionHtml
+	retval.Vendor = v.ProductFields.Vendor
+	retval.ProductType = v.ProductFields.ProductType
+	retval.Category = v.ProductFields.Category
+	retval.Tags = v.ProductFields.Tags
+	retval.Seo = v.ProductFields.Seo
+	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
+	retval.IsGiftCard = v.ProductFields.IsGiftCard
+	return &retval, nil
+}
+
+// SetProductProductSetProductSetPayloadUserErrorsProductSetUserError includes the requested fields of the GraphQL type ProductSetUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors for ProductSet mutation.
+type SetProductProductSetProductSetPayloadUserErrorsProductSetUserError struct {
+	// The error code.
+	Code *ProductSetUserErrorCode `json:"code"`
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetCode returns SetProductProductSetProductSetPayloadUserErrorsProductSetUserError.Code, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadUserErrorsProductSetUserError) GetCode() *ProductSetUserErrorCode {
+	return v.Code
+}
+
+// GetField returns SetProductProductSetProductSetPayloadUserErrorsProductSetUserError.Field, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadUserErrorsProductSetUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns SetProductProductSetProductSetPayloadUserErrorsProductSetUserError.Message, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadUserErrorsProductSetUserError) GetMessage() string {
+	return v.Message
+}
+
+// SetProductResponse is returned by SetProduct on success.
+type SetProductResponse struct {
+	// Performs multiple operations to create or update products in a single request.
+	//
+	// Use the `productSet` mutation to sync information from an external data source into Shopify, manage large
+	// product catalogs, and perform batch updates. The mutation is helpful for bulk product management, including price
+	// adjustments, inventory updates, and product lifecycle management.
+	//
+	// The behavior of `productSet` depends on the type of field it's modifying:
+	//
+	// - **For list fields**: Creates new entries, updates existing entries, and deletes existing entries
+	// that aren't included in the mutation's input. Common examples of list fields include
+	// [`collections`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productSet#arguments-input.fields.collections),
+	// [`metafields`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productSet#arguments-input.fields.metafields),
+	// and [`variants`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productSet#arguments-input.fields.variants).
+	//
+	// - **For all other field types**: Updates only the included fields. Any omitted fields will remain unchanged.
+	//
+	// > Note:
+	// > By default, stores have a limit of 2048 product variants for each product.
+	//
+	// You can run `productSet` in one of the following modes:
+	//
+	// - **Synchronously**: Returns the updated product in the response.
+	// - **Asynchronously**: Returns a [`ProductSetOperation`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductSetOperation) object.
+	// Use the [`productOperation`](https://shopify.dev/api/admin-graphql/latest/queries/productOperation) query to check the status of the operation and
+	// retrieve details of the updated product and its product variants.
+	//
+	// If you need to only manage product variants, then use one of the following mutations:
+	//
+	// - [`productVariantsBulkCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productVariantsBulkCreate)
+	// - [`productVariantsBulkUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productVariantsBulkUpdate)
+	// - [`productVariantsBulkDelete`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productVariantsBulkDelete)
+	//
+	// If you need to only manage product options, then use one of the following mutations:
+	//
+	// - [`productOptionsCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productOptionsCreate)
+	// - [`productOptionUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productOptionUpdate)
+	// - [`productOptionsReorder`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productOptionsReorder)
+	// - [`productOptionsDelete`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productOptionsDelete)
+	//
+	// Learn more about [syncing product data from an external source](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/sync-data).
+	ProductSet *SetProductProductSetProductSetPayload `json:"productSet"`
+}
+
+// GetProductSet returns SetProductResponse.ProductSet, and is useful for accessing the field via an interface.
+func (v *SetProductResponse) GetProductSet() *SetProductProductSetProductSetPayload {
+	return v.ProductSet
+}
+
 // The input fields for creating a market's shipping configuration.
 type ShippingConfigurationCreateInput struct {
 	// Whether shipping is enabled for this market. When false, customers in this market won't see shipping options at checkout.
@@ -13319,6 +15115,131 @@ var AllShopPolicyType = []ShopPolicyType{
 	ShopPolicyTypeLegalNotice,
 	ShopPolicyTypeSubscriptionPolicy,
 	ShopPolicyTypeContactInformation,
+}
+
+// The input fields that identify a unique valued metafield.
+type UniqueMetafieldValueInput struct {
+	// The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+	Namespace *string `json:"namespace"`
+	// The key for the metafield.
+	Key string `json:"key"`
+	// The value of the metafield.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns UniqueMetafieldValueInput.Namespace, and is useful for accessing the field via an interface.
+func (v *UniqueMetafieldValueInput) GetNamespace() *string { return v.Namespace }
+
+// GetKey returns UniqueMetafieldValueInput.Key, and is useful for accessing the field via an interface.
+func (v *UniqueMetafieldValueInput) GetKey() string { return v.Key }
+
+// GetValue returns UniqueMetafieldValueInput.Value, and is useful for accessing the field via an interface.
+func (v *UniqueMetafieldValueInput) GetValue() string { return v.Value }
+
+// The input fields for the measurement used to calculate a unit price for a product variant (e.g. $9.99 / 100ml).
+type UnitPriceMeasurementInput struct {
+	// The quantity value for the unit price measurement.
+	QuantityValue *float64 `json:"quantityValue"`
+	// The quantity unit for the unit price measurement.
+	QuantityUnit *UnitPriceMeasurementMeasuredUnit `json:"quantityUnit"`
+	// The reference value for the unit price measurement.
+	ReferenceValue *int `json:"referenceValue"`
+	// The reference unit for the unit price measurement.
+	ReferenceUnit *UnitPriceMeasurementMeasuredUnit `json:"referenceUnit"`
+}
+
+// GetQuantityValue returns UnitPriceMeasurementInput.QuantityValue, and is useful for accessing the field via an interface.
+func (v *UnitPriceMeasurementInput) GetQuantityValue() *float64 { return v.QuantityValue }
+
+// GetQuantityUnit returns UnitPriceMeasurementInput.QuantityUnit, and is useful for accessing the field via an interface.
+func (v *UnitPriceMeasurementInput) GetQuantityUnit() *UnitPriceMeasurementMeasuredUnit {
+	return v.QuantityUnit
+}
+
+// GetReferenceValue returns UnitPriceMeasurementInput.ReferenceValue, and is useful for accessing the field via an interface.
+func (v *UnitPriceMeasurementInput) GetReferenceValue() *int { return v.ReferenceValue }
+
+// GetReferenceUnit returns UnitPriceMeasurementInput.ReferenceUnit, and is useful for accessing the field via an interface.
+func (v *UnitPriceMeasurementInput) GetReferenceUnit() *UnitPriceMeasurementMeasuredUnit {
+	return v.ReferenceUnit
+}
+
+// The valid units of measurement for a unit price measurement.
+type UnitPriceMeasurementMeasuredUnit string
+
+const (
+	// 1000 milliliters equals 1 liter.
+	UnitPriceMeasurementMeasuredUnitMl UnitPriceMeasurementMeasuredUnit = "ML"
+	// 100 centiliters equals 1 liter.
+	UnitPriceMeasurementMeasuredUnitCl UnitPriceMeasurementMeasuredUnit = "CL"
+	// Metric system unit of volume.
+	UnitPriceMeasurementMeasuredUnitL UnitPriceMeasurementMeasuredUnit = "L"
+	// 1 cubic meter equals 1000 liters.
+	UnitPriceMeasurementMeasuredUnitM3 UnitPriceMeasurementMeasuredUnit = "M3"
+	// Imperial system unit of volume (U.S. customary unit).
+	UnitPriceMeasurementMeasuredUnitFloz UnitPriceMeasurementMeasuredUnit = "FLOZ"
+	// 1 pint equals 16 fluid ounces (U.S. customary unit).
+	UnitPriceMeasurementMeasuredUnitPt UnitPriceMeasurementMeasuredUnit = "PT"
+	// 1 quart equals 32 fluid ounces (U.S. customary unit).
+	UnitPriceMeasurementMeasuredUnitQt UnitPriceMeasurementMeasuredUnit = "QT"
+	// 1 gallon equals 128 fluid ounces (U.S. customary unit).
+	UnitPriceMeasurementMeasuredUnitGal UnitPriceMeasurementMeasuredUnit = "GAL"
+	// 1000 milligrams equals 1 gram.
+	UnitPriceMeasurementMeasuredUnitMg UnitPriceMeasurementMeasuredUnit = "MG"
+	// Metric system unit of weight.
+	UnitPriceMeasurementMeasuredUnitG UnitPriceMeasurementMeasuredUnit = "G"
+	// 1 kilogram equals 1000 grams.
+	UnitPriceMeasurementMeasuredUnitKg UnitPriceMeasurementMeasuredUnit = "KG"
+	// 16 ounces equals 1 pound.
+	UnitPriceMeasurementMeasuredUnitOz UnitPriceMeasurementMeasuredUnit = "OZ"
+	// Imperial system unit of weight.
+	UnitPriceMeasurementMeasuredUnitLb UnitPriceMeasurementMeasuredUnit = "LB"
+	// 1000 millimeters equals 1 meter.
+	UnitPriceMeasurementMeasuredUnitMm UnitPriceMeasurementMeasuredUnit = "MM"
+	// 100 centimeters equals 1 meter.
+	UnitPriceMeasurementMeasuredUnitCm UnitPriceMeasurementMeasuredUnit = "CM"
+	// Metric system unit of length.
+	UnitPriceMeasurementMeasuredUnitM UnitPriceMeasurementMeasuredUnit = "M"
+	// Imperial system unit of length.
+	UnitPriceMeasurementMeasuredUnitIn UnitPriceMeasurementMeasuredUnit = "IN"
+	// 1 foot equals 12 inches.
+	UnitPriceMeasurementMeasuredUnitFt UnitPriceMeasurementMeasuredUnit = "FT"
+	// 1 yard equals 36 inches.
+	UnitPriceMeasurementMeasuredUnitYd UnitPriceMeasurementMeasuredUnit = "YD"
+	// Metric system unit of area.
+	UnitPriceMeasurementMeasuredUnitM2 UnitPriceMeasurementMeasuredUnit = "M2"
+	// Imperial system unit of area.
+	UnitPriceMeasurementMeasuredUnitFt2 UnitPriceMeasurementMeasuredUnit = "FT2"
+	// 1 item, a unit of count.
+	UnitPriceMeasurementMeasuredUnitItem UnitPriceMeasurementMeasuredUnit = "ITEM"
+	// The unit of measurement is unknown. Upgrade to the latest version of the API to resolve this unit.
+	UnitPriceMeasurementMeasuredUnitUnknown UnitPriceMeasurementMeasuredUnit = "UNKNOWN"
+)
+
+var AllUnitPriceMeasurementMeasuredUnit = []UnitPriceMeasurementMeasuredUnit{
+	UnitPriceMeasurementMeasuredUnitMl,
+	UnitPriceMeasurementMeasuredUnitCl,
+	UnitPriceMeasurementMeasuredUnitL,
+	UnitPriceMeasurementMeasuredUnitM3,
+	UnitPriceMeasurementMeasuredUnitFloz,
+	UnitPriceMeasurementMeasuredUnitPt,
+	UnitPriceMeasurementMeasuredUnitQt,
+	UnitPriceMeasurementMeasuredUnitGal,
+	UnitPriceMeasurementMeasuredUnitMg,
+	UnitPriceMeasurementMeasuredUnitG,
+	UnitPriceMeasurementMeasuredUnitKg,
+	UnitPriceMeasurementMeasuredUnitOz,
+	UnitPriceMeasurementMeasuredUnitLb,
+	UnitPriceMeasurementMeasuredUnitMm,
+	UnitPriceMeasurementMeasuredUnitCm,
+	UnitPriceMeasurementMeasuredUnitM,
+	UnitPriceMeasurementMeasuredUnitIn,
+	UnitPriceMeasurementMeasuredUnitFt,
+	UnitPriceMeasurementMeasuredUnitYd,
+	UnitPriceMeasurementMeasuredUnitM2,
+	UnitPriceMeasurementMeasuredUnitFt2,
+	UnitPriceMeasurementMeasuredUnitItem,
+	UnitPriceMeasurementMeasuredUnitUnknown,
 }
 
 // UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload includes the requested fields of the GraphQL type CheckoutAndAccountsConfigurationUpdatePayload.
@@ -14838,6 +16759,35 @@ func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMa
 	return &retval, nil
 }
 
+// The input fields required to create or modify a product variant's option value.
+type VariantOptionValueInput struct {
+	// Specifies the product option value by ID.
+	Id *string `json:"id"`
+	// Specifies the product option value by name.
+	Name *string `json:"name"`
+	// Metafield value associated with an option.
+	LinkedMetafieldValue *string `json:"linkedMetafieldValue"`
+	// Specifies the product option by ID.
+	OptionId *string `json:"optionId"`
+	// Specifies the product option by name.
+	OptionName *string `json:"optionName"`
+}
+
+// GetId returns VariantOptionValueInput.Id, and is useful for accessing the field via an interface.
+func (v *VariantOptionValueInput) GetId() *string { return v.Id }
+
+// GetName returns VariantOptionValueInput.Name, and is useful for accessing the field via an interface.
+func (v *VariantOptionValueInput) GetName() *string { return v.Name }
+
+// GetLinkedMetafieldValue returns VariantOptionValueInput.LinkedMetafieldValue, and is useful for accessing the field via an interface.
+func (v *VariantOptionValueInput) GetLinkedMetafieldValue() *string { return v.LinkedMetafieldValue }
+
+// GetOptionId returns VariantOptionValueInput.OptionId, and is useful for accessing the field via an interface.
+func (v *VariantOptionValueInput) GetOptionId() *string { return v.OptionId }
+
+// GetOptionName returns VariantOptionValueInput.OptionName, and is useful for accessing the field via an interface.
+func (v *VariantOptionValueInput) GetOptionName() *string { return v.OptionName }
+
 // The input fields used to create a web presence.
 type WebPresenceCreateInput struct {
 	// The web presence's domain ID. This field must be `null` if the `subfolderSuffix` isn't `null`.
@@ -15170,6 +17120,14 @@ type __DeleteMetaobjectDefinitionInput struct {
 // GetId returns __DeleteMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteMetaobjectDefinitionInput) GetId() string { return v.Id }
 
+// __DeleteProductInput is used internally by genqlient
+type __DeleteProductInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteProductInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteProductInput) GetId() string { return v.Id }
+
 // __DeleteWebPresenceInput is used internally by genqlient
 type __DeleteWebPresenceInput struct {
 	Id string `json:"id"`
@@ -15316,6 +17274,22 @@ type __GetMetaobjectDefinitionInput struct {
 // GetId returns __GetMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetMetaobjectDefinitionInput) GetId() string { return v.Id }
 
+// __GetProductByHandleInput is used internally by genqlient
+type __GetProductByHandleInput struct {
+	Handle string `json:"handle"`
+}
+
+// GetHandle returns __GetProductByHandleInput.Handle, and is useful for accessing the field via an interface.
+func (v *__GetProductByHandleInput) GetHandle() string { return v.Handle }
+
+// __GetProductInput is used internally by genqlient
+type __GetProductInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetProductInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetProductInput) GetId() string { return v.Id }
+
 // __GetWebPresenceInput is used internally by genqlient
 type __GetWebPresenceInput struct {
 	Id string `json:"id"`
@@ -15392,6 +17366,14 @@ type __ListMetaobjectDefinitionsInput struct {
 // GetAfter returns __ListMetaobjectDefinitionsInput.After, and is useful for accessing the field via an interface.
 func (v *__ListMetaobjectDefinitionsInput) GetAfter() *string { return v.After }
 
+// __ListProductsInput is used internally by genqlient
+type __ListProductsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListProductsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListProductsInput) GetAfter() *string { return v.After }
+
 // __ListPublicationsInput is used internally by genqlient
 type __ListPublicationsInput struct {
 	After *string `json:"after"`
@@ -15407,6 +17389,18 @@ type __ListWebPresencesInput struct {
 
 // GetAfter returns __ListWebPresencesInput.After, and is useful for accessing the field via an interface.
 func (v *__ListWebPresencesInput) GetAfter() *string { return v.After }
+
+// __SetProductInput is used internally by genqlient
+type __SetProductInput struct {
+	Identifier *ProductSetIdentifiers `json:"identifier,omitempty"`
+	Input      ProductSetInput        `json:"input"`
+}
+
+// GetIdentifier returns __SetProductInput.Identifier, and is useful for accessing the field via an interface.
+func (v *__SetProductInput) GetIdentifier() *ProductSetIdentifiers { return v.Identifier }
+
+// GetInput returns __SetProductInput.Input, and is useful for accessing the field via an interface.
+func (v *__SetProductInput) GetInput() ProductSetInput { return v.Input }
 
 // __UpdateCheckoutAndAccountsConfigurationInput is used internally by genqlient
 type __UpdateCheckoutAndAccountsConfigurationInput struct {
@@ -16228,6 +18222,44 @@ func DeleteMetaobjectDefinition(
 	}
 
 	data_ = &DeleteMetaobjectDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteProduct.
+const DeleteProduct_Operation = `
+mutation DeleteProduct ($id: ID!) {
+	productDelete(input: {id:$id}) {
+		deletedProductId
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DeleteProduct(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteProductResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteProduct",
+		Query:  DeleteProduct_Operation,
+		Variables: &__DeleteProductInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteProductResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -18514,6 +20546,113 @@ func GetPrivacySettings(
 	return data_, err_
 }
 
+// The query executed by GetProduct.
+const GetProduct_Operation = `
+query GetProduct ($id: ID!) {
+	product(id: $id) {
+		... ProductFields
+	}
+}
+fragment ProductFields on Product {
+	id
+	handle
+	title
+	status
+	descriptionHtml
+	vendor
+	productType
+	category {
+		id
+	}
+	tags
+	seo {
+		title
+		description
+	}
+	templateSuffix
+	isGiftCard
+}
+`
+
+func GetProduct(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetProductResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetProduct",
+		Query:  GetProduct_Operation,
+		Variables: &__GetProductInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetProductResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetProductByHandle.
+const GetProductByHandle_Operation = `
+query GetProductByHandle ($handle: String!) {
+	productByIdentifier(identifier: {handle:$handle}) {
+		... ProductFields
+	}
+}
+fragment ProductFields on Product {
+	id
+	handle
+	title
+	status
+	descriptionHtml
+	vendor
+	productType
+	category {
+		id
+	}
+	tags
+	seo {
+		title
+		description
+	}
+	templateSuffix
+	isGiftCard
+}
+`
+
+// productByHandle is deprecated and products(query:) is search-indexed, so this is the exact handle lookup.
+func GetProductByHandle(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	handle string,
+) (data_ *GetProductByHandleResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetProductByHandle",
+		Query:  GetProductByHandle_Operation,
+		Variables: &__GetProductByHandleInput{
+			Handle: handle,
+		},
+	}
+
+	data_ = &GetProductByHandleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetShop.
 const GetShop_Operation = `
 query GetShop {
@@ -20326,6 +22465,65 @@ func ListMetaobjectDefinitions(
 	return data_, err_
 }
 
+// The query executed by ListProducts.
+const ListProducts_Operation = `
+query ListProducts ($after: String) {
+	products(first: 100, after: $after) {
+		nodes {
+			... ProductFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment ProductFields on Product {
+	id
+	handle
+	title
+	status
+	descriptionHtml
+	vendor
+	productType
+	category {
+		id
+	}
+	tags
+	seo {
+		title
+		description
+	}
+	templateSuffix
+	isGiftCard
+}
+`
+
+func ListProducts(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListProductsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListProducts",
+		Query:  ListProducts_Operation,
+		Variables: &__ListProductsInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListProductsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListPublications.
 const ListPublications_Operation = `
 query ListPublications ($after: String) {
@@ -20498,6 +22696,70 @@ func ListWebPresences(
 	}
 
 	data_ = &ListWebPresencesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by SetProduct.
+const SetProduct_Operation = `
+mutation SetProduct ($identifier: ProductSetIdentifiers, $input: ProductSetInput!) {
+	productSet(input: $input, identifier: $identifier, synchronous: true) {
+		product {
+			... ProductFields
+		}
+		userErrors {
+			code
+			field
+			message
+		}
+	}
+}
+fragment ProductFields on Product {
+	id
+	handle
+	title
+	status
+	descriptionHtml
+	vendor
+	productType
+	category {
+		id
+	}
+	tags
+	seo {
+		title
+		description
+	}
+	templateSuffix
+	isGiftCard
+}
+`
+
+// Keys left out of ProductSetInput stay unchanged, so every field is omitempty; null would not mean "unchanged".
+// tags is raw JSON so an empty list (clear) is sent while nil (unmanaged) is omitted.
+func SetProduct(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	identifier *ProductSetIdentifiers,
+	input ProductSetInput,
+) (data_ *SetProductResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "SetProduct",
+		Query:  SetProduct_Operation,
+		Variables: &__SetProductInput{
+			Identifier: identifier,
+			Input:      input,
+		},
+	}
+
+	data_ = &SetProductResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

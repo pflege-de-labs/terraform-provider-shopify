@@ -1,0 +1,107 @@
+fragment ProductFields on Product {
+  id
+  handle
+  title
+  status
+  descriptionHtml
+  vendor
+  productType
+  category {
+    id
+  }
+  tags
+  seo {
+    title
+    description
+  }
+  templateSuffix
+  isGiftCard
+}
+
+query GetProduct(
+  $id: ID!
+) {
+  product(id: $id) {
+    ...ProductFields
+  }
+}
+
+# productByHandle is deprecated and products(query:) is search-indexed, so this is the exact handle lookup.
+query GetProductByHandle(
+  $handle: String!
+) {
+  productByIdentifier(identifier: { handle: $handle }) {
+    ...ProductFields
+  }
+}
+
+query ListProducts(
+  $after: String
+) {
+  products(first: 100, after: $after) {
+    nodes {
+      ...ProductFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# Keys left out of ProductSetInput stay unchanged, so every field is omitempty; null would not mean "unchanged".
+# tags is raw JSON so an empty list (clear) is sent while nil (unmanaged) is omitted.
+# @genqlient(for: "ProductSetInput.descriptionHtml", omitempty: true)
+# @genqlient(for: "ProductSetInput.handle", omitempty: true)
+# @genqlient(for: "ProductSetInput.seo", omitempty: true)
+# @genqlient(for: "ProductSetInput.productType", omitempty: true)
+# @genqlient(for: "ProductSetInput.tags", omitempty: true, bind: "encoding/json.RawMessage")
+# @genqlient(for: "ProductSetInput.templateSuffix", omitempty: true)
+# @genqlient(for: "ProductSetInput.giftCardTemplateSuffix", omitempty: true)
+# @genqlient(for: "ProductSetInput.title", omitempty: true)
+# @genqlient(for: "ProductSetInput.vendor", omitempty: true)
+# @genqlient(for: "ProductSetInput.category", omitempty: true)
+# @genqlient(for: "ProductSetInput.giftCard", omitempty: true)
+# @genqlient(for: "ProductSetInput.redirectNewHandle", omitempty: true)
+# @genqlient(for: "ProductSetInput.status", omitempty: true)
+# @genqlient(for: "ProductSetInput.collections", omitempty: true)
+# @genqlient(for: "ProductSetInput.metafields", omitempty: true)
+# @genqlient(for: "ProductSetInput.files", omitempty: true)
+# @genqlient(for: "ProductSetInput.productOptions", omitempty: true)
+# @genqlient(for: "ProductSetInput.variants", omitempty: true)
+# @genqlient(for: "ProductSetInput.requiresSellingPlan", omitempty: true)
+# @genqlient(for: "ProductSetInput.claimOwnership", omitempty: true)
+# @genqlient(for: "ProductSetInput.combinedListingRole", omitempty: true)
+# @genqlient(for: "SEOInput.title", omitempty: true)
+# @genqlient(for: "SEOInput.description", omitempty: true)
+# @genqlient(for: "ProductSetIdentifiers.id", omitempty: true)
+# @genqlient(for: "ProductSetIdentifiers.handle", omitempty: true)
+# @genqlient(for: "ProductSetIdentifiers.customId", omitempty: true)
+mutation SetProduct(
+  # @genqlient(omitempty: true)
+  $identifier: ProductSetIdentifiers
+  $input: ProductSetInput!
+) {
+  productSet(input: $input, identifier: $identifier, synchronous: true) {
+    product {
+      ...ProductFields
+    }
+    userErrors {
+      code
+      field
+      message
+    }
+  }
+}
+
+mutation DeleteProduct(
+  $id: ID!
+) {
+  productDelete(input: { id: $id }) {
+    deletedProductId
+    userErrors {
+      field
+      message
+    }
+  }
+}
