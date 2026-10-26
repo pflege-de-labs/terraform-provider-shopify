@@ -234,8 +234,7 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	patterns.WarnRemovedFromStateOnly(&resp.Diagnostics, what, "the Admin API can't delete configurations, and destroy leaves the branding as it is")
 }
 
-// ImportState takes `published` or a name from `terraform import`, or the GID from an import block with identity.
-// It sets the whole live branding, which Read alone would leave unmanaged.
+// ImportState sets the whole live branding, which Read leaves unmanaged; the key is `published`, a name, or the identity GID.
 func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	var c *client.CheckoutAndAccountsConfigurationFields
 	var err error

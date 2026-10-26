@@ -19,9 +19,9 @@ type configKey struct {
 
 func (k configKey) String() string {
 	if k.name == "" {
-		return "the published configuration"
+		return "published configuration"
 	}
-	return fmt.Sprintf("the configuration named %q", k.name)
+	return fmt.Sprintf("configuration named %q", k.name)
 }
 
 func parseImportKey(id string) configKey {
@@ -50,7 +50,7 @@ func matchConfiguration(all []client.CheckoutAndAccountsConfigurationFields, key
 	for i, c := range hits {
 		ids[i] = c.Id
 	}
-	return nil, fmt.Errorf("%s matches %d configurations (%s); rename all but one in the checkout editor", key, len(hits), strings.Join(ids, ", "))
+	return nil, fmt.Errorf("more than one %s (%s); rename all but one in the checkout editor", key, strings.Join(ids, ", "))
 }
 
 // brandingErrorDiags puts branding errors on the branding attribute, naming the JSON path and Shopify's reason.

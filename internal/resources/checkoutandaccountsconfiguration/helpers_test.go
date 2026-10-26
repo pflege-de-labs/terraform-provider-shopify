@@ -128,8 +128,7 @@ func mustWrite(t *testing.T, leaves map[string]any) {
 	}
 }
 
-// ownBranding records the live branding, writes the given paths back to their recorded values after the test,
-// and fails unless the whole branding then equals the recording.
+// ownBranding refuses paths the dev store sets, resets them with null after the test, and fails unless the branding is as recorded.
 func ownBranding(t *testing.T, paths ...string) {
 	t.Helper()
 	before := liveTree(t)
