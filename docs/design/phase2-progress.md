@@ -23,7 +23,7 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 
 - D2 (2026-10-23): build in-scope types with count > 0 on staging or production; the rest goes on the roadmap.
 - D3 (2026-10-23): Shopify- and app-owned objects stay excluded from import.
-- D1: open. Dev store token has the six original scopes only.
+- D1 (2026-10-26): resolved. Dev store token holds all 28 scopes of `app/shopify.app.toml`, `expires_in` 86399.
 - D4/D5/D6 (2026-10-26): see the plan section "Discovery 2026-10-26 (phase 2)".
 
 ## Tasks
