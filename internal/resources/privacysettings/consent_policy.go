@@ -94,6 +94,7 @@ func (r *ConsentPolicy) Schema(ctx context.Context, req resource.SchemaRequest, 
 			"Use it when the shop runs its own consent banner: **Shopify refuses every write while its own cookie banner is on**, so turn it off first with `shopify_privacy_settings` (`cookie_banner_auto_managed = false`) and add `depends_on`. " +
 			"Every country and region already has a policy, Shopify's default until one is written, so create always takes the existing row over and writes only the configured values. " +
 			"Destroy only removes the resource from state: the row keeps its values, and the API can't return it to Shopify's default. " +
+			"**Writing a region (`region_code`) makes every regional row of that country a written row for good** (51 for the US), with their current values, and the API can't undo it. " +
 			"Import with `<COUNTRY>` or `<COUNTRY>/<REGION>`, such as `DE` or `US/USCA`.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -108,7 +109,7 @@ func (r *ConsentPolicy) Schema(ctx context.Context, req resource.SchemaRequest, 
 				PlanModifiers:       []planmodifier.String{stringplanmodifier.RequiresReplace()},
 			},
 			"region_code": schema.StringAttribute{
-				MarkdownDescription: "Country code plus subdivision, such as `USCA` or `CAQC`; only US and Canadian regions exist. Unset manages the country-level policy.",
+				MarkdownDescription: "Country code plus subdivision, such as `USCA` or `CAQC`; only US and Canadian regions exist. Unset manages the country-level policy. The first write to any region of a country turns all of that country's regional policies into written ones permanently, and `terraform query` then lists all of them.",
 				Optional:            true,
 				Validators:          []validator.String{stringvalidator.RegexMatches(regionRe, "must be the country code plus a subdivision, such as USCA")},
 				PlanModifiers:       []planmodifier.String{stringplanmodifier.RequiresReplace()},

@@ -3,12 +3,12 @@
 page_title: "shopify_consent_policy List Resource - shopify"
 subcategory: ""
 description: |-
-  Lists the consent policies that aren't Shopify's untouched defaults (IDs prefixed SD-), so the 300-odd defaults don't bury them. Importing a listed policy writes nothing.
+  Lists the consent policies that aren't Shopify's untouched defaults (IDs prefixed SD-), so the 300-odd defaults don't bury them. Importing a listed policy writes nothing. Once a region of a country has been written, all of that country's regional policies count as written (51 for the US) and are listed too.
 ---
 
 # shopify_consent_policy (List Resource)
 
-Lists the consent policies that aren't Shopify's untouched defaults (IDs prefixed `SD-`), so the 300-odd defaults don't bury them. Importing a listed policy writes nothing.
+Lists the consent policies that aren't Shopify's untouched defaults (IDs prefixed `SD-`), so the 300-odd defaults don't bury them. Importing a listed policy writes nothing. Once a region of a country has been written, all of that country's regional policies count as written (51 for the US) and are listed too.
 
 ## Example Usage
 

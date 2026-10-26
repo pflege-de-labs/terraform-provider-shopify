@@ -65,7 +65,7 @@ func (r *PrivacySettingsList) List(ctx context.Context, req list.ListRequest, st
 func (r *ConsentPolicyList) ListResourceConfigSchema(ctx context.Context, req list.ListResourceSchemaRequest, resp *list.ListResourceSchemaResponse) {
 	resp.Schema = listschema.Schema{
 		MarkdownDescription: "Lists the consent policies that aren't Shopify's untouched defaults (IDs prefixed `SD-`), so the 300-odd defaults don't bury them. " +
-			"Importing a listed policy writes nothing.",
+			"Importing a listed policy writes nothing. Once a region of a country has been written, all of that country's regional policies count as written (51 for the US) and are listed too.",
 	}
 }
 
