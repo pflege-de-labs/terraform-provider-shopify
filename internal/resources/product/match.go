@@ -72,6 +72,8 @@ func matchVariants(priorOpts []option, prior []combo, plannedOpts []option, plan
 			shared = append(shared, j)
 		}
 	}
+	// An option dropped while another is added: the shared options can't tell variants apart, so none is kept.
+	replaced := len(shared) < len(priorOpts) && len(shared) < len(plannedOpts)
 	priorKeys := make([]*string, len(prior))
 	for k, c := range prior {
 		parts, ok := make([]string, len(shared)), true
@@ -88,7 +90,7 @@ func matchVariants(priorOpts []option, prior []combo, plannedOpts []option, plan
 			}
 			parts[n] = plannedOpts[j].Values[pj]
 		}
-		if ok {
+		if ok && !replaced {
 			key := strings.Join(parts, "\x00")
 			priorKeys[k] = &key
 		}

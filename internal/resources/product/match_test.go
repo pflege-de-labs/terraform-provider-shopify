@@ -161,6 +161,18 @@ func TestMatchVariants(t *testing.T) {
 			wantKeep: []int{0}, wantRemoved: []int{1},
 		},
 		{
+			name:      "option dropped while another is added at its place keeps nothing",
+			priorOpts: opts("Size:S,M", "Color:Red"), prior: combos("Size=S/Color=Red", "Size=M/Color=Red"),
+			plannedOpts: opts("Color:Red", "Größe:S,M"), planned: combos("Color=Red/Größe=M", "Color=Red/Größe=S"),
+			wantKeep: []int{-1, -1}, wantRemoved: []int{0, 1},
+		},
+		{
+			name:      "option replaced by an unrelated one keeps nothing",
+			priorOpts: opts("Size:S,M", "Color:Red"), prior: combos("Size=S/Color=Red", "Size=M/Color=Red"),
+			plannedOpts: opts("Color:Red", "Material:Cotton,Wool"), planned: combos("Color=Red/Material=Cotton", "Color=Red/Material=Wool"),
+			wantKeep: []int{-1, -1}, wantRemoved: []int{0, 1},
+		},
+		{
 			name:      "everything new",
 			priorOpts: opts("Size:S"), prior: combos("Size=S"),
 			plannedOpts: opts("Size:S"), planned: combos(),
