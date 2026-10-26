@@ -63,6 +63,7 @@ provider "shopify" {
 | `shopify_page` | `<handle>` (unique per shop, see §9m) |
 | `shopify_blog` | `<handle>` (unique per shop; Shopify suffixes a taken handle, see §9n) |
 | `shopify_file` | `<filename>`, e.g. `logo.png` (unique per shop); an external video by its URL, see §9o |
+| `shopify_discount_basic`, `shopify_discount_free_shipping`, `shopify_discount_bxgy` | `code/<code>` for code discounts (codes are unique per shop), `automatic/<title>` for automatic ones (titles are unique among them), see §9p |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -1333,6 +1334,121 @@ Notes:
 **Dev store (2026-10-26):** one probe image (`tf-probe.png` from the 1×1 PNG URL) was created, renamed twice, given a new alt, re-sourced from the same URL, and deleted; a duplicate create was refused. End state equals the start: 0 files.
 
 **Task split:** 13b-3a the resource with URL sources (everything above except the local-path upload); 13b-3b staged uploads of local files. 13b-3a alone is usable for images, generic files and external videos; videos and 3D models need 13b-3b.
+
+---
+
+## 9p. Resources: `shopify_discount_basic`, `shopify_discount_free_shipping`, `shopify_discount_bxgy`
+
+Discovery: `discountNodes` 0 on staging, 7 on production. D5 assumed Shopify defaults. **They are not:** Shopify creates no discounts with a shop (the dev store, created 2026-10-22, has none, and staging has none), so production's 7 were made by the merchant or an app. Their kinds are unknown (discovery counted nodes only; `TODO(verify)` at the first import). Discounts are promotions, created and ended in the admin by marketing, so the types are volatile.
+
+```hcl
+resource "shopify_discount_basic" "newsletter" {
+  title = "Newsletter 10 %"
+  code  = "WILLKOMMEN10" # unset = automatic discount
+
+  starts_at = "2026-11-01T00:00:00+01:00" # optional, unset = unmanaged (created as now)
+  ends_at   = "2026-12-31T23:59:59+01:00" # optional, unset = unmanaged
+  context   = { customer_segment_ids = [shopify_customer_segment.subscribers.id] }
+
+  customer_gets = {
+    value = { percentage = 0.1 }
+    items = { collection_ids = [shopify_collection.pflegehilfsmittel.id] }
+  }
+  minimum_requirement       = { subtotal = "30.00" }
+  combines_with             = { shipping_discounts = true }
+  usage_limit               = 1000
+  applies_once_per_customer = true
+}
+
+resource "shopify_discount_free_shipping" "ab_50" {
+  title               = "Versandkostenfrei ab 50 €"
+  minimum_requirement = { subtotal = "50.00" }
+  destination         = { country_codes = ["DE", "AT"] }
+}
+```
+
+**Granularity: one resource per discount method (basic, free shipping, buy X get Y), each covering code and automatic discounts.** The API has eight node types (`Discount` union): {code, automatic} × {basic, BXGY, free shipping, app}, each with its own create and update mutation. Neither axis can change in place: a basic discount can't become BXGY, and a code discount can't become automatic. The method decides the shape of the core inputs (`customerGets` vs `customerBuys` + `customerGets` vs `destination` + `maximumShippingPrice`); code vs automatic only adds `code`, `usageLimit` and `appliesOncePerCustomer`. So:
+- One resource per method keeps each schema to the attributes that apply, with no "exactly one of three blocks" switch and no per-kind cross-validation of a dozen optional attributes. Each method is one implementation task.
+- Code vs automatic is the optional `code` attribute: set = code discount, unset = automatic. Switching between set and unset forces replace (RequiresReplaceIf on nullness); changing the code's value is in place.
+- The three share one package (`internal/resources/discount`, as `privacysettings` hosts two resources) with the common attributes, code handling, context, item selection and time comparison.
+
+**App discounts are not designed.** `DiscountCodeAppInput` and `DiscountAutomaticAppInput` take `functionHandle` only (2026-10 has no `functionId` input), and function handles are "scoped to your current app ID. Only finds functions within your app" (schema, on the delivery and payment customization inputs; `TODO(verify)` for discounts, where the description says only "the handle of the function providing the discount"). This provider's app ships no Functions (CLAUDE.md), so it can't create app discounts, and those of other apps belong to the Function's app (D3, Review Focus 5). The three list resources skip them, so generated config never contains one.
+
+### Common attributes (all three)
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `DiscountCodeNode` or `DiscountAutomaticNode` GID (checked). Computed, UseStateForUnknown |
+| `title` | string | Required. Unique among automatic discounts (`TAKEN`, "Title must be unique for automatic discount.", checked); code discounts may share titles with each other and with an automatic one (checked) |
+| `code` | string | Optional; unset = automatic discount. **RequiresReplace** when it changes between set and unset. Unique per shop, case-insensitively (`tfprobe` after `TfProbe` failed with `TAKEN`, checked); Shopify keeps the case as given. Renaming in place keeps the redeem code's GID (checked) |
+| `starts_at` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. RFC 3339. Required by the API on create for both kinds (`BLANK`, checked), so Create sends the current time when unset |
+| `ends_at` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged (no end date on create) |
+| `status` | string | Computed: `ACTIVE`, `SCHEDULED`, `EXPIRED`, from the dates. Activate / deactivate mutations are not used: deactivating means setting `ends_at` |
+| `context` | object | Optional + Computed, UseStateForUnknown; unset = unmanaged. Who can use it, exactly one of: `all` (bool, must be `true`), `customer_segment_ids` (set(string)), `market_ids` (set(string)). Code discounts require a context on create (`BLANK`, checked), so Create sends `all` when unset |
+| `combines_with` | object | Optional + Computed, UseStateForUnknown; unset = unmanaged. `product_discounts`, `order_discounts`, `shipping_discounts` (bool). All `false` when created without it (checked) |
+| `usage_limit` | number | Optional + Computed, UseStateForUnknown; unset = unmanaged. Code discounts only (ValidateConfig). Total uses; `null` = unlimited |
+| `applies_once_per_customer` | bool | Optional + Computed, UseStateForUnknown; unset = unmanaged. Code discounts only |
+| `adopt_existing` | bool | Pattern A, see below |
+
+**Times:** Shopify returns UTC (`2026-10-26T12:00:00+01:00` read back as `2026-10-26T11:00:00Z`, checked), so `starts_at` and `ends_at` use a custom string type whose semantic equality compares the instant; the configured spelling stays in state. (`terraform-plugin-framework-timetypes` would be a new dependency.) An end date or usage limit set in the admin can't be removed from config (unset = unmanaged); the docs say to set a far end date or a high limit instead.
+
+**Context:** `DiscountContextInput` writes segments and markets as `add` / `remove` lists. Update reads the live context, sends the difference, or switches kind (`{ all: ALL }` after segments replaced them, checked). Individual customers (`DiscountCustomers`) are not offered: customers are records, not configuration. A live context of individual customers or `DiscountContextUnknown` is unsupported: if config sets `context`, plan fails naming the context type; otherwise it stays null and import and list warn. Deleting a discount's only segment **expires the discount** and resets its context to all buyers (checked: status `ACTIVE` → `EXPIRED`, context `DiscountCustomerSegments` → `DiscountBuyerSelectionAll`), so the docs say to reference `shopify_customer_segment.<x>.id` (dependency order then updates the discount first).
+
+**Codes: one per discount.** `code` is the discount's code. Bulk codes (`discountRedeemCodeBulkAdd`, async jobs, often thousands of personal codes) are not managed (roadmap). A discount with more than one code (`codesCount > 1`) can still be imported by any of its codes: Read keeps the state `code` while `codeDiscountNodeByCode(code)` returns this discount, and otherwise takes the first code. Update refuses to change `code` on such a discount, since which code `DiscountCodeBasicInput.code` replaces is unverified (`TODO(verify)`); the list's `DisplayName` shows the extra count.
+
+Import key: `code/<code>` for a code discount (`code/WILLKOMMEN10`), `automatic/<title>` for an automatic one (`automatic/Versandkostenfrei ab 50 €`), split at the first `/` (`patterns.SplitImportKey`), so codes and titles may contain `/`. Read: `discountNode(id:)` first (not deprecated; `codeDiscountNode` and `automaticDiscountNode` are). If it is gone: `codeDiscountNodeByCode(code:)` for code discounts (direct, case-insensitive: `TFPROBE` found `TfProbe`, checked), `discountNodes(query: "method:automatic AND title:\"<title>\"")` with an exact title match for automatic ones (search-indexed; the probe found a new discount at once). `MutableIdentity` is set. A match of another method fails with "is a <kind> discount; use shopify_discount_<kind>"; an app discount with "belongs to an app".
+
+**Pattern A: `adopt_existing` only.** No default discounts exist (above). With `adopt_existing = true`, Create looks the key up and updates the found discount; destroy only removes it from state with a warning. Without it, Create fails on a taken code or automatic title (`TAKEN` from the API, mapped to `code` / `title`).
+
+**No Pattern B.** Deleting a discount removes its configuration; orders keep their discount applications (schema), and the config recreates it. But a recreate restarts usage counting (`asyncUsageCount`), so `usage_limit` and `applies_once_per_customer` start from zero and customers can use a once-per-customer code again. ModifyPlan therefore warns on a planned replace (only `code` set ↔ unset forces one). A missing discount on delete (`INVALID`, "Automatic discount does not exist.", checked; the code message is `TODO(verify)`) means already gone: removed from state without error.
+
+**Not managed in v1:** `tags` (discount tags), `recurringCycleLimit` and the subscription flags (`appliesOnSubscription`, `appliesOnOneTimePurchase`, `isSubscription`; selling plans are a roadmap type), `productDiscountsWithTagsOnSameCartLine`, metafields, bulk codes, shareable URLs. `discountClasses` follows from the items (all items → `ORDER`, collections → `PRODUCT`, checked) and isn't exposed.
+
+### `shopify_discount_basic`
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `customer_gets` | object | Required. `value`: exactly one of `percentage` (number, 0 < x ≤ 1) or `amount` (object: `amount` decimal string, `applies_on_each_item` bool). `items`: exactly one of `all` (bool, `true`), `product_ids` and/or `variant_ids` (set(string)), `collection_ids` (set(string)) |
+| `minimum_requirement` | object | Optional + Computed, UseStateForUnknown; unset = unmanaged. At most one of `subtotal` (decimal string) and `quantity` (number); `{}` = no minimum |
+
+Mutations: `discountCodeBasicCreate` / `Update`, `discountAutomaticBasicCreate` / `Update`, `discountCodeDelete`, `discountAutomaticDelete`.
+- **Items** are written as add / remove lists (`DiscountProductsInput.productsToAdd/Remove`, `productVariantsToAdd/Remove`, `DiscountCollectionsInput.add/remove`), unlike the full lists Read returns. Update reads the live items and sends the difference; switching kind sends the new kind only (`{ all: true }` replaced a collection selection, checked). `collections: { add: [] }` changed nothing (checked). Read pages `products`, `productVariants`, `collections` (first 250).
+- **Minimum requirement:** `minimumRequirement: null` is ignored (the minimum stayed, checked); `{ subtotal: { greaterThanOrEqualToSubtotal: null } }` removes it (checked), so `{}` in config sends that. Subtotals read back as `MoneyV2` (`"50"` → `"50.0"`, checked) and compare numerically, as product prices do (§9k.2).
+- Value: `DiscountCustomerGetsValueInput.percentage` / `discountAmount`; `discountOnQuantity` is BXGY only.
+
+### `shopify_discount_free_shipping`
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `destination` | object | Optional + Computed, UseStateForUnknown; unset = unmanaged. Exactly one of `all` (bool, `true`) or `country_codes` (set(string), ISO codes). Countries are written as `add` / `remove`, like items. `includeRestOfWorld` is deprecated and not used |
+| `maximum_shipping_price` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. Decimal; only shipping rates up to it are discounted |
+| `minimum_requirement` | object | As for basic |
+
+Mutations: `discountCodeFreeShippingCreate` / `Update`, `discountAutomaticFreeShippingCreate` / `Update`. `TODO(verify)`: the create defaults (destination when unset), and whether automatic free-shipping titles share the uniqueness rule.
+
+### `shopify_discount_bxgy`
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `customer_buys` | object | Required. `items` (as for basic; `TODO(verify)` whether `all` is accepted) and exactly one of `quantity` (number) or `amount` (decimal string, purchase amount) |
+| `customer_gets` | object | Required. `items` (as above), `quantity` (number of discounted items) and exactly one of `percentage` or `amount`: `DiscountOnQuantityInput { quantity, effect }` |
+| `uses_per_order_limit` | number | Optional + Computed, UseStateForUnknown; unset = unmanaged |
+
+Mutations: `discountCodeBxgyCreate` / `Update`, `discountAutomaticBxgyCreate` / `Update`.
+
+### All three
+
+- Errors (`DiscountUserError`, `field` relative to the input, e.g. `["automaticBasicDiscount","title"]`): `TAKEN` (`title` or `code`), `BLANK`, `INVALID`, `TOO_LONG`, `TOO_SHORT`, `END_DATE_BEFORE_START_DATE` (`ends_at`), `VALUE_OUTSIDE_RANGE`, `GREATER_THAN` / `LESS_THAN` and their variants, `MINIMUM_SUBTOTAL_AND_QUANTITY_RANGE_BOTH_PRESENT` (`minimum_requirement`), `EXCEEDED_MAX`, `ACTIVE_PERIOD_OVERLAP`, `CONFLICT`, `DUPLICATE`, `IMPLICIT_DUPLICATE`, `INCLUSION`, `INVALID_COMBINES_WITH_FOR_DISCOUNT_CLASS` (`combines_with`), `APPLIES_ON_NOTHING`, `INTERNAL_ERROR`; `extraInfo` is appended to the message. The tag, subscription and function codes can't occur (never sent). None is retried.
+- **Fit: volatile.** The descriptions say so: promotions are usually run from the admin; long-running rules (free shipping thresholds, a newsletter code) fit Terraform.
+- **Scopes:** `read_discounts` / `write_discounts` (`docs/bootstrapping.md`). `TODO(verify)`: whether reading segment and market contexts also needs `read_customers` / `read_markets`; checked only with every scope granted.
+- **Review Focus 1:** after destroy of an adopted discount, read it back through the client and expect it unchanged. **Review Focus 2:** set `ends_at` in one step, leave it out in the next, change it through the client in between: the config without it plans empty; likewise `combines_with`.
+- **Testing:** codes `TFACC<random>`, titles `tf-acc-discount-<random>`. Per resource: code and automatic create, update (dates, value, items switch, minimum set and cleared), code rename, code ↔ automatic plans a replace, import by both key forms and identity, adopt, a taken automatic title. Unit tests first: the time equality, import-key parsing, item and context diffs (add / remove / kind switch), the minimum mapping (`{}` → clear), mapping the `Discount` union to state.
+
+**List:** one per resource, no config. `discountNodes(first: 50)`, paged; requested cost with the basic fragments (items and markets at first 250) was 359 for 50 (checked). Each list keeps its method and skips other methods and app discounts. `DisplayName`: `<title> (code <CODE>)`, `<title> (code <CODE>, +<n> codes)`, or `<title> (automatic)`. Results carry the attributes above; generated config then holds product, collection, segment and market GIDs, which tie it to the store (the docs say to replace them with references).
+
+**Dev store (2026-10-26):** probes created five basic discounts (three automatic, two code; plus refused duplicates), updated items, context, minimum and code, created two probe segments for the context check and deleted them (which expired the discount using them), and deleted everything. End state equals the start: 0 discounts, the 5 default segments.
+
+**Task split (implementation order):** 13b-4a `shopify_discount_basic` with the shared package (largest); 13b-4b `shopify_discount_free_shipping`; 13b-4c `shopify_discount_bxgy`. 13b-4a needs `shopify_customer_segment` (§9q) only for its tests' segment context, which can use a default segment instead.
 
 ---
 
