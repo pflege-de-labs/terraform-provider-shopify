@@ -58,3 +58,11 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 4: minor (deferred): primary-domain error drops other userErrors in the same response (resource.go:260-266)
 - Task 4: ⚠️ resolved: `make fmt lint test` + `make generate` re-run by controller, clean, no diff. Review Focus 4 list-path generate-config: same identity-import workaround as the earlier list resources (cross-task, known). Suffix validator `^[a-z]{2,}$` vs legacy suffixes on staging/production: check at the first import.
 - Task 4: complete (commits 40d5910..d7a4b93, review clean)
+- Ruling S8-1: step 8 design (Step 1 of Tasks 5–9) runs as one design-only dispatch (opus) for all five types, reviewed by the controller before any implementer starts — the five are same-shaped shop-level singletons and must share Pattern A semantics — costs one larger re-design if the batch gets a shared assumption wrong.
+- Step 8: branch feat/phase2-08-shop-settings from feat/phase2-07-web-presence @ 690ca52; design dispatch running.
+- Step 8 design: 334ecf3..d329be9 (§9b–9f), report step8-design-report.md. Controller review: approved with the rulings below.
+- Ruling S8-2: checkout branding (Task 9) is merged into Task 8 `shopify_checkout_and_accounts_configuration` with a JSON `branding` attribute (§9e/§9f) — in 2026-10 branding is a field of the configuration and its only writable content, there is no separate object to manage — costs a split later if the task proves too big (fallback in the design report).
+- Ruling S8-3: `shopify_shop_locale.id` is the locale code and `shopify_privacy_settings.id` the shop GID, deviating from "id = GID" — `ShopLocale` and `PrivacySettings` have no GID of their own — costs an identity schema change if Shopify adds IDs later.
+- Ruling S8-4: Task 7 (privacy settings + consent policy) runs with write steps skipped until the dev store's Shopify cookie banner is off; disabling it is one-way through the API and is the user's call (asked) — costs untested write paths until then.
+- Step 8 open: dev store keeps an empty LEGAL_NOTICE policy row (API can't delete policies); branding on the dev store now reads empty containers instead of null.
+- Task 5 (shop locale): dispatched (base see next line).
