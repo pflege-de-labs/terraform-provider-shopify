@@ -9,6 +9,7 @@ fragment CollectionFields on Collection {
     title
     description
   }
+  ...PublicationsOfPublishable
   # Raw JSON: the provider maps conditions to their input shape, not to 18 generated types.
   # Aliases (`<field>__<kind>`) keep fields with different types apart, as GraphQL requires; the mapping strips them.
   # Written from admin-2026-10.graphql; regenerate it when the API version changes.

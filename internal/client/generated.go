@@ -667,7 +667,8 @@ type CollectionFields struct {
 	// The suffix of the Liquid template being used to show the collection in an online store. For example, if the value is `custom`, then the collection is using the `collection.custom.liquid` template. If the value is `null`, then the collection is using the default `collection.liquid` template.
 	TemplateSuffix *string `json:"templateSuffix"`
 	// If the default SEO fields for page title and description have been modified, contains the modified information.
-	Seo CollectionFieldsSeoSEO `json:"seo"`
+	Seo                                 CollectionFieldsSeoSEO `json:"seo"`
+	PublicationsOfPublishableCollection `json:"-"`
 	// The sources that provide products for this collection. Each source represents a way products are included in the collection, such as through conditions and rules.
 	Sources json.RawMessage `json:"sources"`
 }
@@ -695,6 +696,79 @@ func (v *CollectionFields) GetSeo() CollectionFieldsSeoSEO { return v.Seo }
 
 // GetSources returns CollectionFields.Sources, and is useful for accessing the field via an interface.
 func (v *CollectionFields) GetSources() json.RawMessage { return v.Sources }
+
+// GetResourcePublicationsV2 returns CollectionFields.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
+func (v *CollectionFields) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CollectionFields
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CollectionFields = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableCollection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCollectionFields struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+
+	Sources json.RawMessage `json:"sources"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *CollectionFields) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CollectionFields) __premarshalJSON() (*__premarshalCollectionFields, error) {
+	var retval __premarshalCollectionFields
+
+	retval.Id = v.Id
+	retval.Handle = v.Handle
+	retval.Title = v.Title
+	retval.DescriptionHtml = v.DescriptionHtml
+	retval.SortOrder = v.SortOrder
+	retval.TemplateSuffix = v.TemplateSuffix
+	retval.Seo = v.Seo
+	retval.Sources = v.Sources
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableCollection.ResourcePublicationsV2
+	return &retval, nil
+}
 
 // CollectionFieldsSeoSEO includes the requested fields of the GraphQL type SEO.
 // The GraphQL type's documentation follows.
@@ -3305,6 +3379,11 @@ func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetS
 	return v.CollectionFields.Sources
 }
 
+// GetResourcePublicationsV2 returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
 func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -3346,6 +3425,8 @@ type __premarshalCreateCollectionCollectionCreateCollectionCreatePayloadCollecti
 	Seo CollectionFieldsSeoSEO `json:"seo"`
 
 	Sources json.RawMessage `json:"sources"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
 }
 
 func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) MarshalJSON() ([]byte, error) {
@@ -3367,6 +3448,7 @@ func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) __pr
 	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
 	retval.Seo = v.CollectionFields.Seo
 	retval.Sources = v.CollectionFields.Sources
+	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
 	return &retval, nil
 }
 
@@ -8113,6 +8195,11 @@ func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetSources() jso
 	return v.CollectionFields.Sources
 }
 
+// GetResourcePublicationsV2 returns GetCollectionByHandleCollectionByIdentifierCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
 func (v *GetCollectionByHandleCollectionByIdentifierCollection) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -8154,6 +8241,8 @@ type __premarshalGetCollectionByHandleCollectionByIdentifierCollection struct {
 	Seo CollectionFieldsSeoSEO `json:"seo"`
 
 	Sources json.RawMessage `json:"sources"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
 }
 
 func (v *GetCollectionByHandleCollectionByIdentifierCollection) MarshalJSON() ([]byte, error) {
@@ -8175,6 +8264,7 @@ func (v *GetCollectionByHandleCollectionByIdentifierCollection) __premarshalJSON
 	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
 	retval.Seo = v.CollectionFields.Seo
 	retval.Sources = v.CollectionFields.Sources
+	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
 	return &retval, nil
 }
 
@@ -8251,6 +8341,11 @@ func (v *GetCollectionCollection) GetSeo() CollectionFieldsSeoSEO { return v.Col
 // GetSources returns GetCollectionCollection.Sources, and is useful for accessing the field via an interface.
 func (v *GetCollectionCollection) GetSources() json.RawMessage { return v.CollectionFields.Sources }
 
+// GetResourcePublicationsV2 returns GetCollectionCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
 func (v *GetCollectionCollection) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -8292,6 +8387,8 @@ type __premarshalGetCollectionCollection struct {
 	Seo CollectionFieldsSeoSEO `json:"seo"`
 
 	Sources json.RawMessage `json:"sources"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
 }
 
 func (v *GetCollectionCollection) MarshalJSON() ([]byte, error) {
@@ -8313,7 +8410,155 @@ func (v *GetCollectionCollection) __premarshalJSON() (*__premarshalGetCollection
 	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
 	retval.Seo = v.CollectionFields.Seo
 	retval.Sources = v.CollectionFields.Sources
+	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
 	return &retval, nil
+}
+
+// GetCollectionPublicationsCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type GetCollectionPublicationsCollection struct {
+	// The list of resources that are either published or staged to be published to a
+	// [publication](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	// By default, only publications to `APP` catalog types are returned.
+	// For `Product` and `ProductVariant`, use the `catalogType` argument to retrieve
+	// publications for other catalog types, such as `COMPANY_LOCATION` (B2B) or `MARKET`.
+	// `Collection` only supports publications to `APP` catalog types.
+	ResourcePublicationsV2 GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+// GetResourcePublicationsV2 returns GetCollectionPublicationsCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollection) GetResourcePublicationsV2() GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ResourcePublicationsV2
+}
+
+// GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection includes the requested fields of the GraphQL type ResourcePublicationV2Connection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ResourcePublicationV2s.
+type GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection struct {
+	// A list of nodes that are contained in ResourcePublicationV2Edge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection) GetNodes() []GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection) GetPageInfo() GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 includes the requested fields of the GraphQL type ResourcePublicationV2.
+// The GraphQL type's documentation follows.
+//
+// A resource publication represents information about the publication of a resource.
+// Unlike `ResourcePublication`, an instance of `ResourcePublicationV2` can't be unpublished. It must either be published or scheduled to be published.
+//
+// See [ResourcePublication](/api/admin-graphql/latest/objects/ResourcePublication) for more context.
+type GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 struct {
+	// The publication the resource publication is published to.
+	Publication GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication `json:"publication"`
+}
+
+// GetPublication returns GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2.Publication, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2) GetPublication() GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication {
+	return v.Publication
+}
+
+// GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication includes the requested fields of the GraphQL type Publication.
+// The GraphQL type's documentation follows.
+//
+// A group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) that are published to an app.
+//
+// Each publication manages which products and collections display on its associated [`Channel`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Channel). Merchants can automatically publish products when they're created if [`autoPublish`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.autoPublish) is enabled, or manually control publication through publication records.
+//
+// Publications support scheduled publishing through future publish dates for online store channels, allowing merchants to coordinate product launches and promotional campaigns. The [`catalog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.catalog) field links to pricing and availability rules specific to that publication's context.
+type GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication.Id, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication) GetId() string {
+	return v.Id
+}
+
+// GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetCollectionPublicationsResponse is returned by GetCollectionPublications on success.
+type GetCollectionPublicationsResponse struct {
+	// Retrieves a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) by its ID.
+	// A collection represents a grouping of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// that merchants can display and sell as a group in their [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	//
+	// Use the `collection` query when you need to:
+	//
+	// - Manage collection publishing across sales channels
+	// - Access collection metadata and SEO information
+	// - Work with collection conditions and product relationships
+	//
+	// A collection determines which products it includes through conditions that automatically include
+	// products that match, and through manual selections of individual products. Each collection has
+	// associated metadata including title, description, handle, image, and
+	// [metafields](https://shopify.dev/docs/apps/build/custom-data/metafields).
+	Collection *GetCollectionPublicationsCollection `json:"collection"`
+}
+
+// GetCollection returns GetCollectionPublicationsResponse.Collection, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsResponse) GetCollection() *GetCollectionPublicationsCollection {
+	return v.Collection
 }
 
 // GetCollectionResponse is returned by GetCollection on success.
@@ -10122,6 +10367,11 @@ func (v *GetProductByHandleProductByIdentifierProduct) GetVariants() ProductFiel
 	return v.ProductFields.Variants
 }
 
+// GetResourcePublicationsV2 returns GetProductByHandleProductByIdentifierProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
 func (v *GetProductByHandleProductByIdentifierProduct) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -10177,6 +10427,8 @@ type __premarshalGetProductByHandleProductByIdentifierProduct struct {
 	Options []ProductFieldsOptionsProductOption `json:"options"`
 
 	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
 }
 
 func (v *GetProductByHandleProductByIdentifierProduct) MarshalJSON() ([]byte, error) {
@@ -10205,6 +10457,7 @@ func (v *GetProductByHandleProductByIdentifierProduct) __premarshalJSON() (*__pr
 	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
 	retval.Options = v.ProductFields.Options
 	retval.Variants = v.ProductFields.Variants
+	retval.ResourcePublicationsV2 = v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
 	return &retval, nil
 }
 
@@ -10288,6 +10541,11 @@ func (v *GetProductProduct) GetVariants() ProductFieldsVariantsProductVariantCon
 	return v.ProductFields.Variants
 }
 
+// GetResourcePublicationsV2 returns GetProductProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
 func (v *GetProductProduct) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -10343,6 +10601,8 @@ type __premarshalGetProductProduct struct {
 	Options []ProductFieldsOptionsProductOption `json:"options"`
 
 	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
 }
 
 func (v *GetProductProduct) MarshalJSON() ([]byte, error) {
@@ -10371,7 +10631,135 @@ func (v *GetProductProduct) __premarshalJSON() (*__premarshalGetProductProduct, 
 	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
 	retval.Options = v.ProductFields.Options
 	retval.Variants = v.ProductFields.Variants
+	retval.ResourcePublicationsV2 = v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
 	return &retval, nil
+}
+
+// GetProductPublicationsProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductPublicationsProduct struct {
+	// The list of resources that are either published or staged to be published to a
+	// [publication](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	// By default, only publications to `APP` catalog types are returned.
+	// For `Product` and `ProductVariant`, use the `catalogType` argument to retrieve
+	// publications for other catalog types, such as `COMPANY_LOCATION` (B2B) or `MARKET`.
+	// `Collection` only supports publications to `APP` catalog types.
+	ResourcePublicationsV2 GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+// GetResourcePublicationsV2 returns GetProductPublicationsProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProduct) GetResourcePublicationsV2() GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ResourcePublicationsV2
+}
+
+// GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection includes the requested fields of the GraphQL type ResourcePublicationV2Connection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ResourcePublicationV2s.
+type GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection struct {
+	// A list of nodes that are contained in ResourcePublicationV2Edge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection) GetNodes() []GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection) GetPageInfo() GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 includes the requested fields of the GraphQL type ResourcePublicationV2.
+// The GraphQL type's documentation follows.
+//
+// A resource publication represents information about the publication of a resource.
+// Unlike `ResourcePublication`, an instance of `ResourcePublicationV2` can't be unpublished. It must either be published or scheduled to be published.
+//
+// See [ResourcePublication](/api/admin-graphql/latest/objects/ResourcePublication) for more context.
+type GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 struct {
+	// The publication the resource publication is published to.
+	Publication GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication `json:"publication"`
+}
+
+// GetPublication returns GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2.Publication, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2) GetPublication() GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication {
+	return v.Publication
+}
+
+// GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication includes the requested fields of the GraphQL type Publication.
+// The GraphQL type's documentation follows.
+//
+// A group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) that are published to an app.
+//
+// Each publication manages which products and collections display on its associated [`Channel`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Channel). Merchants can automatically publish products when they're created if [`autoPublish`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.autoPublish) is enabled, or manually control publication through publication records.
+//
+// Publications support scheduled publishing through future publish dates for online store channels, allowing merchants to coordinate product launches and promotional campaigns. The [`catalog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.catalog) field links to pricing and availability rules specific to that publication's context.
+type GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication.Id, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication) GetId() string {
+	return v.Id
+}
+
+// GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetProductPublicationsResponse is returned by GetProductPublications on success.
+type GetProductPublicationsResponse struct {
+	// Retrieves a [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) by its ID.
+	// A product is an item that a merchant can sell in their store.
+	//
+	// Use the `product` query when you need to:
+	//
+	// - Access essential product data (for example, title, description, price, images, SEO metadata, and metafields).
+	// - Build product detail pages and manage inventory.
+	// - Handle international sales with localized pricing and content.
+	// - Manage product variants and product options.
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Product *GetProductPublicationsProduct `json:"product"`
+}
+
+// GetProduct returns GetProductPublicationsResponse.Product, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsResponse) GetProduct() *GetProductPublicationsProduct {
+	return v.Product
 }
 
 // GetProductResponse is returned by GetProduct on success.
@@ -11089,6 +11477,11 @@ func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetSourc
 	return v.CollectionFields.Sources
 }
 
+// GetResourcePublicationsV2 returns ListCollectionsCollectionsCollectionConnectionNodesCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
 func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -11130,6 +11523,8 @@ type __premarshalListCollectionsCollectionsCollectionConnectionNodesCollection s
 	Seo CollectionFieldsSeoSEO `json:"seo"`
 
 	Sources json.RawMessage `json:"sources"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
 }
 
 func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) MarshalJSON() ([]byte, error) {
@@ -11151,6 +11546,7 @@ func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) __premar
 	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
 	retval.Seo = v.CollectionFields.Seo
 	retval.Sources = v.CollectionFields.Sources
+	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
 	return &retval, nil
 }
 
@@ -12085,6 +12481,11 @@ func (v *ListProductsProductsProductConnectionNodesProduct) GetVariants() Produc
 	return v.ProductFields.Variants
 }
 
+// GetResourcePublicationsV2 returns ListProductsProductsProductConnectionNodesProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
 func (v *ListProductsProductsProductConnectionNodesProduct) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -12140,6 +12541,8 @@ type __premarshalListProductsProductsProductConnectionNodesProduct struct {
 	Options []ProductFieldsOptionsProductOption `json:"options"`
 
 	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
 }
 
 func (v *ListProductsProductsProductConnectionNodesProduct) MarshalJSON() ([]byte, error) {
@@ -12168,6 +12571,7 @@ func (v *ListProductsProductsProductConnectionNodesProduct) __premarshalJSON() (
 	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
 	retval.Options = v.ProductFields.Options
 	retval.Variants = v.ProductFields.Variants
+	retval.ResourcePublicationsV2 = v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
 	return &retval, nil
 }
 
@@ -17232,7 +17636,8 @@ type ProductFields struct {
 	// Whether the product is a gift card.
 	IsGiftCard bool `json:"isGiftCard"`
 	// Whether the product has only a single variant with the default option and value.
-	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
+	HasOnlyDefaultVariant            bool `json:"hasOnlyDefaultVariant"`
+	PublicationsOfPublishableProduct `json:"-"`
 	// A list of product options. The limit is defined by the
 	// [shop's resource limits for product options](https://shopify.dev/docs/api/admin-graphql/latest/objects/Shop#field-resourcelimits) (`Shop.resourceLimits.maxProductOptions`).
 	Options []ProductFieldsOptionsProductOption `json:"options"`
@@ -17286,6 +17691,100 @@ func (v *ProductFields) GetOptions() []ProductFieldsOptionsProductOption { retur
 // GetVariants returns ProductFields.Variants, and is useful for accessing the field via an interface.
 func (v *ProductFields) GetVariants() ProductFieldsVariantsProductVariantConnection {
 	return v.Variants
+}
+
+// GetResourcePublicationsV2 returns ProductFields.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
+func (v *ProductFields) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ProductFields
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ProductFields = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableProduct)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalProductFields struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Status ProductStatus `json:"status"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	Vendor string `json:"vendor"`
+
+	ProductType string `json:"productType"`
+
+	Category *ProductFieldsCategoryTaxonomyCategory `json:"category"`
+
+	Tags []string `json:"tags"`
+
+	Seo ProductFieldsSeoSEO `json:"seo"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	IsGiftCard bool `json:"isGiftCard"`
+
+	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
+
+	Options []ProductFieldsOptionsProductOption `json:"options"`
+
+	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *ProductFields) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ProductFields) __premarshalJSON() (*__premarshalProductFields, error) {
+	var retval __premarshalProductFields
+
+	retval.Id = v.Id
+	retval.Handle = v.Handle
+	retval.Title = v.Title
+	retval.Status = v.Status
+	retval.DescriptionHtml = v.DescriptionHtml
+	retval.Vendor = v.Vendor
+	retval.ProductType = v.ProductType
+	retval.Category = v.Category
+	retval.Tags = v.Tags
+	retval.Seo = v.Seo
+	retval.TemplateSuffix = v.TemplateSuffix
+	retval.IsGiftCard = v.IsGiftCard
+	retval.HasOnlyDefaultVariant = v.HasOnlyDefaultVariant
+	retval.Options = v.Options
+	retval.Variants = v.Variants
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableProduct.ResourcePublicationsV2
+	return &retval, nil
 }
 
 // ProductFieldsCategoryTaxonomyCategory includes the requested fields of the GraphQL type TaxonomyCategory.
@@ -18062,6 +18561,730 @@ func (v *ProductVariantSetInput) GetUnitPriceMeasurement() *UnitPriceMeasurement
 // GetShowUnitPrice returns ProductVariantSetInput.ShowUnitPrice, and is useful for accessing the field via an interface.
 func (v *ProductVariantSetInput) GetShowUnitPrice() *bool { return v.ShowUnitPrice }
 
+// The input fields required to publish a resource.
+type PublicationInput struct {
+	// ID of the publication.
+	PublicationId *string `json:"publicationId"`
+	// The date and time that the resource was published. Setting this to a date in the future will schedule the resource to be published. Only online store channels support future publishing. This field has no effect if you include it in the `publishableUnpublish` mutation.
+	PublishDate *string `json:"publishDate,omitempty"`
+}
+
+// GetPublicationId returns PublicationInput.PublicationId, and is useful for accessing the field via an interface.
+func (v *PublicationInput) GetPublicationId() *string { return v.PublicationId }
+
+// GetPublishDate returns PublicationInput.PublishDate, and is useful for accessing the field via an interface.
+func (v *PublicationInput) GetPublishDate() *string { return v.PublishDate }
+
+// Membership, not isPublished: a draft product lists its publications too. Only APP catalog publications are returned (design §9k.3).
+// 10 per resource keeps product and collection list pages under the cost limit; the rest is paged by GetPublishablePublications.
+//
+// PublicationsOfPublishable is implemented by the following types:
+// PublicationsOfPublishableCollection
+// PublicationsOfPublishableProduct
+// PublicationsOfPublishableProductVariant
+type PublicationsOfPublishable interface {
+	implementsGraphQLInterfacePublicationsOfPublishable()
+	// GetResourcePublicationsV2 returns the interface-field "resourcePublicationsV2" from its implementation.
+	// The GraphQL interface field's documentation follows.
+	//
+	// The list of resources that are either published or staged to be published to a
+	// [publication](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	// By default, only publications to `APP` catalog types are returned.
+	// For `Product` and `ProductVariant`, use the `catalogType` argument to retrieve
+	// publications for other catalog types, such as `COMPANY_LOCATION` (B2B) or `MARKET`.
+	// `Collection` only supports publications to `APP` catalog types.
+	GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection
+}
+
+func (v *PublicationsOfPublishableCollection) implementsGraphQLInterfacePublicationsOfPublishable() {}
+func (v *PublicationsOfPublishableProduct) implementsGraphQLInterfacePublicationsOfPublishable()    {}
+func (v *PublicationsOfPublishableProductVariant) implementsGraphQLInterfacePublicationsOfPublishable() {
+}
+
+func __unmarshalPublicationsOfPublishable(b []byte, v *PublicationsOfPublishable) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "Collection":
+		*v = new(PublicationsOfPublishableCollection)
+		return json.Unmarshal(b, *v)
+	case "Product":
+		*v = new(PublicationsOfPublishableProduct)
+		return json.Unmarshal(b, *v)
+	case "ProductVariant":
+		*v = new(PublicationsOfPublishableProductVariant)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Publishable.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for PublicationsOfPublishable: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalPublicationsOfPublishable(v *PublicationsOfPublishable) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *PublicationsOfPublishableCollection:
+		typename = "Collection"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*PublicationsOfPublishableCollection
+		}{typename, v}
+		return json.Marshal(result)
+	case *PublicationsOfPublishableProduct:
+		typename = "Product"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*PublicationsOfPublishableProduct
+		}{typename, v}
+		return json.Marshal(result)
+	case *PublicationsOfPublishableProductVariant:
+		typename = "ProductVariant"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*PublicationsOfPublishableProductVariant
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for PublicationsOfPublishable: "%T"`, v)
+	}
+}
+
+// Membership, not isPublished: a draft product lists its publications too. Only APP catalog publications are returned (design §9k.3).
+// 10 per resource keeps product and collection list pages under the cost limit; the rest is paged by GetPublishablePublications.
+type PublicationsOfPublishableCollection struct {
+	// The list of resources that are either published or staged to be published to a
+	// [publication](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	// By default, only publications to `APP` catalog types are returned.
+	// For `Product` and `ProductVariant`, use the `catalogType` argument to retrieve
+	// publications for other catalog types, such as `COMPANY_LOCATION` (B2B) or `MARKET`.
+	// `Collection` only supports publications to `APP` catalog types.
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+// GetResourcePublicationsV2 returns PublicationsOfPublishableCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ResourcePublicationsV2
+}
+
+// Membership, not isPublished: a draft product lists its publications too. Only APP catalog publications are returned (design §9k.3).
+// 10 per resource keeps product and collection list pages under the cost limit; the rest is paged by GetPublishablePublications.
+type PublicationsOfPublishableProduct struct {
+	// The list of resources that are either published or staged to be published to a
+	// [publication](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	// By default, only publications to `APP` catalog types are returned.
+	// For `Product` and `ProductVariant`, use the `catalogType` argument to retrieve
+	// publications for other catalog types, such as `COMPANY_LOCATION` (B2B) or `MARKET`.
+	// `Collection` only supports publications to `APP` catalog types.
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+// GetResourcePublicationsV2 returns PublicationsOfPublishableProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ResourcePublicationsV2
+}
+
+// Membership, not isPublished: a draft product lists its publications too. Only APP catalog publications are returned (design §9k.3).
+// 10 per resource keeps product and collection list pages under the cost limit; the rest is paged by GetPublishablePublications.
+type PublicationsOfPublishableProductVariant struct {
+	// The list of resources that are either published or staged to be published to a
+	// [publication](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	// By default, only publications to `APP` catalog types are returned.
+	// For `Product` and `ProductVariant`, use the `catalogType` argument to retrieve
+	// publications for other catalog types, such as `COMPANY_LOCATION` (B2B) or `MARKET`.
+	// `Collection` only supports publications to `APP` catalog types.
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+// GetResourcePublicationsV2 returns PublicationsOfPublishableProductVariant.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableProductVariant) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ResourcePublicationsV2
+}
+
+// PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection includes the requested fields of the GraphQL type ResourcePublicationV2Connection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ResourcePublicationV2s.
+type PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection struct {
+	// A list of nodes that are contained in ResourcePublicationV2Edge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection.Nodes, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection) GetNodes() []PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 {
+	return v.Nodes
+}
+
+// GetPageInfo returns PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection.PageInfo, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection) GetPageInfo() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo {
+	return v.PageInfo
+}
+
+// PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 includes the requested fields of the GraphQL type ResourcePublicationV2.
+// The GraphQL type's documentation follows.
+//
+// A resource publication represents information about the publication of a resource.
+// Unlike `ResourcePublication`, an instance of `ResourcePublicationV2` can't be unpublished. It must either be published or scheduled to be published.
+//
+// See [ResourcePublication](/api/admin-graphql/latest/objects/ResourcePublication) for more context.
+type PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 struct {
+	// The publication the resource publication is published to.
+	Publication PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication `json:"publication"`
+}
+
+// GetPublication returns PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2.Publication, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2) GetPublication() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication {
+	return v.Publication
+}
+
+// PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication includes the requested fields of the GraphQL type Publication.
+// The GraphQL type's documentation follows.
+//
+// A group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) that are published to an app.
+//
+// Each publication manages which products and collections display on its associated [`Channel`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Channel). Merchants can automatically publish products when they're created if [`autoPublish`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.autoPublish) is enabled, or manually control publication through publication records.
+//
+// Publications support scheduled publishing through future publish dates for online store channels, allowing merchants to coordinate product launches and promotional campaigns. The [`catalog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.catalog) field links to pricing and availability rules specific to that publication's context.
+type PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication.Id, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication) GetId() string {
+	return v.Id
+}
+
+// PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// PublishPublishablePublishablePublishPublishablePublishPayload includes the requested fields of the GraphQL type PublishablePublishPayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `publishablePublish` mutation.
+type PublishPublishablePublishablePublishPublishablePublishPayload struct {
+	// Resource that has been published.
+	Publishable *PublishPublishablePublishablePublishPublishablePublishPayloadPublishable `json:"-"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetPublishable returns PublishPublishablePublishablePublishPublishablePublishPayload.Publishable, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayload) GetPublishable() *PublishPublishablePublishablePublishPublishablePublishPayloadPublishable {
+	return v.Publishable
+}
+
+// GetUserErrors returns PublishPublishablePublishablePublishPublishablePublishPayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayload) GetUserErrors() []PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayload) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*PublishPublishablePublishablePublishPublishablePublishPayload
+		Publishable json.RawMessage `json:"publishable"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.PublishPublishablePublishablePublishPublishablePublishPayload = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Publishable
+		src := firstPass.Publishable
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(PublishPublishablePublishablePublishPublishablePublishPayloadPublishable)
+			err = __unmarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishable(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal PublishPublishablePublishablePublishPublishablePublishPayload.Publishable: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalPublishPublishablePublishablePublishPublishablePublishPayload struct {
+	Publishable json.RawMessage `json:"publishable"`
+
+	UserErrors []PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError `json:"userErrors"`
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayload) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayload) __premarshalJSON() (*__premarshalPublishPublishablePublishablePublishPublishablePublishPayload, error) {
+	var retval __premarshalPublishPublishablePublishablePublishPublishablePublishPayload
+
+	{
+
+		dst := &retval.Publishable
+		src := v.Publishable
+		if src != nil {
+			var err error
+			*dst, err = __marshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishable(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal PublishPublishablePublishablePublishPublishablePublishPayload.Publishable: %w", err)
+			}
+		}
+	}
+	retval.UserErrors = v.UserErrors
+	return &retval, nil
+}
+
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishable includes the requested fields of the GraphQL interface Publishable.
+//
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishable is implemented by the following types:
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant
+// The GraphQL type's documentation follows.
+//
+// Represents a resource that can be published to a channel.
+// A publishable resource can be either a Product or Collection.
+type PublishPublishablePublishablePublishPublishablePublishPayloadPublishable interface {
+	implementsGraphQLInterfacePublishPublishablePublishablePublishPublishablePublishPayloadPublishable()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+	PublicationsOfPublishable
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection) implementsGraphQLInterfacePublishPublishablePublishablePublishPublishablePublishPayloadPublishable() {
+}
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct) implementsGraphQLInterfacePublishPublishablePublishablePublishPublishablePublishPayloadPublishable() {
+}
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant) implementsGraphQLInterfacePublishPublishablePublishablePublishPublishablePublishPayloadPublishable() {
+}
+
+func __unmarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishable(b []byte, v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishable) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "Collection":
+		*v = new(PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection)
+		return json.Unmarshal(b, *v)
+	case "Product":
+		*v = new(PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct)
+		return json.Unmarshal(b, *v)
+	case "ProductVariant":
+		*v = new(PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Publishable.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for PublishPublishablePublishablePublishPublishablePublishPayloadPublishable: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishable(v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishable) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection:
+		typename = "Collection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct:
+		typename = "Product"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant:
+		typename = "ProductVariant"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for PublishPublishablePublishablePublishPublishablePublishPayloadPublishable: "%T"`, v)
+	}
+}
+
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection struct {
+	Typename                            *string `json:"__typename"`
+	PublicationsOfPublishableCollection `json:"-"`
+}
+
+// GetTypename returns PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection.Typename, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection) GetTypename() *string {
+	return v.Typename
+}
+
+// GetResourcePublicationsV2 returns PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableCollection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection struct {
+	Typename *string `json:"__typename"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection) __premarshalJSON() (*__premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection, error) {
+	var retval __premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection
+
+	retval.Typename = v.Typename
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableCollection.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct struct {
+	Typename                         *string `json:"__typename"`
+	PublicationsOfPublishableProduct `json:"-"`
+}
+
+// GetTypename returns PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct.Typename, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct) GetTypename() *string {
+	return v.Typename
+}
+
+// GetResourcePublicationsV2 returns PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableProduct)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct struct {
+	Typename *string `json:"__typename"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct) __premarshalJSON() (*__premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct, error) {
+	var retval __premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct
+
+	retval.Typename = v.Typename
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableProduct.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant struct {
+	Typename                                *string `json:"__typename"`
+	PublicationsOfPublishableProductVariant `json:"-"`
+}
+
+// GetTypename returns PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant.Typename, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant) GetTypename() *string {
+	return v.Typename
+}
+
+// GetResourcePublicationsV2 returns PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableProductVariant.ResourcePublicationsV2
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableProductVariant)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant struct {
+	Typename *string `json:"__typename"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant) __premarshalJSON() (*__premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant, error) {
+	var retval __premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant
+
+	retval.Typename = v.Typename
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableProductVariant.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// PublishPublishableResponse is returned by PublishPublishable on success.
+type PublishPublishableResponse struct {
+	// Publishes a resource, such as a [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) or [`Collection`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection), to one or more [publications](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	//
+	// For products to be visible in a channel, they must have an active [`ProductStatus`](https://shopify.dev/docs/api/admin-graphql/latest/enums/ProductStatus). Products sold exclusively on subscription (`requiresSellingPlan: true`) can only be published to online stores.
+	//
+	// You can schedule future publication by providing a publish date. Only online store channels support [scheduled publishing](https://shopify.dev/docs/apps/build/sales-channels/scheduled-product-publishing).
+	PublishablePublish *PublishPublishablePublishablePublishPublishablePublishPayload `json:"publishablePublish"`
+}
+
+// GetPublishablePublish returns PublishPublishableResponse.PublishablePublish, and is useful for accessing the field via an interface.
+func (v *PublishPublishableResponse) GetPublishablePublish() *PublishPublishablePublishablePublishPublishablePublishPayload {
+	return v.PublishablePublish
+}
+
 // The input fields for SEO information.
 type SEOInput struct {
 	// SEO title of the product.
@@ -18186,6 +19409,11 @@ func (v *SetProductProductSetProductSetPayloadProduct) GetVariants() ProductFiel
 	return v.ProductFields.Variants
 }
 
+// GetResourcePublicationsV2 returns SetProductProductSetProductSetPayloadProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
 func (v *SetProductProductSetProductSetPayloadProduct) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -18241,6 +19469,8 @@ type __premarshalSetProductProductSetProductSetPayloadProduct struct {
 	Options []ProductFieldsOptionsProductOption `json:"options"`
 
 	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
 }
 
 func (v *SetProductProductSetProductSetPayloadProduct) MarshalJSON() ([]byte, error) {
@@ -18269,6 +19499,7 @@ func (v *SetProductProductSetProductSetPayloadProduct) __premarshalJSON() (*__pr
 	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
 	retval.Options = v.ProductFields.Options
 	retval.Variants = v.ProductFields.Variants
+	retval.ResourcePublicationsV2 = v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
 	return &retval, nil
 }
 
@@ -18653,6 +19884,490 @@ var AllUnitPriceMeasurementMeasuredUnit = []UnitPriceMeasurementMeasuredUnit{
 	UnitPriceMeasurementMeasuredUnitUnknown,
 }
 
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload includes the requested fields of the GraphQL type PublishableUnpublishPayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `publishableUnpublish` mutation.
+type UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload struct {
+	// Resource that has been unpublished.
+	Publishable *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable `json:"-"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetPublishable returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload.Publishable, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload) GetPublishable() *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable {
+	return v.Publishable
+}
+
+// GetUserErrors returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload) GetUserErrors() []UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload
+		Publishable json.RawMessage `json:"publishable"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Publishable
+		src := firstPass.Publishable
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable)
+			err = __unmarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload.Publishable: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayload struct {
+	Publishable json.RawMessage `json:"publishable"`
+
+	UserErrors []UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError `json:"userErrors"`
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload) __premarshalJSON() (*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayload, error) {
+	var retval __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayload
+
+	{
+
+		dst := &retval.Publishable
+		src := v.Publishable
+		if src != nil {
+			var err error
+			*dst, err = __marshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload.Publishable: %w", err)
+			}
+		}
+	}
+	retval.UserErrors = v.UserErrors
+	return &retval, nil
+}
+
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable includes the requested fields of the GraphQL interface Publishable.
+//
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable is implemented by the following types:
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant
+// The GraphQL type's documentation follows.
+//
+// Represents a resource that can be published to a channel.
+// A publishable resource can be either a Product or Collection.
+type UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable interface {
+	implementsGraphQLInterfaceUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+	PublicationsOfPublishable
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection) implementsGraphQLInterfaceUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable() {
+}
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct) implementsGraphQLInterfaceUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable() {
+}
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant) implementsGraphQLInterfaceUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable() {
+}
+
+func __unmarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable(b []byte, v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "Collection":
+		*v = new(UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection)
+		return json.Unmarshal(b, *v)
+	case "Product":
+		*v = new(UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct)
+		return json.Unmarshal(b, *v)
+	case "ProductVariant":
+		*v = new(UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Publishable.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable(v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection:
+		typename = "Collection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct:
+		typename = "Product"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant:
+		typename = "ProductVariant"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable: "%T"`, v)
+	}
+}
+
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection struct {
+	Typename                            *string `json:"__typename"`
+	PublicationsOfPublishableCollection `json:"-"`
+}
+
+// GetTypename returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection.Typename, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection) GetTypename() *string {
+	return v.Typename
+}
+
+// GetResourcePublicationsV2 returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableCollection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection struct {
+	Typename *string `json:"__typename"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection) __premarshalJSON() (*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection, error) {
+	var retval __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection
+
+	retval.Typename = v.Typename
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableCollection.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct struct {
+	Typename                         *string `json:"__typename"`
+	PublicationsOfPublishableProduct `json:"-"`
+}
+
+// GetTypename returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct.Typename, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct) GetTypename() *string {
+	return v.Typename
+}
+
+// GetResourcePublicationsV2 returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableProduct)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct struct {
+	Typename *string `json:"__typename"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct) __premarshalJSON() (*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct, error) {
+	var retval __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct
+
+	retval.Typename = v.Typename
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableProduct.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant struct {
+	Typename                                *string `json:"__typename"`
+	PublicationsOfPublishableProductVariant `json:"-"`
+}
+
+// GetTypename returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant.Typename, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant) GetTypename() *string {
+	return v.Typename
+}
+
+// GetResourcePublicationsV2 returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableProductVariant.ResourcePublicationsV2
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableProductVariant)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant struct {
+	Typename *string `json:"__typename"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant) __premarshalJSON() (*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant, error) {
+	var retval __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant
+
+	retval.Typename = v.Typename
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableProductVariant.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// UnpublishPublishableResponse is returned by UnpublishPublishable on success.
+type UnpublishPublishableResponse struct {
+	// Unpublishes a resource, such as a [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) or [`Collection`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection), from one or more [publications](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication). The resource remains in your store but becomes unavailable to customers.
+	//
+	// For products to be visible in a channel, they must have an active [`ProductStatus`](https://shopify.dev/docs/api/admin-graphql/latest/enums/ProductStatus).
+	PublishableUnpublish *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload `json:"publishableUnpublish"`
+}
+
+// GetPublishableUnpublish returns UnpublishPublishableResponse.PublishableUnpublish, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishableResponse) GetPublishableUnpublish() *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload {
+	return v.PublishableUnpublish
+}
+
 // UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload includes the requested fields of the GraphQL type CheckoutAndAccountsConfigurationUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -18894,6 +20609,11 @@ func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetS
 	return v.CollectionFields.Sources
 }
 
+// GetResourcePublicationsV2 returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
 func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) UnmarshalJSON(b []byte) error {
 
 	if string(b) == "null" {
@@ -18935,6 +20655,8 @@ type __premarshalUpdateCollectionCollectionUpdateCollectionUpdatePayloadCollecti
 	Seo CollectionFieldsSeoSEO `json:"seo"`
 
 	Sources json.RawMessage `json:"sources"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
 }
 
 func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) MarshalJSON() ([]byte, error) {
@@ -18956,6 +20678,7 @@ func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) __pr
 	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
 	retval.Seo = v.CollectionFields.Seo
 	retval.Sources = v.CollectionFields.Sources
+	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
 	return &retval, nil
 }
 
@@ -21028,6 +22751,18 @@ type __GetCollectionInput struct {
 // GetId returns __GetCollectionInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetCollectionInput) GetId() string { return v.Id }
 
+// __GetCollectionPublicationsInput is used internally by genqlient
+type __GetCollectionPublicationsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetCollectionPublicationsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetCollectionPublicationsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetCollectionPublicationsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetCollectionPublicationsInput) GetAfter() *string { return v.After }
+
 // __GetCollectionSelectionsInput is used internally by genqlient
 type __GetCollectionSelectionsInput struct {
 	Id    string  `json:"id"`
@@ -21141,6 +22876,18 @@ type __GetProductInput struct {
 
 // GetId returns __GetProductInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetProductInput) GetId() string { return v.Id }
+
+// __GetProductPublicationsInput is used internally by genqlient
+type __GetProductPublicationsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetProductPublicationsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetProductPublicationsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetProductPublicationsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetProductPublicationsInput) GetAfter() *string { return v.After }
 
 // __GetProductVariantsInput is used internally by genqlient
 type __GetProductVariantsInput struct {
@@ -21262,6 +23009,18 @@ type __ListWebPresencesInput struct {
 // GetAfter returns __ListWebPresencesInput.After, and is useful for accessing the field via an interface.
 func (v *__ListWebPresencesInput) GetAfter() *string { return v.After }
 
+// __PublishPublishableInput is used internally by genqlient
+type __PublishPublishableInput struct {
+	Id    string             `json:"id"`
+	Input []PublicationInput `json:"input"`
+}
+
+// GetId returns __PublishPublishableInput.Id, and is useful for accessing the field via an interface.
+func (v *__PublishPublishableInput) GetId() string { return v.Id }
+
+// GetInput returns __PublishPublishableInput.Input, and is useful for accessing the field via an interface.
+func (v *__PublishPublishableInput) GetInput() []PublicationInput { return v.Input }
+
 // __SetProductInput is used internally by genqlient
 type __SetProductInput struct {
 	Identifier *ProductSetIdentifiers `json:"identifier,omitempty"`
@@ -21273,6 +23032,18 @@ func (v *__SetProductInput) GetIdentifier() *ProductSetIdentifiers { return v.Id
 
 // GetInput returns __SetProductInput.Input, and is useful for accessing the field via an interface.
 func (v *__SetProductInput) GetInput() ProductSetInput { return v.Input }
+
+// __UnpublishPublishableInput is used internally by genqlient
+type __UnpublishPublishableInput struct {
+	Id    string             `json:"id"`
+	Input []PublicationInput `json:"input"`
+}
+
+// GetId returns __UnpublishPublishableInput.Id, and is useful for accessing the field via an interface.
+func (v *__UnpublishPublishableInput) GetId() string { return v.Id }
+
+// GetInput returns __UnpublishPublishableInput.Input, and is useful for accessing the field via an interface.
+func (v *__UnpublishPublishableInput) GetInput() []PublicationInput { return v.Input }
 
 // __UpdateCheckoutAndAccountsConfigurationInput is used internally by genqlient
 type __UpdateCheckoutAndAccountsConfigurationInput struct {
@@ -21543,6 +23314,7 @@ fragment CollectionFields on Collection {
 		title
 		description
 	}
+	... PublicationsOfPublishable
 	sources {
 		__typename
 		id
@@ -21689,6 +23461,19 @@ fragment CollectionFields on Collection {
 					}
 				}
 			}
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
 		}
 	}
 }
@@ -23968,6 +25753,7 @@ fragment CollectionFields on Collection {
 		title
 		description
 	}
+	... PublicationsOfPublishable
 	sources {
 		__typename
 		id
@@ -24114,6 +25900,19 @@ fragment CollectionFields on Collection {
 					}
 				}
 			}
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
 		}
 	}
 }
@@ -24162,6 +25961,7 @@ fragment CollectionFields on Collection {
 		title
 		description
 	}
+	... PublicationsOfPublishable
 	sources {
 		__typename
 		id
@@ -24311,6 +26111,19 @@ fragment CollectionFields on Collection {
 		}
 	}
 }
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
 `
 
 // collectionByHandle is deprecated, so this is the exact handle lookup.
@@ -24328,6 +26141,52 @@ func GetCollectionByHandle(
 	}
 
 	data_ = &GetCollectionByHandleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetCollectionPublications.
+const GetCollectionPublications_Operation = `
+query GetCollectionPublications ($id: ID!, $after: String) {
+	collection(id: $id) {
+		resourcePublicationsV2(first: 50, after: $after, onlyPublished: false) {
+			nodes {
+				publication {
+					id
+				}
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+func GetCollectionPublications(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetCollectionPublicationsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCollectionPublications",
+		Query:  GetCollectionPublications_Operation,
+		Variables: &__GetCollectionPublicationsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetCollectionPublicationsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -25136,6 +26995,7 @@ fragment ProductFields on Product {
 	templateSuffix
 	isGiftCard
 	hasOnlyDefaultVariant
+	... PublicationsOfPublishable
 	options {
 		id
 		name
@@ -25151,6 +27011,19 @@ fragment ProductFields on Product {
 	variants(first: 250) {
 		nodes {
 			... VariantFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
 		}
 		pageInfo {
 			hasNextPage
@@ -25240,6 +27113,7 @@ fragment ProductFields on Product {
 	templateSuffix
 	isGiftCard
 	hasOnlyDefaultVariant
+	... PublicationsOfPublishable
 	options {
 		id
 		name
@@ -25255,6 +27129,19 @@ fragment ProductFields on Product {
 	variants(first: 250) {
 		nodes {
 			... VariantFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
 		}
 		pageInfo {
 			hasNextPage
@@ -25308,6 +27195,53 @@ func GetProductByHandle(
 	}
 
 	data_ = &GetProductByHandleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetProductPublications.
+const GetProductPublications_Operation = `
+query GetProductPublications ($id: ID!, $after: String) {
+	product(id: $id) {
+		resourcePublicationsV2(first: 50, after: $after, onlyPublished: false) {
+			nodes {
+				publication {
+					id
+				}
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// Pages publications after the first 10 that PublicationsOfPublishable carries.
+func GetProductPublications(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetProductPublicationsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetProductPublications",
+		Query:  GetProductPublications_Operation,
+		Variables: &__GetProductPublicationsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetProductPublicationsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -26808,6 +28742,7 @@ fragment CollectionFields on Collection {
 		title
 		description
 	}
+	... PublicationsOfPublishable
 	sources {
 		__typename
 		id
@@ -26954,6 +28889,19 @@ fragment CollectionFields on Collection {
 					}
 				}
 			}
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
 		}
 	}
 }
@@ -27438,6 +29386,7 @@ fragment ProductFields on Product {
 	templateSuffix
 	isGiftCard
 	hasOnlyDefaultVariant
+	... PublicationsOfPublishable
 	options {
 		id
 		name
@@ -27453,6 +29402,19 @@ fragment ProductFields on Product {
 	variants(first: 250) {
 		nodes {
 			... VariantFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
 		}
 		pageInfo {
 			hasNextPage
@@ -27699,6 +29661,62 @@ func ListWebPresences(
 	return data_, err_
 }
 
+// The mutation executed by PublishPublishable.
+const PublishPublishable_Operation = `
+mutation PublishPublishable ($id: ID!, $input: [PublicationInput!]!) {
+	publishablePublish(id: $id, input: $input) {
+		publishable {
+			__typename
+			... PublicationsOfPublishable
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+`
+
+func PublishPublishable(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input []PublicationInput,
+) (data_ *PublishPublishableResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "PublishPublishable",
+		Query:  PublishPublishable_Operation,
+		Variables: &__PublishPublishableInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &PublishPublishableResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by SetProduct.
 const SetProduct_Operation = `
 mutation SetProduct ($identifier: ProductSetIdentifiers, $input: ProductSetInput!) {
@@ -27732,6 +29750,7 @@ fragment ProductFields on Product {
 	templateSuffix
 	isGiftCard
 	hasOnlyDefaultVariant
+	... PublicationsOfPublishable
 	options {
 		id
 		name
@@ -27747,6 +29766,19 @@ fragment ProductFields on Product {
 	variants(first: 250) {
 		nodes {
 			... VariantFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
 		}
 		pageInfo {
 			hasNextPage
@@ -27802,6 +29834,62 @@ func SetProduct(
 	}
 
 	data_ = &SetProductResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UnpublishPublishable.
+const UnpublishPublishable_Operation = `
+mutation UnpublishPublishable ($id: ID!, $input: [PublicationInput!]!) {
+	publishableUnpublish(id: $id, input: $input) {
+		publishable {
+			__typename
+			... PublicationsOfPublishable
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+`
+
+func UnpublishPublishable(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input []PublicationInput,
+) (data_ *UnpublishPublishableResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UnpublishPublishable",
+		Query:  UnpublishPublishable_Operation,
+		Variables: &__UnpublishPublishableInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &UnpublishPublishableResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -29133,6 +31221,7 @@ fragment CollectionFields on Collection {
 		title
 		description
 	}
+	... PublicationsOfPublishable
 	sources {
 		__typename
 		id
@@ -29279,6 +31368,19 @@ fragment CollectionFields on Collection {
 					}
 				}
 			}
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
 		}
 	}
 }

@@ -1,0 +1,85 @@
+# Membership, not isPublished: a draft product lists its publications too. Only APP catalog publications are returned (design §9k.3).
+# 10 per resource keeps product and collection list pages under the cost limit; the rest is paged by GetPublishablePublications.
+fragment PublicationsOfPublishable on Publishable {
+  resourcePublicationsV2(first: 10, onlyPublished: false) {
+    nodes {
+      publication {
+        id
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# Pages publications after the first 10 that PublicationsOfPublishable carries.
+query GetProductPublications(
+  $id: ID!
+  $after: String
+) {
+  product(id: $id) {
+    resourcePublicationsV2(first: 50, after: $after, onlyPublished: false) {
+      nodes {
+        publication {
+          id
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+query GetCollectionPublications(
+  $id: ID!
+  $after: String
+) {
+  collection(id: $id) {
+    resourcePublicationsV2(first: 50, after: $after, onlyPublished: false) {
+      nodes {
+        publication {
+          id
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+# @genqlient(for: "PublicationInput.publishDate", omitempty: true)
+mutation PublishPublishable(
+  $id: ID!
+  $input: [PublicationInput!]!
+) {
+  publishablePublish(id: $id, input: $input) {
+    publishable {
+      ...PublicationsOfPublishable
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation UnpublishPublishable(
+  $id: ID!
+  $input: [PublicationInput!]!
+) {
+  publishableUnpublish(id: $id, input: $input) {
+    publishable {
+      ...PublicationsOfPublishable
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

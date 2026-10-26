@@ -17,6 +17,7 @@ fragment ProductFields on Product {
   templateSuffix
   isGiftCard
   hasOnlyDefaultVariant
+  ...PublicationsOfPublishable
   options {
     id
     name
