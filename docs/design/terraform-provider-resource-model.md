@@ -57,6 +57,7 @@ provider "shopify" {
 | `shopify_privacy_settings` | `default` (singleton; `id` is the shop GID) |
 | `shopify_consent_policy` | `<COUNTRY>` or `<COUNTRY>/<REGION>`, e.g. `DE`, `US/USCA` |
 | `shopify_checkout_and_accounts_configuration` | `published`, or the configuration `<name>` |
+| `shopify_catalog` | `<title>` (unique across all catalogs; market catalogs only, see §9i) |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -246,7 +247,7 @@ resource "shopify_market" "dach" {
 | `enabled` | bool | Maps to `status` (`ACTIVE` / `DRAFT`); the API's `enabled` field is deprecated |
 | `conditions.regions` | set(string) | Country codes. B2B (`company_location_ids`) and POS (`location_ids`) conditions come later; they are dev preview |
 | `currency_settings` | object | `base_currency`, `local_currencies` |
-| `catalog_ids`, `web_presence_ids` | set(string) | Links only, as plain IDs. Catalogs and price lists are content and stay out of scope. Web presences themselves: `shopify_web_presence` (section 9a) |
+| `catalog_ids`, `web_presence_ids` | set(string) | Links only, as plain IDs; unset = unmanaged. Web presences themselves: `shopify_web_presence` (section 9a). Catalogs: `shopify_catalog` (section 9i) owns the catalog-market relation through its `market_ids`; leave `catalog_ids` unset on markets whose catalogs Terraform manages |
 
 Notes:
 - Uses the **2025+ Markets model** (conditions-based `marketCreate` / `marketUpdate`), not the legacy region mutations.
@@ -793,6 +794,105 @@ Left out: `fulfillmentOrdersOptIn` (deprecated, always `true`), `createdAt` (not
 **Fit:** good. Read-only reference; services installed by apps come and go, and the data source reads the current state on every plan.
 
 **Tests:** acceptance: read `manual` and check its attributes (the dev store has only `manual`, so a third-party service is covered by unit tests only); not found. Unit: match by handle, the not-found message, mapping from the API result.
+
+---
+
+## 9i. Resource: `shopify_catalog`
+
+Decision D5 assumed the catalogs found by discovery (staging 3, production 5) are Shopify defaults to adopt. **They are not:** on the dev store all three catalogs are `AppCatalog`s, one per sales channel publication (`Channel Catalog <publication id> for Online Store`, `… for Shop`, `… for Point of Sale`), and on staging and production the catalog count equals the publication count, every one of them a channel app. App catalogs can't be created, changed or deleted through the API (`CANNOT_CREATE_APP_CATALOG`, `CANNOT_MODIFY_APP_CATALOG`, `CANNOT_DELETE_APP_CATALOG`) and are excluded by D3. The type a merchant manages, the market catalog, has no instances on either store. There are no defaults to adopt.
+
+```hcl
+resource "shopify_catalog" "de_b2c" {
+  title      = "DE B2C"
+  market_ids = [shopify_market.dach.id]
+  status     = "ACTIVE" # optional, unset = unmanaged (created as ACTIVE)
+
+  # optional, unset = unmanaged; plain IDs, see below
+  # publication_id = "gid://shopify/Publication/123"
+  # price_list_id  = "gid://shopify/PriceList/456"
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `MarketCatalog` GID (`gid://shopify/MarketCatalog/<n>`). Computed, UseStateForUnknown |
+| `title` | string | Required, import key. Updatable. Unique across **all** catalogs, app catalogs included: a taken title fails with `TAKEN`, `field = ["input","title"]` (checked, also against an app catalog's title) |
+| `market_ids` | set(string) | Required, may be empty. `Market` GIDs. Sent in full as `context.marketIds` (replace semantics, see below). The catalog owns this relation |
+| `status` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `ACTIVE`, `DRAFT` or `ARCHIVED`. `CatalogCreateInput.status` is required, so Create sends `ACTIVE` when unset |
+| `publication_id` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. The publication that limits which products the catalog shows; null when product availability follows the sales channel |
+| `price_list_id` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. The catalog's price list |
+| `adopt_existing` | bool | Pattern A, see below |
+| `allow_data_deletion` | bool | Pattern B, see below |
+
+Import key: the title. Titles are unique per shop, so a lookup never finds two. Import looks it up with `catalogs(query: "title:\"<title>\"")`, without a `type` filter, and matches the title exactly (the search is a text search; `type: MARKET` would turn an app catalog's title into a bare "not found"). A match that is not a `MarketCatalog` fails with "not a market catalog" and its type. Read: `catalog(id:)` first; it returns the `Catalog` interface, and anything other than a `MarketCatalog` is an error. If the GID is gone, the same title lookup as import; `MutableIdentity` is set.
+
+Granularity: one resource per catalog.
+
+**Scope of the type: market catalogs only.**
+- `AppCatalog`: owned by the channel apps; excluded (D3). The publications they hold are readable through `shopify_publication` (§9j).
+- `CompanyLocationCatalog`: B2B. Needs the `companies` scopes, which aren't in `app/*.toml` (`docs/bootstrapping.md`), and B2B is plan-gated (`COMPANY_LOCATION_CATALOG_STATUS_PLAN`, `UNPERMITTED_ENTITLEMENTS_DIRECT_CATALOG_ASSIGNMENT`). Roadmap. `CatalogContextInput` takes exactly one of `marketIds` and `companyLocationIds` (`MUST_PROVIDE_EXACTLY_ONE_CONTEXT_TYPE`), so a later `company_location_ids` attribute, exactly one of the two, extends this resource without a new type.
+
+**Markets: one owner.** `CatalogCreateInput.context` is non-null, so a catalog names its markets from the start, unlike web presences (§9a), where the market owns the link. `shopify_catalog.market_ids` owns the relation. `shopify_market.catalog_ids` writes the same relation (`marketUpdate(catalogsToAdd/catalogsToDelete)`; checked: removing a catalog there removes the market from the catalog). It stays as it is (Optional + Computed, unset = unmanaged), and the docs of both resources say: set `market_ids` on the catalog and leave `catalog_ids` unset on its markets; setting both makes each apply undo the other.
+
+Notes:
+- Uses `catalog(id:)`, `catalogs(type: MARKET, query:)`, `catalogCreate`, `catalogUpdate`, `catalogDelete`. `catalogContextUpdate` (add/remove lists) is not needed: `catalogUpdate(input: { context: { marketIds } })` replaces the whole market set (checked: `[de]` → `[tf-probe]` gave `[tf-probe]`; `[]` cleared it), so Update sends the planned set when it differs from state.
+- **Update** sends only changed fields: `title`, `status`, `context`, and `publicationId` / `priceListId` when set in config and different from state. Removing `publication_id` or `price_list_id` from config stops managing it; the link stays. An explicit `null` input detaches (checked for both), but the provider never sends it, since unset can't be told from "detach".
+- **What a market catalog holds, verified on the dev store (2026-10-26):**
+  - Several catalogs per market work, and one catalog can have several markets (two region markets; `CANNOT_ADD_MORE_THAN_ONE_MARKET` not hit). A catalog with no markets is valid: `catalogCreate` with `marketIds: []` and removing the last market both succeed.
+  - `status: DRAFT` on a market catalog works (`MARKET_CATALOG_STATUS`, "must have an active status", not hit). `ARCHIVED` not tried.
+  - Deleting a market removes it from the catalog's markets; the catalog stays. The catalog then plans an update of `market_ids` (drift), which Terraform's dependency order avoids when `market_ids` references `shopify_market.<x>.id`.
+  - A publication or price list belongs to at most one catalog: assigning one that another catalog holds fails with `TAKEN` (`field = ["input","publicationId"]` / `["input","priceListId"]`), and nothing is moved. Attaching a free one (`publicationCreate` / `priceListCreate` without `catalogId`) through `catalogUpdate` works. `PRICE_LIST_NOT_ALLOWED_FOR_PRIMARY_MARKET` was not hit for a catalog in the primary market `de`.
+  - A market catalog's publication has an empty `name` and no channels, and the root `publications` query leaves it out unless `catalogType: MARKET` is passed.
+- **`publication_id` and `price_list_id` are plain IDs.** No resource creates catalog publications or price lists yet (price lists: 0 on both stores, roadmap; publications: §9j is a read-only data source for channel publications). Until then the IDs come from outside Terraform. The product selection inside a publication and the prices inside a price list are content and stay out of this resource.
+- **Pattern A: `adopt_existing` only, no implicit adoption.** No market catalog exists by default. With `adopt_existing = true`, Create looks the title up (same lookup as import; a non-market catalog is an error) and updates the found catalog to the config; destroy only removes it from state with a warning. Without it, Create fails on a taken title (`TAKEN` from the API, mapped to `title`).
+- **Pattern B: deleting a catalog deletes its publication and price list.** `catalogDelete(deleteDependentResources: false)` (the default) still deleted both, whether they were created for the catalog (`publicationCreate(catalogId:)`, `priceListCreate(catalogId:)`) or created free and attached later: afterwards `publication(id:)` and `priceList(id:)` returned `null` (checked twice, 2026-10-26). The publication holds the product selection, the price list holds prices; both are data. So Delete reads the catalog first, and if it has a publication or a price list, fails unless `allow_data_deletion = true`, naming both IDs. A catalog with neither is deleted without the guard (it only holds the title, status and market links). Nothing forces a replace (no RequiresReplace attribute), so there is no plan-time replace warning. `deleteDependentResources` is not sent.
+- `CATALOG_NOT_FOUND` on delete ("Catalog does not exist", checked) means already gone: removed from state without error.
+- Errors (`CatalogUserError`, `field` relative to `input`): `TAKEN` (`title`, `publication_id` or `price_list_id`, by `field`), `MARKET_NOT_FOUND` (`market_ids`), `PUBLICATION_NOT_FOUND` (`publication_id`), `PRICE_LIST_NOT_FOUND` and `MARKET_AND_PRICE_LIST_CURRENCY_MISMATCH` and `PRICE_LIST_NOT_ALLOWED_FOR_PRIMARY_MARKET` (`price_list_id`), `MUST_PROVIDE_EXACTLY_ONE_CONTEXT_TYPE` (`market_ids`; can't happen, the provider always sends `marketIds`), `UNPERMITTED_ENTITLEMENTS_MARKET_CATALOGS` and `CONTEXT_CATALOG_LIMIT_REACHED` (plan limits, unmapped), `CANNOT_MODIFY_MARKET_CATALOG` / `CANNOT_DELETE_MARKET_CATALOG` (not hit; `TODO(verify)`: which market catalogs they protect). None is retried, `CATALOG_CONTEXT_LOCKED` and `PRICE_LIST_LOCKED` ("try again later") included: the message asks the user to re-apply.
+- genqlient: `catalog(id:)` and the payloads return the `Catalog` interface with three implementers; select `__typename` and `... on MarketCatalog { markets(first: 250) { nodes { id } } }`. Unlike `Node`, genqlient generates this interface.
+- **Fit:** good. A catalog is configuration (which markets see which product set and prices). The publication contents and price lists it points to are volatile and not managed here.
+- **Scopes:** `TODO(verify)`: Shopify's docs list `write_products` for the catalog mutations; reading `markets` on a catalog needs `read_markets`; attaching a publication may need `write_publications`. All three are granted on the dev store, so it can't tell them apart.
+- **Review Focus 1:** after destroy of an adopted catalog, read it back through the client and expect it unchanged. **Review Focus 2:** set `status` only in one step, leave it out in the next, change it through the client in between: the config without `status` plans empty.
+- **Testing:** the dev store has one market (`de`, primary). Tests create a draft market for the multi-market and replace steps and delete it in cleanup. The Pattern B step attaches a free price list (`priceListCreate` without `catalogId`, through the client), checks that destroy fails without `allow_data_deletion` and that the price list is gone after destroy with it (acceptance tests may set it on the dev store).
+
+**List:** no config. `catalogs(type: MARKET)`, paged; app and company location catalogs are never listed. `DisplayName`: `<title> (<market handles, comma-separated>)`, `<title> (no markets)` when empty. Results carry `title`, `market_ids`, `status`, and `publication_id` / `price_list_id` when not null, which pass validation and plan as import-only.
+
+---
+
+## 9j. Data source: `shopify_publication`
+
+Decision D4 (2026-10-26). Discovery found 3 publications on staging (Online Store, Point of Sale, Shop) and 5 on production (Online Store, Point of Sale, Konstantins Headless Store, Shopify GraphiQL App, Pflege.De Shop Headless 04). Each belongs to a sales channel app and its app catalog (§9i), so none is managed here (D3). The data source makes them referenceable, for example as a publication ID for a future product or collection resource that publishes to channels. There is no resource.
+
+```hcl
+data "shopify_publication" "online_store" {
+  name = "Online Store"
+}
+```
+
+**Argument (Required):** `name`, matched exactly (case-sensitive).
+
+**Attributes (all Computed, from `Publication` in the 2026-10 schema):**
+
+| Attribute | API field | Why |
+|---|---|---|
+| `id` | `id` | `Publication` GID, what publishing mutations take |
+| `auto_publish` | `autoPublish` | whether new products are published to it automatically |
+| `catalog_id` | `catalog.id` | the catalog the publication belongs to (an `AppCatalog` GID for channels); null if none |
+
+Left out: `supportsFuturePublishing`, `operation`, the product and collection connections (content), and the deprecated `app` (use the catalog).
+
+**Name, not handle.** Publications have no handle. `Publication.name` is deprecated in 2026-10 ("Use `Catalog.title` instead"), but `Catalog.title` of a channel's app catalog is `Channel Catalog <publication id> for Online Store`, which differs per store and can't be a key. The channel behind a publication has a handle (`online_store`, `pos`, `shop-72` on the dev store), but the `shop-72` suffix suggests it is not the same on every store. So the key stays the name, read from the deprecated field: it returns the channel name on the dev store, and genqlient copies descriptions, not deprecation reasons, into generated code, so lint stays quiet (confirmed at implementation: `make lint` reports no issues). If a later API version removes the field, the generated code stops compiling, which is the intended signal. `TODO(verify)`: whether every channel publication has a matching `channels.nodes[].name` (true for all three on the dev store), which would be the non-deprecated fallback.
+
+**Lookup:** root `publications(first: 250)` without `catalogType`, paged (`patterns.Paginate`). On the dev store it returns the channel publications only; a market catalog's publication (empty `name`) shows up only with `catalogType: MARKET` (checked, §9i). Publications with an empty name are skipped. No fallback by GID and nothing is written beyond the read.
+
+**Duplicate names:** the API doesn't stop two channels from having the same publication name (none found: the five production names are distinct). More than one match is an error that lists the GIDs and catalog IDs of the matches, never a pick. Not found: error naming the name and listing the names that exist (`no publication named "Onlne Store"; available: Online Store, Point of Sale, Shop`), as `shopify_fulfillment_service` does.
+
+**Errors:** missing scope (`read_publications`): Shopify's `ACCESS_DENIED`, reported with the scope name. Nothing is retried (throttling is handled in the client).
+
+**Scopes:** `read_publications` (or `write_publications`). `TODO(verify)`: checked only with both `read_publications` and `read_products` granted.
+
+**Fit:** good. Read-only reference; channels come and go with app installs, and the data source reads the current state on every plan.
+
+**Tests:** acceptance: read `Online Store` and check `id` (`^gid://shopify/Publication/`), `catalog_id` (`^gid://shopify/AppCatalog/`) and `auto_publish`; not found. On the dev store all three publications (Online Store, Shop, Point of Sale) have `auto_publish = false`, so the test asserts `false` for the Online Store. Unit: exact match, empty names skipped, the duplicate and not-found messages, mapping.
 
 ---
 
