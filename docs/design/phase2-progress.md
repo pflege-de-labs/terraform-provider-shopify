@@ -125,3 +125,8 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 10: complete (commits 54e56c7..dd81cf4, review clean)
 - Step 9 complete.
 - CORRECTION: Task 10 is NOT complete. The lines above ("Task 10: complete", "Step 9 complete") were committed before the controller read the check output. `make test` without SHOPIFY_* env fails: the shopifyStandard acc tests call `acctest.PreCheck` outside `resource.Test`, so they fail instead of skipping when TF_ACC is unset (breaks CI). Treated as Important; fix round 1/5 dispatched (resume implementer). Branch feat/phase2-10-… deleted locally (never pushed).
+- Task 10: fix round 1/5 (2 addressed, 0 open — TF_ACC skip before PreCheck/API in shopifyStandard tests, $app: TODO for metafield namespaces; commits 21bbaa2..a9fb025). Controller re-ran `make fmt lint test` with SHOPIFY_*/TF_ACC unset: exit 0, 0 lint issues; `make generate`: no diff.
+- Task 10: minor (deferred): `accSetup` test helper copied into ~7 packages; candidate for internal/acctest
+- Task 10: complete (commits 54e56c7..a9fb025, review clean after 1 fix round)
+- Step 9 complete (for real).
+- Task 11 (fulfillment service data source): dispatched (model sonnet)
