@@ -64,6 +64,7 @@ provider "shopify" {
 | `shopify_blog` | `<handle>` (unique per shop; Shopify suffixes a taken handle, see §9n) |
 | `shopify_file` | `<filename>`, e.g. `logo.png` (unique per shop); an external video by its URL, see §9o |
 | `shopify_discount_basic`, `shopify_discount_free_shipping`, `shopify_discount_bxgy` | `code/<code>` for code discounts (codes are unique per shop), `automatic/<title>` for automatic ones (titles are unique among them), see §9p |
+| `shopify_customer_segment` | `<name>` (unique per shop; Shopify suffixes a taken name, see §9q) |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -1449,6 +1450,49 @@ Mutations: `discountCodeBxgyCreate` / `Update`, `discountAutomaticBxgyCreate` / 
 **Dev store (2026-10-26):** probes created five basic discounts (three automatic, two code; plus refused duplicates), updated items, context, minimum and code, created two probe segments for the context check and deleted them (which expired the discount using them), and deleted everything. End state equals the start: 0 discounts, the 5 default segments.
 
 **Task split (implementation order):** 13b-4a `shopify_discount_basic` with the shared package (largest); 13b-4b `shopify_discount_free_shipping`; 13b-4c `shopify_discount_bxgy`. 13b-4a needs `shopify_customer_segment` (§9q) only for its tests' segment context, which can use a default segment instead.
+
+---
+
+## 9q. Resource: `shopify_customer_segment`
+
+Discovery: 5 segments on staging and on production. D5 assumed Shopify defaults, and **that holds:** the dev store has the same five, all created in the same second as the shop (`creationDate` 2026-10-22T19:29:11Z, shop `createdAt` 19:29:07Z, checked): "Customers who haven't purchased" (`number_of_orders = 0`), "Customers who have purchased more than once" (`number_of_orders > 1`), "Abandoned checkouts in the last 30 days" (`abandoned_checkout_date >= -30d`), "Email subscribers" (`email_subscription_status = 'SUBSCRIBED'`), "Customers who have purchased at least once" (`number_of_orders >= 1`). A segment is a saved customer query (ShopifyQL segment syntax); discounts target segments (§9p `context.customer_segment_ids`), and marketing edits them in the admin.
+
+```hcl
+resource "shopify_customer_segment" "subscribers" {
+  name  = "Newsletter-Abonnenten DE"
+  query = "email_subscription_status = 'SUBSCRIBED' AND customer_countries CONTAINS 'DE'"
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `Segment` GID. Computed, UseStateForUnknown |
+| `name` | string | Required, import key. Updatable in place |
+| `query` | string | Required. Stored and returned verbatim (`number_of_orders=0   AND   …` read back unchanged, checked), so no normalisation. Shopify validates it on write (`number_of_orderz = 0` failed with "Query Line 1 Column 0: 'number_of_orderz' filter cannot be found.", `field = ["query"]`, checked) |
+| `adopt_existing` | bool | Pattern A, see below |
+
+Import key: the name (`Email subscribers`). Read: `segment(id:)` first; if it is gone, `segments(first: 10, query: "name:\"<name>\"")` and an exact name match (search-indexed; a renamed segment was found at once, checked). `MutableIdentity` is set.
+
+**Names are unique, but Shopify suffixes a taken name instead of failing**, on create and on update: `segmentCreate(name: "Email subscribers")` created `Email subscribers (2)`, and renaming another segment to it gave `Email subscribers (3)` (both checked, no userError). So, as for blogs (§9n) and menus (§9):
+- Create looks the name up first (fails unless `adopt_existing`) and checks the returned name; a suffixed name means the new segment is deleted again and Create fails, naming the name.
+- Update with a new name looks it up first and fails if it is taken; if Shopify still returns a different name, the update fails naming both, and state takes the returned name.
+- `TODO(verify)`: whether names differing only in case count as taken.
+
+**Pattern A: `adopt_existing` only.** The five defaults are created with the shop, but they are ordinary segments as far as the API shows (no `isDefault`, same mutations), so they are handled like `frontpage` (§9l): `adopt_existing = true` updates the segment with that name, and destroy only removes it from state with a warning. Taking over a default by name works on every store, since the names are the same everywhere (in the shop's admin language; `TODO(verify)` that a German-language shop's defaults also have these English names: staging and production were not read by name). `TODO(verify)`: whether the defaults can be deleted; not tried, since a recreate gets a new GID and the defaults may be referenced by marketing automations.
+
+**No Pattern B.** A segment holds a query, not data: customers stay, and a recreate from config restores the same membership. But **deleting a segment expires the discounts that target only that segment** and resets their context to all buyers (checked, §9p); marketing automations and campaigns that use it may break (`TODO(verify)`). The docs say to reference segments as `shopify_customer_segment.<x>.id` from discounts, so dependency order changes the discount first. Nothing forces a replace (`name` and `query` are both updatable), so there is no replace warning. "Segment does not exist" on delete (plain `UserError`, `field = ["id"]`, checked) means already gone: removed from state without error.
+
+Notes:
+- Uses `segment(id:)`, `segments(first:, query:)`, `segmentCreate(name:, query:)`, `segmentUpdate(id:, name:, query:)`, `segmentDelete(id:)`. Update sends only the changed argument. `segmentMigrations` is deprecated and not used; `segmentFilters` / `segmentFilterSuggestions` (query building help) are not needed.
+- Errors: plain `UserError` (no codes) from all three mutations, mapped by `field` (`["query"]` → `query`, `["name"]` → `name`), otherwise to the resource. None is retried.
+- **Fit: volatile.** The description says so: segments are usually built and changed by marketing in the admin; the ones discounts or automations depend on fit Terraform.
+- **Scopes:** `read_customers` / `write_customers` (`docs/bootstrapping.md`: "customer segments"). `TODO(verify)`: checked only with every scope granted.
+- **Review Focus 1:** after destroy of an adopted default segment, read it back through the client and expect it unchanged. **Review Focus 2:** `name` and `query` are both Required, so the step doesn't apply; the test instead edits another segment through the client and expects an empty plan (as §9c does).
+- **Testing:** names `tf-acc-segment-<random>`. Steps: create, update `query` and `name`, import by name and identity, adopt a default (`Email subscribers`, `query` set to its current value so nothing changes; destroy leaves it), a taken name fails without leaving `… (2)` behind, an invalid query reports Shopify's message on `query`. Unit tests first: the suffixed-name check, userError field mapping.
+
+**List:** no config. `segments(first: 250)`, paged. `DisplayName`: the name. Results carry `name` and `query`, and plan as import-only. All segments are listed, the defaults included (they are merchant-editable, unlike D3's Shopify-owned definitions).
+
+**Dev store (2026-10-26):** probes created five segments (`Email subscribers (2)`, `TF Probe Segment` renamed to `Email subscribers (3)` and then `tf probe segment`, and `TF Probe Seg` three times for the discount check) and deleted all of them. End state equals the start: the five defaults, unchanged.
 
 ---
 
