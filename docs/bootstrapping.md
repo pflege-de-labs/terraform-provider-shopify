@@ -39,9 +39,9 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_metaobject_definitions` | `shopify_metaobject_definition` | ✅ | good |
 | `write_online_store_navigation` | `shopify_menu`, URL redirects | ✅ menus, redirects planned | menus good; redirects volatile |
 | `write_locations` | `shopify_location` | ✅ | good |
-| `write_markets` | `shopify_market`, web presences | ✅ markets, web presences planned | good |
+| `write_markets` | `shopify_market`, `shopify_web_presence` | ✅ | good |
 | `write_shipping` | `shopify_delivery_profile` (general; custom profiles planned), carrier services | ✅ general profile | good; carrier services are app-owned |
-| `write_locales` | shop locales; web presence locales (needed to read them) | planned | good |
+| `write_locales` | shop locales (planned); `shopify_web_presence` locales (needed to read them) | ✅ web presence locales, shop locales planned | good |
 | `write_legal_policies` | shop policies | planned | good |
 | `write_privacy_settings` | privacy settings, cookie banner | planned | good |
 | `write_checkout_and_accounts_configurations` | checkout and accounts configuration | planned | good |
