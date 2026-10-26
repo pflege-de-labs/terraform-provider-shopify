@@ -1,0 +1,17 @@
+query GetFulfillmentServices {
+  shop {
+    fulfillmentServices {
+      id
+      handle
+      serviceName
+      type
+      location {
+        id
+      }
+      callbackUrl
+      inventoryManagement
+      trackingSupport
+      requiresShippingMethod
+    }
+  }
+}

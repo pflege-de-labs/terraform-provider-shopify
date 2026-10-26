@@ -5472,6 +5472,24 @@ func (v *FindLocationsResponse) GetLocations() FindLocationsLocationsLocationCon
 	return v.Locations
 }
 
+// The type of a fulfillment service.
+type FulfillmentServiceType string
+
+const (
+	// Fulfillment by gift card.
+	FulfillmentServiceTypeGiftCard FulfillmentServiceType = "GIFT_CARD"
+	// Manual fulfillment by the merchant.
+	FulfillmentServiceTypeManual FulfillmentServiceType = "MANUAL"
+	// Fullfillment by a third-party fulfillment service.
+	FulfillmentServiceTypeThirdParty FulfillmentServiceType = "THIRD_PARTY"
+)
+
+var AllFulfillmentServiceType = []FulfillmentServiceType{
+	FulfillmentServiceTypeGiftCard,
+	FulfillmentServiceTypeManual,
+	FulfillmentServiceTypeThirdParty,
+}
+
 // GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration includes the requested fields of the GraphQL type CheckoutAndAccountsConfiguration.
 // The GraphQL type's documentation follows.
 //
@@ -6171,6 +6189,184 @@ type GetDeliveryProfileResponse struct {
 // GetDeliveryProfile returns GetDeliveryProfileResponse.DeliveryProfile, and is useful for accessing the field via an interface.
 func (v *GetDeliveryProfileResponse) GetDeliveryProfile() *GetDeliveryProfileDeliveryProfile {
 	return v.DeliveryProfile
+}
+
+// GetFulfillmentServicesResponse is returned by GetFulfillmentServices on success.
+type GetFulfillmentServicesResponse struct {
+	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
+	// business and store management settings for the shop.
+	Shop GetFulfillmentServicesShop `json:"shop"`
+}
+
+// GetShop returns GetFulfillmentServicesResponse.Shop, and is useful for accessing the field via an interface.
+func (v *GetFulfillmentServicesResponse) GetShop() GetFulfillmentServicesShop { return v.Shop }
+
+// GetFulfillmentServicesShop includes the requested fields of the GraphQL type Shop.
+// The GraphQL type's documentation follows.
+//
+// The central configuration and settings hub for a Shopify store. Access business information, operational preferences, feature availability, and store-wide settings that control how the shop operates.
+//
+// Includes core business details like the shop name, contact emails, billing address, and currency settings. The shop configuration determines customer account requirements, available sales channels, enabled features, payment settings, and policy documents. Also provides access to shop-level resources such as staff members, fulfillment services, navigation settings, and storefront access tokens.
+type GetFulfillmentServicesShop struct {
+	// List of the shop's installed fulfillment services.
+	FulfillmentServices []GetFulfillmentServicesShopFulfillmentServicesFulfillmentService `json:"fulfillmentServices"`
+}
+
+// GetFulfillmentServices returns GetFulfillmentServicesShop.FulfillmentServices, and is useful for accessing the field via an interface.
+func (v *GetFulfillmentServicesShop) GetFulfillmentServices() []GetFulfillmentServicesShopFulfillmentServicesFulfillmentService {
+	return v.FulfillmentServices
+}
+
+// GetFulfillmentServicesShopFulfillmentServicesFulfillmentService includes the requested fields of the GraphQL type FulfillmentService.
+// The GraphQL type's documentation follows.
+//
+// A **Fulfillment Service** is a third party warehouse that prepares and ships orders
+// on behalf of the store owner. Fulfillment services charge a fee to package and ship items
+// and update product inventory levels. Some well known fulfillment services with Shopify integrations
+// include: Amazon, Shipwire, and Rakuten. When an app registers a new `FulfillmentService` on a store,
+// Shopify automatically creates a `Location` that's associated to the fulfillment service.
+// To learn more about fulfillment services, refer to
+// [Manage fulfillments as a fulfillment service app](https://shopify.dev/apps/fulfillment/fulfillment-service-apps)
+// guide.
+//
+// ## Mutations
+//
+// You can work with the `FulfillmentService` object with the
+// [fulfillmentServiceCreate](https://shopify.dev/api/admin-graphql/latest/mutations/fulfillmentServiceCreate),
+// [fulfillmentServiceUpdate](https://shopify.dev/api/admin-graphql/latest/mutations/fulfillmentServiceUpdate),
+// and [fulfillmentServiceDelete](https://shopify.dev/api/admin-graphql/latest/mutations/fulfillmentServiceDelete)
+// mutations.
+//
+// ## Hosted endpoints
+//
+// Fulfillment service providers integrate with Shopify by providing Shopify with a set of hosted endpoints that
+// Shopify can query on certain conditions.
+// These endpoints must have a common prefix, and this prefix should be supplied in the `callbackUrl` parameter
+// in the
+// [fulfillmentServiceCreate](https://shopify.dev/api/admin-graphql/latest/mutations/fulfillmentServiceCreate)
+// mutation.
+//
+// - Shopify sends POST requests to the `<callbackUrl>/fulfillment_order_notification` endpoint
+// to notify the fulfillment service about fulfillment requests and fulfillment cancellation requests.
+//
+// For more information, refer to
+// [Receive fulfillment requests and cancellations](https://shopify.dev/apps/fulfillment/fulfillment-service-apps/manage-fulfillments#step-2-receive-fulfillment-requests-and-cancellations).
+// - Shopify sends GET requests to the `<callbackUrl>/fetch_tracking_numbers` endpoint to retrieve tracking numbers for orders
+// if `trackingSupport` is set to `true`.
+//
+// For more information, refer to
+// [Enable tracking support](https://shopify.dev/apps/fulfillment/fulfillment-service-apps/manage-fulfillments#step-8-enable-tracking-support-optional).
+//
+// Fulfillment services can also update tracking information using the
+// [fulfillmentTrackingInfoUpdate](https://shopify.dev/api/admin-graphql/latest/mutations/fulfillmentTrackingInfoUpdate) mutation,
+// rather than waiting for Shopify to ask for tracking numbers.
+// - Shopify sends GET requests to the `<callbackUrl>/fetch_stock` endpoint to retrieve
+// on hand inventory levels for the fulfillment service location if `inventoryManagement` is set to `true`.
+//
+// For more information, refer to
+// [Sharing inventory levels with Shopify](https://shopify.dev/apps/build/orders-fulfillment/fulfillment-service-apps/build-for-fulfillment-services#step-10-optional-share-inventory-levels-with-shopify).
+//
+// To make sure you have everything set up correctly, you can test the `callbackUrl`-prefixed endpoints
+// in your development store.
+//
+// ## Resources and webhooks
+//
+// There are a variety of objects and webhooks that enable a fulfillment service to work.
+// To exchange fulfillment information with Shopify, fulfillment services use the
+// [FulfillmentOrder](https://shopify.dev/api/admin-graphql/latest/objects/FulfillmentOrder),
+// [Fulfillment](https://shopify.dev/api/admin-graphql/latest/objects/Fulfillment) and
+// [Order](https://shopify.dev/api/admin-graphql/latest/objects/Order) objects and related mutations.
+// To act on fulfillment process events that happen on the Shopify side,
+// besides awaiting calls to `callbackUrl`-prefixed endpoints,
+// fulfillment services can subscribe to the
+// [fulfillment order](https://shopify.dev/apps/fulfillment/fulfillment-service-apps/manage-fulfillments#webhooks)
+// and [order](https://shopify.dev/api/admin-rest/latest/resources/webhook)
+// webhooks.
+type GetFulfillmentServicesShopFulfillmentServicesFulfillmentService struct {
+	// The ID of the fulfillment service.
+	Id string `json:"id"`
+	// Human-readable unique identifier for this fulfillment service.
+	Handle string `json:"handle"`
+	// The name of the fulfillment service as seen by merchants.
+	ServiceName string `json:"serviceName"`
+	// Type associated with the fulfillment service.
+	Type FulfillmentServiceType `json:"type"`
+	// Location associated with the fulfillment service.
+	Location *GetFulfillmentServicesShopFulfillmentServicesFulfillmentServiceLocation `json:"location"`
+	// The callback URL that the fulfillment service has registered for requests. The following considerations apply:
+	//
+	// - Shopify queries the `<callbackUrl>/fetch_tracking_numbers` endpoint to retrieve tracking numbers
+	// for orders, if `trackingSupport` is set to `true`.
+	// - Shopify queries the `<callbackUrl>/fetch_stock` endpoint to retrieve inventory levels,
+	// if `inventoryManagement` is set to `true`.
+	// - Shopify uses the `<callbackUrl>/fulfillment_order_notification` endpoint to send
+	// [fulfillment and cancellation requests](https://shopify.dev/apps/build/orders-fulfillment/fulfillment-service-apps/build-for-fulfillment-services#step-9-optional-enable-tracking-support).
+	CallbackUrl *string `json:"callbackUrl"`
+	// Whether the fulfillment service tracks product inventory and provides updates to Shopify.
+	InventoryManagement bool `json:"inventoryManagement"`
+	// Whether the fulfillment service implemented the /fetch_tracking_numbers endpoint.
+	TrackingSupport bool `json:"trackingSupport"`
+	// Whether the fulfillment service requires products to be physically shipped.
+	RequiresShippingMethod bool `json:"requiresShippingMethod"`
+}
+
+// GetId returns GetFulfillmentServicesShopFulfillmentServicesFulfillmentService.Id, and is useful for accessing the field via an interface.
+func (v *GetFulfillmentServicesShopFulfillmentServicesFulfillmentService) GetId() string { return v.Id }
+
+// GetHandle returns GetFulfillmentServicesShopFulfillmentServicesFulfillmentService.Handle, and is useful for accessing the field via an interface.
+func (v *GetFulfillmentServicesShopFulfillmentServicesFulfillmentService) GetHandle() string {
+	return v.Handle
+}
+
+// GetServiceName returns GetFulfillmentServicesShopFulfillmentServicesFulfillmentService.ServiceName, and is useful for accessing the field via an interface.
+func (v *GetFulfillmentServicesShopFulfillmentServicesFulfillmentService) GetServiceName() string {
+	return v.ServiceName
+}
+
+// GetType returns GetFulfillmentServicesShopFulfillmentServicesFulfillmentService.Type, and is useful for accessing the field via an interface.
+func (v *GetFulfillmentServicesShopFulfillmentServicesFulfillmentService) GetType() FulfillmentServiceType {
+	return v.Type
+}
+
+// GetLocation returns GetFulfillmentServicesShopFulfillmentServicesFulfillmentService.Location, and is useful for accessing the field via an interface.
+func (v *GetFulfillmentServicesShopFulfillmentServicesFulfillmentService) GetLocation() *GetFulfillmentServicesShopFulfillmentServicesFulfillmentServiceLocation {
+	return v.Location
+}
+
+// GetCallbackUrl returns GetFulfillmentServicesShopFulfillmentServicesFulfillmentService.CallbackUrl, and is useful for accessing the field via an interface.
+func (v *GetFulfillmentServicesShopFulfillmentServicesFulfillmentService) GetCallbackUrl() *string {
+	return v.CallbackUrl
+}
+
+// GetInventoryManagement returns GetFulfillmentServicesShopFulfillmentServicesFulfillmentService.InventoryManagement, and is useful for accessing the field via an interface.
+func (v *GetFulfillmentServicesShopFulfillmentServicesFulfillmentService) GetInventoryManagement() bool {
+	return v.InventoryManagement
+}
+
+// GetTrackingSupport returns GetFulfillmentServicesShopFulfillmentServicesFulfillmentService.TrackingSupport, and is useful for accessing the field via an interface.
+func (v *GetFulfillmentServicesShopFulfillmentServicesFulfillmentService) GetTrackingSupport() bool {
+	return v.TrackingSupport
+}
+
+// GetRequiresShippingMethod returns GetFulfillmentServicesShopFulfillmentServicesFulfillmentService.RequiresShippingMethod, and is useful for accessing the field via an interface.
+func (v *GetFulfillmentServicesShopFulfillmentServicesFulfillmentService) GetRequiresShippingMethod() bool {
+	return v.RequiresShippingMethod
+}
+
+// GetFulfillmentServicesShopFulfillmentServicesFulfillmentServiceLocation includes the requested fields of the GraphQL type Location.
+// The GraphQL type's documentation follows.
+//
+// A physical location where merchants store and fulfill inventory. Locations include retail stores, warehouses, popups, dropshippers, or other places where inventory is managed or stocked.
+//
+// Active locations can fulfill online orders when configured with shipping rates, local pickup, or local delivery options. Locations track inventory quantities for [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and process [order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order) fulfillment. Third-party apps using [`FulfillmentService`](https://shopify.dev/docs/api/admin-graphql/latest/objects/FulfillmentService) can create and manage their own locations.
+type GetFulfillmentServicesShopFulfillmentServicesFulfillmentServiceLocation struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns GetFulfillmentServicesShopFulfillmentServicesFulfillmentServiceLocation.Id, and is useful for accessing the field via an interface.
+func (v *GetFulfillmentServicesShopFulfillmentServicesFulfillmentServiceLocation) GetId() string {
+	return v.Id
 }
 
 // GetLocationLocation includes the requested fields of the GraphQL type Location.
@@ -17442,6 +17638,48 @@ func GetDeliveryProfile(
 	}
 
 	data_ = &GetDeliveryProfileResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetFulfillmentServices.
+const GetFulfillmentServices_Operation = `
+query GetFulfillmentServices {
+	shop {
+		fulfillmentServices {
+			id
+			handle
+			serviceName
+			type
+			location {
+				id
+			}
+			callbackUrl
+			inventoryManagement
+			trackingSupport
+			requiresShippingMethod
+		}
+	}
+}
+`
+
+func GetFulfillmentServices(
+	ctx_ context.Context,
+	client_ graphql.Client,
+) (data_ *GetFulfillmentServicesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetFulfillmentServices",
+		Query:  GetFulfillmentServices_Operation,
+	}
+
+	data_ = &GetFulfillmentServicesResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
