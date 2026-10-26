@@ -139,22 +139,24 @@ Non-zero counts (staging / production) and gate outcome:
 | 8 | privacySettings, consentPolicy | 1 / 1, 319 / 319 per region | merchant | build (one task; consent policy is part of privacy settings) |
 | 8 | checkoutAndAccountsConfigurations | 1 / 1 | merchant | build |
 | 8 | checkoutBranding | 1 / 1 per configuration | merchant | build |
-| 9 | metafieldDefinitions ORDER, SHOP | 0 / 1 each | `checkoutblocks.*` (Checkout Blocks app) | roadmap (D4) |
-| 10 | fulfillmentServices | 2 / 2 | `manual` (Shopify), `test_fulfillmentservice_creation` (app) | roadmap (D3) |
-| 11 | catalogs | 3 / 5 | unknown, verify at design | build |
-| 11 | publications | 3 / 5 | channel apps (Online Store, POS, Headless, GraphiQL) | no own task; settle in the catalog design (D4) |
+| 9 | metafieldDefinitions ORDER, SHOP | 0 / 1 each | `checkoutblocks.*` (Checkout Blocks app) | data source (D4) |
+| 10 | fulfillmentServices | 2 / 2 | `manual` (Shopify), `test_fulfillmentservice_creation` (app) | data source (D4) |
+| 11 | catalogs | 3 / 5 | likely Shopify defaults | build as resource (D5) |
+| 11 | publications | 3 / 5 | channel apps (Online Store, POS, Headless, GraphiQL) | data source (D4) |
 | 13 | products | 86 / 214 | merchant | build |
 | 13 | collections | 14 / 17 | merchant | build |
 | 13 | pages | 8 / 9 | merchant | build |
 | 13 | blogs | 1 / 1 | merchant | build |
-| 13 | discountNodes | 0 / 7 | unknown, verify at design | build |
+| 13 | discountNodes | 0 / 7 | likely Shopify defaults | build as resource (D5) |
 | 13 | files | 269 / 432 | merchant | build |
-| 13 | segments | 5 / 5 | unknown; same count on both stores, possibly Shopify defaults | build, verify at design |
-| 13 | metaobjects | 0 / ~40 | all in `shopify--` standard definitions | roadmap (D4) |
-| – | returnPolicyProfiles | 1 / 1 | – | not in Phase 2 (returns out of scope); readable with the current scopes |
+| 13 | segments | 5 / 5 | likely Shopify defaults (same count on both stores) | build as resource (D5) |
+| 13 | metaobjects | 0 / ~40 | all in `shopify--` standard definitions | data source (D4) |
+| – | returnPolicyProfiles | 1 / 1 | – | roadmap (D6); readable with the current scopes |
 
-Zero on both: custom delivery profiles, carrier services, URL redirects, price lists, selling plan groups, every step 12 type, articles. Not counted: translations (single locale `de`), market localizations, inventory levels. All of these go on the roadmap.
+Zero on both: custom delivery profiles, carrier services, URL redirects, price lists, selling plan groups, every step 12 type, articles. Not counted: translations (single locale `de`), market localizations, inventory levels. All of these go on the roadmap, to be built after the first successful import (D6).
 
-Already built types with only Shopify/app-owned extras: `metaobjectDefinitions` 0 / 26 (all `shopify--`), PRODUCT metafield definitions in `shopify.*` / `shopify--discovery--*`: excluded from import by D3.
+Already built types with Shopify/app-owned instances: `metaobjectDefinitions` 0 / 26 (all `shopify--`), PRODUCT metafield definitions in `shopify.*` / `shopify--discovery--*`: excluded from import by D3, readable through the D4 data sources.
 
-- D4 (open, default applied): a type whose every instance is Shopify- or app-owned goes on the roadmap, like fulfillment services under D3. Reverse per type if wanted.
+- D4 (2026-10-26): Shopify-owned objects get a data source in this phase so configuration can reference them: `shopify_metafield_definition` (any owner type, by owner type + namespace + key), `shopify_metaobject_definition` (by type), `shopify_publication` (by name), `shopify_fulfillment_service` (by handle), `shopify_metaobject` (by type + handle). Lookup by key also covers app-owned objects; they stay out of import (D3).
+- D5 (2026-10-26): customer segments, catalogs and discounts are probably Shopify's defaults, but are built as resources so they can be configured with Terraform. The design step settles adopting defaults (Pattern A or `adopt_existing`).
+- D6 (2026-10-26): return policy profiles and every type with no instances stay on the roadmap until after the first successful import.

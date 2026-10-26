@@ -24,6 +24,7 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - D2 (2026-10-23): build in-scope types with count > 0 on staging or production; the rest goes on the roadmap.
 - D3 (2026-10-23): Shopify- and app-owned objects stay excluded from import.
 - D1: open. Dev store token has the six original scopes only.
+- D4/D5/D6 (2026-10-26): see the plan section "Discovery 2026-10-26 (phase 2)".
 
 ## Tasks
 - Task 1: dispatched (base 2cca99c, branch feat/discover-phase2, worktree ~/src/worktrees/terraform-provider-shopify/discover)
@@ -43,3 +44,4 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 2: gate. Ordered tasks (Phase 2 step order): 4 web presence (7); 5 shop locales, 6 shop policies, 7 privacy settings + consent policy, 8 checkout and accounts configuration, 9 checkout branding (8); 10 catalogs, publications settled in its design (11); 11 products, 12 collections, 13 pages, 14 blogs, 15 files, 16 discounts, 17 customer segments (13). Roadmap: everything else in the plan section. D4 open with default.
 - Task 2: complete. #13 closed, branch deleted.
 - D1 still blocks Phase B: merge provider #20 first (so `app/shopify.app.toml` has `include_config_on_deploy`), then link + deploy the dev app and reinstall it on the dev store.
+- Task list revised for D4–D6 (in Phase 2 step order): 4 web presence (7); 5 shop locales, 6 shop policies, 7 privacy settings + consent policy, 8 checkout and accounts configuration, 9 checkout branding (8); 10 data sources `shopify_metafield_definition` + `shopify_metaobject_definition` (9); 11 data source `shopify_fulfillment_service` (10); 12 catalogs, 13 data source `shopify_publication` (11); 14 products, 15 collections, 16 pages, 17 blogs, 18 files, 19 discounts, 20 customer segments, 21 data source `shopify_metaobject` (13).
