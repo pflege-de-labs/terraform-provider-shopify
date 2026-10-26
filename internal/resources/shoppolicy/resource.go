@@ -55,12 +55,14 @@ func (r *Resource) IdentitySchema(ctx context.Context, req resource.IdentitySche
 	resp.IdentitySchema = patterns.IDIdentitySchema()
 }
 
+// TODO(verify): whether shopPolicyUpdate on an auto-managed PRIVACY_POLICY is rejected, flips the flag, or is regenerated over.
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "The text of one shop policy, such as the terms of service or the legal notice. " +
 			"**A poor fit for Terraform unless the texts are maintained in the repository:** policies are legal texts that people outside the infrastructure team often edit in the admin, and Shopify generates the privacy policy. " +
 			"The API can't delete policies, so destroy only removes the resource from state and leaves the text in place. " +
 			"A type that already has text needs `adopt_existing = true`, so a text written by hand isn't overwritten silently. " +
+			"Shopify generates the `PRIVACY_POLICY` text while it is auto-managed; turn that off first (`shopify_privacy_settings`), and expect Shopify to reject or overwrite a write until then. " +
 			"Import with the policy type, such as `TERMS_OF_SERVICE`.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
