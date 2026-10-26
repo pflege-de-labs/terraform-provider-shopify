@@ -44,8 +44,8 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_locales` | `shopify_shop_locale`; `shopify_web_presence` locales (needed to read them) | ✅ | good |
 | `write_legal_policies` | `shopify_shop_policy` | ✅ | volatile (legal texts, often edited in the admin; the privacy policy is Shopify-generated) |
 | `write_privacy_settings` | `shopify_privacy_settings`, `shopify_consent_policy` | ✅ | good (consent policies need Shopify's cookie banner off, one-way) |
-| `write_checkout_and_accounts_configurations` | checkout and accounts configuration | planned | good |
-| `write_checkout_branding_settings` | checkout branding | planned | good |
+| `write_checkout_and_accounts_configurations` | `shopify_checkout_and_accounts_configuration` | ✅ | volatile (branding is usually edited in the checkout editor) |
+| `write_checkout_branding_settings` | `shopify_checkout_and_accounts_configuration` `branding` ⚠ (maybe not needed: granted together with the scope above on the dev store, so untested alone) | ✅ | volatile |
 | `write_translations` | translations, market localizations | planned | volatile (follows content) |
 | `write_publications` | publications, publishing to channels | planned | volatile |
 | `write_purchase_options` | selling plan groups (together with `write_products`) | planned | volatile |
