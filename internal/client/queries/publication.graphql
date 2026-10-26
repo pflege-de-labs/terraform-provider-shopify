@@ -1,0 +1,19 @@
+# name is deprecated in 2026-10 but is the only stable key; publications have no handle (design §9j).
+query ListPublications(
+  $after: String
+) {
+  publications(first: 250, after: $after) {
+    nodes {
+      id
+      name
+      autoPublish
+      catalog {
+        id
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

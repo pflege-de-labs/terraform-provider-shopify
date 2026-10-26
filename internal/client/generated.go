@@ -8244,6 +8244,341 @@ func (v *ListMetaobjectDefinitionsResponse) GetMetaobjectDefinitions() ListMetao
 	return v.MetaobjectDefinitions
 }
 
+// ListPublicationsPublicationsPublicationConnection includes the requested fields of the GraphQL type PublicationConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Publications.
+type ListPublicationsPublicationsPublicationConnection struct {
+	// A list of nodes that are contained in PublicationEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListPublicationsPublicationsPublicationConnectionNodesPublication `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListPublicationsPublicationsPublicationConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListPublicationsPublicationsPublicationConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnection) GetNodes() []ListPublicationsPublicationsPublicationConnectionNodesPublication {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListPublicationsPublicationsPublicationConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnection) GetPageInfo() ListPublicationsPublicationsPublicationConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListPublicationsPublicationsPublicationConnectionNodesPublication includes the requested fields of the GraphQL type Publication.
+// The GraphQL type's documentation follows.
+//
+// A group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) that are published to an app.
+//
+// Each publication manages which products and collections display on its associated [`Channel`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Channel). Merchants can automatically publish products when they're created if [`autoPublish`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.autoPublish) is enabled, or manually control publication through publication records.
+//
+// Publications support scheduled publishing through future publish dates for online store channels, allowing merchants to coordinate product launches and promotional campaigns. The [`catalog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.catalog) field links to pricing and availability rules specific to that publication's context.
+type ListPublicationsPublicationsPublicationConnectionNodesPublication struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// Name of the publication.
+	Name string `json:"name"`
+	// Whether new products are automatically published to this publication.
+	AutoPublish bool `json:"autoPublish"`
+	// The catalog associated with the publication.
+	Catalog *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog `json:"-"`
+}
+
+// GetId returns ListPublicationsPublicationsPublicationConnectionNodesPublication.Id, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublication) GetId() string {
+	return v.Id
+}
+
+// GetName returns ListPublicationsPublicationsPublicationConnectionNodesPublication.Name, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublication) GetName() string {
+	return v.Name
+}
+
+// GetAutoPublish returns ListPublicationsPublicationsPublicationConnectionNodesPublication.AutoPublish, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublication) GetAutoPublish() bool {
+	return v.AutoPublish
+}
+
+// GetCatalog returns ListPublicationsPublicationsPublicationConnectionNodesPublication.Catalog, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublication) GetCatalog() *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog {
+	return v.Catalog
+}
+
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublication) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListPublicationsPublicationsPublicationConnectionNodesPublication
+		Catalog json.RawMessage `json:"catalog"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListPublicationsPublicationsPublicationConnectionNodesPublication = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Catalog
+		src := firstPass.Catalog
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog)
+			err = __unmarshalListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal ListPublicationsPublicationsPublicationConnectionNodesPublication.Catalog: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalListPublicationsPublicationsPublicationConnectionNodesPublication struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	AutoPublish bool `json:"autoPublish"`
+
+	Catalog json.RawMessage `json:"catalog"`
+}
+
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublication) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublication) __premarshalJSON() (*__premarshalListPublicationsPublicationsPublicationConnectionNodesPublication, error) {
+	var retval __premarshalListPublicationsPublicationsPublicationConnectionNodesPublication
+
+	retval.Id = v.Id
+	retval.Name = v.Name
+	retval.AutoPublish = v.AutoPublish
+	{
+
+		dst := &retval.Catalog
+		src := v.Catalog
+		if src != nil {
+			var err error
+			*dst, err = __marshalListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal ListPublicationsPublicationsPublicationConnectionNodesPublication.Catalog: %w", err)
+			}
+		}
+	}
+	return &retval, nil
+}
+
+// ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog includes the requested fields of the GraphQL interface Catalog.
+//
+// ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog is implemented by the following types:
+// ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogAppCatalog
+// ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogCompanyLocationCatalog
+// ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogMarketCatalog
+// The GraphQL type's documentation follows.
+//
+// A list of products with publishing and pricing information.
+// A catalog can be associated with a specific context, such as a [`Market`](https://shopify.dev/api/admin-graphql/current/objects/market), [`CompanyLocation`](https://shopify.dev/api/admin-graphql/current/objects/companylocation), or [`App`](https://shopify.dev/api/admin-graphql/current/objects/app).
+//
+// Catalogs can optionally include a publication to control product visibility and a price list to customize pricing. When a publication isn't associated with a catalog, product availability is determined by the sales channel.
+type ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog interface {
+	implementsGraphQLInterfaceListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+	// GetId returns the interface-field "id" from its implementation.
+	// The GraphQL interface field's documentation follows.
+	//
+	// A globally-unique ID.
+	GetId() string
+}
+
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogAppCatalog) implementsGraphQLInterfaceListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog() {
+}
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogCompanyLocationCatalog) implementsGraphQLInterfaceListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog() {
+}
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogMarketCatalog) implementsGraphQLInterfaceListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog() {
+}
+
+func __unmarshalListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog(b []byte, v *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "AppCatalog":
+		*v = new(ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogAppCatalog)
+		return json.Unmarshal(b, *v)
+	case "CompanyLocationCatalog":
+		*v = new(ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogCompanyLocationCatalog)
+		return json.Unmarshal(b, *v)
+	case "MarketCatalog":
+		*v = new(ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogMarketCatalog)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Catalog.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog(v *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogAppCatalog:
+		typename = "AppCatalog"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogAppCatalog
+		}{typename, v}
+		return json.Marshal(result)
+	case *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogCompanyLocationCatalog:
+		typename = "CompanyLocationCatalog"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogCompanyLocationCatalog
+		}{typename, v}
+		return json.Marshal(result)
+	case *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogMarketCatalog:
+		typename = "MarketCatalog"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogMarketCatalog
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalog: "%T"`, v)
+	}
+}
+
+// ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogAppCatalog includes the requested fields of the GraphQL type AppCatalog.
+// The GraphQL type's documentation follows.
+//
+// A catalog that defines the publication associated with an app.
+type ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogAppCatalog struct {
+	Typename *string `json:"__typename"`
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetTypename returns ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogAppCatalog.Typename, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogAppCatalog) GetTypename() *string {
+	return v.Typename
+}
+
+// GetId returns ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogAppCatalog.Id, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogAppCatalog) GetId() string {
+	return v.Id
+}
+
+// ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogCompanyLocationCatalog includes the requested fields of the GraphQL type CompanyLocationCatalog.
+// The GraphQL type's documentation follows.
+//
+// A list of products with publishing and pricing information associated with company locations.
+//
+// Company location catalogs can include an optional publication to control product visibility and a price list to customize pricing. When a publication isn't associated with the catalog, product availability is determined by the sales channel.
+type ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogCompanyLocationCatalog struct {
+	Typename *string `json:"__typename"`
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetTypename returns ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogCompanyLocationCatalog.Typename, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogCompanyLocationCatalog) GetTypename() *string {
+	return v.Typename
+}
+
+// GetId returns ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogCompanyLocationCatalog.Id, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogCompanyLocationCatalog) GetId() string {
+	return v.Id
+}
+
+// ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogMarketCatalog includes the requested fields of the GraphQL type MarketCatalog.
+// The GraphQL type's documentation follows.
+//
+// A catalog for managing product availability and pricing for specific [`Market`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Market) contexts. Each catalog links to one or more markets. The catalog can optionally include a [`Publication`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication) to control which [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) objects customers see, and a [`PriceList`](https://shopify.dev/docs/api/admin-graphql/latest/objects/PriceList) for market-specific pricing adjustments. When a publication isn't associated with the catalog, product availability is determined by the sales channel.
+//
+// Use catalogs to create distinct shopping experiences for different geographic regions or customer segments.
+//
+// Learn more about [building a catalog](https://shopify.dev/docs/apps/build/markets/build-catalog) and [managing markets](https://shopify.dev/docs/apps/build/markets).
+type ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogMarketCatalog struct {
+	Typename *string `json:"__typename"`
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetTypename returns ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogMarketCatalog.Typename, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogMarketCatalog) GetTypename() *string {
+	return v.Typename
+}
+
+// GetId returns ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogMarketCatalog.Id, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnectionNodesPublicationCatalogMarketCatalog) GetId() string {
+	return v.Id
+}
+
+// ListPublicationsPublicationsPublicationConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListPublicationsPublicationsPublicationConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListPublicationsPublicationsPublicationConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ListPublicationsPublicationsPublicationConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListPublicationsPublicationsPublicationConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// ListPublicationsResponse is returned by ListPublications on success.
+type ListPublicationsResponse struct {
+	// Returns a paginated list of [`Publication`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	//
+	// Filter publications by [`CatalogType`](https://shopify.dev/docs/api/admin-graphql/latest/enums/CatalogType).
+	Publications ListPublicationsPublicationsPublicationConnection `json:"publications"`
+}
+
+// GetPublications returns ListPublicationsResponse.Publications, and is useful for accessing the field via an interface.
+func (v *ListPublicationsResponse) GetPublications() ListPublicationsPublicationsPublicationConnection {
+	return v.Publications
+}
+
 // ListShopLocalesResponse is returned by ListShopLocales on success.
 type ListShopLocalesResponse struct {
 	// Returns the locales enabled on a shop. Each locale represents a language for translations and determines how content displays to customers in different markets.
@@ -15057,6 +15392,14 @@ type __ListMetaobjectDefinitionsInput struct {
 // GetAfter returns __ListMetaobjectDefinitionsInput.After, and is useful for accessing the field via an interface.
 func (v *__ListMetaobjectDefinitionsInput) GetAfter() *string { return v.After }
 
+// __ListPublicationsInput is used internally by genqlient
+type __ListPublicationsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListPublicationsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListPublicationsInput) GetAfter() *string { return v.After }
+
 // __ListWebPresencesInput is used internally by genqlient
 type __ListWebPresencesInput struct {
 	After *string `json:"after"`
@@ -19972,6 +20315,53 @@ func ListMetaobjectDefinitions(
 	}
 
 	data_ = &ListMetaobjectDefinitionsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListPublications.
+const ListPublications_Operation = `
+query ListPublications ($after: String) {
+	publications(first: 250, after: $after) {
+		nodes {
+			id
+			name
+			autoPublish
+			catalog {
+				__typename
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+`
+
+// name is deprecated in 2026-10 but is the only stable key; publications have no handle (design §9j).
+func ListPublications(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListPublicationsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListPublications",
+		Query:  ListPublications_Operation,
+		Variables: &__ListPublicationsInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListPublicationsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
