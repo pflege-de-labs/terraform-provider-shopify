@@ -14,3 +14,6 @@ redirect_urls = ["https://shopify.dev/apps/default-app-home"]
 
 [webhooks]
 api_version = "2026-10"
+
+[build]
+include_config_on_deploy = true # without it, deploy re-releases the dashboard config and ignores this file

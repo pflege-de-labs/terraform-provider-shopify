@@ -24,7 +24,7 @@ shopify app config link   # once: pick the app, fills in client_id
 shopify app deploy        # releases a new version with the TOML's config
 ```
 
-`shopify app deploy` overwrites whatever is set in the dashboard, so change scopes in the TOML only. Separate staging and production apps each get their own `shopify.app.<env>.toml` (`--config <env>`).
+With `[build] include_config_on_deploy = true`, `shopify app deploy` overwrites whatever is set in the dashboard, so change scopes in the TOML only. Without it, deploy releases a new version that reuses the dashboard config and silently drops the TOML's scopes. Separate staging and production apps each get their own `shopify.app.<env>.toml` (`--config <env>`).
 
 Scopes:
 
@@ -103,7 +103,7 @@ Expected: `scope` matches the list in step 2, and `expires_in` is `86399` (24h).
 1. Change `scopes` in `app/shopify.app.toml` and the table in step 2, then run `shopify app deploy`.
 2. **Uninstall the app** in the store admin (**Settings → Apps**) and install it again (step 3).
 
-Releasing alone did **not** update the scopes on a store that already had the app installed, even though the docs suggest it should for apps owned by your organization. Run the step 5 check afterwards.
+Releasing alone did **not** update the scopes on a store that already had the app installed, even though the docs suggest it should for apps owned by your organization. That was before `include_config_on_deploy` was set, so check again on the next scope change. Run the step 5 check afterwards.
 
 ## Recommended: separate plan and apply apps
 
