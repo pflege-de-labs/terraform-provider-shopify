@@ -1,0 +1,5 @@
+# Toolchain for local and devcontainer work; Go matches go.mod, Terraform supports list resources (>= 1.14).
+[tools]
+go = "1.25.8"
+golangci-lint = "2.15.0"
+terraform = "1.17.0"
