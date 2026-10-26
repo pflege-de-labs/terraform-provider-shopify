@@ -22,65 +22,66 @@
 | metafieldDefinitions | FULFILLMENT_CONSTRAINT_RULE | 0 |  | ok |
 | metafieldDefinitions | ORDER_ROUTING_LOCATION_RULE | 0 |  | ok |
 | metafieldDefinitions | DISCOUNT | 0 |  | ok |
-| metafieldDefinitions | ORDER | 0 |  | ok |
+| metafieldDefinitions | ORDER | 1 | checkoutblocks.agree_to_terms | ok |
 | metafieldDefinitions | LOCATION | 0 |  | ok |
 | metafieldDefinitions | SHOP | 1 | checkoutblocks.blocks_list_checkout_custom_field | ok |
 | metaobjectDefinitions | - | 26 | shopify--cleaning-surfaces, shopify--usage-type, shopify--ingredients, shopify--disclosure-us-cpsc-choking_balloons, shopify--disclosure-us-cpsc-choking_marbles, shopify--disclosure-us-ca-prop65-reproductive, shopify--disclosure-custom, shopify--disclosure-us-ca-prop65-cancer, shopify--disclosure-us-ca-prop65-alcohol, shopify--disclosure-us-ca-prop65-cancer_reproductive, shopify--disclosure-us-cpsc-choking_small_balls, shopify--disclosure-us-cpsc-choking_small_parts, shopify--ph-level, shopify--dispenser-type, shopify--body-area, shopify--handwear-material, shopify--color-pattern, shopify--disposable-glove-features, shopify--material, shopify--package-type … (+6) | ok |
-| metaobjects | shopify--cleaning-surfaces | 0 |  | ok |
-| metaobjects | shopify--usage-type | 0 |  | ok |
-| metaobjects | shopify--ingredients | 0 |  | ok |
+| metaobjects | shopify--cleaning-surfaces | 3 |  | ok |
+| metaobjects | shopify--usage-type | 2 |  | ok |
+| metaobjects | shopify--ingredients | 3 |  | ok |
 | metaobjects | shopify--disclosure-us-cpsc-choking_balloons | 0 |  | ok |
 | metaobjects | shopify--disclosure-us-cpsc-choking_marbles | 0 |  | ok |
-| metaobjects | shopify--disclosure-us-ca-prop65-reproductive | 0 |  | ok |
-| metaobjects | shopify--disclosure-custom | 0 |  | ok |
+| metaobjects | shopify--disclosure-us-ca-prop65-reproductive | 1 |  | ok |
+| metaobjects | shopify--disclosure-custom | 2 |  | ok |
 | metaobjects | shopify--disclosure-us-ca-prop65-cancer | 0 |  | ok |
 | metaobjects | shopify--disclosure-us-ca-prop65-alcohol | 0 |  | ok |
 | metaobjects | shopify--disclosure-us-ca-prop65-cancer_reproductive | 0 |  | ok |
 | metaobjects | shopify--disclosure-us-cpsc-choking_small_balls | 0 |  | ok |
 | metaobjects | shopify--disclosure-us-cpsc-choking_small_parts | 0 |  | ok |
 | metaobjects | shopify--ph-level | 0 |  | ok |
-| metaobjects | shopify--dispenser-type | 0 |  | ok |
-| metaobjects | shopify--body-area | 0 |  | ok |
-| metaobjects | shopify--handwear-material | 0 |  | ok |
-| metaobjects | shopify--color-pattern | 0 |  | ok |
-| metaobjects | shopify--disposable-glove-features | 0 |  | ok |
-| metaobjects | shopify--material | 0 |  | ok |
-| metaobjects | shopify--package-type | 0 |  | ok |
-| metaobjects | shopify--product-form | 0 |  | ok |
-| metaobjects | shopify--skin-care-effect | 0 |  | ok |
-| metaobjects | shopify--cosmetic-function | 0 |  | ok |
-| metaobjects | shopify--product-sterility | 0 |  | ok |
-| metaobjects | shopify--closure-type | 0 |  | ok |
-| metaobjects | shopify--knowledge-base-fact | 0 |  | ok |
+| metaobjects | shopify--dispenser-type | 3 |  | ok |
+| metaobjects | shopify--body-area | 1 |  | ok |
+| metaobjects | shopify--handwear-material | 3 |  | ok |
+| metaobjects | shopify--color-pattern | 2 |  | ok |
+| metaobjects | shopify--disposable-glove-features | 1 |  | ok |
+| metaobjects | shopify--material | 4 |  | ok |
+| metaobjects | shopify--package-type | 2 |  | ok |
+| metaobjects | shopify--product-form | 4 |  | ok |
+| metaobjects | shopify--skin-care-effect | 2 |  | ok |
+| metaobjects | shopify--cosmetic-function | 2 |  | ok |
+| metaobjects | shopify--product-sterility | 1 |  | ok |
+| metaobjects | shopify--closure-type | 1 |  | ok |
+| metaobjects | shopify--knowledge-base-fact | 2 |  | ok |
 | menus | - | 4 | main-menu (default), footer (default), customer-account-main-menu (default), fu-zeilenmen-hilfe-kontakt | ok |
 | locations | includeInactive | 1 | Zentrale | ok |
 | markets | - | 1 | de (REGION/ACTIVE) | ok |
 | deliveryProfiles | general | 1 |  | ok |
 | deliveryProfiles | custom | 0 |  | ok |
 | webPresences | - | 3 |  | ok |
-| shopLocales | - | 0 |  | no scope |
-| shopPolicies | - | 0 |  | no scope |
-| privacySettings | - | 0 |  | no scope |
+| shopLocales | - | 1 | de | ok |
+| shopPolicies | - | 2 | PRIVACY_POLICY, TERMS_OF_SERVICE | ok |
+| privacySettings | - | 1 |  | ok |
 | consentPolicy | per region | 319 |  | ok |
-| checkoutAndAccountsConfigurations | - | 0 |  | no scope |
+| checkoutAndAccountsConfigurations | - | 1 | Konfiguration  für Mein Shop | ok |
+| checkoutBranding | per configuration | 1 |  | ok |
 | urlRedirects | - | 0 |  | ok |
-| publications | - | 0 |  | no scope |
+| publications | - | 5 | Online Store, Point of Sale, Konstantins Headless Store, Shopify GraphiQL App, Pflege.De Shop Headless 04 | ok |
 | catalogs | - | 5 |  | ok |
 | priceLists | - | 0 |  | ok |
-| paymentCustomizations | - | 0 |  | no scope |
-| deliveryCustomizations | - | 0 |  | no scope |
-| validations | - | 0 |  | no scope |
-| cartTransforms | - | 0 |  | no scope |
-| fulfillmentConstraintRules | - | 0 |  | no scope |
-| products | - | 220 |  | ok |
+| paymentCustomizations | - | 0 |  | ok |
+| deliveryCustomizations | - | 0 |  | ok |
+| validations | - | 0 |  | ok |
+| cartTransforms | - | 0 |  | ok |
+| fulfillmentConstraintRules | - | 0 |  | ok |
+| products | - | 214 |  | ok |
 | collections | - | 17 |  | ok |
-| pages | - | 0 |  | no scope |
-| blogs | - | 0 |  | no scope |
-| articles | - | 0 |  | no scope |
-| discountNodes | - | 0 |  | no scope |
-| files | - | 0 |  | no scope |
+| pages | - | 9 |  | ok |
+| blogs | - | 1 |  | ok |
+| articles | - | 0 |  | ok |
+| discountNodes | - | 7 |  | ok |
+| files | - | 432 |  | ok |
 | carrierServices | - | 0 |  | ok |
 | fulfillmentServices | - | 2 | manual, test_fulfillmentservice_creation | ok |
 | sellingPlanGroups | - | 0 |  | ok |
-| segments | - | 0 |  | no scope |
-| returnPolicyProfiles | - | 0 |  | no scope |
+| segments | - | 5 |  | ok |
+| returnPolicyProfiles | - | 1 |  | ok |

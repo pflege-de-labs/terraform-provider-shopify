@@ -32,29 +32,30 @@
 | deliveryProfiles | general | 1 |  | ok |
 | deliveryProfiles | custom | 0 |  | ok |
 | webPresences | - | 2 |  | ok |
-| shopLocales | - | 0 |  | no scope |
-| shopPolicies | - | 0 |  | no scope |
-| privacySettings | - | 0 |  | no scope |
+| shopLocales | - | 1 | en | ok |
+| shopPolicies | - | 1 | PRIVACY_POLICY | ok |
+| privacySettings | - | 1 |  | ok |
 | consentPolicy | per region | 319 |  | ok |
-| checkoutAndAccountsConfigurations | - | 0 |  | no scope |
+| checkoutAndAccountsConfigurations | - | 1 | pflege.de Shop staging configuration | ok |
+| checkoutBranding | per configuration | 1 |  | ok |
 | urlRedirects | - | 0 |  | ok |
-| publications | - | 0 |  | no scope |
+| publications | - | 3 | Online Store, Point of Sale, Shop | ok |
 | catalogs | - | 3 |  | ok |
 | priceLists | - | 0 |  | ok |
-| paymentCustomizations | - | 0 |  | no scope |
-| deliveryCustomizations | - | 0 |  | no scope |
-| validations | - | 0 |  | no scope |
-| cartTransforms | - | 0 |  | no scope |
-| fulfillmentConstraintRules | - | 0 |  | no scope |
+| paymentCustomizations | - | 0 |  | ok |
+| deliveryCustomizations | - | 0 |  | ok |
+| validations | - | 0 |  | ok |
+| cartTransforms | - | 0 |  | ok |
+| fulfillmentConstraintRules | - | 0 |  | ok |
 | products | - | 86 |  | ok |
 | collections | - | 14 |  | ok |
-| pages | - | 0 |  | no scope |
-| blogs | - | 0 |  | no scope |
-| articles | - | 0 |  | no scope |
-| discountNodes | - | 0 |  | no scope |
-| files | - | 0 |  | no scope |
+| pages | - | 8 |  | ok |
+| blogs | - | 1 |  | ok |
+| articles | - | 0 |  | ok |
+| discountNodes | - | 0 |  | ok |
+| files | - | 269 |  | ok |
 | carrierServices | - | 0 |  | ok |
-| fulfillmentServices | - | 1 | manual | ok |
+| fulfillmentServices | - | 2 | manual, careconnect-fulfillment-service | ok |
 | sellingPlanGroups | - | 0 |  | ok |
-| segments | - | 0 |  | no scope |
-| returnPolicyProfiles | - | 0 |  | no scope |
+| segments | - | 5 |  | ok |
+| returnPolicyProfiles | - | 1 |  | ok |

@@ -124,3 +124,37 @@ Type-specific notes the design step must settle:
 
 - [ ] Final whole-branch review by a fresh reviewer on the most capable model.
 - [ ] Report in `docs/reports/2026-10-<dd>-phase2-resources.md`: PRs, types built, types skipped and why, rulings, decisions needed. Remove the ledger, update CLAUDE.md "Implemented" and the Phase 2 table in [[implementation-plan]]: built types ✅, the rest marked as roadmap with their discovery counts. **Commit**, push, open the remaining PRs. No merge, no apply on staging or production.
+
+## Discovery 2026-10-26 (phase 2)
+
+Run 40024477009 attempt 5 on pflege-de/shopify-provisioning#13, discover@00eaf32, after the readonly apps were redeployed with `include_config_on_deploy` (provisioning#16) and reinstalled. Every row `ok`, none "no scope". Raw tables: `phase2-discovery/`.
+
+Non-zero counts (staging / production) and gate outcome:
+
+| Step | Type | Count | Owner (from keys) | Outcome |
+|---|---|---|---|---|
+| 7 | webPresences | 2 / 3 | merchant | build |
+| 8 | shopLocales | 1 / 1 | merchant (`de`) | build |
+| 8 | shopPolicies | 1 / 2 | merchant | build |
+| 8 | privacySettings, consentPolicy | 1 / 1, 319 / 319 per region | merchant | build (one task; consent policy is part of privacy settings) |
+| 8 | checkoutAndAccountsConfigurations | 1 / 1 | merchant | build |
+| 8 | checkoutBranding | 1 / 1 per configuration | merchant | build |
+| 9 | metafieldDefinitions ORDER, SHOP | 0 / 1 each | `checkoutblocks.*` (Checkout Blocks app) | roadmap (D4) |
+| 10 | fulfillmentServices | 2 / 2 | `manual` (Shopify), `test_fulfillmentservice_creation` (app) | roadmap (D3) |
+| 11 | catalogs | 3 / 5 | unknown, verify at design | build |
+| 11 | publications | 3 / 5 | channel apps (Online Store, POS, Headless, GraphiQL) | no own task; settle in the catalog design (D4) |
+| 13 | products | 86 / 214 | merchant | build |
+| 13 | collections | 14 / 17 | merchant | build |
+| 13 | pages | 8 / 9 | merchant | build |
+| 13 | blogs | 1 / 1 | merchant | build |
+| 13 | discountNodes | 0 / 7 | unknown, verify at design | build |
+| 13 | files | 269 / 432 | merchant | build |
+| 13 | segments | 5 / 5 | unknown; same count on both stores, possibly Shopify defaults | build, verify at design |
+| 13 | metaobjects | 0 / ~40 | all in `shopify--` standard definitions | roadmap (D4) |
+| – | returnPolicyProfiles | 1 / 1 | – | not in Phase 2 (returns out of scope); readable with the current scopes |
+
+Zero on both: custom delivery profiles, carrier services, URL redirects, price lists, selling plan groups, every step 12 type, articles. Not counted: translations (single locale `de`), market localizations, inventory levels. All of these go on the roadmap.
+
+Already built types with only Shopify/app-owned extras: `metaobjectDefinitions` 0 / 26 (all `shopify--`), PRODUCT metafield definitions in `shopify.*` / `shopify--discovery--*`: excluded from import by D3.
+
+- D4 (open, default applied): a type whose every instance is Shopify- or app-owned goes on the roadmap, like fulfillment services under D3. Reverse per type if wanted.
