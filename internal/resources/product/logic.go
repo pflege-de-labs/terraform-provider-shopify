@@ -100,7 +100,6 @@ var variantAttrs = map[string]string{
 }
 
 // errorPath maps a productSet userError field such as ["input", "seo", "title"] to the attribute that set it.
-// Option and variant indexes are those of the sent lists, which follow config order.
 func errorPath(field []string) (path.Path, bool) {
 	if len(field) < 2 {
 		return path.Empty(), false
@@ -114,7 +113,7 @@ func errorPath(field []string) (path.Path, bool) {
 		if err != nil {
 			return p, true
 		}
-		p = p.AtListIndex(i)
+		p = p.AtListIndex(i) // the sent lists follow config order
 		rest := field[3:]
 		if attr == "variants" && len(rest) > 1 && rest[0] == "inventoryItem" {
 			rest = rest[1:]

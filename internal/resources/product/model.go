@@ -32,8 +32,7 @@ type model struct {
 	AllowDataDeletion types.Bool   `tfsdk:"allow_data_deletion"`
 }
 
-// buildInput is the one place that maps config to productSet; later steps add their keys here, and unset ones stay out.
-// live is the product being written (nil on create); it returns the live variants the input removes.
+// buildInput is the one place that maps config to productSet, with IDs from live (nil on create); it returns the live variants it removes.
 func buildInput(ctx context.Context, cfg *model, live *client.ProductFields) (client.ProductSetInput, []string, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	in := client.ProductSetInput{

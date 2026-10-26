@@ -488,8 +488,7 @@ func variantIDs(t *testing.T, handle string) map[string]string {
 	return out
 }
 
-// sameIDs checks that the variants named in rename (old key to new key) kept their GIDs, and that no others exist beyond added.
-// before is read when the check runs, after an earlier step's check has filled it.
+// sameIDs checks that the variants in rename (old key to new key) kept their GIDs from *before, read at check time, and only added are new.
 func sameIDs(t *testing.T, handle string, before *map[string]string, rename map[string]string, added ...string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
 		now := variantIDs(t, handle)

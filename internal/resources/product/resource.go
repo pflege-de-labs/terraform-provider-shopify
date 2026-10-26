@@ -536,8 +536,7 @@ func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequ
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, id)...)
 }
 
-// write sends the configured attributes to the product with the given ID (nil creates one) and writes the result into plan.
-// live is that product as it is now, nil on create.
+// write sends the configured attributes to the product with the given ID and live state (both nil create one) and writes the result into plan.
 func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFields, plan, cfg *model, diags *diag.Diagnostics, private privateState) {
 	in, removed, d := buildInput(ctx, cfg, live)
 	diags.Append(d...)

@@ -63,8 +63,7 @@ func names(opts []option) []string {
 	return out
 }
 
-// matchVariants returns, per planned variant, the prior variant it keeps (-1 for a new one), and the prior variants nothing keeps.
-// Combinations are compared on the options both sides share, through renames, so adding or removing an option keeps variants.
+// matchVariants returns the prior variant each planned one keeps (-1 if new) and the prior ones nothing keeps, comparing only shared options so adding or removing one keeps variants.
 func matchVariants(priorOpts []option, prior []combo, plannedOpts []option, planned []combo) (keep, removed []int) {
 	m := matchOptions(priorOpts, plannedOpts)
 	var shared []int

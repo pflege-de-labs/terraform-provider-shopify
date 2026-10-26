@@ -140,9 +140,9 @@ func comboKey(c combo) string {
 	return strings.Join(parts, "\x01")
 }
 
-// TODO(verify): whether staging or production products use linked options; they can't be managed until this supports them.
 // linkedOptionError says why a product with a linked option can't be managed: writing it without linkedMetafield would unlink it.
 func linkedOptionError(p *client.ProductFields) error {
+	// TODO(verify): whether staging or production products use linked options.
 	for _, o := range p.Options {
 		if lm := o.LinkedMetafield; lm != nil {
 			ns, key := "", ""
