@@ -43,7 +43,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_shipping` | `shopify_delivery_profile` (general; custom profiles planned), carrier services | ✅ general profile | good; carrier services are app-owned |
 | `write_locales` | `shopify_shop_locale`; `shopify_web_presence` locales (needed to read them) | ✅ | good |
 | `write_legal_policies` | `shopify_shop_policy` | ✅ | volatile (legal texts, often edited in the admin; the privacy policy is Shopify-generated) |
-| `write_privacy_settings` | privacy settings, cookie banner | planned | good |
+| `write_privacy_settings` | `shopify_privacy_settings`, `shopify_consent_policy` | ✅ | good (consent policies need Shopify's cookie banner off, one-way) |
 | `write_checkout_and_accounts_configurations` | checkout and accounts configuration | planned | good |
 | `write_checkout_branding_settings` | checkout branding | planned | good |
 | `write_translations` | translations, market localizations | planned | volatile (follows content) |

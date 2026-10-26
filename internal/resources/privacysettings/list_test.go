@@ -62,7 +62,7 @@ func TestAccListConsentPolicy(t *testing.T) {
 				Query:  true,
 				Config: listConfig("shopify_consent_policy"),
 				QueryResultChecks: []querycheck.QueryResultCheck{
-					// Shopify's untouched `SD-` defaults stay out, so the 316 of them don't bury the written rows (DE, IS, LI on the dev store).
+					// Shopify's untouched `SD-` defaults stay out, so the 316 of them don't bury the written rows (DE, IS, LI, plus US regions once one was written, on the dev store).
 					querycheck.ExpectLengthAtLeast("shopify_consent_policy.all", 1),
 					querycheck.ExpectIdentity("shopify_consent_policy.all", map[string]knownvalue.Check{"id": knownvalue.StringRegexp(numericIDRe)}),
 					querycheck.ExpectResourceKnownValues("shopify_consent_policy.all", queryfilter.ByDisplayName(knownvalue.StringExact("DE")), []querycheck.KnownValueCheck{
