@@ -1,0 +1,100 @@
+fragment PageFields on Page {
+  id
+  handle
+  title
+  body
+  isPublished
+  templateSuffix
+}
+
+query GetPage(
+  $id: ID!
+) {
+  page(id: $id) {
+    ...PageFields
+  }
+}
+
+# There is no pageByHandle or pageByIdentifier, so this is a search; the caller checks the handle exactly.
+query FindPages(
+  $query: String!
+) {
+  pages(first: 5, query: $query) {
+    nodes {
+      ...PageFields
+    }
+  }
+}
+
+# Requested cost at 250 pages is low (149 together with blogs and segments).
+query ListPages(
+  $after: String
+) {
+  pages(first: 250, after: $after) {
+    nodes {
+      ...PageFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# publishDate and metafields are never sent: scheduled publishing fights isPublished, metafield values are a roadmap type.
+# @genqlient(for: "PageCreateInput.handle", omitempty: true)
+# @genqlient(for: "PageCreateInput.body", omitempty: true)
+# @genqlient(for: "PageCreateInput.isPublished", omitempty: true)
+# @genqlient(for: "PageCreateInput.publishDate", omitempty: true)
+# @genqlient(for: "PageCreateInput.templateSuffix", omitempty: true)
+# @genqlient(for: "PageCreateInput.metafields", omitempty: true)
+mutation CreatePage(
+  $page: PageCreateInput!
+) {
+  pageCreate(page: $page) {
+    page {
+      ...PageFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# redirectNewHandle is never sent: a handle change creates no redirect (URL redirects are a roadmap type).
+# @genqlient(for: "PageUpdateInput.handle", omitempty: true)
+# @genqlient(for: "PageUpdateInput.title", omitempty: true)
+# @genqlient(for: "PageUpdateInput.body", omitempty: true)
+# @genqlient(for: "PageUpdateInput.isPublished", omitempty: true)
+# @genqlient(for: "PageUpdateInput.publishDate", omitempty: true)
+# @genqlient(for: "PageUpdateInput.templateSuffix", omitempty: true)
+# @genqlient(for: "PageUpdateInput.metafields", omitempty: true)
+# @genqlient(for: "PageUpdateInput.redirectNewHandle", omitempty: true)
+mutation UpdatePage(
+  $id: ID!
+  $page: PageUpdateInput!
+) {
+  pageUpdate(id: $id, page: $page) {
+    page {
+      ...PageFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeletePage(
+  $id: ID!
+) {
+  pageDelete(id: $id) {
+    deletedPageId
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}

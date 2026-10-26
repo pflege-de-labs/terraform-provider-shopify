@@ -4211,6 +4211,154 @@ func (v *CreateMetaobjectDefinitionResponse) GetMetaobjectDefinitionCreate() *Cr
 	return v.MetaobjectDefinitionCreate
 }
 
+// CreatePagePageCreatePageCreatePayload includes the requested fields of the GraphQL type PageCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `pageCreate` mutation.
+type CreatePagePageCreatePageCreatePayload struct {
+	// The page that was created.
+	Page *CreatePagePageCreatePageCreatePayloadPage `json:"page"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError `json:"userErrors"`
+}
+
+// GetPage returns CreatePagePageCreatePageCreatePayload.Page, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayload) GetPage() *CreatePagePageCreatePageCreatePayloadPage {
+	return v.Page
+}
+
+// GetUserErrors returns CreatePagePageCreatePageCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayload) GetUserErrors() []CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError {
+	return v.UserErrors
+}
+
+// CreatePagePageCreatePageCreatePayloadPage includes the requested fields of the GraphQL type Page.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type CreatePagePageCreatePageCreatePayloadPage struct {
+	PageFields `json:"-"`
+}
+
+// GetId returns CreatePagePageCreatePageCreatePayloadPage.Id, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadPage) GetId() string { return v.PageFields.Id }
+
+// GetHandle returns CreatePagePageCreatePageCreatePayloadPage.Handle, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadPage) GetHandle() string { return v.PageFields.Handle }
+
+// GetTitle returns CreatePagePageCreatePageCreatePayloadPage.Title, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadPage) GetTitle() string { return v.PageFields.Title }
+
+// GetBody returns CreatePagePageCreatePageCreatePayloadPage.Body, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadPage) GetBody() string { return v.PageFields.Body }
+
+// GetIsPublished returns CreatePagePageCreatePageCreatePayloadPage.IsPublished, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadPage) GetIsPublished() bool {
+	return v.PageFields.IsPublished
+}
+
+// GetTemplateSuffix returns CreatePagePageCreatePageCreatePayloadPage.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadPage) GetTemplateSuffix() *string {
+	return v.PageFields.TemplateSuffix
+}
+
+func (v *CreatePagePageCreatePageCreatePayloadPage) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreatePagePageCreatePageCreatePayloadPage
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreatePagePageCreatePageCreatePayloadPage = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreatePagePageCreatePageCreatePayloadPage struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Body string `json:"body"`
+
+	IsPublished bool `json:"isPublished"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *CreatePagePageCreatePageCreatePayloadPage) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreatePagePageCreatePageCreatePayloadPage) __premarshalJSON() (*__premarshalCreatePagePageCreatePageCreatePayloadPage, error) {
+	var retval __premarshalCreatePagePageCreatePageCreatePayloadPage
+
+	retval.Id = v.PageFields.Id
+	retval.Handle = v.PageFields.Handle
+	retval.Title = v.PageFields.Title
+	retval.Body = v.PageFields.Body
+	retval.IsPublished = v.PageFields.IsPublished
+	retval.TemplateSuffix = v.PageFields.TemplateSuffix
+	return &retval, nil
+}
+
+// CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError includes the requested fields of the GraphQL type PageCreateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `PageCreate`.
+type CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreatePageResponse is returned by CreatePage on success.
+type CreatePageResponse struct {
+	// Creates a [`Page`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page) for the online store.
+	//
+	// Pages contain custom content like "About Us" or "Contact" information that merchants display outside their product catalog. The page requires a [`title`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page#field-Page.fields.title) and can include HTML content, publishing settings, and custom [template suffixes](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page#field-Page.fields.templateSuffix). You can control visibility through the [`isPublished`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page#field-Page.fields.isPublished) flag or schedule publication with a specific date.
+	//
+	// The mutation returns the complete page object upon successful creation or validation errors if the input is invalid.
+	PageCreate *CreatePagePageCreatePageCreatePayload `json:"pageCreate"`
+}
+
+// GetPageCreate returns CreatePageResponse.PageCreate, and is useful for accessing the field via an interface.
+func (v *CreatePageResponse) GetPageCreate() *CreatePagePageCreatePageCreatePayload {
+	return v.PageCreate
+}
+
 // CreateWebPresenceResponse is returned by CreateWebPresence on success.
 type CreateWebPresenceResponse struct {
 	// Creates a web presence.
@@ -5364,6 +5512,73 @@ type DeleteMetaobjectDefinitionResponse struct {
 // GetMetaobjectDefinitionDelete returns DeleteMetaobjectDefinitionResponse.MetaobjectDefinitionDelete, and is useful for accessing the field via an interface.
 func (v *DeleteMetaobjectDefinitionResponse) GetMetaobjectDefinitionDelete() *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload {
 	return v.MetaobjectDefinitionDelete
+}
+
+// DeletePagePageDeletePageDeletePayload includes the requested fields of the GraphQL type PageDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `pageDelete` mutation.
+type DeletePagePageDeletePageDeletePayload struct {
+	// The ID of the deleted page.
+	DeletedPageId *string `json:"deletedPageId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError `json:"userErrors"`
+}
+
+// GetDeletedPageId returns DeletePagePageDeletePageDeletePayload.DeletedPageId, and is useful for accessing the field via an interface.
+func (v *DeletePagePageDeletePageDeletePayload) GetDeletedPageId() *string { return v.DeletedPageId }
+
+// GetUserErrors returns DeletePagePageDeletePageDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeletePagePageDeletePageDeletePayload) GetUserErrors() []DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError {
+	return v.UserErrors
+}
+
+// DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError includes the requested fields of the GraphQL type PageDeleteUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `PageDelete`.
+type DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *PageDeleteUserErrorCode `json:"code"`
+}
+
+// GetField returns DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError.Code, and is useful for accessing the field via an interface.
+func (v *DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError) GetCode() *PageDeleteUserErrorCode {
+	return v.Code
+}
+
+// DeletePageResponse is returned by DeletePage on success.
+type DeletePageResponse struct {
+	// Permanently deletes a page from the online store.
+	//
+	// For example, merchants might delete seasonal landing pages after campaigns end, or remove outdated policy pages when terms change.
+	//
+	// Use the `pageDelete` mutation to:
+	// - Remove outdated or unnecessary pages
+	// - Clean up seasonal landing pages
+	// - Delete duplicate pages
+	//
+	// The deletion is permanent and returns the deleted page's ID for confirmation.
+	PageDelete *DeletePagePageDeletePageDeletePayload `json:"pageDelete"`
+}
+
+// GetPageDelete returns DeletePageResponse.PageDelete, and is useful for accessing the field via an interface.
+func (v *DeletePageResponse) GetPageDelete() *DeletePagePageDeletePageDeletePayload {
+	return v.PageDelete
 }
 
 // DeleteProductProductDeleteProductDeletePayload includes the requested fields of the GraphQL type ProductDeletePayload.
@@ -8013,6 +8228,122 @@ func (v *FindLocationsResponse) GetLocations() FindLocationsLocationsLocationCon
 	return v.Locations
 }
 
+// FindPagesPagesPageConnection includes the requested fields of the GraphQL type PageConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Pages.
+type FindPagesPagesPageConnection struct {
+	// A list of nodes that are contained in PageEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []FindPagesPagesPageConnectionNodesPage `json:"nodes"`
+}
+
+// GetNodes returns FindPagesPagesPageConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnection) GetNodes() []FindPagesPagesPageConnectionNodesPage {
+	return v.Nodes
+}
+
+// FindPagesPagesPageConnectionNodesPage includes the requested fields of the GraphQL type Page.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type FindPagesPagesPageConnectionNodesPage struct {
+	PageFields `json:"-"`
+}
+
+// GetId returns FindPagesPagesPageConnectionNodesPage.Id, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnectionNodesPage) GetId() string { return v.PageFields.Id }
+
+// GetHandle returns FindPagesPagesPageConnectionNodesPage.Handle, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnectionNodesPage) GetHandle() string { return v.PageFields.Handle }
+
+// GetTitle returns FindPagesPagesPageConnectionNodesPage.Title, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnectionNodesPage) GetTitle() string { return v.PageFields.Title }
+
+// GetBody returns FindPagesPagesPageConnectionNodesPage.Body, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnectionNodesPage) GetBody() string { return v.PageFields.Body }
+
+// GetIsPublished returns FindPagesPagesPageConnectionNodesPage.IsPublished, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnectionNodesPage) GetIsPublished() bool {
+	return v.PageFields.IsPublished
+}
+
+// GetTemplateSuffix returns FindPagesPagesPageConnectionNodesPage.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnectionNodesPage) GetTemplateSuffix() *string {
+	return v.PageFields.TemplateSuffix
+}
+
+func (v *FindPagesPagesPageConnectionNodesPage) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*FindPagesPagesPageConnectionNodesPage
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.FindPagesPagesPageConnectionNodesPage = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalFindPagesPagesPageConnectionNodesPage struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Body string `json:"body"`
+
+	IsPublished bool `json:"isPublished"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *FindPagesPagesPageConnectionNodesPage) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *FindPagesPagesPageConnectionNodesPage) __premarshalJSON() (*__premarshalFindPagesPagesPageConnectionNodesPage, error) {
+	var retval __premarshalFindPagesPagesPageConnectionNodesPage
+
+	retval.Id = v.PageFields.Id
+	retval.Handle = v.PageFields.Handle
+	retval.Title = v.PageFields.Title
+	retval.Body = v.PageFields.Body
+	retval.IsPublished = v.PageFields.IsPublished
+	retval.TemplateSuffix = v.PageFields.TemplateSuffix
+	return &retval, nil
+}
+
+// FindPagesResponse is returned by FindPages on success.
+type FindPagesResponse struct {
+	// A paginated list of pages from the online store. [`Page`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page) objects are content pages that merchants create to provide information to customers, such as "About Us", "Contact", or policy pages.
+	//
+	// The query supports filtering with a [search query](https://shopify.dev/docs/api/usage/search-syntax) and sorting by various criteria. Advanced filtering is available through saved searches using the [`savedSearchId`](https://shopify.dev/docs/api/admin-graphql/latest/queries/pages#arguments-savedSearchId) argument.
+	Pages FindPagesPagesPageConnection `json:"pages"`
+}
+
+// GetPages returns FindPagesResponse.Pages, and is useful for accessing the field via an interface.
+func (v *FindPagesResponse) GetPages() FindPagesPagesPageConnection { return v.Pages }
+
 // The type of a fulfillment service.
 type FulfillmentServiceType string
 
@@ -10173,6 +10504,102 @@ type GetMetaobjectDefinitionResponse struct {
 func (v *GetMetaobjectDefinitionResponse) GetMetaobjectDefinition() *GetMetaobjectDefinitionMetaobjectDefinition {
 	return v.MetaobjectDefinition
 }
+
+// GetPagePage includes the requested fields of the GraphQL type Page.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type GetPagePage struct {
+	PageFields `json:"-"`
+}
+
+// GetId returns GetPagePage.Id, and is useful for accessing the field via an interface.
+func (v *GetPagePage) GetId() string { return v.PageFields.Id }
+
+// GetHandle returns GetPagePage.Handle, and is useful for accessing the field via an interface.
+func (v *GetPagePage) GetHandle() string { return v.PageFields.Handle }
+
+// GetTitle returns GetPagePage.Title, and is useful for accessing the field via an interface.
+func (v *GetPagePage) GetTitle() string { return v.PageFields.Title }
+
+// GetBody returns GetPagePage.Body, and is useful for accessing the field via an interface.
+func (v *GetPagePage) GetBody() string { return v.PageFields.Body }
+
+// GetIsPublished returns GetPagePage.IsPublished, and is useful for accessing the field via an interface.
+func (v *GetPagePage) GetIsPublished() bool { return v.PageFields.IsPublished }
+
+// GetTemplateSuffix returns GetPagePage.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *GetPagePage) GetTemplateSuffix() *string { return v.PageFields.TemplateSuffix }
+
+func (v *GetPagePage) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetPagePage
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetPagePage = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetPagePage struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Body string `json:"body"`
+
+	IsPublished bool `json:"isPublished"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *GetPagePage) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetPagePage) __premarshalJSON() (*__premarshalGetPagePage, error) {
+	var retval __premarshalGetPagePage
+
+	retval.Id = v.PageFields.Id
+	retval.Handle = v.PageFields.Handle
+	retval.Title = v.PageFields.Title
+	retval.Body = v.PageFields.Body
+	retval.IsPublished = v.PageFields.IsPublished
+	retval.TemplateSuffix = v.PageFields.TemplateSuffix
+	return &retval, nil
+}
+
+// GetPageResponse is returned by GetPage on success.
+type GetPageResponse struct {
+	// Returns a `Page` resource by ID.
+	Page *GetPagePage `json:"page"`
+}
+
+// GetPage returns GetPageResponse.Page, and is useful for accessing the field via an interface.
+func (v *GetPageResponse) GetPage() *GetPagePage { return v.Page }
 
 // GetPrivacySettingsPrivacySettings includes the requested fields of the GraphQL type PrivacySettings.
 // The GraphQL type's documentation follows.
@@ -12370,6 +12797,148 @@ type ListMetaobjectDefinitionsResponse struct {
 func (v *ListMetaobjectDefinitionsResponse) GetMetaobjectDefinitions() ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnection {
 	return v.MetaobjectDefinitions
 }
+
+// ListPagesPagesPageConnection includes the requested fields of the GraphQL type PageConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Pages.
+type ListPagesPagesPageConnection struct {
+	// A list of nodes that are contained in PageEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListPagesPagesPageConnectionNodesPage `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListPagesPagesPageConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListPagesPagesPageConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnection) GetNodes() []ListPagesPagesPageConnectionNodesPage {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListPagesPagesPageConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnection) GetPageInfo() ListPagesPagesPageConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListPagesPagesPageConnectionNodesPage includes the requested fields of the GraphQL type Page.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type ListPagesPagesPageConnectionNodesPage struct {
+	PageFields `json:"-"`
+}
+
+// GetId returns ListPagesPagesPageConnectionNodesPage.Id, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionNodesPage) GetId() string { return v.PageFields.Id }
+
+// GetHandle returns ListPagesPagesPageConnectionNodesPage.Handle, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionNodesPage) GetHandle() string { return v.PageFields.Handle }
+
+// GetTitle returns ListPagesPagesPageConnectionNodesPage.Title, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionNodesPage) GetTitle() string { return v.PageFields.Title }
+
+// GetBody returns ListPagesPagesPageConnectionNodesPage.Body, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionNodesPage) GetBody() string { return v.PageFields.Body }
+
+// GetIsPublished returns ListPagesPagesPageConnectionNodesPage.IsPublished, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionNodesPage) GetIsPublished() bool {
+	return v.PageFields.IsPublished
+}
+
+// GetTemplateSuffix returns ListPagesPagesPageConnectionNodesPage.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionNodesPage) GetTemplateSuffix() *string {
+	return v.PageFields.TemplateSuffix
+}
+
+func (v *ListPagesPagesPageConnectionNodesPage) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListPagesPagesPageConnectionNodesPage
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListPagesPagesPageConnectionNodesPage = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListPagesPagesPageConnectionNodesPage struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Body string `json:"body"`
+
+	IsPublished bool `json:"isPublished"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *ListPagesPagesPageConnectionNodesPage) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListPagesPagesPageConnectionNodesPage) __premarshalJSON() (*__premarshalListPagesPagesPageConnectionNodesPage, error) {
+	var retval __premarshalListPagesPagesPageConnectionNodesPage
+
+	retval.Id = v.PageFields.Id
+	retval.Handle = v.PageFields.Handle
+	retval.Title = v.PageFields.Title
+	retval.Body = v.PageFields.Body
+	retval.IsPublished = v.PageFields.IsPublished
+	retval.TemplateSuffix = v.PageFields.TemplateSuffix
+	return &retval, nil
+}
+
+// ListPagesPagesPageConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListPagesPagesPageConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListPagesPagesPageConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ListPagesPagesPageConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
+
+// ListPagesResponse is returned by ListPages on success.
+type ListPagesResponse struct {
+	// A paginated list of pages from the online store. [`Page`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page) objects are content pages that merchants create to provide information to customers, such as "About Us", "Contact", or policy pages.
+	//
+	// The query supports filtering with a [search query](https://shopify.dev/docs/api/usage/search-syntax) and sorting by various criteria. Advanced filtering is available through saved searches using the [`savedSearchId`](https://shopify.dev/docs/api/admin-graphql/latest/queries/pages#arguments-savedSearchId) argument.
+	Pages ListPagesPagesPageConnection `json:"pages"`
+}
+
+// GetPages returns ListPagesResponse.Pages, and is useful for accessing the field via an interface.
+func (v *ListPagesResponse) GetPages() ListPagesPagesPageConnection { return v.Pages }
 
 // ListProductsProductsProductConnection includes the requested fields of the GraphQL type ProductConnection.
 // The GraphQL type's documentation follows.
@@ -16763,6 +17332,146 @@ func (v *OptionValueSetInput) GetId() *string { return v.Id }
 
 // GetName returns OptionValueSetInput.Name, and is useful for accessing the field via an interface.
 func (v *OptionValueSetInput) GetName() *string { return v.Name }
+
+// The input fields to create a page.
+type PageCreateInput struct {
+	// A unique, human-friendly string for the page. If no handle is specified, a handle will be generated automatically from the page title.
+	// In themes, the Liquid templating language refers to a page by its handle.
+	Handle *string `json:"handle,omitempty"`
+	// The text content of the page, complete with HTML markup.
+	Body *string `json:"body,omitempty"`
+	// Whether or not the page should be visible. Defaults to `true` if no publish date is specified.
+	IsPublished *bool `json:"isPublished,omitempty"`
+	// The date and time (ISO 8601 format) when the page should become visible.
+	PublishDate *string `json:"publishDate,omitempty"`
+	// The suffix of the template that's used to render the page.
+	// If the value is an empty string or `null`, then the default page template is used.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// The input fields to create or update a metafield.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// The title of the page.
+	Title string `json:"title"`
+}
+
+// GetHandle returns PageCreateInput.Handle, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetHandle() *string { return v.Handle }
+
+// GetBody returns PageCreateInput.Body, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetBody() *string { return v.Body }
+
+// GetIsPublished returns PageCreateInput.IsPublished, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetIsPublished() *bool { return v.IsPublished }
+
+// GetPublishDate returns PageCreateInput.PublishDate, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetPublishDate() *string { return v.PublishDate }
+
+// GetTemplateSuffix returns PageCreateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetMetafields returns PageCreateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetTitle returns PageCreateInput.Title, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetTitle() string { return v.Title }
+
+// Possible error codes that can be returned by `PageDeleteUserError`.
+type PageDeleteUserErrorCode string
+
+const (
+	// The record with the ID used as the input value couldn't be found.
+	PageDeleteUserErrorCodeNotFound PageDeleteUserErrorCode = "NOT_FOUND"
+)
+
+var AllPageDeleteUserErrorCode = []PageDeleteUserErrorCode{
+	PageDeleteUserErrorCodeNotFound,
+}
+
+// PageFields includes the GraphQL fields of Page requested by the fragment PageFields.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type PageFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A unique, human-friendly string for the page.
+	// In themes, the Liquid templating language refers to a page by its handle.
+	Handle string `json:"handle"`
+	// Title of the page.
+	Title string `json:"title"`
+	// The text content of the page, complete with HTML markup.
+	Body string `json:"body"`
+	// Whether or not the page is visible.
+	IsPublished bool `json:"isPublished"`
+	// The suffix of the template that's used to render the page.
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+// GetId returns PageFields.Id, and is useful for accessing the field via an interface.
+func (v *PageFields) GetId() string { return v.Id }
+
+// GetHandle returns PageFields.Handle, and is useful for accessing the field via an interface.
+func (v *PageFields) GetHandle() string { return v.Handle }
+
+// GetTitle returns PageFields.Title, and is useful for accessing the field via an interface.
+func (v *PageFields) GetTitle() string { return v.Title }
+
+// GetBody returns PageFields.Body, and is useful for accessing the field via an interface.
+func (v *PageFields) GetBody() string { return v.Body }
+
+// GetIsPublished returns PageFields.IsPublished, and is useful for accessing the field via an interface.
+func (v *PageFields) GetIsPublished() bool { return v.IsPublished }
+
+// GetTemplateSuffix returns PageFields.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *PageFields) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// The input fields to update a page.
+type PageUpdateInput struct {
+	// A unique, human-friendly string for the page. If no handle is specified, a handle will be generated automatically from the page title.
+	// In themes, the Liquid templating language refers to a page by its handle.
+	Handle *string `json:"handle,omitempty"`
+	// The text content of the page, complete with HTML markup.
+	Body *string `json:"body,omitempty"`
+	// Whether or not the page should be visible. Defaults to `true` if no publish date is specified.
+	IsPublished *bool `json:"isPublished,omitempty"`
+	// The date and time (ISO 8601 format) when the page should become visible.
+	PublishDate *string `json:"publishDate,omitempty"`
+	// The suffix of the template that's used to render the page.
+	// If the value is an empty string or `null`, then the default page template is used.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// The input fields to create or update a metafield.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// The title of the page.
+	Title *string `json:"title,omitempty"`
+	// Whether a redirect is required after a new handle has been provided.
+	// If `true`, then the old handle is redirected to the new one automatically.
+	RedirectNewHandle *bool `json:"redirectNewHandle,omitempty"`
+}
+
+// GetHandle returns PageUpdateInput.Handle, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetHandle() *string { return v.Handle }
+
+// GetBody returns PageUpdateInput.Body, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetBody() *string { return v.Body }
+
+// GetIsPublished returns PageUpdateInput.IsPublished, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetIsPublished() *bool { return v.IsPublished }
+
+// GetPublishDate returns PageUpdateInput.PublishDate, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetPublishDate() *string { return v.PublishDate }
+
+// GetTemplateSuffix returns PageUpdateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetMetafields returns PageUpdateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetTitle returns PageUpdateInput.Title, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetTitle() *string { return v.Title }
+
+// GetRedirectNewHandle returns PageUpdateInput.RedirectNewHandle, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetRedirectNewHandle() *bool { return v.RedirectNewHandle }
 
 // A country code from the `ISO 3166` standard. e.g. `CA` for Canada.
 type PrivacyCountryCode string
@@ -21654,6 +22363,160 @@ func (v *UpdateMetaobjectDefinitionResponse) GetMetaobjectDefinitionUpdate() *Up
 	return v.MetaobjectDefinitionUpdate
 }
 
+// UpdatePagePageUpdatePageUpdatePayload includes the requested fields of the GraphQL type PageUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `pageUpdate` mutation.
+type UpdatePagePageUpdatePageUpdatePayload struct {
+	// The page that was updated.
+	Page *UpdatePagePageUpdatePageUpdatePayloadPage `json:"page"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError `json:"userErrors"`
+}
+
+// GetPage returns UpdatePagePageUpdatePageUpdatePayload.Page, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayload) GetPage() *UpdatePagePageUpdatePageUpdatePayloadPage {
+	return v.Page
+}
+
+// GetUserErrors returns UpdatePagePageUpdatePageUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayload) GetUserErrors() []UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError {
+	return v.UserErrors
+}
+
+// UpdatePagePageUpdatePageUpdatePayloadPage includes the requested fields of the GraphQL type Page.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type UpdatePagePageUpdatePageUpdatePayloadPage struct {
+	PageFields `json:"-"`
+}
+
+// GetId returns UpdatePagePageUpdatePageUpdatePayloadPage.Id, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) GetId() string { return v.PageFields.Id }
+
+// GetHandle returns UpdatePagePageUpdatePageUpdatePayloadPage.Handle, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) GetHandle() string { return v.PageFields.Handle }
+
+// GetTitle returns UpdatePagePageUpdatePageUpdatePayloadPage.Title, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) GetTitle() string { return v.PageFields.Title }
+
+// GetBody returns UpdatePagePageUpdatePageUpdatePayloadPage.Body, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) GetBody() string { return v.PageFields.Body }
+
+// GetIsPublished returns UpdatePagePageUpdatePageUpdatePayloadPage.IsPublished, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) GetIsPublished() bool {
+	return v.PageFields.IsPublished
+}
+
+// GetTemplateSuffix returns UpdatePagePageUpdatePageUpdatePayloadPage.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) GetTemplateSuffix() *string {
+	return v.PageFields.TemplateSuffix
+}
+
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdatePagePageUpdatePageUpdatePayloadPage
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdatePagePageUpdatePageUpdatePayloadPage = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdatePagePageUpdatePageUpdatePayloadPage struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Body string `json:"body"`
+
+	IsPublished bool `json:"isPublished"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) __premarshalJSON() (*__premarshalUpdatePagePageUpdatePageUpdatePayloadPage, error) {
+	var retval __premarshalUpdatePagePageUpdatePageUpdatePayloadPage
+
+	retval.Id = v.PageFields.Id
+	retval.Handle = v.PageFields.Handle
+	retval.Title = v.PageFields.Title
+	retval.Body = v.PageFields.Body
+	retval.IsPublished = v.PageFields.IsPublished
+	retval.TemplateSuffix = v.PageFields.TemplateSuffix
+	return &retval, nil
+}
+
+// UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError includes the requested fields of the GraphQL type PageUpdateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `PageUpdate`.
+type UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError) GetMessage() string {
+	return v.Message
+}
+
+// UpdatePageResponse is returned by UpdatePage on success.
+type UpdatePageResponse struct {
+	// Updates an existing page's content and settings.
+	//
+	// For example, merchants can update their "Shipping Policy" page when rates change, or refresh their "About Us" page with new team information.
+	//
+	// Use the `pageUpdate` mutation to:
+	// - Update page content and titles
+	// - Modify publication status
+	// - Change page handles for URL structure
+	// - Adjust template settings
+	//
+	// The mutation supports partial updates, allowing specific changes while preserving other page properties.
+	PageUpdate *UpdatePagePageUpdatePageUpdatePayload `json:"pageUpdate"`
+}
+
+// GetPageUpdate returns UpdatePageResponse.PageUpdate, and is useful for accessing the field via an interface.
+func (v *UpdatePageResponse) GetPageUpdate() *UpdatePagePageUpdatePageUpdatePayload {
+	return v.PageUpdate
+}
+
 // UpdateShopLocaleResponse is returned by UpdateShopLocale on success.
 type UpdateShopLocaleResponse struct {
 	// Updates a locale for a shop.
@@ -22593,6 +23456,14 @@ func (v *__CreateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinition
 	return v.Definition
 }
 
+// __CreatePageInput is used internally by genqlient
+type __CreatePageInput struct {
+	Page PageCreateInput `json:"page"`
+}
+
+// GetPage returns __CreatePageInput.Page, and is useful for accessing the field via an interface.
+func (v *__CreatePageInput) GetPage() PageCreateInput { return v.Page }
+
 // __CreateWebPresenceInput is used internally by genqlient
 type __CreateWebPresenceInput struct {
 	Input WebPresenceCreateInput `json:"input"`
@@ -22667,6 +23538,14 @@ type __DeleteMetaobjectDefinitionInput struct {
 // GetId returns __DeleteMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteMetaobjectDefinitionInput) GetId() string { return v.Id }
 
+// __DeletePageInput is used internally by genqlient
+type __DeletePageInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeletePageInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeletePageInput) GetId() string { return v.Id }
+
 // __DeleteProductInput is used internally by genqlient
 type __DeleteProductInput struct {
 	Id string `json:"id"`
@@ -22726,6 +23605,14 @@ type __FindLocationsInput struct {
 
 // GetQuery returns __FindLocationsInput.Query, and is useful for accessing the field via an interface.
 func (v *__FindLocationsInput) GetQuery() string { return v.Query }
+
+// __FindPagesInput is used internally by genqlient
+type __FindPagesInput struct {
+	Query string `json:"query"`
+}
+
+// GetQuery returns __FindPagesInput.Query, and is useful for accessing the field via an interface.
+func (v *__FindPagesInput) GetQuery() string { return v.Query }
 
 // __GetCheckoutAndAccountsConfigurationInput is used internally by genqlient
 type __GetCheckoutAndAccountsConfigurationInput struct {
@@ -22861,6 +23748,14 @@ type __GetMetaobjectDefinitionInput struct {
 // GetId returns __GetMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetMetaobjectDefinitionInput) GetId() string { return v.Id }
 
+// __GetPageInput is used internally by genqlient
+type __GetPageInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetPageInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetPageInput) GetId() string { return v.Id }
+
 // __GetProductByHandleInput is used internally by genqlient
 type __GetProductByHandleInput struct {
 	Handle string `json:"handle"`
@@ -22984,6 +23879,14 @@ type __ListMetaobjectDefinitionsInput struct {
 
 // GetAfter returns __ListMetaobjectDefinitionsInput.After, and is useful for accessing the field via an interface.
 func (v *__ListMetaobjectDefinitionsInput) GetAfter() *string { return v.After }
+
+// __ListPagesInput is used internally by genqlient
+type __ListPagesInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListPagesInput.After, and is useful for accessing the field via an interface.
+func (v *__ListPagesInput) GetAfter() *string { return v.After }
 
 // __ListProductsInput is used internally by genqlient
 type __ListProductsInput struct {
@@ -23142,6 +24045,18 @@ func (v *__UpdateMetaobjectDefinitionInput) GetId() string { return v.Id }
 func (v *__UpdateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinitionUpdateInput {
 	return v.Definition
 }
+
+// __UpdatePageInput is used internally by genqlient
+type __UpdatePageInput struct {
+	Id   string          `json:"id"`
+	Page PageUpdateInput `json:"page"`
+}
+
+// GetId returns __UpdatePageInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdatePageInput) GetId() string { return v.Id }
+
+// GetPage returns __UpdatePageInput.Page, and is useful for accessing the field via an interface.
+func (v *__UpdatePageInput) GetPage() PageUpdateInput { return v.Page }
 
 // __UpdateShopLocaleInput is used internally by genqlient
 type __UpdateShopLocaleInput struct {
@@ -23789,6 +24704,55 @@ func CreateMetaobjectDefinition(
 	return data_, err_
 }
 
+// The mutation executed by CreatePage.
+const CreatePage_Operation = `
+mutation CreatePage ($page: PageCreateInput!) {
+	pageCreate(page: $page) {
+		page {
+			... PageFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment PageFields on Page {
+	id
+	handle
+	title
+	body
+	isPublished
+	templateSuffix
+}
+`
+
+// publishDate and metafields are never sent: scheduled publishing fights isPublished, metafield values are a roadmap type.
+func CreatePage(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	page PageCreateInput,
+) (data_ *CreatePageResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreatePage",
+		Query:  CreatePage_Operation,
+		Variables: &__CreatePageInput{
+			Page: page,
+		},
+	}
+
+	data_ = &CreatePageResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by CreateWebPresence.
 const CreateWebPresence_Operation = `
 mutation CreateWebPresence ($input: WebPresenceCreateInput!) {
@@ -24137,6 +25101,45 @@ func DeleteMetaobjectDefinition(
 	return data_, err_
 }
 
+// The mutation executed by DeletePage.
+const DeletePage_Operation = `
+mutation DeletePage ($id: ID!) {
+	pageDelete(id: $id) {
+		deletedPageId
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+`
+
+func DeletePage(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeletePageResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeletePage",
+		Query:  DeletePage_Operation,
+		Variables: &__DeletePageInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeletePageResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by DeleteProduct.
 const DeleteProduct_Operation = `
 mutation DeleteProduct ($id: ID!) {
@@ -24439,6 +25442,51 @@ func FindLocations(
 	}
 
 	data_ = &FindLocationsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by FindPages.
+const FindPages_Operation = `
+query FindPages ($query: String!) {
+	pages(first: 5, query: $query) {
+		nodes {
+			... PageFields
+		}
+	}
+}
+fragment PageFields on Page {
+	id
+	handle
+	title
+	body
+	isPublished
+	templateSuffix
+}
+`
+
+// There is no pageByHandle or pageByIdentifier, so this is a search; the caller checks the handle exactly.
+func FindPages(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	query string,
+) (data_ *FindPagesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "FindPages",
+		Query:  FindPages_Operation,
+		Variables: &__FindPagesInput{
+			Query: query,
+		},
+	}
+
+	data_ = &FindPagesResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -26927,6 +27975,48 @@ func GetMetaobjectDefinitionByType(
 	return data_, err_
 }
 
+// The query executed by GetPage.
+const GetPage_Operation = `
+query GetPage ($id: ID!) {
+	page(id: $id) {
+		... PageFields
+	}
+}
+fragment PageFields on Page {
+	id
+	handle
+	title
+	body
+	isPublished
+	templateSuffix
+}
+`
+
+func GetPage(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetPageResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetPage",
+		Query:  GetPage_Operation,
+		Variables: &__GetPageInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetPageResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetPrivacySettings.
 const GetPrivacySettings_Operation = `
 query GetPrivacySettings {
@@ -29343,6 +30433,55 @@ func ListMetaobjectDefinitions(
 	}
 
 	data_ = &ListMetaobjectDefinitionsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListPages.
+const ListPages_Operation = `
+query ListPages ($after: String) {
+	pages(first: 250, after: $after) {
+		nodes {
+			... PageFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment PageFields on Page {
+	id
+	handle
+	title
+	body
+	isPublished
+	templateSuffix
+}
+`
+
+// Requested cost at 250 pages is low (149 together with blogs and segments).
+func ListPages(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListPagesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListPages",
+		Query:  ListPages_Operation,
+		Variables: &__ListPagesInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListPagesResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -31781,6 +32920,57 @@ func UpdateMetaobjectDefinition(
 	}
 
 	data_ = &UpdateMetaobjectDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdatePage.
+const UpdatePage_Operation = `
+mutation UpdatePage ($id: ID!, $page: PageUpdateInput!) {
+	pageUpdate(id: $id, page: $page) {
+		page {
+			... PageFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment PageFields on Page {
+	id
+	handle
+	title
+	body
+	isPublished
+	templateSuffix
+}
+`
+
+// redirectNewHandle is never sent: a handle change creates no redirect (URL redirects are a roadmap type).
+func UpdatePage(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	page PageUpdateInput,
+) (data_ *UpdatePageResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdatePage",
+		Query:  UpdatePage_Operation,
+		Variables: &__UpdatePageInput{
+			Id:   id,
+			Page: page,
+		},
+	}
+
+	data_ = &UpdatePageResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
