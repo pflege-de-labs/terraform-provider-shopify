@@ -28,10 +28,18 @@ func UserErrorDiagsWith[E any, P interface {
 	*E
 	UserError
 }](summary string, errs []E, mapper func(field []string) (path.Path, bool)) diag.Diagnostics {
+	return UserErrorDiagsBy[E, P](summary, errs, func(e UserError) (path.Path, bool) { return mapper(e.GetField()) })
+}
+
+// UserErrorDiagsBy is UserErrorDiagsWith for errors whose attribute only the message names.
+func UserErrorDiagsBy[E any, P interface {
+	*E
+	UserError
+}](summary string, errs []E, mapper func(e UserError) (path.Path, bool)) diag.Diagnostics {
 	var diags diag.Diagnostics
 	for i := range errs {
 		e := P(&errs[i])
-		if p, ok := mapper(e.GetField()); ok {
+		if p, ok := mapper(e); ok {
 			diags.AddAttributeError(p, summary, e.GetMessage())
 		} else {
 			diags.AddError(summary, e.GetMessage())

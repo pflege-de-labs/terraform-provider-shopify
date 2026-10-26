@@ -63,3 +63,25 @@ func TestUserErrorDiagsWith(t *testing.T) {
 		t.Errorf("second diag must stay resource-level: %v", diags[1])
 	}
 }
+
+func TestUserErrorDiagsBy(t *testing.T) {
+	mapper := func(e UserError) (path.Path, bool) {
+		if e.GetMessage() == "Handle has already been taken" {
+			return path.Root("handle"), true
+		}
+		return path.Empty(), false
+	}
+	diags := UserErrorDiagsBy("Write failed", []CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadUserErrorsMetafieldDefinitionCreateUserError{
+		{Field: []string{"collection"}, Message: "Handle has already been taken"},
+		{Field: []string{"collection"}, Message: "other"},
+	}, mapper)
+	if len(diags) != 2 {
+		t.Fatalf("got %v", diags)
+	}
+	if d, ok := diags[0].(interface{ Path() path.Path }); !ok || !d.Path().Equal(path.Root("handle")) {
+		t.Errorf("first diag not scoped by its message: %v", diags[0])
+	}
+	if _, ok := diags[1].(interface{ Path() path.Path }); ok {
+		t.Errorf("second diag must stay resource-level: %v", diags[1])
+	}
+}

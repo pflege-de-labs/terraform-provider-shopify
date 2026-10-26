@@ -3,7 +3,6 @@ package product
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
@@ -26,11 +25,7 @@ import (
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 )
 
-const (
-	what = "product"
-	// writtenKey holds the description Shopify returned at the last write, to tell repaired HTML from an admin edit.
-	writtenKey = "description_html_written"
-)
+const what = "product"
 
 var (
 	_ resource.ResourceWithConfigure      = &Resource{}
@@ -82,7 +77,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"handle": schema.StringAttribute{
 				MarkdownDescription: "The product's URL handle, unique per shop. Changing it renames the product in place and creates no URL redirect. Lower case, no whitespace: Shopify lower-cases anything else.",
 				Required:            true,
-				Validators:          []validator.String{handleValidator{}},
+				Validators:          []validator.String{patterns.HandleValidator()},
 			},
 			"title": schema.StringAttribute{
 				MarkdownDescription: "The product title.",
@@ -93,7 +88,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				MarkdownDescription: "`ACTIVE`, `DRAFT`, `ARCHIVED` or `UNLISTED`. A new product is `ACTIVE` when this is unset." + unmanaged,
 				Optional:            true,
 				Computed:            true,
-				Validators:          []validator.String{stringvalidator.OneOf(statusNames()...)},
+				Validators:          []validator.String{stringvalidator.OneOf(patterns.EnumNames(client.AllProductStatus)...)},
 				PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			"description_html": schema.StringAttribute{
@@ -225,14 +220,14 @@ func variantsAttribute() schema.ListNestedAttribute {
 					"type": schema.StringAttribute{
 						MarkdownDescription: "`UPC`, `EAN`, `ISBN`, `GTIN`, `ASIN` or `NS_PID`; null when not set.",
 						Optional:            true,
-						Validators:          []validator.String{stringvalidator.OneOf(enumNames(client.AllBarcodeType)...)},
+						Validators:          []validator.String{stringvalidator.OneOf(patterns.EnumNames(client.AllBarcodeType)...)},
 					},
 				}},
 			},
 			"inventory_policy": schema.StringAttribute{
 				MarkdownDescription: "`DENY` stops selling when out of stock, `CONTINUE` keeps selling." + unmanaged,
 				Optional:            true, Computed: true,
-				Validators: []validator.String{stringvalidator.OneOf(enumNames(client.AllProductVariantInventoryPolicy)...)},
+				Validators: []validator.String{stringvalidator.OneOf(patterns.EnumNames(client.AllProductVariantInventoryPolicy)...)},
 			},
 			"taxable":           schema.BoolAttribute{MarkdownDescription: "Whether taxes are charged." + unmanaged, Optional: true, Computed: true},
 			"tracked":           schema.BoolAttribute{MarkdownDescription: "Whether Shopify tracks inventory for the variant." + unmanaged, Optional: true, Computed: true},
@@ -246,28 +241,12 @@ func variantsAttribute() schema.ListNestedAttribute {
 					"unit": schema.StringAttribute{
 						MarkdownDescription: "`KILOGRAMS`, `GRAMS`, `POUNDS` or `OUNCES`.",
 						Required:            true,
-						Validators:          []validator.String{stringvalidator.OneOf(enumNames(client.AllWeightUnit)...)},
+						Validators:          []validator.String{stringvalidator.OneOf(patterns.EnumNames(client.AllWeightUnit)...)},
 					},
 				},
 			},
 		}},
 	}
-}
-
-func enumNames[T ~string](all []T) []string {
-	out := make([]string, len(all))
-	for i, v := range all {
-		out[i] = string(v)
-	}
-	return out
-}
-
-func statusNames() []string {
-	out := make([]string, len(client.AllProductStatus))
-	for i, s := range client.AllProductStatus {
-		out[i] = string(s)
-	}
-	return out
 }
 
 func (r *Resource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -448,7 +427,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	if state.AllowDataDeletion.IsNull() {
 		state.AllowDataDeletion = types.BoolValue(false)
 	}
-	written, d := readWritten(ctx, req.Private)
+	written, d := patterns.WrittenHTML(ctx, req.Private)
 	resp.Diagnostics.Append(d...)
 	resp.Diagnostics.Append(setFromAPI(ctx, &state, p, written)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -542,7 +521,7 @@ func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequ
 }
 
 // write sends the configured attributes to the product with the given ID and live state (both nil create one) and writes the result into plan.
-func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFields, plan, cfg *model, diags *diag.Diagnostics, private privateState) {
+func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFields, plan, cfg *model, diags *diag.Diagnostics, private patterns.PrivateSetter) {
 	in, removed, d := buildInput(ctx, cfg, live)
 	diags.Append(d...)
 	if diags.HasError() {
@@ -577,33 +556,7 @@ func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFi
 		return
 	}
 	diags.Append(setFromAPI(ctx, plan, p, &p.DescriptionHtml)...)
-	raw, err := json.Marshal(p.DescriptionHtml)
-	if err != nil {
-		diags.AddError("Failed to remember the description", err.Error())
-		return
-	}
-	diags.Append(private.SetKey(ctx, writtenKey, raw)...)
-}
-
-// privateState is the part of the private state the resource writes.
-type privateState interface {
-	SetKey(ctx context.Context, key string, value []byte) diag.Diagnostics
-}
-
-// readWritten returns the stored description, or nil when none was stored (import).
-func readWritten(ctx context.Context, private interface {
-	GetKey(ctx context.Context, key string) ([]byte, diag.Diagnostics)
-}) (*string, diag.Diagnostics) {
-	raw, diags := private.GetKey(ctx, writtenKey)
-	if diags.HasError() || len(raw) == 0 {
-		return nil, diags
-	}
-	var s string
-	if err := json.Unmarshal(raw, &s); err != nil {
-		diags.AddError("Failed to read the remembered description", err.Error())
-		return nil, diags
-	}
-	return &s, diags
+	diags.Append(patterns.RememberWrittenHTML(ctx, private, p.DescriptionHtml)...)
 }
 
 // getByID returns the product with all its variants, or nil when it doesn't exist.

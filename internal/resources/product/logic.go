@@ -5,25 +5,10 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"unicode"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
-
-// validateHandle rejects what Shopify would normalise, which would otherwise plan forever.
-func validateHandle(h string) error {
-	switch {
-	case h == "":
-		return fmt.Errorf("must not be empty")
-	case strings.IndexFunc(h, unicode.IsUpper) >= 0:
-		return fmt.Errorf("must not contain upper-case letters, because Shopify lower-cases handles")
-	case strings.IndexFunc(h, unicode.IsSpace) >= 0:
-		return fmt.Errorf("must not contain whitespace")
-	}
-	return nil
-}
 
 // validateTags rejects tags Shopify trims or de-duplicates, so the config matches what is read back.
 func validateTags(tags []string) error {
@@ -40,21 +25,6 @@ func validateTags(tags []string) error {
 		seen[strings.ToLower(t)] = true
 	}
 	return nil
-}
-
-type handleValidator struct{}
-
-func (handleValidator) Description(context.Context) string {
-	return "no upper-case letters and no whitespace"
-}
-func (v handleValidator) MarkdownDescription(ctx context.Context) string { return v.Description(ctx) }
-func (handleValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
-	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
-		return
-	}
-	if err := validateHandle(req.ConfigValue.ValueString()); err != nil {
-		resp.Diagnostics.AddAttributeError(req.Path, "Invalid handle", err.Error())
-	}
 }
 
 type tagsValidator struct{}
@@ -75,14 +45,6 @@ func (tagsValidator) ValidateSet(ctx context.Context, req validator.SetRequest, 
 	if err := validateTags(tags); err != nil {
 		resp.Diagnostics.AddAttributeError(req.Path, "Invalid tags", err.Error())
 	}
-}
-
-// keepOrTake keeps the configured HTML while live is what Shopify returned at our last write (repaired, not drifted).
-func keepOrTake(configured types.String, written *string, live string) types.String {
-	if configured.IsNull() || configured.IsUnknown() || written == nil || *written != live {
-		return types.StringValue(live)
-	}
-	return configured
 }
 
 // inputAttrs maps ProductSetInput keys to the attribute that sets them.

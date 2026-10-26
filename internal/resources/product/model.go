@@ -78,7 +78,7 @@ func setFromAPI(ctx context.Context, m *model, p *client.ProductFields, written 
 	m.Handle = types.StringValue(p.Handle)
 	m.Title = types.StringValue(p.Title)
 	m.Status = types.StringValue(string(p.Status))
-	m.DescriptionHTML = keepOrTake(m.DescriptionHTML, written, p.DescriptionHtml)
+	m.DescriptionHTML = patterns.KeepOrTake(m.DescriptionHTML, written, p.DescriptionHtml)
 	m.Vendor = types.StringValue(p.Vendor)
 	m.ProductType = types.StringValue(p.ProductType)
 	m.CategoryID = types.StringNull()
