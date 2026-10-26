@@ -165,3 +165,15 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 14a: implemented d6992dd..4ab9287 (DONE_WITH_CONCERNS: wip commits fail lint alone; empty-tag rejected beyond §9k.1; adopt_existing makes destroy state-only even for own products; gift_card replace warning inline; TODO(verify) async productSet). Dev store had 0 products before and after. Controller re-ran checks (see next line). Review dispatched (opus).
 - PRs opened (user asked, 2026-10-26): #24 plan/ledger → main, #25 step 7, #26 step 8, #27 step 9, #28 step 10, #29 step 11 (stacked, each on the previous). Step 13 PR follows when its tasks are done.
 - PRs #24–#29 merged into main (2026-10-26, verified on GitHub: main 488e3dd); local step branches deleted; main merged into feat/phase2-13-content (442b5f0). Step 13 PR will target main.
+- Task 14a: review (opus): spec ❌ (prevent_destroy advice missing, plan-mandated), 3 Important (that; verbatim copy of client.UserErrorDiags in logic.go; nested SEO omit unverified), 8 Minor.
+- Task 14a: minor (deferred): gift_card replace warning inlined (WarnOnDataDeletingReplace is string-only); wrong under adopt_existing (Delete state-only, re-adopt fails GIFT_CARD_ATTRIBUTE_CANNOT_BE_CHANGED)
+- Task 14a: minor (deferred): productSet userError mapping never triggered live (taken handle hits the pre-check)
+- Task 14a: minor (deferred): `seo_title`/`seo_description`/`template_suffix` = "" may read back null → inconsistent result; add LengthAtLeast(1) or verify
+- Task 14a: minor (deferred): tags description doesn't mention empty-tag rejection; commas in tags unverified
+- Task 14a: minor (deferred): untested: Read fallback by handle, Delete when gone, `tags = []` clearing, list generate-config on an unshaped product
+- Task 14a: minor (deferred): description_html keep-or-take uses prior state as "configured": one spurious plan after an admin edit is reverted
+- Task 14a: fix round 1/5 dispatched (resume implementer)
+- Task 14a: fix round 1 implemented (513f237: prevent_destroy advice; client.UserErrorDiagsWith mapper + copy removed; SEO omit verified on dev store, Shopify keeps the sibling). Controller re-ran make fmt lint test (SHOPIFY_*/TF_ACC unset): exit 0, 0 issues; generate: no diff. Re-review dispatched (sonnet).
+- Task 14a: fix round 1/5 (3 addressed, 0 open — prevent_destroy advice; UserErrorDiagsWith mapper; SEO omit verified; commits 8581b79..513f237)
+- Task 14a: complete (commits d6992dd..513f237, review clean after 1 fix round)
+- Task 14b (options + variants): dispatched (model opus — variant identity matching, rename handling and the deletion guard need judgment)
