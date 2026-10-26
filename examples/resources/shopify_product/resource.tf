@@ -1,3 +1,7 @@
+data "shopify_publication" "online_store" {
+  name = "Online Store"
+}
+
 # Unset attributes (vendor here, sku on size M) keep whatever the admin has.
 resource "shopify_product" "bettschutz" {
   handle           = "bettschutzeinlage"
@@ -7,6 +11,9 @@ resource "shopify_product" "bettschutz" {
   tags             = ["pflegehilfsmittel", "waschbar"]
   description_html = file("${path.module}/products/bettschutzeinlage.html")
   seo_title        = "Waschbare Bettschutzeinlage"
+
+  # Removing an ID unpublishes the product from that channel. Unset leaves the publications to the admin.
+  publication_ids = [data.shopify_publication.online_store.id]
 
   options = [
     { name = "Größe", values = ["S", "M"] },

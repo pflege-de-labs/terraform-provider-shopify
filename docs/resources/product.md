@@ -3,16 +3,20 @@
 page_title: "shopify_product Resource - shopify"
 subcategory: ""
 description: |-
-  A product's core fields: title, handle, status, description, tags and SEO. A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository: products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. Publishing and media are not managed yet; Shopify keeps whatever they hold. Options linked to a metafield are read but can't be managed yet: leave options and variants unset for such a product. Destroying a product deletes its variants, inventory, media and metafield values: archive it with status = "ARCHIVED" instead, or set allow_data_deletion = true first, and add lifecycle { prevent_destroy = true } to guard it. A product that already has the handle needs adopt_existing = true, so it isn't overwritten silently. Import with the handle.
+  A product's core fields: title, handle, status, description, tags and SEO. A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository: products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. publication_ids publishes the product to sales channels; removing an ID unpublishes it there, so it disappears for customers. Media is not managed yet; Shopify keeps whatever it holds. Options linked to a metafield are read but can't be managed yet: leave options and variants unset for such a product. Destroying a product deletes its variants, inventory, media and metafield values: archive it with status = "ARCHIVED" instead, or set allow_data_deletion = true first, and add lifecycle { prevent_destroy = true } to guard it. A product that already has the handle needs adopt_existing = true, so it isn't overwritten silently. Import with the handle.
 ---
 
 # shopify_product (Resource)
 
-A product's core fields: title, handle, status, description, tags and SEO. **A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository:** products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. Publishing and media are not managed yet; Shopify keeps whatever they hold. Options linked to a metafield are read but can't be managed yet: leave `options` and `variants` unset for such a product. Destroying a product deletes its variants, inventory, media and metafield values: archive it with `status = "ARCHIVED"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. Import with the handle.
+A product's core fields: title, handle, status, description, tags and SEO. **A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository:** products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. `publication_ids` publishes the product to sales channels; removing an ID unpublishes it there, so it disappears for customers. Media is not managed yet; Shopify keeps whatever it holds. Options linked to a metafield are read but can't be managed yet: leave `options` and `variants` unset for such a product. Destroying a product deletes its variants, inventory, media and metafield values: archive it with `status = "ARCHIVED"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. Import with the handle.
 
 ## Example Usage
 
 ```terraform
+data "shopify_publication" "online_store" {
+  name = "Online Store"
+}
+
 # Unset attributes (vendor here, sku on size M) keep whatever the admin has.
 resource "shopify_product" "bettschutz" {
   handle           = "bettschutzeinlage"
@@ -22,6 +26,9 @@ resource "shopify_product" "bettschutz" {
   tags             = ["pflegehilfsmittel", "waschbar"]
   description_html = file("${path.module}/products/bettschutzeinlage.html")
   seo_title        = "Waschbare Bettschutzeinlage"
+
+  # Removing an ID unpublishes the product from that channel. Unset leaves the publications to the admin.
+  publication_ids = [data.shopify_publication.online_store.id]
 
   options = [
     { name = "Größe", values = ["S", "M"] },
@@ -84,6 +91,7 @@ resource "shopify_product" "temporary" {
 - `gift_card` (Boolean) Whether this is a gift card product, a catalogue entry; issued gift cards are not managed. Shopify can't change it, so changing it replaces the product and deletes its data. Unset means unmanaged: the value set in the admin is kept.
 - `options` (Attributes List) Options in position order, at most 3, each with its values in position order. Set together with `variants`; when both are unset they are unmanaged. `[]` is a product without options, which has one default variant. A new option or value name at the same position is a rename: its variants and their stock carry over to the new name, matched by position. A new name at another position counts as removing the old value and adding a new one, so rename and reorder in separate applies. Dropping an option while adding one at a different position deletes and recreates every variant, guarded by `allow_data_deletion`. To really replace an option, remove it in one apply and add the new one in the next. A product with an option linked to a metafield (such as a category metafield) can't have its options and variants managed yet; they are read only, and setting them fails. (see [below for nested schema](#nestedatt--options))
 - `product_type` (String) Free-text product type, an empty string when none is set. Unset means unmanaged: the value set in the admin is kept.
+- `publication_ids` (Set of String) `Publication` GIDs of the sales channels this product is published to, usually from `data.shopify_publication`. **Removing an ID unpublishes the product from that channel: it disappears there for customers**, so check the plan before applying. A new product is published nowhere until this is set. A channel that publishes automatically (`auto_publish`) and isn't listed here is unpublished again. Only sales channel publications are supported; the publication of a market catalog is rejected. Scheduled publishing is not supported. Unset means unmanaged: publications set in the admin are kept. `[]` unpublishes everywhere. Needs the `write_publications` scope.
 - `seo_description` (String) Search engine description. Null while Shopify uses the product description. Unset means unmanaged: the value set in the admin is kept.
 - `seo_title` (String) Search engine title. Null while Shopify uses the product title. Unset means unmanaged: the value set in the admin is kept.
 - `status` (String) `ACTIVE`, `DRAFT`, `ARCHIVED` or `UNLISTED`. A new product is `ACTIVE` when this is unset. Unset means unmanaged: the value set in the admin is kept.

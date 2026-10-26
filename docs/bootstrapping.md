@@ -47,7 +47,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_checkout_and_accounts_configurations` | `shopify_checkout_and_accounts_configuration` | ✅ | volatile (branding is usually edited in the checkout editor) |
 | `write_checkout_branding_settings` | `shopify_checkout_and_accounts_configuration` `branding` ⚠ (maybe not needed: granted together with the scope above on the dev store, so untested alone) | ✅ | volatile |
 | `write_translations` | translations, market localizations | planned | volatile (follows content) |
-| `write_publications` | publications, publishing to channels | planned | volatile |
+| `write_publications` | `publication_ids` on `shopify_product` and `shopify_collection` (publishing to channels; the publications themselves belong to channel apps) ⚠ (whether `write_products` alone suffices is untested: all scopes are granted on the dev store) | ✅ | volatile |
 | `read_publications` (or `write_publications`) | `shopify_publication` data source (publications belong to sales channel apps, not managed; for referencing by name) | ✅ data source | good (read-only) |
 | `write_purchase_options` | selling plan groups (together with `write_products`) | planned | volatile |
 | `write_customers` | customer segments; metafield definitions for `CUSTOMER` ⚠ | planned | segments volatile |
