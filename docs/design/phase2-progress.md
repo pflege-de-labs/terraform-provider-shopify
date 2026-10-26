@@ -176,4 +176,25 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 14a: fix round 1 implemented (513f237: prevent_destroy advice; client.UserErrorDiagsWith mapper + copy removed; SEO omit verified on dev store, Shopify keeps the sibling). Controller re-ran make fmt lint test (SHOPIFY_*/TF_ACC unset): exit 0, 0 issues; generate: no diff. Re-review dispatched (sonnet).
 - Task 14a: fix round 1/5 (3 addressed, 0 open — prevent_destroy advice; UserErrorDiagsWith mapper; SEO omit verified; commits 8581b79..513f237)
 - Task 14a: complete (commits d6992dd..513f237, review clean after 1 fix round)
-- Task 14b (options + variants): dispatched (model opus — variant identity matching, rename handling and the deletion guard need judgment)
+- Task 14b (options + variants): dispatched (base d803075, model opus — variant identity matching, rename handling and the deletion guard need judgment)
+- Task 14b: implemented d803075..938745c (DONE_WITH_CONCERNS: rename = new name at same index, rename+reorder in one apply is remove+add (guarded); compare_at_price can't be cleared; linked option fails Read even with options unset; list page 100→50 (cost 1064 > 1000); TODO(verify) read_inventory, linked options on staging/prod). Controller re-ran checks: see review dispatch. Review dispatched (opus).
+- Ruling T14b-1: option rename = new name at the same position; a rename combined with a reorder is treated as remove + add and hits the deletion guard — the safer reading of §9k.2, never deletes silently — costs an extra `allow_data_deletion` step for such edits.
+- Task 14b: review (opus): spec ❌, 1 Critical (option remove+add in one apply keeps variants by list order → stock moves silently, no guard; contradicts T14b-1), 1 Important (linked options fail Read/import/list, and adopt-create can unlink before the check), 8 Minor.
+- Ruling S13-7: §9k.2 amended — linked options are mapped read-only on Read/import/list; writes that would send options/variants to a linked product are refused before productSet; core-field writes work; list leaves options/variants null for linked products; descriptions state the limit — the original "Read fails" would block importing staging/production, whose products very likely use category-metafield linked options — costs v1 never managing linked options.
+- Task 14b: minor (deferred): value replace in place ([S,M]→[S,L]) is a rename; description should say the variant and stock move to L
+- Task 14b: minor (deferred): compare_at_price can't be cleared (raw-JSON null like barcodes would fix it)
+- Task 14b: minor (deferred): stale cost figures in §9k.1 (366/574) next to 1064/828
+- Task 14b: minor (deferred): `statusNames` duplicates `enumNames` (resource.go:252-260)
+- Task 14b: minor (deferred): ModifyPlan matches against state, write against live → inconsistent result under -refresh=false/concurrent edits
+- Task 14b: minor (deferred): `options = []` error path maps to options[0]; planVariants has no unit test; add-L step doesn't assert kept IDs known
+- Task 14b: minor (deferred): adopt-create removes variants without plan-time warning (apply guard still blocks)
+- Task 14b: ⚠️ read_inventory TODO(verify) can be closed: both app/*.toml grant inventory scopes
+- Task 14b: fix round 1/5 dispatched (resume implementer; Critical option-replace guard, Important linked options per S13-7)
+- Task 14b: fix round 1 implemented 938745c..346a76e (option replace keeps no variant; S13-7 linked options read-only, writes refused before productSet; linked path unit-tested only, TODO(verify) acceptance; single option replaced at same index stays a rename per T14b-1). Controller re-ran checks: exit 0, 0 issues, no generate diff. Re-review dispatched (opus).
+- Task 14b: fix round 1/5 (2 addressed, 1 new Important — `options` description claims a same-position option replacement recreates variants, but T14b-1 makes it a rename that carries stock over; commits 938745c..346a76e)
+- Task 14b: minor (deferred): linked-option refusal fires at apply only; a plan-time error would be friendlier
+- Task 14b: fix round 2/5 dispatched (resume implementer; description wording)
+- Task 14b: fix round 2/5 (1 addressed, 0 open — options description rewritten; commits 346a76e..a2cf5c7)
+- Task 14b: minor (deferred): options bullet doesn't mention that dropping an option alone deletes variants (only the variants bullet says so); slight redundancy in the rename sentences
+- Task 14b: complete (commits d803075..a2cf5c7, review clean after 2 fix rounds)
+- Task 15 (collection): dispatched (model opus — 2026-10 sources API, conditions JSON, membership diff)
