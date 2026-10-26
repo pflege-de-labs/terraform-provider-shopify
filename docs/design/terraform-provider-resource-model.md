@@ -1496,6 +1496,50 @@ Notes:
 
 ---
 
+## 9r. Data source: `shopify_metaobject`
+
+Decision D4 (2026-10-26). Discovery found no metaobjects on staging and about 40 on production, all in Shopify's standard definitions (`shopify--*`). Metaobject entries are content; managing them is a roadmap type (`write_metaobjects`). Configuration still needs to point at single entries, for example a metafield value or a collection condition that references a metaobject (§9l), so the data source reads one entry by type and handle. Lookup by key works for merchant-owned types too.
+
+```hcl
+data "shopify_metaobject" "material_baumwolle" {
+  type   = "shopify--material"
+  handle = "baumwolle"
+}
+
+# data.shopify_metaobject.material_baumwolle.id
+# data.shopify_metaobject.material_baumwolle.fields["label"]
+```
+
+**Arguments (Required):** `type`, exactly as the API returns it (`shopify--material`, or a merchant type; usually `data.shopify_metaobject_definition.<x>.type` or `shopify_metaobject_definition.<x>.type`), and `handle`. `TODO(verify)`: whether `$app:foo` resolves to the caller's prefix, the same open point as §9g.
+
+**Attributes (all Computed, from `Metaobject` in the 2026-10 schema):**
+
+| Attribute | Type | API field | Why |
+|---|---|---|---|
+| `id` | string | `id` | `Metaobject` GID, what references take |
+| `display_name` | string | `displayName` | the entry's label (the display-name field's value, or Shopify's fallback) |
+| `fields` | map(string) | `fields { key value }` | field key → `value`, as Shopify serialises metafield values: plain text as is, references as GIDs, booleans and numbers as strings, list types as a JSON array string (use `jsondecode()`). Fields without a value are **null entries**, not left out (the dev store's entries have many: `value_string`, `references`, …), so `fields["x"]` works for every field of the definition without `lookup()` |
+| `status` | string | `capabilities.publishable.status` | `ACTIVE` or `DRAFT` when the definition has the publishable capability; null otherwise (null for the dev store's entries, checked) |
+| `updated_at` | string | `updatedAt` | RFC 3339 |
+
+**Map, not a list of objects.** §9g gives metaobject *definitions* a computed `field` list so it can be fed back into the resource with `dynamic "field"`. Entries have no resource yet (roadmap), and the use is a value lookup by key, which a map makes direct. A field's type is not exposed: it comes from the definition (`data.shopify_metaobject_definition.<x>.field`). Left out: `fields[].jsonValue` and `values` (the same data as JSON), `references`, `thumbnailField`, `createdBy*`, `referencedBy`, `capabilities.onlineStore` (template suffix, only with the online store capability).
+
+**Lookup:** `metaobjectByHandle(handle: { type, handle })`, one direct call (checked: `{ type: "shopify--knowledge-base-fact", handle: "delivery_countries" }` returned the entry). There is no fallback by GID and nothing is written beyond the read.
+
+**Errors:**
+- Not found: error, never an empty result, naming both (`no metaobject shopify--material/baumwolle`). Shopify returns `null` both for an unknown handle and for an unknown type (checked), so the message also says the type may not exist or the app may lack access to it (an app-owned type without merchant read access is expected to look the same; `TODO(verify)`).
+- Missing scope (`read_metaobjects`): Shopify's `ACCESS_DENIED`, reported with the scope name. Nothing is retried.
+
+**Scopes:** `read_metaobjects` (or `write_metaobjects`). `TODO(verify)`: checked only with every scope granted; whether `shopify--*` standard entries need anything else.
+
+**Fit:** good. Read-only reference; entries change in the admin, and the data source reads the current state on every plan.
+
+**Tests:** acceptance: (a) an entry created through the client (`metaobjectCreate`) in a definition made by `shopify_metaobject_definition` in the same config, every attribute checked, a field without a value as a null entry, then the entry deleted; (b) the dev store's `shopify--knowledge-base-fact` / `delivery_countries` entry, skipped when it is gone (Shopify created it, not the tests); (c) not found. Unit: mapping (null values, the publishable status), the not-found message.
+
+**Dev store (2026-10-26):** read-only; one standard definition with entries, `shopify--knowledge-base-fact` (2 entries, `delivery_countries` and `shipping_policy`, 18 fields each, most without a value).
+
+---
+
 ## 10. Not covered
 
 Since 2026-10-23 the provider aims to cover every store object the Admin API can manage; remaining types are planned in [[implementation-plan]] Phase 2. Not covered:
