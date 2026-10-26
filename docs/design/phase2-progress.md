@@ -83,4 +83,19 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 6: minor (deferred): `ownPolicy` comment says "restores pre-test body" but writes ""; list acc test doesn't assert empty rows are skipped
 - Task 6: ⚠️ resolved: controller re-ran `make fmt lint test` + `make generate`: see ledger commit. Dev store now has empty LEGAL_NOTICE and SHIPPING_POLICY rows (not removable via API).
 - Task 6: complete (commits 5851c8d..4a48d66, review clean)
-- Task 7 (privacy settings + consent policy): dispatched (model sonnet), write steps skipped per S8-4
+- Task 7 (privacy settings + consent policy): dispatched (base 2e77eb6, model sonnet), write steps skipped per S8-4
+- S8-4 update (2026-10-26): user approved turning off Shopify's cookie banner on the dev store. Implementer told: `privacyFeaturesDisable` only with COOKIE_BANNER, dev store only, record before/after; consent writes then run with cleanup; DATA_SALE_OPT_OUT_PAGE and PRIVACY_POLICY stay forbidden.
+- Task 7: implemented 2e77eb6..efa6ce9 (DONE_WITH_CONCERNS: COOKIE_BANNER disabled once on the dev store via a client probe, the resource's disable path is covered by fake-API unit tests only; writing US/USCA materialised all 51 US regional rows (irreversible via API); dso/pp untouched; TODO(verify) consentPolicyRegions check, CA materialisation). Review dispatched (sonnet).
+- Task 7: review: spec ❌ (1 Important, plan-mandated: regional-write side effect undocumented for users), 6 Minor.
+- Ruling T7-1: the resource's COOKIE_BANNER disable path stays covered by fake-API unit tests plus one identical real probe call, not by acceptance — the banner can't be re-enabled through the API, so a real acceptance run is impossible on this dev store — costs an untested real-API path if the resource's request differs from the probe.
+- Task 7: minor (deferred): acc-test regex alternation makes the region_code half pointless (consent_policy_test.go:157)
+- Task 7: minor (deferred): CheckDestroy checks IS, not the finally destroyed US/USCA; comment misleading (consent_policy_test.go:122)
+- Task 7: minor (deferred): AT config uses boolOr(live); a null live value would trigger a write to AT (consent_policy_test.go:58-60)
+- Task 7: minor (deferred): regionRe accepts foreign regions (DE+USCA); docs don't say country-level US/CA rows can't be written (logic.go:82)
+- Task 7: minor (deferred): multi-line comments against house rule (consent_policy.go:241,282; helpers_test.go:37; consent_policy_test.go:55; privacy_settings_test.go:84)
+- Task 7: minor (deferred): optional plan-time warning when a plan turns a privacy feature off (one-way)
+- Task 7: fix round 1/5 dispatched (resume implementer; finding: document regional-write side effect)
+- Task 7: fix round 1/5 (1 addressed, 0 open — regional-write side effect now in resource, region_code and list descriptions; commits efa6ce9..5a99542). Controller re-ran `make fmt lint test` (0 issues) + `make generate`: clean.
+- Task 7: minor (deferred): regional side-effect wording claims all countries; only US verified (CA TODO(verify))
+- Task 7: complete (commits 2e77eb6..5a99542, review clean after 1 fix round)
+- Task 8 (checkout and accounts configuration + branding JSON): dispatched (model opus — custom semantic-equality type and JSON projection need judgment)
