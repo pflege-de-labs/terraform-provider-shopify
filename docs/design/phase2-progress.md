@@ -74,4 +74,13 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 5: minor (deferred): unchecked nil on mutation payloads (resource.go ShopLocaleEnable/Disable) — same in sibling resources
 - Task 5: ⚠️ resolved: controller re-ran `make fmt lint test` + `make generate`: clean, no diff. List-path generate-config: same identity-import workaround (cross-task, known).
 - Task 5: complete (commits e25c80a..e5f504d, review clean)
-- Task 6 (shop policy): dispatched (base see below, model sonnet)
+- Task 6 (shop policy): dispatched (base 5851c8d, model sonnet)
+- Task 6: implemented 5851c8d..4a48d66 (DONE_WITH_CONCERNS minor: dev store gained an empty SHIPPING_POLICY row the API can't remove; TODO(verify) auto-managed PRIVACY_POLICY write, TOO_BIG path, whitespace-only body). Review dispatched (sonnet).
+- Task 6: review: spec ✅, quality Approved, 0 Critical/Important.
+- Task 6: minor (deferred): nil deref on `ShopPolicyUpdate`/`.ShopPolicy` payload (resource.go) — same as shoplocale
+- Task 6: minor (deferred): no unit test for TOO_BIG → `body` userError mapping (field path assumed `["shopPolicy","body"]`)
+- Task 6: minor (deferred): whitespace-only body passes the validator, untested against the API
+- Task 6: minor (deferred): `ownPolicy` comment says "restores pre-test body" but writes ""; list acc test doesn't assert empty rows are skipped
+- Task 6: ⚠️ resolved: controller re-ran `make fmt lint test` + `make generate`: see ledger commit. Dev store now has empty LEGAL_NOTICE and SHIPPING_POLICY rows (not removable via API).
+- Task 6: complete (commits 5851c8d..4a48d66, review clean)
+- Task 7 (privacy settings + consent policy): dispatched (model sonnet), write steps skipped per S8-4
