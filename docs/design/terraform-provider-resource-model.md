@@ -465,7 +465,7 @@ resource "shopify_web_presence" "ch" {
 | `locale` | string | Required, **RequiresReplace** (no rename; the key of every mutation). ISO code, case-sensitive: `pt-BR` is valid, `pt-br` fails with "Locale is invalid". Not validated locally, Shopify's error is clear |
 | `published` | bool | Optional + Computed, UseStateForUnknown; unset = unmanaged. A new locale starts unpublished |
 | `name` | string | Computed, UseStateForUnknown. English display name (`French`) |
-| `primary` | bool | Computed. True for the shop's primary locale |
+| `primary` | bool | Computed, UseStateForUnknown. True for the shop's primary locale |
 | `adopt_existing` | bool | Pattern A, see below |
 | `allow_data_deletion` | bool | Pattern B, see below |
 
@@ -528,7 +528,7 @@ Notes:
 - **Checked on the dev store (2026-10-26):** the store has one policy, `PRIVACY_POLICY`, Shopify-generated. `shopPolicyUpdate` for `LEGAL_NOTICE` created the row (new GID) and returned the body byte for byte, including `&amp;`, `<br>` and a `<script>` tag; the same body again didn't touch `updatedAt`; plain text is accepted as is. `body: ""` keeps the row (same GID, empty body, still listed in `shopPolicies`), so it can't be removed again. `node(id:)` resolves a `ShopPolicy` GID.
 - **Fit: volatile.** Policies are legal texts, often edited in the admin by people outside the infrastructure team, and Shopify generates the privacy policy. The resource description says so ("poor fit for Terraform unless the texts are maintained in the repository").
 - **Scopes:** `read_legal_policies` / `write_legal_policies` (checked with `write_legal_policies`).
-- **Review Focus 1:** acceptance step reads the policy back through the client after destroy and expects the body unchanged. **Review Focus 2:** `body` is the only writable attribute, so the step doesn't apply; the test instead edits another type's policy through the client and expects an empty plan.
+- **Review Focus 1:** acceptance step reads the policy back through the client after destroy and expects the body unchanged. **Review Focus 2:** `body` is the only writable attribute, so the step doesn't apply; the test instead edits another type's policy through the client and expects an empty plan. It uses the dev store's existing empty `LEGAL_NOTICE` row, because each new type adds a row that can't be removed.
 
 **List:** no config. Lists every policy with a non-empty body; empty rows are skipped, since they fail the `body` validator and mean "no policy". `DisplayName`: `TERMS_OF_SERVICE (Terms of service)`, from `type` and `title`. Results carry `type` and `body`.
 
@@ -566,7 +566,7 @@ resource "shopify_consent_policy" "us_ca" {
 | `cookie_banner_auto_managed` | bool | Optional + Computed, UseStateForUnknown; unset = unmanaged. Can only be switched off, see below |
 | `data_sale_opt_out_page_auto_managed` | bool | Same |
 | `privacy_policy_auto_managed` | bool | Same |
-| `cookie_banner_enabled` | bool | Computed. `banner.enabled`, informational |
+| `cookie_banner_enabled` | bool | Computed, UseStateForUnknown. `banner.enabled`, informational |
 
 Import key: `default` (the store's only privacy settings, as for `shopify_delivery_profile`). Read: `privacySettings { banner { autoManaged enabled } dataSaleOptOutPage { autoManaged } privacyPolicy { autoManaged } }` plus `shop { id }`.
 
@@ -638,8 +638,8 @@ resource "shopify_checkout_and_accounts_configuration" "live" {
 | Attribute | Type | Behaviour |
 |---|---|---|
 | `id` | string | `CheckoutAndAccountsConfiguration` GID. Computed, UseStateForUnknown |
-| `name` | string | Optional + Computed. Selects the configuration by name; unset = the published one. **RequiresReplace**: the API can't rename, and a different name means a different configuration (replace is harmless, destroy only drops state) |
-| `is_published` | bool | Computed |
+| `name` | string | Optional + Computed, UseStateForUnknown (before RequiresReplace, so an unset name doesn't plan a replace). Selects the configuration by name; unset = the published one. **RequiresReplace**: the API can't rename, and a different name means a different configuration (replace is harmless, destroy only drops state) |
+| `is_published` | bool | Computed, UseStateForUnknown |
 | `branding` | string (JSON) | Optional; unset = branding unmanaged. Model and drift handling in §9f |
 
 Import key: `published` for the published configuration, otherwise its `name`. Names come from the shop name (dev store: `terraform-provider-test configuration`), so `published` is the key that works on every store. Read: `checkoutAndAccountsConfiguration(id:)` first; if it is gone, `checkoutAndAccountsConfigurations(query: "is_published:true")` when `name` is unset, otherwise page through the list and match `name` (no name filter exists). `MutableIdentity` is set. A name that matches more than one configuration is an error that lists the GIDs. After a different configuration is published in the admin, the resource keeps following its GID (now a draft); `is_published = false` shows it, and the docs say to re-import.
