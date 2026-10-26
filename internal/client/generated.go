@@ -1762,6 +1762,174 @@ func (v *CreateMetaobjectDefinitionResponse) GetMetaobjectDefinitionCreate() *Cr
 	return v.MetaobjectDefinitionCreate
 }
 
+// CreateWebPresenceResponse is returned by CreateWebPresence on success.
+type CreateWebPresenceResponse struct {
+	// Creates a web presence.
+	WebPresenceCreate *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayload `json:"webPresenceCreate"`
+}
+
+// GetWebPresenceCreate returns CreateWebPresenceResponse.WebPresenceCreate, and is useful for accessing the field via an interface.
+func (v *CreateWebPresenceResponse) GetWebPresenceCreate() *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayload {
+	return v.WebPresenceCreate
+}
+
+// CreateWebPresenceWebPresenceCreateWebPresenceCreatePayload includes the requested fields of the GraphQL type WebPresenceCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `webPresenceCreate` mutation.
+type CreateWebPresenceWebPresenceCreateWebPresenceCreatePayload struct {
+	// The created web presence object.
+	WebPresence *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence `json:"webPresence"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadUserErrorsMarketUserError `json:"userErrors"`
+}
+
+// GetWebPresence returns CreateWebPresenceWebPresenceCreateWebPresenceCreatePayload.WebPresence, and is useful for accessing the field via an interface.
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayload) GetWebPresence() *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence {
+	return v.WebPresence
+}
+
+// GetUserErrors returns CreateWebPresenceWebPresenceCreateWebPresenceCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayload) GetUserErrors() []CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadUserErrorsMarketUserError {
+	return v.UserErrors
+}
+
+// CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadUserErrorsMarketUserError includes the requested fields of the GraphQL type MarketUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors encountered while managing a Market.
+type CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadUserErrorsMarketUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *MarketUserErrorCode `json:"code"`
+}
+
+// GetField returns CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadUserErrorsMarketUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadUserErrorsMarketUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadUserErrorsMarketUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadUserErrorsMarketUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadUserErrorsMarketUserError.Code, and is useful for accessing the field via an interface.
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadUserErrorsMarketUserError) GetCode() *MarketUserErrorCode {
+	return v.Code
+}
+
+// CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence includes the requested fields of the GraphQL type MarketWebPresence.
+// The GraphQL type's documentation follows.
+//
+// The market’s web presence, which defines its SEO strategy. This can be a different domain
+// (e.g. `example.ca`), subdomain (e.g. `ca.example.com`), or subfolders of the primary
+// domain (e.g. `example.com/en-ca`). Each web presence comprises one or more language
+// variants. If a market does not have its own web presence, it is accessible on the shop’s
+// primary domain via [country
+// selectors](https://shopify.dev/themes/internationalization/multiple-currencies-languages#the-country-selector).
+//
+// Note: while the domain/subfolders defined by a market’s web presence are not applicable to
+// custom storefronts, which must manage their own domains and routing, the languages chosen
+// here do govern [the languages available on the Storefront
+// API](https://shopify.dev/custom-storefronts/internationalization/multiple-languages) for the countries in
+// this market.
+type CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence struct {
+	WebPresenceFields `json:"-"`
+}
+
+// GetId returns CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence.Id, and is useful for accessing the field via an interface.
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence) GetId() string {
+	return v.WebPresenceFields.Id
+}
+
+// GetSubfolderSuffix returns CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence.SubfolderSuffix, and is useful for accessing the field via an interface.
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence) GetSubfolderSuffix() *string {
+	return v.WebPresenceFields.SubfolderSuffix
+}
+
+// GetDomain returns CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence.Domain, and is useful for accessing the field via an interface.
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence) GetDomain() *WebPresenceFieldsDomain {
+	return v.WebPresenceFields.Domain
+}
+
+// GetDefaultLocale returns CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence.DefaultLocale, and is useful for accessing the field via an interface.
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence) GetDefaultLocale() WebPresenceFieldsDefaultLocaleShopLocale {
+	return v.WebPresenceFields.DefaultLocale
+}
+
+// GetAlternateLocales returns CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence.AlternateLocales, and is useful for accessing the field via an interface.
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence) GetAlternateLocales() []WebPresenceFieldsAlternateLocalesShopLocale {
+	return v.WebPresenceFields.AlternateLocales
+}
+
+// GetRootUrls returns CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence.RootUrls, and is useful for accessing the field via an interface.
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence) GetRootUrls() []WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl {
+	return v.WebPresenceFields.RootUrls
+}
+
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.WebPresenceFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence struct {
+	Id string `json:"id"`
+
+	SubfolderSuffix *string `json:"subfolderSuffix"`
+
+	Domain *WebPresenceFieldsDomain `json:"domain"`
+
+	DefaultLocale WebPresenceFieldsDefaultLocaleShopLocale `json:"defaultLocale"`
+
+	AlternateLocales []WebPresenceFieldsAlternateLocalesShopLocale `json:"alternateLocales"`
+
+	RootUrls []WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl `json:"rootUrls"`
+}
+
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence) __premarshalJSON() (*__premarshalCreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence, error) {
+	var retval __premarshalCreateWebPresenceWebPresenceCreateWebPresenceCreatePayloadWebPresenceMarketWebPresence
+
+	retval.Id = v.WebPresenceFields.Id
+	retval.SubfolderSuffix = v.WebPresenceFields.SubfolderSuffix
+	retval.Domain = v.WebPresenceFields.Domain
+	retval.DefaultLocale = v.WebPresenceFields.DefaultLocale
+	retval.AlternateLocales = v.WebPresenceFields.AlternateLocales
+	retval.RootUrls = v.WebPresenceFields.RootUrls
+	return &retval, nil
+}
+
 // The currency codes that represent the world currencies throughout the Admin API. Currency codes include
 // [standard ISO 4217 codes](https://en.wikipedia.org/wiki/ISO_4217), legacy codes, non-standard codes,
 // digital currency codes.
@@ -2683,6 +2851,66 @@ type DeleteMetaobjectDefinitionResponse struct {
 // GetMetaobjectDefinitionDelete returns DeleteMetaobjectDefinitionResponse.MetaobjectDefinitionDelete, and is useful for accessing the field via an interface.
 func (v *DeleteMetaobjectDefinitionResponse) GetMetaobjectDefinitionDelete() *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload {
 	return v.MetaobjectDefinitionDelete
+}
+
+// DeleteWebPresenceResponse is returned by DeleteWebPresence on success.
+type DeleteWebPresenceResponse struct {
+	// Deletes a web presence.
+	WebPresenceDelete *DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayload `json:"webPresenceDelete"`
+}
+
+// GetWebPresenceDelete returns DeleteWebPresenceResponse.WebPresenceDelete, and is useful for accessing the field via an interface.
+func (v *DeleteWebPresenceResponse) GetWebPresenceDelete() *DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayload {
+	return v.WebPresenceDelete
+}
+
+// DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayload includes the requested fields of the GraphQL type WebPresenceDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `webPresenceDelete` mutation.
+type DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayload struct {
+	// The ID of the deleted web presence.
+	DeletedId *string `json:"deletedId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayloadUserErrorsMarketUserError `json:"userErrors"`
+}
+
+// GetDeletedId returns DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayload.DeletedId, and is useful for accessing the field via an interface.
+func (v *DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayload) GetDeletedId() *string {
+	return v.DeletedId
+}
+
+// GetUserErrors returns DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayload) GetUserErrors() []DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayloadUserErrorsMarketUserError {
+	return v.UserErrors
+}
+
+// DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayloadUserErrorsMarketUserError includes the requested fields of the GraphQL type MarketUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors encountered while managing a Market.
+type DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayloadUserErrorsMarketUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *MarketUserErrorCode `json:"code"`
+}
+
+// GetField returns DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayloadUserErrorsMarketUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayloadUserErrorsMarketUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayloadUserErrorsMarketUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayloadUserErrorsMarketUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayloadUserErrorsMarketUserError.Code, and is useful for accessing the field via an interface.
+func (v *DeleteWebPresenceWebPresenceDeleteWebPresenceDeletePayloadUserErrorsMarketUserError) GetCode() *MarketUserErrorCode {
+	return v.Code
 }
 
 // The input fields for creating a carrier-calculated shipping option.
@@ -6086,6 +6314,19 @@ type GetShopShopPrimaryDomain struct {
 // GetHost returns GetShopShopPrimaryDomain.Host, and is useful for accessing the field via an interface.
 func (v *GetShopShopPrimaryDomain) GetHost() string { return v.Host }
 
+// GetWebPresenceResponse is returned by GetWebPresence on success.
+type GetWebPresenceResponse struct {
+	// Returns a specific node (any object that implements the
+	// [Node](https://shopify.dev/api/admin-graphql/latest/interfaces/Node)
+	// interface) by ID, in accordance with the
+	// [Relay specification](https://relay.dev/docs/guides/graphql-server-specification/#object-identification).
+	// This field is commonly used for refetching an object.
+	Node json.RawMessage `json:"node"`
+}
+
+// GetNode returns GetWebPresenceResponse.Node, and is useful for accessing the field via an interface.
+func (v *GetWebPresenceResponse) GetNode() json.RawMessage { return v.Node }
+
 // Answers the question if prices include duties and / or taxes.
 type InclusiveDutiesPricingStrategy string
 
@@ -6780,6 +7021,169 @@ type ListMetaobjectDefinitionsResponse struct {
 // GetMetaobjectDefinitions returns ListMetaobjectDefinitionsResponse.MetaobjectDefinitions, and is useful for accessing the field via an interface.
 func (v *ListMetaobjectDefinitionsResponse) GetMetaobjectDefinitions() ListMetaobjectDefinitionsMetaobjectDefinitionsMetaobjectDefinitionConnection {
 	return v.MetaobjectDefinitions
+}
+
+// ListWebPresencesResponse is returned by ListWebPresences on success.
+type ListWebPresencesResponse struct {
+	// The web presences for the shop.
+	WebPresences *ListWebPresencesWebPresencesMarketWebPresenceConnection `json:"webPresences"`
+}
+
+// GetWebPresences returns ListWebPresencesResponse.WebPresences, and is useful for accessing the field via an interface.
+func (v *ListWebPresencesResponse) GetWebPresences() *ListWebPresencesWebPresencesMarketWebPresenceConnection {
+	return v.WebPresences
+}
+
+// ListWebPresencesWebPresencesMarketWebPresenceConnection includes the requested fields of the GraphQL type MarketWebPresenceConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple MarketWebPresences.
+type ListWebPresencesWebPresencesMarketWebPresenceConnection struct {
+	// A list of nodes that are contained in MarketWebPresenceEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListWebPresencesWebPresencesMarketWebPresenceConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListWebPresencesWebPresencesMarketWebPresenceConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnection) GetNodes() []ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListWebPresencesWebPresencesMarketWebPresenceConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnection) GetPageInfo() ListWebPresencesWebPresencesMarketWebPresenceConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence includes the requested fields of the GraphQL type MarketWebPresence.
+// The GraphQL type's documentation follows.
+//
+// The market’s web presence, which defines its SEO strategy. This can be a different domain
+// (e.g. `example.ca`), subdomain (e.g. `ca.example.com`), or subfolders of the primary
+// domain (e.g. `example.com/en-ca`). Each web presence comprises one or more language
+// variants. If a market does not have its own web presence, it is accessible on the shop’s
+// primary domain via [country
+// selectors](https://shopify.dev/themes/internationalization/multiple-currencies-languages#the-country-selector).
+//
+// Note: while the domain/subfolders defined by a market’s web presence are not applicable to
+// custom storefronts, which must manage their own domains and routing, the languages chosen
+// here do govern [the languages available on the Storefront
+// API](https://shopify.dev/custom-storefronts/internationalization/multiple-languages) for the countries in
+// this market.
+type ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence struct {
+	WebPresenceFields `json:"-"`
+}
+
+// GetId returns ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence.Id, and is useful for accessing the field via an interface.
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence) GetId() string {
+	return v.WebPresenceFields.Id
+}
+
+// GetSubfolderSuffix returns ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence.SubfolderSuffix, and is useful for accessing the field via an interface.
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence) GetSubfolderSuffix() *string {
+	return v.WebPresenceFields.SubfolderSuffix
+}
+
+// GetDomain returns ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence.Domain, and is useful for accessing the field via an interface.
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence) GetDomain() *WebPresenceFieldsDomain {
+	return v.WebPresenceFields.Domain
+}
+
+// GetDefaultLocale returns ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence.DefaultLocale, and is useful for accessing the field via an interface.
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence) GetDefaultLocale() WebPresenceFieldsDefaultLocaleShopLocale {
+	return v.WebPresenceFields.DefaultLocale
+}
+
+// GetAlternateLocales returns ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence.AlternateLocales, and is useful for accessing the field via an interface.
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence) GetAlternateLocales() []WebPresenceFieldsAlternateLocalesShopLocale {
+	return v.WebPresenceFields.AlternateLocales
+}
+
+// GetRootUrls returns ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence.RootUrls, and is useful for accessing the field via an interface.
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence) GetRootUrls() []WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl {
+	return v.WebPresenceFields.RootUrls
+}
+
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.WebPresenceFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence struct {
+	Id string `json:"id"`
+
+	SubfolderSuffix *string `json:"subfolderSuffix"`
+
+	Domain *WebPresenceFieldsDomain `json:"domain"`
+
+	DefaultLocale WebPresenceFieldsDefaultLocaleShopLocale `json:"defaultLocale"`
+
+	AlternateLocales []WebPresenceFieldsAlternateLocalesShopLocale `json:"alternateLocales"`
+
+	RootUrls []WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl `json:"rootUrls"`
+}
+
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence) __premarshalJSON() (*__premarshalListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence, error) {
+	var retval __premarshalListWebPresencesWebPresencesMarketWebPresenceConnectionNodesMarketWebPresence
+
+	retval.Id = v.WebPresenceFields.Id
+	retval.SubfolderSuffix = v.WebPresenceFields.SubfolderSuffix
+	retval.Domain = v.WebPresenceFields.Domain
+	retval.DefaultLocale = v.WebPresenceFields.DefaultLocale
+	retval.AlternateLocales = v.WebPresenceFields.AlternateLocales
+	retval.RootUrls = v.WebPresenceFields.RootUrls
+	return &retval, nil
+}
+
+// ListWebPresencesWebPresencesMarketWebPresenceConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListWebPresencesWebPresencesMarketWebPresenceConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListWebPresencesWebPresencesMarketWebPresenceConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ListWebPresencesWebPresencesMarketWebPresenceConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListWebPresencesWebPresencesMarketWebPresenceConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
 }
 
 // The input fields to use to specify the address while adding a location.
@@ -7800,6 +8204,345 @@ func (v *MarketUpdateInput) GetReturnPolicyProfileId() *string { return v.Return
 
 // GetRemoveReturnPolicyProfile returns MarketUpdateInput.RemoveReturnPolicyProfile, and is useful for accessing the field via an interface.
 func (v *MarketUpdateInput) GetRemoveReturnPolicyProfile() *bool { return v.RemoveReturnPolicyProfile }
+
+// Possible error codes that can be returned by `MarketUserError`.
+type MarketUserErrorCode string
+
+const (
+	// The input value is invalid.
+	MarketUserErrorCodeInvalid MarketUserErrorCode = "INVALID"
+	// The input value is already taken.
+	MarketUserErrorCodeTaken MarketUserErrorCode = "TAKEN"
+	// The input value is too long.
+	MarketUserErrorCodeTooLong MarketUserErrorCode = "TOO_LONG"
+	// The input value is too short.
+	MarketUserErrorCodeTooShort MarketUserErrorCode = "TOO_SHORT"
+	// The input value is blank.
+	MarketUserErrorCodeBlank MarketUserErrorCode = "BLANK"
+	// The input value isn't included in the list.
+	MarketUserErrorCodeInclusion MarketUserErrorCode = "INCLUSION"
+	// The market wasn't found.
+	MarketUserErrorCodeMarketNotFound MarketUserErrorCode = "MARKET_NOT_FOUND"
+	// The market region wasn't found.
+	MarketUserErrorCodeRegionNotFound MarketUserErrorCode = "REGION_NOT_FOUND"
+	// The province doesn't exist.
+	MarketUserErrorCodeProvinceDoesNotExist MarketUserErrorCode = "PROVINCE_DOES_NOT_EXIST"
+	// The subdivision doesn't exist.
+	MarketUserErrorCodeSubdivisionDoesNotExist MarketUserErrorCode = "SUBDIVISION_DOES_NOT_EXIST"
+	// The market web presence wasn't found.
+	MarketUserErrorCodeWebPresenceNotFound MarketUserErrorCode = "WEB_PRESENCE_NOT_FOUND"
+	// Can't add regions to the primary market.
+	MarketUserErrorCodeCannotAddRegionsToPrimaryMarket MarketUserErrorCode = "CANNOT_ADD_REGIONS_TO_PRIMARY_MARKET"
+	// Can't delete the only region in a market.
+	MarketUserErrorCodeCannotDeleteOnlyRegion MarketUserErrorCode = "CANNOT_DELETE_ONLY_REGION"
+	// Exactly one input option is required.
+	MarketUserErrorCodeRequiresExactlyOneOption MarketUserErrorCode = "REQUIRES_EXACTLY_ONE_OPTION"
+	// Can't delete the primary market.
+	MarketUserErrorCodeCannotDeletePrimaryMarket MarketUserErrorCode = "CANNOT_DELETE_PRIMARY_MARKET"
+	// Can't delete the last subdivision-driven market.
+	MarketUserErrorCodeCannotDeleteSubdivisionMarket MarketUserErrorCode = "CANNOT_DELETE_SUBDIVISION_MARKET"
+	// Exceeds max multi-context markets.
+	MarketUserErrorCodeExceedsMaxMultiContextMarkets MarketUserErrorCode = "EXCEEDS_MAX_MULTI_CONTEXT_MARKETS"
+	// Domain was not found.
+	MarketUserErrorCodeDomainNotFound MarketUserErrorCode = "DOMAIN_NOT_FOUND"
+	// The subfolder suffix must contain only letters.
+	MarketUserErrorCodeSubfolderSuffixMustContainOnlyLetters MarketUserErrorCode = "SUBFOLDER_SUFFIX_MUST_CONTAIN_ONLY_LETTERS"
+	// The subfolder suffix must be at least 2 letters.
+	MarketUserErrorCodeSubfolderSuffixMustBeAtLeast2Letters MarketUserErrorCode = "SUBFOLDER_SUFFIX_MUST_BE_AT_LEAST_2_LETTERS"
+	// The subfolder suffix is invalid, please provide a different value.
+	MarketUserErrorCodeSubfolderSuffixCannotBeScriptCode MarketUserErrorCode = "SUBFOLDER_SUFFIX_CANNOT_BE_SCRIPT_CODE"
+	// No languages selected.
+	MarketUserErrorCodeNoLanguages MarketUserErrorCode = "NO_LANGUAGES"
+	// Can't enable or disable local currencies on a single country market.
+	MarketUserErrorCodeNoLocalCurrenciesOnSingleCountryMarket MarketUserErrorCode = "NO_LOCAL_CURRENCIES_ON_SINGLE_COUNTRY_MARKET"
+	// Rounding is not supported if unified markets are not enabled.
+	MarketUserErrorCodeNoRoundingOnLegacyMarket MarketUserErrorCode = "NO_ROUNDING_ON_LEGACY_MARKET"
+	// Duplicates found in languages.
+	MarketUserErrorCodeDuplicateLanguages MarketUserErrorCode = "DUPLICATE_LANGUAGES"
+	// Duplicate region market.
+	MarketUserErrorCodeDuplicateRegionMarket MarketUserErrorCode = "DUPLICATE_REGION_MARKET"
+	// Duplicate unique market.
+	MarketUserErrorCodeDuplicateUniqueMarket MarketUserErrorCode = "DUPLICATE_UNIQUE_MARKET"
+	// Cannot add region-specific language.
+	MarketUserErrorCodeRegionSpecificLanguage MarketUserErrorCode = "REGION_SPECIFIC_LANGUAGE"
+	// Can't pass both `subfolderSuffix` and `domainId`.
+	MarketUserErrorCodeCannotHaveSubfolderAndDomain MarketUserErrorCode = "CANNOT_HAVE_SUBFOLDER_AND_DOMAIN"
+	// Can't add the web presence to the primary market.
+	MarketUserErrorCodeCannotAddWebPresenceToPrimaryMarket MarketUserErrorCode = "CANNOT_ADD_WEB_PRESENCE_TO_PRIMARY_MARKET"
+	// Can't add another web presence to the market.
+	MarketUserErrorCodeMarketReachedWebPresenceLimit MarketUserErrorCode = "MARKET_REACHED_WEB_PRESENCE_LIMIT"
+	// Market and condition types are not compatible with each other.
+	MarketUserErrorCodeMarketNotCompatibleWithConditionTypes MarketUserErrorCode = "MARKET_NOT_COMPATIBLE_WITH_CONDITION_TYPES"
+	// The country code is missing.
+	MarketUserErrorCodeMissingCountryCode MarketUserErrorCode = "MISSING_COUNTRY_CODE"
+	// The province code is missing.
+	MarketUserErrorCodeMissingProvinceCode MarketUserErrorCode = "MISSING_PROVINCE_CODE"
+	// The subdivision code is missing.
+	MarketUserErrorCodeMissingSubdivisionCode MarketUserErrorCode = "MISSING_SUBDIVISION_CODE"
+	// Can't have multiple subfolder web presences per market.
+	MarketUserErrorCodeCannotHaveMultipleSubfoldersPerMarket MarketUserErrorCode = "CANNOT_HAVE_MULTIPLE_SUBFOLDERS_PER_MARKET"
+	// Can't have both subfolder and domain web presences.
+	MarketUserErrorCodeCannotHaveBothSubfolderAndDomainWebPresences MarketUserErrorCode = "CANNOT_HAVE_BOTH_SUBFOLDER_AND_DOMAIN_WEB_PRESENCES"
+	// One of `subfolderSuffix` or `domainId` is required.
+	MarketUserErrorCodeRequiresDomainOrSubfolder MarketUserErrorCode = "REQUIRES_DOMAIN_OR_SUBFOLDER"
+	// The primary market must use the primary domain.
+	MarketUserErrorCodePrimaryMarketMustUsePrimaryDomain MarketUserErrorCode = "PRIMARY_MARKET_MUST_USE_PRIMARY_DOMAIN"
+	// Can't delete the primary market's web presence.
+	MarketUserErrorCodeCannotDeletePrimaryMarketWebPresence MarketUserErrorCode = "CANNOT_DELETE_PRIMARY_MARKET_WEB_PRESENCE"
+	// Can't have more than 50 markets.
+	MarketUserErrorCodeShopReachedMarketsLimit MarketUserErrorCode = "SHOP_REACHED_MARKETS_LIMIT"
+	// Can't disable the primary market.
+	MarketUserErrorCodeCannotDisablePrimaryMarket MarketUserErrorCode = "CANNOT_DISABLE_PRIMARY_MARKET"
+	// The language isn't published to the store.
+	MarketUserErrorCodeUnpublishedLanguage MarketUserErrorCode = "UNPUBLISHED_LANGUAGE"
+	// The language isn't enabled on the store.
+	MarketUserErrorCodeDisabledLanguage MarketUserErrorCode = "DISABLED_LANGUAGE"
+	// Can't set default locale to null.
+	MarketUserErrorCodeCannotSetDefaultLocaleToNull MarketUserErrorCode = "CANNOT_SET_DEFAULT_LOCALE_TO_NULL"
+	// Can't add unsupported country or region.
+	MarketUserErrorCodeUnsupportedCountryRegion MarketUserErrorCode = "UNSUPPORTED_COUNTRY_REGION"
+	// Can't add customer account domain to a market.
+	MarketUserErrorCodeCannotAddCustomerDomain MarketUserErrorCode = "CANNOT_ADD_CUSTOMER_DOMAIN"
+	// Market managers and condition types are not compatible with each other.
+	MarketUserErrorCodeMarketManagerNotCompatibleWithConditionTypes MarketUserErrorCode = "MARKET_MANAGER_NOT_COMPATIBLE_WITH_CONDITION_TYPES"
+	// An error occurred. See the message for details.
+	MarketUserErrorCodeGenericError MarketUserErrorCode = "GENERIC_ERROR"
+	// Another modification to this market is in progress.
+	MarketUserErrorCodeMarketUpdateConcurrentModification MarketUserErrorCode = "MARKET_UPDATE_CONCURRENT_MODIFICATION"
+	// Invalid combination of status and enabled.
+	MarketUserErrorCodeInvalidStatusAndEnabledCombination MarketUserErrorCode = "INVALID_STATUS_AND_ENABLED_COMBINATION"
+	// The province format is invalid.
+	MarketUserErrorCodeInvalidProvinceFormat MarketUserErrorCode = "INVALID_PROVINCE_FORMAT"
+	// The subdivision format is invalid.
+	MarketUserErrorCodeInvalidSubdivisionFormat MarketUserErrorCode = "INVALID_SUBDIVISION_FORMAT"
+	// One or more condition IDs were not found.
+	MarketUserErrorCodeConditionsNotFound MarketUserErrorCode = "CONDITIONS_NOT_FOUND"
+	// Specified conditions cannot be empty.
+	MarketUserErrorCodeSpecifiedConditionsCannotBeEmpty MarketUserErrorCode = "SPECIFIED_CONDITIONS_CANNOT_BE_EMPTY"
+	// One or more customizations were not found.
+	MarketUserErrorCodeCustomizationsNotFound MarketUserErrorCode = "CUSTOMIZATIONS_NOT_FOUND"
+	// One or more discounts do not have market eligibility.
+	MarketUserErrorCodeDiscountNotMarketContextual MarketUserErrorCode = "DISCOUNT_NOT_MARKET_CONTEXTUAL"
+	// One or more discounts exceed the maximum number of markets allowed.
+	MarketUserErrorCodeDiscountExceedsMarketLimit MarketUserErrorCode = "DISCOUNT_EXCEEDS_MARKET_LIMIT"
+	// The shop does not have discounts enabled for B2B markets.
+	MarketUserErrorCodeDiscountNotCompatibleWithB2bMarket MarketUserErrorCode = "DISCOUNT_NOT_COMPATIBLE_WITH_B2B_MARKET"
+	// Matching ALL or NONE isn't supported for this driver type.
+	MarketUserErrorCodeWildcardNotSupported MarketUserErrorCode = "WILDCARD_NOT_SUPPORTED"
+	// With an ID list in input, SPECIFIED is not needed.
+	MarketUserErrorCodeSpecifiedNotValidForInput MarketUserErrorCode = "SPECIFIED_NOT_VALID_FOR_INPUT"
+	// Web presences and condition types are not compatible with each other.
+	MarketUserErrorCodeWebPresenceNotCompatibleWithConditionTypes MarketUserErrorCode = "WEB_PRESENCE_NOT_COMPATIBLE_WITH_CONDITION_TYPES"
+	// Catalogs and condition types are not compatible with each other.
+	MarketUserErrorCodeCatalogNotCompatibleWithConditionTypes MarketUserErrorCode = "CATALOG_NOT_COMPATIBLE_WITH_CONDITION_TYPES"
+	// A market can only have market catalogs.
+	MarketUserErrorCodeCatalogTypeNotSupported MarketUserErrorCode = "CATALOG_TYPE_NOT_SUPPORTED"
+	// Inclusive pricing cannot be added to a market with the specified condition types.
+	MarketUserErrorCodeInclusivePricingNotCompatibleWithConditionTypes MarketUserErrorCode = "INCLUSIVE_PRICING_NOT_COMPATIBLE_WITH_CONDITION_TYPES"
+	// The specified conditions are not compatible with each other.
+	MarketUserErrorCodeIncompatibleConditions MarketUserErrorCode = "INCOMPATIBLE_CONDITIONS"
+	// Shipping and condition types are not compatible with each other.
+	MarketUserErrorCodeShippingNotCompatibleWithConditionTypes MarketUserErrorCode = "SHIPPING_NOT_COMPATIBLE_WITH_CONDITION_TYPES"
+	// The currency settings of the given market cannot be changed because the market manager has exclusive control of pricing.
+	MarketUserErrorCodeManagedMarket MarketUserErrorCode = "MANAGED_MARKET"
+	// The shop's payment gateway does not support enabling more than one currency.
+	MarketUserErrorCodeMultipleCurrenciesNotSupported MarketUserErrorCode = "MULTIPLE_CURRENCIES_NOT_SUPPORTED"
+	// The specified currency is not supported.
+	MarketUserErrorCodeUnsupportedCurrency MarketUserErrorCode = "UNSUPPORTED_CURRENCY"
+	// Local currencies must be enabled when adaptive pricing is active.
+	MarketUserErrorCodeAdaptivePricingRequiresLocalCurrencies MarketUserErrorCode = "ADAPTIVE_PRICING_REQUIRES_LOCAL_CURRENCIES"
+	// The shop must have a web presence that uses the primary domain.
+	MarketUserErrorCodeShopMustHavePrimaryDomainWebPresence MarketUserErrorCode = "SHOP_MUST_HAVE_PRIMARY_DOMAIN_WEB_PRESENCE"
+	// Can’t delete, disable, or change the type of the last region market.
+	MarketUserErrorCodeMustHaveAtLeastOneActiveRegionMarket MarketUserErrorCode = "MUST_HAVE_AT_LEAST_ONE_ACTIVE_REGION_MARKET"
+	// The user doesn't have permission access to create or edit markets.
+	MarketUserErrorCodeUserLacksPermission MarketUserErrorCode = "USER_LACKS_PERMISSION"
+	// Contains regions that cannot be managed.
+	MarketUserErrorCodeContainsRegionsThatCannotBeManaged MarketUserErrorCode = "CONTAINS_REGIONS_THAT_CANNOT_BE_MANAGED"
+	// Unified markets are not enabled.
+	MarketUserErrorCodeUnifiedMarketsNotEnabled MarketUserErrorCode = "UNIFIED_MARKETS_NOT_ENABLED"
+	// Can't add web presence to the another market.
+	MarketUserErrorCodeWebPresenceReachedMarketsLimit MarketUserErrorCode = "WEB_PRESENCE_REACHED_MARKETS_LIMIT"
+	// A web presence cannot be added to a market with type retail location.
+	MarketUserErrorCodeWebPresenceRetailLocation MarketUserErrorCode = "WEB_PRESENCE_RETAIL_LOCATION"
+	// Catalog condition types must be the same for all conditions on a catalog.
+	MarketUserErrorCodeCatalogConditionTypesMustBeTheSame MarketUserErrorCode = "CATALOG_CONDITION_TYPES_MUST_BE_THE_SAME"
+	// A direct connection catalog can't be attached to a market.
+	MarketUserErrorCodeMarketCantHaveDirectConnectionCatalog MarketUserErrorCode = "MARKET_CANT_HAVE_DIRECT_CONNECTION_CATALOG"
+	// Your shop is not entitled to activate markets of this type.
+	MarketUserErrorCodeNotEntitledToActivateMarket MarketUserErrorCode = "NOT_ENTITLED_TO_ACTIVATE_MARKET"
+	// B2B markets must be merchant managed.
+	MarketUserErrorCodeB2bMarketMustBeMerchantManaged MarketUserErrorCode = "B2B_MARKET_MUST_BE_MERCHANT_MANAGED"
+	// POS location markets must be merchant managed.
+	MarketUserErrorCodePosLocationMarketMustBeMerchantManaged MarketUserErrorCode = "POS_LOCATION_MARKET_MUST_BE_MERCHANT_MANAGED"
+	// Catalogs created by Managed Markets cannot be added to a market.
+	MarketUserErrorCodeManagedMarketsCatalogNotAllowed MarketUserErrorCode = "MANAGED_MARKETS_CATALOG_NOT_ALLOWED"
+	// Resources created by Managed Markets cannot be added to a market.
+	MarketUserErrorCodeManagedMarketsResourceNotAllowed MarketUserErrorCode = "MANAGED_MARKETS_RESOURCE_NOT_ALLOWED"
+	// Retail location currency must be local.
+	MarketUserErrorCodeRetailLocationCurrencyMustBeLocal MarketUserErrorCode = "RETAIL_LOCATION_CURRENCY_MUST_BE_LOCAL"
+	// A Managed Market must use currencies that correspond to all of its countries.
+	MarketUserErrorCodeManagedMarketCurrencyMustMatchCountry MarketUserErrorCode = "MANAGED_MARKET_CURRENCY_MUST_MATCH_COUNTRY"
+	// Catalogs with volume pricing or quantity rules are not supported for the specified condition types.
+	MarketUserErrorCodeCatalogsWithVolumePricingOrQuantityRulesNotSupported MarketUserErrorCode = "CATALOGS_WITH_VOLUME_PRICING_OR_QUANTITY_RULES_NOT_SUPPORTED"
+	// All retail locations in a market must be in the same country.
+	MarketUserErrorCodeMixedCountryLocationsNotAllowed MarketUserErrorCode = "MIXED_COUNTRY_LOCATIONS_NOT_ALLOWED"
+	// All regions in a market that includes a subdivision must be in the same country.
+	MarketUserErrorCodeMixedCountrySubdivisionsNotAllowed MarketUserErrorCode = "MIXED_COUNTRY_SUBDIVISIONS_NOT_ALLOWED"
+	// A market that includes a subdivision requires another market that includes the whole country. If the subdivision market is active, the country market must also be active.
+	MarketUserErrorCodeSubdivisionMarketRequiresCountryCoverage MarketUserErrorCode = "SUBDIVISION_MARKET_REQUIRES_COUNTRY_COVERAGE"
+	// Location match all is only valid with one non-match all region.
+	MarketUserErrorCodeLocationMatchAllRequiresOneSpecificRegion MarketUserErrorCode = "LOCATION_MATCH_ALL_REQUIRES_ONE_SPECIFIC_REGION"
+	// A location's country does not match the region's country.
+	MarketUserErrorCodeLocationRegionCountryMismatch MarketUserErrorCode = "LOCATION_REGION_COUNTRY_MISMATCH"
+	// Managing this catalog is not supported by your plan.
+	MarketUserErrorCodeUnpermittedEntitlementsMarketCatalogs MarketUserErrorCode = "UNPERMITTED_ENTITLEMENTS_MARKET_CATALOGS"
+	// Can't activate this market because the B2B catalog limit has been reached.
+	MarketUserErrorCodeCannotActivateMarketB2bCatalogLimitReached MarketUserErrorCode = "CANNOT_ACTIVATE_MARKET_B2B_CATALOG_LIMIT_REACHED"
+	// The maximum number of active B2B catalogs allowed by your plan has been reached.
+	MarketUserErrorCodeB2bCatalogLimitReached MarketUserErrorCode = "B2B_CATALOG_LIMIT_REACHED"
+	// Channel ids are invalid.
+	MarketUserErrorCodeInvalidChannelIds MarketUserErrorCode = "INVALID_CHANNEL_IDS"
+	// A country condition and a subdivision condition belonging to the same country cannot be added to the same market.
+	MarketUserErrorCodeInvalidCountryAndSubdivisionConditions MarketUserErrorCode = "INVALID_COUNTRY_AND_SUBDIVISION_CONDITIONS"
+	// The selected subdivision does not belong to the selected country.
+	MarketUserErrorCodeSubdivisionMustBelongToCountry MarketUserErrorCode = "SUBDIVISION_MUST_BELONG_TO_COUNTRY"
+	// Can't add all subdivisions for a country to a market.
+	MarketUserErrorCodeCannotAddAllSubdivisionsForACountryToAMarket MarketUserErrorCode = "CANNOT_ADD_ALL_SUBDIVISIONS_FOR_A_COUNTRY_TO_A_MARKET"
+	// Can't add selected responders to a province driven market.
+	MarketUserErrorCodeInvalidResponderForProvinceDrivenMarket MarketUserErrorCode = "INVALID_RESPONDER_FOR_PROVINCE_DRIVEN_MARKET"
+	// Can't add selected customizations to a market with a subdivision condition.
+	MarketUserErrorCodeInvalidCustomizationForSubdivisionCondition MarketUserErrorCode = "INVALID_CUSTOMIZATION_FOR_SUBDIVISION_CONDITION"
+	// The selected customization can't be applied to this configuration.
+	MarketUserErrorCodeIncompatibleConfiguration MarketUserErrorCode = "INCOMPATIBLE_CONFIGURATION"
+	// A channel market must have a single channel driver.
+	MarketUserErrorCodeChannelMarketMustHaveSingleChannelDriver MarketUserErrorCode = "CHANNEL_MARKET_MUST_HAVE_SINGLE_CHANNEL_DRIVER"
+	// The selected channel is not valid for a channel market.
+	MarketUserErrorCodeChannelNotValidForChannelMarket MarketUserErrorCode = "CHANNEL_NOT_VALID_FOR_CHANNEL_MARKET"
+	// A channel driver must have a channel specification.
+	MarketUserErrorCodeChannelDriverMustHaveChannelSpecification MarketUserErrorCode = "CHANNEL_DRIVER_MUST_HAVE_CHANNEL_SPECIFICATION"
+	// The selected region is not supported for the selected channel.
+	MarketUserErrorCodeRegionNotSupportedForChannel MarketUserErrorCode = "REGION_NOT_SUPPORTED_FOR_CHANNEL"
+	// Adaptive pricing can only be enabled for Markets with Managed Markets enabled.
+	MarketUserErrorCodeAdaptivePricingRequiresManagedMarkets MarketUserErrorCode = "ADAPTIVE_PRICING_REQUIRES_MANAGED_MARKETS"
+	// The given priceInclusions setup is not compatible with adaptive pricing.
+	MarketUserErrorCodeAdaptivePricingRequiredSetupError MarketUserErrorCode = "ADAPTIVE_PRICING_REQUIRED_SETUP_ERROR"
+	// Global-e pricing configurations can only be edited by Global-e.
+	MarketUserErrorCodeGlobalEPricingStrategyNotPermitted MarketUserErrorCode = "GLOBAL_E_PRICING_STRATEGY_NOT_PERMITTED"
+)
+
+var AllMarketUserErrorCode = []MarketUserErrorCode{
+	MarketUserErrorCodeInvalid,
+	MarketUserErrorCodeTaken,
+	MarketUserErrorCodeTooLong,
+	MarketUserErrorCodeTooShort,
+	MarketUserErrorCodeBlank,
+	MarketUserErrorCodeInclusion,
+	MarketUserErrorCodeMarketNotFound,
+	MarketUserErrorCodeRegionNotFound,
+	MarketUserErrorCodeProvinceDoesNotExist,
+	MarketUserErrorCodeSubdivisionDoesNotExist,
+	MarketUserErrorCodeWebPresenceNotFound,
+	MarketUserErrorCodeCannotAddRegionsToPrimaryMarket,
+	MarketUserErrorCodeCannotDeleteOnlyRegion,
+	MarketUserErrorCodeRequiresExactlyOneOption,
+	MarketUserErrorCodeCannotDeletePrimaryMarket,
+	MarketUserErrorCodeCannotDeleteSubdivisionMarket,
+	MarketUserErrorCodeExceedsMaxMultiContextMarkets,
+	MarketUserErrorCodeDomainNotFound,
+	MarketUserErrorCodeSubfolderSuffixMustContainOnlyLetters,
+	MarketUserErrorCodeSubfolderSuffixMustBeAtLeast2Letters,
+	MarketUserErrorCodeSubfolderSuffixCannotBeScriptCode,
+	MarketUserErrorCodeNoLanguages,
+	MarketUserErrorCodeNoLocalCurrenciesOnSingleCountryMarket,
+	MarketUserErrorCodeNoRoundingOnLegacyMarket,
+	MarketUserErrorCodeDuplicateLanguages,
+	MarketUserErrorCodeDuplicateRegionMarket,
+	MarketUserErrorCodeDuplicateUniqueMarket,
+	MarketUserErrorCodeRegionSpecificLanguage,
+	MarketUserErrorCodeCannotHaveSubfolderAndDomain,
+	MarketUserErrorCodeCannotAddWebPresenceToPrimaryMarket,
+	MarketUserErrorCodeMarketReachedWebPresenceLimit,
+	MarketUserErrorCodeMarketNotCompatibleWithConditionTypes,
+	MarketUserErrorCodeMissingCountryCode,
+	MarketUserErrorCodeMissingProvinceCode,
+	MarketUserErrorCodeMissingSubdivisionCode,
+	MarketUserErrorCodeCannotHaveMultipleSubfoldersPerMarket,
+	MarketUserErrorCodeCannotHaveBothSubfolderAndDomainWebPresences,
+	MarketUserErrorCodeRequiresDomainOrSubfolder,
+	MarketUserErrorCodePrimaryMarketMustUsePrimaryDomain,
+	MarketUserErrorCodeCannotDeletePrimaryMarketWebPresence,
+	MarketUserErrorCodeShopReachedMarketsLimit,
+	MarketUserErrorCodeCannotDisablePrimaryMarket,
+	MarketUserErrorCodeUnpublishedLanguage,
+	MarketUserErrorCodeDisabledLanguage,
+	MarketUserErrorCodeCannotSetDefaultLocaleToNull,
+	MarketUserErrorCodeUnsupportedCountryRegion,
+	MarketUserErrorCodeCannotAddCustomerDomain,
+	MarketUserErrorCodeMarketManagerNotCompatibleWithConditionTypes,
+	MarketUserErrorCodeGenericError,
+	MarketUserErrorCodeMarketUpdateConcurrentModification,
+	MarketUserErrorCodeInvalidStatusAndEnabledCombination,
+	MarketUserErrorCodeInvalidProvinceFormat,
+	MarketUserErrorCodeInvalidSubdivisionFormat,
+	MarketUserErrorCodeConditionsNotFound,
+	MarketUserErrorCodeSpecifiedConditionsCannotBeEmpty,
+	MarketUserErrorCodeCustomizationsNotFound,
+	MarketUserErrorCodeDiscountNotMarketContextual,
+	MarketUserErrorCodeDiscountExceedsMarketLimit,
+	MarketUserErrorCodeDiscountNotCompatibleWithB2bMarket,
+	MarketUserErrorCodeWildcardNotSupported,
+	MarketUserErrorCodeSpecifiedNotValidForInput,
+	MarketUserErrorCodeWebPresenceNotCompatibleWithConditionTypes,
+	MarketUserErrorCodeCatalogNotCompatibleWithConditionTypes,
+	MarketUserErrorCodeCatalogTypeNotSupported,
+	MarketUserErrorCodeInclusivePricingNotCompatibleWithConditionTypes,
+	MarketUserErrorCodeIncompatibleConditions,
+	MarketUserErrorCodeShippingNotCompatibleWithConditionTypes,
+	MarketUserErrorCodeManagedMarket,
+	MarketUserErrorCodeMultipleCurrenciesNotSupported,
+	MarketUserErrorCodeUnsupportedCurrency,
+	MarketUserErrorCodeAdaptivePricingRequiresLocalCurrencies,
+	MarketUserErrorCodeShopMustHavePrimaryDomainWebPresence,
+	MarketUserErrorCodeMustHaveAtLeastOneActiveRegionMarket,
+	MarketUserErrorCodeUserLacksPermission,
+	MarketUserErrorCodeContainsRegionsThatCannotBeManaged,
+	MarketUserErrorCodeUnifiedMarketsNotEnabled,
+	MarketUserErrorCodeWebPresenceReachedMarketsLimit,
+	MarketUserErrorCodeWebPresenceRetailLocation,
+	MarketUserErrorCodeCatalogConditionTypesMustBeTheSame,
+	MarketUserErrorCodeMarketCantHaveDirectConnectionCatalog,
+	MarketUserErrorCodeNotEntitledToActivateMarket,
+	MarketUserErrorCodeB2bMarketMustBeMerchantManaged,
+	MarketUserErrorCodePosLocationMarketMustBeMerchantManaged,
+	MarketUserErrorCodeManagedMarketsCatalogNotAllowed,
+	MarketUserErrorCodeManagedMarketsResourceNotAllowed,
+	MarketUserErrorCodeRetailLocationCurrencyMustBeLocal,
+	MarketUserErrorCodeManagedMarketCurrencyMustMatchCountry,
+	MarketUserErrorCodeCatalogsWithVolumePricingOrQuantityRulesNotSupported,
+	MarketUserErrorCodeMixedCountryLocationsNotAllowed,
+	MarketUserErrorCodeMixedCountrySubdivisionsNotAllowed,
+	MarketUserErrorCodeSubdivisionMarketRequiresCountryCoverage,
+	MarketUserErrorCodeLocationMatchAllRequiresOneSpecificRegion,
+	MarketUserErrorCodeLocationRegionCountryMismatch,
+	MarketUserErrorCodeUnpermittedEntitlementsMarketCatalogs,
+	MarketUserErrorCodeCannotActivateMarketB2bCatalogLimitReached,
+	MarketUserErrorCodeB2bCatalogLimitReached,
+	MarketUserErrorCodeInvalidChannelIds,
+	MarketUserErrorCodeInvalidCountryAndSubdivisionConditions,
+	MarketUserErrorCodeSubdivisionMustBelongToCountry,
+	MarketUserErrorCodeCannotAddAllSubdivisionsForACountryToAMarket,
+	MarketUserErrorCodeInvalidResponderForProvinceDrivenMarket,
+	MarketUserErrorCodeInvalidCustomizationForSubdivisionCondition,
+	MarketUserErrorCodeIncompatibleConfiguration,
+	MarketUserErrorCodeChannelMarketMustHaveSingleChannelDriver,
+	MarketUserErrorCodeChannelNotValidForChannelMarket,
+	MarketUserErrorCodeChannelDriverMustHaveChannelSpecification,
+	MarketUserErrorCodeRegionNotSupportedForChannel,
+	MarketUserErrorCodeAdaptivePricingRequiresManagedMarkets,
+	MarketUserErrorCodeAdaptivePricingRequiredSetupError,
+	MarketUserErrorCodeGlobalEPricingStrategyNotPermitted,
+}
 
 // MenuFields includes the GraphQL fields of Menu requested by the fragment MenuFields.
 // The GraphQL type's documentation follows.
@@ -10657,6 +11400,341 @@ func (v *UpdateMetaobjectDefinitionResponse) GetMetaobjectDefinitionUpdate() *Up
 	return v.MetaobjectDefinitionUpdate
 }
 
+// UpdateWebPresenceResponse is returned by UpdateWebPresence on success.
+type UpdateWebPresenceResponse struct {
+	// Updates a web presence.
+	WebPresenceUpdate *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayload `json:"webPresenceUpdate"`
+}
+
+// GetWebPresenceUpdate returns UpdateWebPresenceResponse.WebPresenceUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateWebPresenceResponse) GetWebPresenceUpdate() *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayload {
+	return v.WebPresenceUpdate
+}
+
+// UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayload includes the requested fields of the GraphQL type WebPresenceUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `webPresenceUpdate` mutation.
+type UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayload struct {
+	// The web presence object.
+	WebPresence *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence `json:"webPresence"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadUserErrorsMarketUserError `json:"userErrors"`
+}
+
+// GetWebPresence returns UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayload.WebPresence, and is useful for accessing the field via an interface.
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayload) GetWebPresence() *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence {
+	return v.WebPresence
+}
+
+// GetUserErrors returns UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayload) GetUserErrors() []UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadUserErrorsMarketUserError {
+	return v.UserErrors
+}
+
+// UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadUserErrorsMarketUserError includes the requested fields of the GraphQL type MarketUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors encountered while managing a Market.
+type UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadUserErrorsMarketUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *MarketUserErrorCode `json:"code"`
+}
+
+// GetField returns UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadUserErrorsMarketUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadUserErrorsMarketUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadUserErrorsMarketUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadUserErrorsMarketUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadUserErrorsMarketUserError.Code, and is useful for accessing the field via an interface.
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadUserErrorsMarketUserError) GetCode() *MarketUserErrorCode {
+	return v.Code
+}
+
+// UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence includes the requested fields of the GraphQL type MarketWebPresence.
+// The GraphQL type's documentation follows.
+//
+// The market’s web presence, which defines its SEO strategy. This can be a different domain
+// (e.g. `example.ca`), subdomain (e.g. `ca.example.com`), or subfolders of the primary
+// domain (e.g. `example.com/en-ca`). Each web presence comprises one or more language
+// variants. If a market does not have its own web presence, it is accessible on the shop’s
+// primary domain via [country
+// selectors](https://shopify.dev/themes/internationalization/multiple-currencies-languages#the-country-selector).
+//
+// Note: while the domain/subfolders defined by a market’s web presence are not applicable to
+// custom storefronts, which must manage their own domains and routing, the languages chosen
+// here do govern [the languages available on the Storefront
+// API](https://shopify.dev/custom-storefronts/internationalization/multiple-languages) for the countries in
+// this market.
+type UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence struct {
+	WebPresenceFields `json:"-"`
+}
+
+// GetId returns UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence.Id, and is useful for accessing the field via an interface.
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence) GetId() string {
+	return v.WebPresenceFields.Id
+}
+
+// GetSubfolderSuffix returns UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence.SubfolderSuffix, and is useful for accessing the field via an interface.
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence) GetSubfolderSuffix() *string {
+	return v.WebPresenceFields.SubfolderSuffix
+}
+
+// GetDomain returns UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence.Domain, and is useful for accessing the field via an interface.
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence) GetDomain() *WebPresenceFieldsDomain {
+	return v.WebPresenceFields.Domain
+}
+
+// GetDefaultLocale returns UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence.DefaultLocale, and is useful for accessing the field via an interface.
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence) GetDefaultLocale() WebPresenceFieldsDefaultLocaleShopLocale {
+	return v.WebPresenceFields.DefaultLocale
+}
+
+// GetAlternateLocales returns UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence.AlternateLocales, and is useful for accessing the field via an interface.
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence) GetAlternateLocales() []WebPresenceFieldsAlternateLocalesShopLocale {
+	return v.WebPresenceFields.AlternateLocales
+}
+
+// GetRootUrls returns UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence.RootUrls, and is useful for accessing the field via an interface.
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence) GetRootUrls() []WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl {
+	return v.WebPresenceFields.RootUrls
+}
+
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.WebPresenceFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence struct {
+	Id string `json:"id"`
+
+	SubfolderSuffix *string `json:"subfolderSuffix"`
+
+	Domain *WebPresenceFieldsDomain `json:"domain"`
+
+	DefaultLocale WebPresenceFieldsDefaultLocaleShopLocale `json:"defaultLocale"`
+
+	AlternateLocales []WebPresenceFieldsAlternateLocalesShopLocale `json:"alternateLocales"`
+
+	RootUrls []WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl `json:"rootUrls"`
+}
+
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence) __premarshalJSON() (*__premarshalUpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence, error) {
+	var retval __premarshalUpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMarketWebPresence
+
+	retval.Id = v.WebPresenceFields.Id
+	retval.SubfolderSuffix = v.WebPresenceFields.SubfolderSuffix
+	retval.Domain = v.WebPresenceFields.Domain
+	retval.DefaultLocale = v.WebPresenceFields.DefaultLocale
+	retval.AlternateLocales = v.WebPresenceFields.AlternateLocales
+	retval.RootUrls = v.WebPresenceFields.RootUrls
+	return &retval, nil
+}
+
+// The input fields used to create a web presence.
+type WebPresenceCreateInput struct {
+	// The web presence's domain ID. This field must be `null` if the `subfolderSuffix` isn't `null`.
+	DomainId *string `json:"domainId,omitempty"`
+	// The default locale for the web presence.
+	DefaultLocale string `json:"defaultLocale"`
+	// The alternate locales for the web presence.
+	AlternateLocales []string `json:"alternateLocales,omitempty"`
+	// The market-specific suffix of the subfolders defined by the web presence.
+	// For example: in `/en-us`, the subfolder suffix is `us`.
+	// Only ASCII characters are allowed. This field must be `null` if the `domainId` isn't `null`.
+	SubfolderSuffix *string `json:"subfolderSuffix,omitempty"`
+}
+
+// GetDomainId returns WebPresenceCreateInput.DomainId, and is useful for accessing the field via an interface.
+func (v *WebPresenceCreateInput) GetDomainId() *string { return v.DomainId }
+
+// GetDefaultLocale returns WebPresenceCreateInput.DefaultLocale, and is useful for accessing the field via an interface.
+func (v *WebPresenceCreateInput) GetDefaultLocale() string { return v.DefaultLocale }
+
+// GetAlternateLocales returns WebPresenceCreateInput.AlternateLocales, and is useful for accessing the field via an interface.
+func (v *WebPresenceCreateInput) GetAlternateLocales() []string { return v.AlternateLocales }
+
+// GetSubfolderSuffix returns WebPresenceCreateInput.SubfolderSuffix, and is useful for accessing the field via an interface.
+func (v *WebPresenceCreateInput) GetSubfolderSuffix() *string { return v.SubfolderSuffix }
+
+// WebPresenceFields includes the GraphQL fields of MarketWebPresence requested by the fragment WebPresenceFields.
+// The GraphQL type's documentation follows.
+//
+// The market’s web presence, which defines its SEO strategy. This can be a different domain
+// (e.g. `example.ca`), subdomain (e.g. `ca.example.com`), or subfolders of the primary
+// domain (e.g. `example.com/en-ca`). Each web presence comprises one or more language
+// variants. If a market does not have its own web presence, it is accessible on the shop’s
+// primary domain via [country
+// selectors](https://shopify.dev/themes/internationalization/multiple-currencies-languages#the-country-selector).
+//
+// Note: while the domain/subfolders defined by a market’s web presence are not applicable to
+// custom storefronts, which must manage their own domains and routing, the languages chosen
+// here do govern [the languages available on the Storefront
+// API](https://shopify.dev/custom-storefronts/internationalization/multiple-languages) for the countries in
+// this market.
+type WebPresenceFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The market-specific suffix of the subfolders defined by the web presence. Example: in `/en-us` the subfolder suffix is `us`. This field will be null if `domain` isn't null.
+	SubfolderSuffix *string `json:"subfolderSuffix"`
+	// The web presence’s domain.
+	// This field will be null if `subfolderSuffix` isn't null.
+	Domain *WebPresenceFieldsDomain `json:"domain"`
+	// The ShopLocale object for the default locale. When a domain is used, this is the locale that will
+	// be used when the domain root is accessed. For example, if French is the default locale,
+	// and `example.ca` is the market’s domain, then `example.ca` will load in French.
+	DefaultLocale WebPresenceFieldsDefaultLocaleShopLocale `json:"defaultLocale"`
+	// The ShopLocale object for the alternate locales. When a domain is used, these locales will be
+	// available as language-specific subfolders. For example, if English is an
+	// alternate locale, and `example.ca` is the market’s domain, then
+	// `example.ca/en` will load in English.
+	AlternateLocales []WebPresenceFieldsAlternateLocalesShopLocale `json:"alternateLocales"`
+	// The list of root URLs for each of the web presence’s locales. As of version `2024-04` this value will no longer have a trailing slash.
+	RootUrls []WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl `json:"rootUrls"`
+}
+
+// GetId returns WebPresenceFields.Id, and is useful for accessing the field via an interface.
+func (v *WebPresenceFields) GetId() string { return v.Id }
+
+// GetSubfolderSuffix returns WebPresenceFields.SubfolderSuffix, and is useful for accessing the field via an interface.
+func (v *WebPresenceFields) GetSubfolderSuffix() *string { return v.SubfolderSuffix }
+
+// GetDomain returns WebPresenceFields.Domain, and is useful for accessing the field via an interface.
+func (v *WebPresenceFields) GetDomain() *WebPresenceFieldsDomain { return v.Domain }
+
+// GetDefaultLocale returns WebPresenceFields.DefaultLocale, and is useful for accessing the field via an interface.
+func (v *WebPresenceFields) GetDefaultLocale() WebPresenceFieldsDefaultLocaleShopLocale {
+	return v.DefaultLocale
+}
+
+// GetAlternateLocales returns WebPresenceFields.AlternateLocales, and is useful for accessing the field via an interface.
+func (v *WebPresenceFields) GetAlternateLocales() []WebPresenceFieldsAlternateLocalesShopLocale {
+	return v.AlternateLocales
+}
+
+// GetRootUrls returns WebPresenceFields.RootUrls, and is useful for accessing the field via an interface.
+func (v *WebPresenceFields) GetRootUrls() []WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl {
+	return v.RootUrls
+}
+
+// WebPresenceFieldsAlternateLocalesShopLocale includes the requested fields of the GraphQL type ShopLocale.
+// The GraphQL type's documentation follows.
+//
+// A locale that's been enabled on a shop.
+type WebPresenceFieldsAlternateLocalesShopLocale struct {
+	// The locale ISO code.
+	Locale string `json:"locale"`
+}
+
+// GetLocale returns WebPresenceFieldsAlternateLocalesShopLocale.Locale, and is useful for accessing the field via an interface.
+func (v *WebPresenceFieldsAlternateLocalesShopLocale) GetLocale() string { return v.Locale }
+
+// WebPresenceFieldsDefaultLocaleShopLocale includes the requested fields of the GraphQL type ShopLocale.
+// The GraphQL type's documentation follows.
+//
+// A locale that's been enabled on a shop.
+type WebPresenceFieldsDefaultLocaleShopLocale struct {
+	// The locale ISO code.
+	Locale string `json:"locale"`
+}
+
+// GetLocale returns WebPresenceFieldsDefaultLocaleShopLocale.Locale, and is useful for accessing the field via an interface.
+func (v *WebPresenceFieldsDefaultLocaleShopLocale) GetLocale() string { return v.Locale }
+
+// WebPresenceFieldsDomain includes the requested fields of the GraphQL type Domain.
+// The GraphQL type's documentation follows.
+//
+// A unique string that represents the address of a Shopify store on the Internet.
+type WebPresenceFieldsDomain struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The host name of the domain. For example, `example.com`.
+	Host string `json:"host"`
+}
+
+// GetId returns WebPresenceFieldsDomain.Id, and is useful for accessing the field via an interface.
+func (v *WebPresenceFieldsDomain) GetId() string { return v.Id }
+
+// GetHost returns WebPresenceFieldsDomain.Host, and is useful for accessing the field via an interface.
+func (v *WebPresenceFieldsDomain) GetHost() string { return v.Host }
+
+// WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl includes the requested fields of the GraphQL type MarketWebPresenceRootUrl.
+// The GraphQL type's documentation follows.
+//
+// The URL for the homepage of the online store in the context of a particular market and a
+// particular locale.
+type WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl struct {
+	// The locale that the storefront loads in.
+	Locale string `json:"locale"`
+	// The URL.
+	Url string `json:"url"`
+}
+
+// GetLocale returns WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl.Locale, and is useful for accessing the field via an interface.
+func (v *WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl) GetLocale() string { return v.Locale }
+
+// GetUrl returns WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl.Url, and is useful for accessing the field via an interface.
+func (v *WebPresenceFieldsRootUrlsMarketWebPresenceRootUrl) GetUrl() string { return v.Url }
+
+// The input fields used to update a web presence.
+type WebPresenceUpdateInput struct {
+	// The default locale for the web presence.
+	DefaultLocale *string `json:"defaultLocale,omitempty"`
+	// The alternate locales for the web presence.
+	AlternateLocales json.RawMessage `json:"alternateLocales,omitempty"`
+	// The market-specific suffix of the subfolders defined by the web presence.
+	// Example: in `/en-us` the subfolder suffix is `us`.
+	// Only ASCII characters are allowed.
+	// This field must be null if subfolder suffix is not already defined for the web presence.
+	SubfolderSuffix *string `json:"subfolderSuffix,omitempty"`
+}
+
+// GetDefaultLocale returns WebPresenceUpdateInput.DefaultLocale, and is useful for accessing the field via an interface.
+func (v *WebPresenceUpdateInput) GetDefaultLocale() *string { return v.DefaultLocale }
+
+// GetAlternateLocales returns WebPresenceUpdateInput.AlternateLocales, and is useful for accessing the field via an interface.
+func (v *WebPresenceUpdateInput) GetAlternateLocales() json.RawMessage { return v.AlternateLocales }
+
+// GetSubfolderSuffix returns WebPresenceUpdateInput.SubfolderSuffix, and is useful for accessing the field via an interface.
+func (v *WebPresenceUpdateInput) GetSubfolderSuffix() *string { return v.SubfolderSuffix }
+
 // The input fields for the weight unit and value inputs.
 type WeightInput struct {
 	// The weight value using the unit system specified with `weight_unit`.
@@ -10756,6 +11834,14 @@ func (v *__CreateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinition
 	return v.Definition
 }
 
+// __CreateWebPresenceInput is used internally by genqlient
+type __CreateWebPresenceInput struct {
+	Input WebPresenceCreateInput `json:"input"`
+}
+
+// GetInput returns __CreateWebPresenceInput.Input, and is useful for accessing the field via an interface.
+func (v *__CreateWebPresenceInput) GetInput() WebPresenceCreateInput { return v.Input }
+
 // __DeactivateLocationInput is used internally by genqlient
 type __DeactivateLocationInput struct {
 	LocationId     string `json:"locationId"`
@@ -10813,6 +11899,14 @@ type __DeleteMetaobjectDefinitionInput struct {
 
 // GetId returns __DeleteMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteMetaobjectDefinitionInput) GetId() string { return v.Id }
+
+// __DeleteWebPresenceInput is used internally by genqlient
+type __DeleteWebPresenceInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteWebPresenceInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteWebPresenceInput) GetId() string { return v.Id }
 
 // __EditLocationInput is used internally by genqlient
 type __EditLocationInput struct {
@@ -10900,6 +11994,14 @@ type __GetMetaobjectDefinitionInput struct {
 // GetId returns __GetMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetMetaobjectDefinitionInput) GetId() string { return v.Id }
 
+// __GetWebPresenceInput is used internally by genqlient
+type __GetWebPresenceInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetWebPresenceInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetWebPresenceInput) GetId() string { return v.Id }
+
 // __ListDeliveryProfilesInput is used internally by genqlient
 type __ListDeliveryProfilesInput struct {
 	After *string `json:"after"`
@@ -10955,6 +12057,14 @@ type __ListMetaobjectDefinitionsInput struct {
 
 // GetAfter returns __ListMetaobjectDefinitionsInput.After, and is useful for accessing the field via an interface.
 func (v *__ListMetaobjectDefinitionsInput) GetAfter() *string { return v.After }
+
+// __ListWebPresencesInput is used internally by genqlient
+type __ListWebPresencesInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListWebPresencesInput.After, and is useful for accessing the field via an interface.
+func (v *__ListWebPresencesInput) GetAfter() *string { return v.After }
 
 // __UpdateDeliveryProfileInput is used internally by genqlient
 type __UpdateDeliveryProfileInput struct {
@@ -11023,6 +12133,18 @@ func (v *__UpdateMetaobjectDefinitionInput) GetId() string { return v.Id }
 func (v *__UpdateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinitionUpdateInput {
 	return v.Definition
 }
+
+// __UpdateWebPresenceInput is used internally by genqlient
+type __UpdateWebPresenceInput struct {
+	Id    string                 `json:"id"`
+	Input WebPresenceUpdateInput `json:"input"`
+}
+
+// GetId returns __UpdateWebPresenceInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateWebPresenceInput) GetId() string { return v.Id }
+
+// GetInput returns __UpdateWebPresenceInput.Input, and is useful for accessing the field via an interface.
+func (v *__UpdateWebPresenceInput) GetInput() WebPresenceUpdateInput { return v.Input }
 
 // The mutation executed by ActivateLocation.
 const ActivateLocation_Operation = `
@@ -11423,6 +12545,66 @@ func CreateMetaobjectDefinition(
 	return data_, err_
 }
 
+// The mutation executed by CreateWebPresence.
+const CreateWebPresence_Operation = `
+mutation CreateWebPresence ($input: WebPresenceCreateInput!) {
+	webPresenceCreate(input: $input) {
+		webPresence {
+			... WebPresenceFields
+		}
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+fragment WebPresenceFields on MarketWebPresence {
+	id
+	subfolderSuffix
+	domain {
+		id
+		host
+	}
+	defaultLocale {
+		locale
+	}
+	alternateLocales {
+		locale
+	}
+	rootUrls {
+		locale
+		url
+	}
+}
+`
+
+// Unset optional inputs must be omitted, not sent as null: null subfolderSuffix is read as "passed" next to a domain.
+func CreateWebPresence(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input WebPresenceCreateInput,
+) (data_ *CreateWebPresenceResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateWebPresence",
+		Query:  CreateWebPresence_Operation,
+		Variables: &__CreateWebPresenceInput{
+			Input: input,
+		},
+	}
+
+	data_ = &CreateWebPresenceResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by DeactivateLocation.
 const DeactivateLocation_Operation = `
 mutation DeactivateLocation ($locationId: ID!, $idempotencyKey: String!) {
@@ -11662,6 +12844,45 @@ func DeleteMetaobjectDefinition(
 	}
 
 	data_ = &DeleteMetaobjectDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteWebPresence.
+const DeleteWebPresence_Operation = `
+mutation DeleteWebPresence ($id: ID!) {
+	webPresenceDelete(id: $id) {
+		deletedId
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+`
+
+func DeleteWebPresence(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteWebPresenceResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteWebPresence",
+		Query:  DeleteWebPresence_Operation,
+		Variables: &__DeleteWebPresenceInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteWebPresenceResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -12370,6 +13591,62 @@ func GetShop(
 	return data_, err_
 }
 
+// The query executed by GetWebPresence.
+const GetWebPresence_Operation = `
+query GetWebPresence ($id: ID!) {
+	node(id: $id) {
+		__typename
+		... on MarketWebPresence {
+			... WebPresenceFields
+		}
+	}
+}
+fragment WebPresenceFields on MarketWebPresence {
+	id
+	subfolderSuffix
+	domain {
+		id
+		host
+	}
+	defaultLocale {
+		locale
+	}
+	alternateLocales {
+		locale
+	}
+	rootUrls {
+		locale
+		url
+	}
+}
+`
+
+// Bound to raw JSON: genqlient can't generate the Node interface, and there is no webPresence(id:) root field.
+func GetWebPresence(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetWebPresenceResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetWebPresence",
+		Query:  GetWebPresence_Operation,
+		Variables: &__GetWebPresenceInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetWebPresenceResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListDeliveryProfiles.
 const ListDeliveryProfiles_Operation = `
 query ListDeliveryProfiles ($after: String) {
@@ -12753,6 +14030,65 @@ func ListMetaobjectDefinitions(
 	return data_, err_
 }
 
+// The query executed by ListWebPresences.
+const ListWebPresences_Operation = `
+query ListWebPresences ($after: String) {
+	webPresences(first: 250, after: $after) {
+		nodes {
+			... WebPresenceFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment WebPresenceFields on MarketWebPresence {
+	id
+	subfolderSuffix
+	domain {
+		id
+		host
+	}
+	defaultLocale {
+		locale
+	}
+	alternateLocales {
+		locale
+	}
+	rootUrls {
+		locale
+		url
+	}
+}
+`
+
+// webPresences has no query filter, so lookups by key page through all presences.
+func ListWebPresences(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListWebPresencesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListWebPresences",
+		Query:  ListWebPresences_Operation,
+		Variables: &__ListWebPresencesInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListWebPresencesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by UpdateDeliveryProfile.
 const UpdateDeliveryProfile_Operation = `
 mutation UpdateDeliveryProfile ($id: ID!, $profile: DeliveryProfileInput!) {
@@ -13074,6 +14410,68 @@ func UpdateMetaobjectDefinition(
 	}
 
 	data_ = &UpdateMetaobjectDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateWebPresence.
+const UpdateWebPresence_Operation = `
+mutation UpdateWebPresence ($id: ID!, $input: WebPresenceUpdateInput!) {
+	webPresenceUpdate(id: $id, input: $input) {
+		webPresence {
+			... WebPresenceFields
+		}
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+fragment WebPresenceFields on MarketWebPresence {
+	id
+	subfolderSuffix
+	domain {
+		id
+		host
+	}
+	defaultLocale {
+		locale
+	}
+	alternateLocales {
+		locale
+	}
+	rootUrls {
+		locale
+		url
+	}
+}
+`
+
+// alternateLocales is raw JSON so an empty list (clear) is sent while nil (unmanaged) is omitted.
+func UpdateWebPresence(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input WebPresenceUpdateInput,
+) (data_ *UpdateWebPresenceResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateWebPresence",
+		Query:  UpdateWebPresence_Operation,
+		Variables: &__UpdateWebPresenceInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &UpdateWebPresenceResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

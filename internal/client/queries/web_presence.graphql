@@ -1,0 +1,97 @@
+fragment WebPresenceFields on MarketWebPresence {
+  id
+  subfolderSuffix
+  domain {
+    id
+    host
+  }
+  defaultLocale {
+    locale
+  }
+  alternateLocales {
+    locale
+  }
+  rootUrls {
+    locale
+    url
+  }
+}
+
+# Bound to raw JSON: genqlient can't generate the Node interface, and there is no webPresence(id:) root field.
+query GetWebPresence(
+  $id: ID!
+) {
+  # @genqlient(bind: "encoding/json.RawMessage")
+  node(id: $id) {
+    ... on MarketWebPresence {
+      ...WebPresenceFields
+    }
+  }
+}
+
+# webPresences has no query filter, so lookups by key page through all presences.
+query ListWebPresences(
+  $after: String
+) {
+  webPresences(first: 250, after: $after) {
+    nodes {
+      ...WebPresenceFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# Unset optional inputs must be omitted, not sent as null: null subfolderSuffix is read as "passed" next to a domain.
+# @genqlient(for: "WebPresenceCreateInput.domainId", omitempty: true)
+# @genqlient(for: "WebPresenceCreateInput.subfolderSuffix", omitempty: true)
+# @genqlient(for: "WebPresenceCreateInput.alternateLocales", omitempty: true)
+mutation CreateWebPresence(
+  $input: WebPresenceCreateInput!
+) {
+  webPresenceCreate(input: $input) {
+    webPresence {
+      ...WebPresenceFields
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+# alternateLocales is raw JSON so an empty list (clear) is sent while nil (unmanaged) is omitted.
+# @genqlient(for: "WebPresenceUpdateInput.defaultLocale", omitempty: true)
+# @genqlient(for: "WebPresenceUpdateInput.subfolderSuffix", omitempty: true)
+# @genqlient(for: "WebPresenceUpdateInput.alternateLocales", omitempty: true, bind: "encoding/json.RawMessage")
+mutation UpdateWebPresence(
+  $id: ID!
+  $input: WebPresenceUpdateInput!
+) {
+  webPresenceUpdate(id: $id, input: $input) {
+    webPresence {
+      ...WebPresenceFields
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation DeleteWebPresence(
+  $id: ID!
+) {
+  webPresenceDelete(id: $id) {
+    deletedId
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
