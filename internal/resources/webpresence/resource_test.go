@@ -272,6 +272,14 @@ func TestAccWebPresence_adoptPrimary(t *testing.T) {
 				},
 			},
 			{
+				// A listed domain presence must also generate valid config that plans as import-only.
+				Config:          cfg(true),
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+				GenerateConfig:  true,
+			},
+			{
 				ResourceName:                         addr,
 				ImportState:                          true,
 				ImportStateId:                        primary.Domain.Host,
