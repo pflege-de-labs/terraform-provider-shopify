@@ -207,7 +207,7 @@ func variantsAttribute() schema.ListNestedAttribute {
 				Optional:            true, Computed: true, Validators: decimal,
 			},
 			"compare_at_price": schema.StringAttribute{
-				MarkdownDescription: "Compare-at price as a decimal string, null when there is none." + unmanaged,
+				MarkdownDescription: "Compare-at price as a decimal string, null when there is none. It can't be cleared here yet." + unmanaged,
 				Optional:            true, Computed: true, Validators: decimal,
 			},
 			"sku": schema.StringAttribute{MarkdownDescription: "SKU, null when there is none. Not an identity: SKUs can be empty or repeated." + unmanaged, Optional: true, Computed: true},

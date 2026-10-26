@@ -13,7 +13,7 @@ A product's core fields: title, handle, status, description, tags and SEO. **A p
 ## Example Usage
 
 ```terraform
-# Core fields only; unset attributes (vendor here) keep whatever the admin has.
+# Unset attributes (vendor here, sku on size M) keep whatever the admin has.
 resource "shopify_product" "bettschutz" {
   handle           = "bettschutzeinlage"
   title            = "Bettschutzeinlage"
@@ -22,6 +22,32 @@ resource "shopify_product" "bettschutz" {
   tags             = ["pflegehilfsmittel", "waschbar"]
   description_html = file("${path.module}/products/bettschutzeinlage.html")
   seo_title        = "Waschbare Bettschutzeinlage"
+
+  options = [
+    { name = "Größe", values = ["S", "M"] },
+  ]
+
+  # Variants are identified by their option values. Removing one deletes its stock and needs allow_data_deletion = true.
+  variants = [
+    {
+      option_values    = { "Größe" = "S" }
+      price            = "19.90"
+      sku              = "BSE-S"
+      barcodes         = [{ value = "4006381333931", type = "EAN" }]
+      inventory_policy = "DENY"
+      tracked          = true
+      weight           = { value = 0.4, unit = "KILOGRAMS" }
+    },
+    { option_values = { "Größe" = "M" }, price = "24.90", compare_at_price = "29.90" },
+  ]
+}
+
+# A product without options has one default variant.
+resource "shopify_product" "versandkosten" {
+  handle   = "versandkosten"
+  title    = "Versandkostenpauschale"
+  options  = []
+  variants = [{ option_values = {}, price = "4.95", requires_shipping = false }]
 }
 
 # Take over a product that already has the handle; destroy only removes it from state.
@@ -89,7 +115,7 @@ Required:
 Optional:
 
 - `barcodes` (Attributes List) Barcodes; `[]` clears them. Unset means unmanaged. (see [below for nested schema](#nestedatt--variants--barcodes))
-- `compare_at_price` (String) Compare-at price as a decimal string, null when there is none. Unset means unmanaged.
+- `compare_at_price` (String) Compare-at price as a decimal string, null when there is none. It can't be cleared here yet. Unset means unmanaged.
 - `inventory_policy` (String) `DENY` stops selling when out of stock, `CONTINUE` keeps selling. Unset means unmanaged.
 - `price` (String) Price as a decimal string. Compared numerically, so `"10"` matches Shopify's `"10.00"`. Unset means unmanaged.
 - `requires_shipping` (Boolean) Whether the variant is shipped. Unset means unmanaged.
