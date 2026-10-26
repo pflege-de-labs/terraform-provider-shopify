@@ -48,6 +48,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_checkout_branding_settings` | checkout branding | planned | good |
 | `write_translations` | translations, market localizations | planned | volatile (follows content) |
 | `write_publications` | publications, publishing to channels | planned | volatile |
+| `write_purchase_options` | selling plan groups (together with `write_products`) | planned | volatile |
 | `write_customers` | customer segments; metafield definitions for `CUSTOMER` ⚠ | planned | segments volatile |
 | `write_companies` | metafield definitions for `COMPANY`, `COMPANY_LOCATION` ⚠ (B2B stores only; not in the reference configs) | planned | good |
 | `write_orders`, `write_draft_orders` | metafield definitions for `ORDER`, `DRAFTORDER` ⚠ | planned | good |
