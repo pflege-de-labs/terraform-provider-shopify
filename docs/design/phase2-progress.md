@@ -65,4 +65,13 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Ruling S8-3: `shopify_shop_locale.id` is the locale code and `shopify_privacy_settings.id` the shop GID, deviating from "id = GID" — `ShopLocale` and `PrivacySettings` have no GID of their own — costs an identity schema change if Shopify adds IDs later.
 - Ruling S8-4: Task 7 (privacy settings + consent policy) runs with write steps skipped until the dev store's Shopify cookie banner is off; disabling it is one-way through the API and is the user's call (asked) — costs untested write paths until then.
 - Step 8 open: dev store keeps an empty LEGAL_NOTICE policy row (API can't delete policies); branding on the dev store now reads empty containers instead of null.
-- Task 5 (shop locale): dispatched (base see next line).
+- Task 5 (shop locale): dispatched (base e25c80a, model sonnet)
+- Task 5: implemented e25c80a..e5f504d (DONE_WITH_CONCERNS: 859ca7c alone fails lint, unused `localeRe` used by the next commit; acc tests not run red first; TODO(verify) disabling a locale a web presence uses; `published = false` on primary relies on Shopify's error). Review dispatched (sonnet).
+- Task 5: review: spec ✅, quality Approved, 0 Critical/Important.
+- Task 5: minor (deferred): primary-locale safety test reaches adopt=false via update, not via import-then-destroy (resource_test.go adoptPrimary)
+- Task 5: minor (deferred): partial Create (enable ok, publish fails) leaves an enabled locale without state; retry needs adopt_existing — same in sibling resources
+- Task 5: minor (deferred): Delete of a locale already gone fails on "The locale doesn't exist." instead of succeeding
+- Task 5: minor (deferred): unchecked nil on mutation payloads (resource.go ShopLocaleEnable/Disable) — same in sibling resources
+- Task 5: ⚠️ resolved: controller re-ran `make fmt lint test` + `make generate`: clean, no diff. List-path generate-config: same identity-import workaround (cross-task, known).
+- Task 5: complete (commits e25c80a..e5f504d, review clean)
+- Task 6 (shop policy): dispatched (base see below, model sonnet)
