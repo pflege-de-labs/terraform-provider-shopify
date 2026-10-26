@@ -770,7 +770,7 @@ data "shopify_fulfillment_service" "manual" {
 
 | Attribute | API field | Why |
 |---|---|---|
-| `id` | `id` | GID |
+| `id` | `id` | GID; `manual`'s is `gid://shopify/FulfillmentService/manual`, not numeric (checked on the dev store) |
 | `service_name` | `serviceName` | name merchants see |
 | `type` | `type` | `MANUAL`, `THIRD_PARTY` or `GIFT_CARD`; tells built-in from app services |
 | `location_id` | `location.id` | the service's location GID, the usual reason to look it up; null if the API returns none |
@@ -792,7 +792,7 @@ Left out: `fulfillmentOrdersOptIn` (deprecated, always `true`), `createdAt` (not
 
 **Fit:** good. Read-only reference; services installed by apps come and go, and the data source reads the current state on every plan.
 
-**Tests:** acceptance: read `manual` and check its attributes; not found. Unit: match by handle, the not-found message, mapping from the API result.
+**Tests:** acceptance: read `manual` and check its attributes (the dev store has only `manual`, so a third-party service is covered by unit tests only); not found. Unit: match by handle, the not-found message, mapping from the API result.
 
 ---
 
