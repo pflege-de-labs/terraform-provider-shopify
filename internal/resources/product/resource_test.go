@@ -581,6 +581,9 @@ func TestAccProduct_variants(t *testing.T) {
 		return cfg(allow, `[{ name = "Größe", values = `+values+` }]`,
 			`[`+smallRenamed+`, { option_values = { Größe = "Medium" }, price = "12.50", compare_at_price = "15.00" }`+l+`]`)
 	}
+	// XS goes before S: S and Medium keep their names and variants, XS is added.
+	withXS := cfg(true, `[{ name = "Größe", values = ["XS", "S", "Medium"] }]`,
+		`[{ option_values = { Größe = "XS" }, price = "9.00" }, `+smallRenamed+`, { option_values = { Größe = "Medium" }, price = "12.50", compare_at_price = "15.00" }]`)
 	var ids map[string]string
 	gid := knownvalue.StringRegexp(variantGIDRe)
 	resource.Test(t, resource.TestCase{
@@ -660,7 +663,17 @@ func TestAccProduct_variants(t *testing.T) {
 				Check:  sameIDs(t, handle, &ids, map[string]string{"S": "S", "Medium": "Medium"}),
 			},
 			{
-				Config:          strings.Replace(renamed(true, false), "  allow_data_deletion = true\n", "", 1),
+				Config: withXS,
+				ConfigStateChecks: []statecheck.StateCheck{
+					stateValue("options", knownvalue.ListExact([]knownvalue.Check{knownvalue.ObjectExact(map[string]knownvalue.Check{
+						"name": str("Größe"), "values": knownvalue.ListExact([]knownvalue.Check{str("XS"), str("S"), str("Medium")}),
+					})})),
+					variantValue(0, "option_values", knownvalue.MapExact(map[string]knownvalue.Check{"Größe": str("XS")})),
+				},
+				Check: sameIDs(t, handle, &ids, map[string]string{"S": "S", "Medium": "Medium"}, "XS"),
+			},
+			{
+				Config:          strings.Replace(withXS, "  allow_data_deletion = true\n", "", 1),
 				ResourceName:    addr,
 				ImportState:     true,
 				ImportStateKind: resource.ImportBlockWithResourceIdentity,
