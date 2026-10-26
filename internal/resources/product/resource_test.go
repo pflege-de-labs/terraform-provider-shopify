@@ -467,3 +467,304 @@ func TestAccProduct_unmanagedSEODescription(t *testing.T) {
 		},
 	})
 }
+
+var variantGIDRe = regexp.MustCompile(`^gid://shopify/ProductVariant/\d+$`)
+
+// variantIDs maps each live variant's option values ("S/Red", "" for the default variant) to its variant and inventory item GIDs.
+func variantIDs(t *testing.T, handle string) map[string]string {
+	t.Helper()
+	out := map[string]string{}
+	for _, v := range mustLookup(t, handle).Variants.Nodes {
+		var vals []string
+		for _, o := range v.SelectedOptions {
+			vals = append(vals, o.Value)
+		}
+		key := strings.Join(vals, "/")
+		if v.SelectedOptions[0].Value == "Default Title" {
+			key = ""
+		}
+		out[key] = v.Id + " " + v.InventoryItem.Id
+	}
+	return out
+}
+
+// sameIDs checks that the variants named in rename (old key to new key) kept their GIDs, and that no others exist beyond added.
+// before is read when the check runs, after an earlier step's check has filled it.
+func sameIDs(t *testing.T, handle string, before *map[string]string, rename map[string]string, added ...string) resource.TestCheckFunc {
+	return func(*terraform.State) error {
+		now := variantIDs(t, handle)
+		for old, cur := range rename {
+			if now[cur] == "" || now[cur] != (*before)[old] {
+				return fmt.Errorf("variant %q is now %q with GIDs %q, want the GIDs %q it had", old, cur, now[cur], (*before)[old])
+			}
+		}
+		if len(now) != len(rename)+len(added) {
+			return fmt.Errorf("live variants %v, want %d", now, len(rename)+len(added))
+		}
+		for _, a := range added {
+			if now[a] == "" {
+				return fmt.Errorf("variant %q missing in %v", a, now)
+			}
+		}
+		return nil
+	}
+}
+
+// setVariantSKU changes one variant's SKU outside Terraform; productSet needs every option and variant, by ID, to keep them.
+func setVariantSKU(t *testing.T, handle, value, sku string) {
+	t.Helper()
+	p := mustLookup(t, handle)
+	in := client.ProductSetInput{}
+	for _, o := range p.Options {
+		oi := client.OptionSetInput{Id: &o.Id}
+		for _, v := range o.OptionValues {
+			oi.Values = append(oi.Values, client.OptionValueSetInput{Id: &v.Id})
+		}
+		in.ProductOptions = append(in.ProductOptions, oi)
+	}
+	found := false
+	for _, v := range p.Variants.Nodes {
+		vi := client.ProductVariantSetInput{Id: &v.Id}
+		for _, so := range v.SelectedOptions {
+			vi.OptionValues = append(vi.OptionValues, client.VariantOptionValueInput{OptionName: &so.Name, Name: &so.Value})
+			if so.Value == value {
+				vi.Sku, found = &sku, true
+			}
+		}
+		in.Variants = append(in.Variants, vi)
+	}
+	if !found {
+		t.Fatalf("product %s has no variant with value %q", handle, value)
+	}
+	mustSet(t, &p.Id, in)
+}
+
+func variantValue(i int, attr string, check knownvalue.Check) statecheck.StateCheck {
+	return statecheck.ExpectKnownValue(addr, tfjsonpath.New("variants").AtSliceIndex(i).AtMapKey(attr), check)
+}
+
+func TestAccProduct_variants(t *testing.T) {
+	accSetup(t)
+	handle := testHandle()
+	cleanup(t, handle)
+	// Prices use Shopify's spelling so the import steps plan empty; TestAccProduct_defaultVariant covers other spellings.
+	cfg := func(allow bool, options, variants string) string {
+		return config(fmt.Sprintf(`
+  handle              = %q
+  title               = "tf-acc variants"
+  status              = "DRAFT"
+  allow_data_deletion = %t
+  options             = %s
+  variants            = %s
+`, handle, allow, options, variants))
+	}
+	small := `{
+    option_values     = { Size = "S" }
+    price             = "10.00"
+    sku               = "TF-S"
+    barcodes          = [{ value = "4006381333931", type = "EAN" }]
+    inventory_policy  = "CONTINUE"
+    taxable           = false
+    tracked           = true
+    requires_shipping = false
+    weight            = { value = 0.4, unit = "KILOGRAMS" }
+  }`
+	two := cfg(false, `[{ name = "Size", values = ["S", "M"] }]`,
+		`[`+small+`, { option_values = { Size = "M" }, price = "12.50", compare_at_price = "15.00" }]`)
+	three := cfg(false, `[{ name = "Size", values = ["S", "M", "L"] }]`,
+		`[`+small+`, { option_values = { Size = "M" }, price = "12.50", compare_at_price = "15.00" }, { option_values = { Size = "L" }, price = "14.00" }]`)
+	smallRenamed := strings.Replace(small, `Size = "S"`, `Größe = "S"`, 1)
+	renamed := func(allow bool, withL bool) string {
+		values, l := `["S", "Medium"]`, ""
+		if withL {
+			values, l = `["S", "Medium", "L"]`, `, { option_values = { Größe = "L" }, price = "14.00" }`
+		}
+		return cfg(allow, `[{ name = "Größe", values = `+values+` }]`,
+			`[`+smallRenamed+`, { option_values = { Größe = "Medium" }, price = "12.50", compare_at_price = "15.00" }`+l+`]`)
+	}
+	var ids map[string]string
+	gid := knownvalue.StringRegexp(variantGIDRe)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkGone(t, handle),
+		Steps: []resource.TestStep{
+			{
+				Config: two,
+				ConfigStateChecks: []statecheck.StateCheck{
+					stateValue("options", knownvalue.ListExact([]knownvalue.Check{knownvalue.ObjectExact(map[string]knownvalue.Check{
+						"name": str("Size"), "values": knownvalue.ListExact([]knownvalue.Check{str("S"), str("M")}),
+					})})),
+					variantValue(0, "id", gid),
+					variantValue(0, "inventory_item_id", knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/InventoryItem/\d+$`))),
+					variantValue(0, "option_values", knownvalue.MapExact(map[string]knownvalue.Check{"Size": str("S")})),
+					variantValue(0, "price", str("10.00")),
+					variantValue(0, "sku", str("TF-S")),
+					variantValue(0, "barcodes", knownvalue.ListExact([]knownvalue.Check{knownvalue.ObjectExact(map[string]knownvalue.Check{
+						"value": str("4006381333931"), "type": str("EAN"),
+					})})),
+					variantValue(0, "inventory_policy", str("CONTINUE")),
+					variantValue(0, "taxable", knownvalue.Bool(false)),
+					variantValue(0, "tracked", knownvalue.Bool(true)),
+					variantValue(0, "requires_shipping", knownvalue.Bool(false)),
+					variantValue(0, "weight", knownvalue.ObjectExact(map[string]knownvalue.Check{
+						"value": knownvalue.Float64Exact(0.4), "unit": str("KILOGRAMS"),
+					})),
+					variantValue(0, "compare_at_price", knownvalue.Null()),
+					variantValue(1, "compare_at_price", str("15.00")),
+					variantValue(1, "sku", knownvalue.Null()),
+					variantValue(1, "inventory_policy", str("DENY")),
+				},
+				Check: func(*terraform.State) error {
+					ids = variantIDs(t, handle)
+					return nil
+				},
+			},
+			{
+				// Review focus 2: sku is unset on M, so an admin edit to it plans nothing.
+				PreConfig:         func() { setVariantSKU(t, handle, "M", "TF-ADMIN") },
+				Config:            two,
+				ConfigPlanChecks:  resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}},
+				ConfigStateChecks: []statecheck.StateCheck{variantValue(1, "sku", str("TF-ADMIN"))},
+			},
+			{
+				Config: three,
+				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{
+					plancheck.ExpectResourceAction(addr, plancheck.ResourceActionUpdate),
+					plancheck.ExpectUnknownValue(addr, tfjsonpath.New("variants").AtSliceIndex(2).AtMapKey("id")),
+				}},
+				ConfigStateChecks: []statecheck.StateCheck{variantValue(2, "id", gid), variantValue(1, "sku", str("TF-ADMIN"))},
+				Check:             sameIDs(t, handle, &ids, map[string]string{"S": "S", "M": "M"}, "L"),
+			},
+			{
+				Config: renamed(false, true),
+				Check: func(s *terraform.State) error {
+					if err := sameIDs(t, handle, &ids, map[string]string{"S": "S", "M": "Medium"}, "L")(s); err != nil {
+						return err
+					}
+					ids = variantIDs(t, handle)
+					return nil
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					variantValue(1, "option_values", knownvalue.MapExact(map[string]knownvalue.Check{"Größe": str("Medium")})),
+					variantValue(1, "sku", str("TF-ADMIN")),
+				},
+			},
+			{
+				// Removing L deletes its inventory item, so it needs allow_data_deletion.
+				Config:      renamed(false, false),
+				ExpectError: regexp.MustCompile(`allow_data_deletion = true`),
+			},
+			{
+				// The planned flag counts for variant removal, so one apply sets it and removes L.
+				Config: renamed(true, false),
+				Check:  sameIDs(t, handle, &ids, map[string]string{"S": "S", "Medium": "Medium"}),
+			},
+			{
+				Config:          strings.Replace(renamed(true, false), "  allow_data_deletion = true\n", "", 1),
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+				GenerateConfig:  true,
+			},
+			{
+				ResourceName:                         addr,
+				ImportState:                          true,
+				ImportStateId:                        handle,
+				ImportStateVerify:                    true,
+				ImportStateVerifyIdentifierAttribute: "handle",
+				ImportStateVerifyIgnore:              []string{"adopt_existing", "allow_data_deletion"},
+			},
+		},
+	})
+}
+
+// A product without options has one default variant: options = [] manages it, and adding options keeps it.
+func TestAccProduct_defaultVariant(t *testing.T) {
+	accSetup(t)
+	handle := testHandle()
+	cleanup(t, handle)
+	cfg := func(extra string) string {
+		return config(fmt.Sprintf(`
+  handle              = %q
+  title               = "tf-acc default variant"
+  status              = "DRAFT"
+  allow_data_deletion = true
+%s
+`, handle, extra))
+	}
+	asDefault := cfg(`
+  options  = []
+  variants = [{ option_values = {}, price = "5", weight = { value = 250, unit = "GRAMS" } }]
+`)
+	withOptions := cfg(`
+  options  = [{ name = "Size", values = ["S", "M"] }]
+  variants = [{ option_values = { Size = "S" }, price = "5" }, { option_values = { Size = "M" }, price = "6.5" }]
+`)
+	var ids map[string]string
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkGone(t, handle),
+		Steps: []resource.TestStep{
+			{
+				Config:      cfg(`variants = [{ option_values = {} }]`),
+				PlanOnly:    true,
+				ExpectError: regexp.MustCompile(`options`),
+			},
+			{
+				Config:      cfg(`options = []` + "\n" + `variants = [{ option_values = {} }, { option_values = {} }]`),
+				PlanOnly:    true,
+				ExpectError: regexp.MustCompile(`exactly one variant`),
+			},
+			{
+				Config:      cfg(`options = [{ name = "Size", values = ["S"] }]` + "\n" + `variants = [{ option_values = { Size = "M" } }]`),
+				PlanOnly:    true,
+				ExpectError: regexp.MustCompile(`not one of the values`),
+			},
+			{
+				Config:      cfg(`options = [{ name = "Size", values = ["S"] }]` + "\n" + `variants = [{ option_values = { Size = "S" }, price = "1,50" }]`),
+				PlanOnly:    true,
+				ExpectError: regexp.MustCompile(`price`),
+			},
+			{
+				// Unset options and variants are unmanaged and read as Shopify's default variant.
+				Config: cfg(""),
+				ConfigStateChecks: []statecheck.StateCheck{
+					stateValue("options", knownvalue.ListExact([]knownvalue.Check{})),
+					stateValue("variants", knownvalue.ListSizeExact(1)),
+					variantValue(0, "option_values", knownvalue.MapExact(map[string]knownvalue.Check{})),
+					variantValue(0, "price", str("0.00")),
+				},
+				Check: func(*terraform.State) error {
+					ids = variantIDs(t, handle)
+					return nil
+				},
+			},
+			{
+				// The configured spelling stays in state, and the default variant is updated in place.
+				Config: asDefault,
+				ConfigStateChecks: []statecheck.StateCheck{
+					variantValue(0, "price", str("5")),
+					variantValue(0, "weight", knownvalue.ObjectExact(map[string]knownvalue.Check{"value": knownvalue.Float64Exact(250), "unit": str("GRAMS")})),
+				},
+				Check: func(*terraform.State) error {
+					if got := mustLookup(t, handle).Variants.Nodes[0].Price; got != "5.00" {
+						return fmt.Errorf("live price = %q, want 5.00", got)
+					}
+					return sameIDs(t, handle, &ids, map[string]string{"": ""})(nil)
+				},
+			},
+			{
+				Config:            withOptions,
+				ConfigStateChecks: []statecheck.StateCheck{variantValue(1, "price", str("6.5"))},
+				Check:             sameIDs(t, handle, &ids, map[string]string{"": "S"}, "M"),
+			},
+			{
+				// Back to no options: the first variant becomes the default one, M is removed.
+				Config: asDefault,
+				Check:  sameIDs(t, handle, &ids, map[string]string{"": ""}),
+			},
+		},
+	})
+}

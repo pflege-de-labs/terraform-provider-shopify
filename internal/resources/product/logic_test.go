@@ -84,7 +84,7 @@ func TestKeepOrTake(t *testing.T) {
 
 func inputJSON(t *testing.T, m model) map[string]json.RawMessage {
 	t.Helper()
-	in, diags := buildInput(context.Background(), &m)
+	in, _, diags := buildInput(context.Background(), &m, nil)
 	if diags.HasError() {
 		t.Fatal(diags)
 	}
@@ -105,7 +105,7 @@ func unsetModel() model {
 		Status: types.StringNull(), DescriptionHTML: types.StringNull(), Vendor: types.StringNull(),
 		ProductType: types.StringNull(), CategoryID: types.StringNull(), Tags: types.SetNull(types.StringType),
 		SEOTitle: types.StringNull(), SEODescription: types.StringNull(), TemplateSuffix: types.StringNull(),
-		GiftCard: types.BoolNull(),
+		GiftCard: types.BoolNull(), Options: types.ListNull(optionType), Variants: types.ListNull(variantType),
 	}
 }
 
@@ -182,34 +182,46 @@ func (e *fakeError) GetField() []string { return e.field }
 func (e *fakeError) GetMessage() string { return e.message }
 
 func TestErrorPath(t *testing.T) {
+	variant := path.Root("variants").AtListIndex(1)
 	cases := []struct {
 		field []string
-		want  string
+		want  *path.Path
 	}{
-		{[]string{"input", "handle"}, "handle"},
-		{[]string{"input", "title"}, "title"},
-		{[]string{"input", "descriptionHtml"}, "description_html"},
-		{[]string{"input", "productType"}, "product_type"},
-		{[]string{"input", "templateSuffix"}, "template_suffix"},
-		{[]string{"input", "giftCard"}, "gift_card"},
-		{[]string{"input", "category"}, "category_id"},
-		{[]string{"input", "seo", "title"}, "seo_title"},
-		{[]string{"input", "seo", "description"}, "seo_description"},
-		{[]string{"input", "tags", "2"}, "tags"},
-		{[]string{"input", "variants", "0", "price"}, ""},
-		{[]string{"input"}, ""},
-		{nil, ""},
+		{[]string{"input", "handle"}, ptr(path.Root("handle"))},
+		{[]string{"input", "title"}, ptr(path.Root("title"))},
+		{[]string{"input", "descriptionHtml"}, ptr(path.Root("description_html"))},
+		{[]string{"input", "productType"}, ptr(path.Root("product_type"))},
+		{[]string{"input", "templateSuffix"}, ptr(path.Root("template_suffix"))},
+		{[]string{"input", "giftCard"}, ptr(path.Root("gift_card"))},
+		{[]string{"input", "category"}, ptr(path.Root("category_id"))},
+		{[]string{"input", "seo", "title"}, ptr(path.Root("seo_title"))},
+		{[]string{"input", "seo", "description"}, ptr(path.Root("seo_description"))},
+		{[]string{"input", "tags", "2"}, ptr(path.Root("tags"))},
+		{[]string{"input", "variants"}, ptr(path.Root("variants"))},
+		{[]string{"input", "variants", "1"}, ptr(variant)},
+		{[]string{"input", "variants", "1", "price"}, ptr(variant.AtName("price"))},
+		{[]string{"input", "variants", "1", "compareAtPrice"}, ptr(variant.AtName("compare_at_price"))},
+		{[]string{"input", "variants", "1", "barcodes"}, ptr(variant.AtName("barcodes"))},
+		{[]string{"input", "variants", "1", "optionValues", "0"}, ptr(variant.AtName("option_values"))},
+		{[]string{"input", "variants", "1", "inventoryItem", "requiresShipping"}, ptr(variant.AtName("requires_shipping"))},
+		{[]string{"input", "variants", "1", "inventoryItem", "measurement", "weight"}, ptr(variant.AtName("weight"))},
+		{[]string{"input", "variants", "1", "inventoryQuantities"}, ptr(variant)},
+		{[]string{"input", "productOptions", "0", "values", "1"}, ptr(path.Root("options").AtListIndex(0).AtName("values"))},
+		{[]string{"input", "productOptions", "x"}, ptr(path.Root("options"))},
+		{[]string{"input", "metafields", "0"}, nil},
+		{[]string{"input"}, nil},
+		{nil, nil},
 	}
 	for _, c := range cases {
 		p, ok := errorPath(c.field)
-		if c.want == "" {
+		if c.want == nil {
 			if ok {
 				t.Errorf("errorPath(%v) = %s, want no attribute", c.field, p)
 			}
 			continue
 		}
-		if !ok || !p.Equal(path.Root(c.want)) {
-			t.Errorf("errorPath(%v) = %s (%t), want %s", c.field, p, ok, c.want)
+		if !ok || !p.Equal(*c.want) {
+			t.Errorf("errorPath(%v) = %s (%t), want %s", c.field, p, ok, *c.want)
 		}
 	}
 }
@@ -217,7 +229,7 @@ func TestErrorPath(t *testing.T) {
 func TestUserErrorDiags(t *testing.T) {
 	errs := []fakeError{
 		{[]string{"input", "handle"}, "Handle has already been taken"},
-		{[]string{"input", "variants", "0", "price"}, "Price is invalid"},
+		{[]string{"input", "metafields", "0"}, "Metafield is invalid"},
 	}
 	diags := client.UserErrorDiagsWith("Failed to write product", errs, errorPath)
 	if len(diags) != 2 {

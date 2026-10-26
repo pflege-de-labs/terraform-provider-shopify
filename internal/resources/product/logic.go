@@ -3,6 +3,7 @@ package product
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -91,10 +92,41 @@ var inputAttrs = map[string]string{
 	"templateSuffix": "template_suffix", "giftCard": "gift_card",
 }
 
+// variantAttrs maps ProductVariantSetInput keys, and inventoryItem keys below them, to variant attributes.
+var variantAttrs = map[string]string{
+	"optionValues": "option_values", "price": "price", "compareAtPrice": "compare_at_price", "sku": "sku",
+	"barcodes": "barcodes", "inventoryPolicy": "inventory_policy", "taxable": "taxable",
+	"tracked": "tracked", "requiresShipping": "requires_shipping", "measurement": "weight",
+}
+
 // errorPath maps a productSet userError field such as ["input", "seo", "title"] to the attribute that set it.
+// Option and variant indexes are those of the sent lists, which follow config order.
 func errorPath(field []string) (path.Path, bool) {
 	if len(field) < 2 {
 		return path.Empty(), false
+	}
+	if attr, ok := map[string]string{"productOptions": "options", "variants": "variants"}[field[1]]; ok {
+		p := path.Root(attr)
+		if len(field) < 3 {
+			return p, true
+		}
+		i, err := strconv.Atoi(field[2])
+		if err != nil {
+			return p, true
+		}
+		p = p.AtListIndex(i)
+		rest := field[3:]
+		if attr == "variants" && len(rest) > 1 && rest[0] == "inventoryItem" {
+			rest = rest[1:]
+		}
+		switch {
+		case len(rest) == 0:
+		case attr == "options" && (rest[0] == "name" || rest[0] == "values"):
+			p = p.AtName(rest[0])
+		case attr == "variants" && variantAttrs[rest[0]] != "":
+			p = p.AtName(variantAttrs[rest[0]])
+		}
+		return p, true
 	}
 	if field[1] == "seo" && len(field) > 2 && (field[2] == "title" || field[2] == "description") {
 		return path.Root("seo_" + field[2]), true

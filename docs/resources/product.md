@@ -3,12 +3,12 @@
 page_title: "shopify_product Resource - shopify"
 subcategory: ""
 description: |-
-  A product's core fields: title, handle, status, description, tags and SEO. A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository: products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. Variants, options, publishing and media are not managed yet; Shopify keeps whatever they hold. Destroying a product deletes its variants, inventory, media and metafield values: archive it with status = "ARCHIVED" instead, or set allow_data_deletion = true first, and add lifecycle { prevent_destroy = true } to guard it. A product that already has the handle needs adopt_existing = true, so it isn't overwritten silently. Import with the handle.
+  A product's core fields: title, handle, status, description, tags and SEO. A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository: products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. Publishing and media are not managed yet; Shopify keeps whatever they hold. Destroying a product deletes its variants, inventory, media and metafield values: archive it with status = "ARCHIVED" instead, or set allow_data_deletion = true first, and add lifecycle { prevent_destroy = true } to guard it. A product that already has the handle needs adopt_existing = true, so it isn't overwritten silently. Import with the handle.
 ---
 
 # shopify_product (Resource)
 
-A product's core fields: title, handle, status, description, tags and SEO. **A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository:** products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. Variants, options, publishing and media are not managed yet; Shopify keeps whatever they hold. Destroying a product deletes its variants, inventory, media and metafield values: archive it with `status = "ARCHIVED"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. Import with the handle.
+A product's core fields: title, handle, status, description, tags and SEO. **A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository:** products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. Publishing and media are not managed yet; Shopify keeps whatever they hold. Destroying a product deletes its variants, inventory, media and metafield values: archive it with `status = "ARCHIVED"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. Import with the handle.
 
 ## Example Usage
 
@@ -56,17 +56,72 @@ resource "shopify_product" "temporary" {
 - `category_id` (String) Standard product taxonomy category GID, such as `gid://shopify/TaxonomyCategory/aa-1`. Unset means unmanaged: the value set in the admin is kept.
 - `description_html` (String) The description as HTML. Shopify repairs malformed HTML; the configured text is kept while Shopify still holds what it returned at the last apply, so the repair is no diff, but a later admin edit is. Unset means unmanaged: the value set in the admin is kept.
 - `gift_card` (Boolean) Whether this is a gift card product, a catalogue entry; issued gift cards are not managed. Shopify can't change it, so changing it replaces the product and deletes its data. Unset means unmanaged: the value set in the admin is kept.
+- `options` (Attributes List) Options in position order, at most 3, each with its values in position order. Set together with `variants`; when both are unset they are unmanaged. `[]` is a product without options, which has one default variant. Renaming an option or value where it stands keeps its variants. A new name at another position counts as removing the old value and adding a new one, so rename and reorder in separate applies. (see [below for nested schema](#nestedatt--options))
 - `product_type` (String) Free-text product type, an empty string when none is set. Unset means unmanaged: the value set in the admin is kept.
 - `seo_description` (String) Search engine description. Null while Shopify uses the product description. Unset means unmanaged: the value set in the admin is kept.
 - `seo_title` (String) Search engine title. Null while Shopify uses the product title. Unset means unmanaged: the value set in the admin is kept.
 - `status` (String) `ACTIVE`, `DRAFT`, `ARCHIVED` or `UNLISTED`. A new product is `ACTIVE` when this is unset. Unset means unmanaged: the value set in the admin is kept.
 - `tags` (Set of String) Tags. Shopify trims them, drops case-insensitive duplicates and sorts them, so tags with surrounding whitespace or duplicates are rejected. `[]` clears the tags. Unset means unmanaged: the value set in the admin is kept.
 - `template_suffix` (String) Theme template suffix, such as `special` for `product.special.json`. Unset means unmanaged: the value set in the admin is kept.
+- `variants` (Attributes List) Variants in position order, each identified by its option values (not its SKU). Required when `options` is set. **Removing a variant, or an option or option value its variants use, deletes those variants with their inventory items and stock;** such a change fails unless `allow_data_deletion = true`. Inventory quantities, cost, unit prices, variant metafields and media are not managed. (see [below for nested schema](#nestedatt--variants))
 - `vendor` (String) The vendor. Shopify uses the shop name when a new product has none. Unset means unmanaged: the value set in the admin is kept.
 
 ### Read-Only
 
 - `id` (String) Product GID.
+
+<a id="nestedatt--options"></a>
+### Nested Schema for `options`
+
+Required:
+
+- `name` (String) Option name, such as `Size`.
+- `values` (List of String) Option values in position order. A value no variant uses is allowed.
+
+
+<a id="nestedatt--variants"></a>
+### Nested Schema for `variants`
+
+Required:
+
+- `option_values` (Map of String) Option name to value, one entry per option. `{}` for the default variant of a product without options.
+
+Optional:
+
+- `barcodes` (Attributes List) Barcodes; `[]` clears them. Unset means unmanaged. (see [below for nested schema](#nestedatt--variants--barcodes))
+- `compare_at_price` (String) Compare-at price as a decimal string, null when there is none. Unset means unmanaged.
+- `inventory_policy` (String) `DENY` stops selling when out of stock, `CONTINUE` keeps selling. Unset means unmanaged.
+- `price` (String) Price as a decimal string. Compared numerically, so `"10"` matches Shopify's `"10.00"`. Unset means unmanaged.
+- `requires_shipping` (Boolean) Whether the variant is shipped. Unset means unmanaged.
+- `sku` (String) SKU, null when there is none. Not an identity: SKUs can be empty or repeated. Unset means unmanaged.
+- `taxable` (Boolean) Whether taxes are charged. Unset means unmanaged.
+- `tracked` (Boolean) Whether Shopify tracks inventory for the variant. Unset means unmanaged.
+- `weight` (Attributes) Shipping weight, used by weight-based shipping rates. Unset means unmanaged. (see [below for nested schema](#nestedatt--variants--weight))
+
+Read-Only:
+
+- `id` (String) Variant GID.
+- `inventory_item_id` (String) Inventory item GID, for inventory levels.
+
+<a id="nestedatt--variants--barcodes"></a>
+### Nested Schema for `variants.barcodes`
+
+Required:
+
+- `value` (String) Barcode value.
+
+Optional:
+
+- `type` (String) `UPC`, `EAN`, `ISBN`, `GTIN`, `ASIN` or `NS_PID`; null when not set.
+
+
+<a id="nestedatt--variants--weight"></a>
+### Nested Schema for `variants.weight`
+
+Required:
+
+- `unit` (String) `KILOGRAMS`, `GRAMS`, `POUNDS` or `OUNCES`.
+- `value` (Number) Weight value.
 
 ## Import
 

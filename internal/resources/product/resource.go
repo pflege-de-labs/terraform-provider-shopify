@@ -5,13 +5,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"regexp"
+	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -29,11 +33,14 @@ const (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &Resource{}
-	_ resource.ResourceWithImportState = &Resource{}
-	_ resource.ResourceWithIdentity    = &Resource{}
-	_ resource.ResourceWithModifyPlan  = &Resource{}
+	_ resource.ResourceWithConfigure      = &Resource{}
+	_ resource.ResourceWithImportState    = &Resource{}
+	_ resource.ResourceWithIdentity       = &Resource{}
+	_ resource.ResourceWithModifyPlan     = &Resource{}
+	_ resource.ResourceWithValidateConfig = &Resource{}
 )
+
+var decimalRe = regexp.MustCompile(`^\d+(\.\d+)?$`)
 
 func NewResource() resource.Resource {
 	return &Resource{}
@@ -61,7 +68,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 		MarkdownDescription: "A product's core fields: title, handle, status, description, tags and SEO. " +
 			"**A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository:** products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, " +
 			"and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. " +
-			"Variants, options, publishing and media are not managed yet; Shopify keeps whatever they hold. " +
+			"Publishing and media are not managed yet; Shopify keeps whatever they hold. " +
 			"Destroying a product deletes its variants, inventory, media and metafield values: archive it with `status = \"ARCHIVED\"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. " +
 			"A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. " +
 			"Import with the handle.",
@@ -144,10 +151,110 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				Computed:            true,
 				PlanModifiers:       []planmodifier.Bool{boolplanmodifier.UseStateForUnknown(), boolplanmodifier.RequiresReplace()},
 			},
+			"options":             optionsAttribute(),
+			"variants":            variantsAttribute(),
 			"adopt_existing":      patterns.AdoptExistingAttribute(what),
 			"allow_data_deletion": patterns.AllowDataDeletionAttribute(what + ", its variants, inventory and media"),
 		},
 	}
+}
+
+func optionsAttribute() schema.ListNestedAttribute {
+	return schema.ListNestedAttribute{
+		MarkdownDescription: "Options in position order, at most 3, each with its values in position order. Set together with `variants`; when both are unset they are unmanaged. " +
+			"`[]` is a product without options, which has one default variant. " +
+			"Renaming an option or value where it stands keeps its variants. A new name at another position counts as removing the old value and adding a new one, so rename and reorder in separate applies.",
+		Optional:      true,
+		Computed:      true,
+		PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
+		Validators:    []validator.List{listvalidator.SizeAtMost(maxOptions)},
+		NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				MarkdownDescription: "Option name, such as `Size`.",
+				Required:            true,
+				Validators:          []validator.String{stringvalidator.LengthAtLeast(1)},
+			},
+			"values": schema.ListAttribute{
+				MarkdownDescription: "Option values in position order. A value no variant uses is allowed.",
+				ElementType:         types.StringType,
+				Required:            true,
+				Validators:          []validator.List{listvalidator.SizeAtLeast(1)},
+			},
+		}},
+	}
+}
+
+func variantsAttribute() schema.ListNestedAttribute {
+	decimal := []validator.String{stringvalidator.RegexMatches(decimalRe, "must be a decimal number such as 19.90")}
+	unmanaged := " Unset means unmanaged."
+	return schema.ListNestedAttribute{
+		MarkdownDescription: "Variants in position order, each identified by its option values (not its SKU). Required when `options` is set. " +
+			"**Removing a variant, or an option or option value its variants use, deletes those variants with their inventory items and stock;** such a change fails unless `allow_data_deletion = true`. " +
+			"Inventory quantities, cost, unit prices, variant metafields and media are not managed.",
+		Optional:      true,
+		Computed:      true,
+		PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
+		NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+			"option_values": schema.MapAttribute{
+				MarkdownDescription: "Option name to value, one entry per option. `{}` for the default variant of a product without options.",
+				ElementType:         types.StringType,
+				Required:            true,
+			},
+			"id":                schema.StringAttribute{MarkdownDescription: "Variant GID.", Computed: true},
+			"inventory_item_id": schema.StringAttribute{MarkdownDescription: "Inventory item GID, for inventory levels.", Computed: true},
+			"price": schema.StringAttribute{
+				MarkdownDescription: "Price as a decimal string. Compared numerically, so `\"10\"` matches Shopify's `\"10.00\"`." + unmanaged,
+				Optional:            true, Computed: true, Validators: decimal,
+			},
+			"compare_at_price": schema.StringAttribute{
+				MarkdownDescription: "Compare-at price as a decimal string, null when there is none." + unmanaged,
+				Optional:            true, Computed: true, Validators: decimal,
+			},
+			"sku": schema.StringAttribute{MarkdownDescription: "SKU, null when there is none. Not an identity: SKUs can be empty or repeated." + unmanaged, Optional: true, Computed: true},
+			"barcodes": schema.ListNestedAttribute{
+				MarkdownDescription: "Barcodes; `[]` clears them." + unmanaged,
+				Optional:            true,
+				Computed:            true,
+				NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+					"value": schema.StringAttribute{MarkdownDescription: "Barcode value.", Required: true, Validators: []validator.String{stringvalidator.LengthAtLeast(1)}},
+					"type": schema.StringAttribute{
+						MarkdownDescription: "`UPC`, `EAN`, `ISBN`, `GTIN`, `ASIN` or `NS_PID`; null when not set.",
+						Optional:            true,
+						Validators:          []validator.String{stringvalidator.OneOf(enumNames(client.AllBarcodeType)...)},
+					},
+				}},
+			},
+			"inventory_policy": schema.StringAttribute{
+				MarkdownDescription: "`DENY` stops selling when out of stock, `CONTINUE` keeps selling." + unmanaged,
+				Optional:            true, Computed: true,
+				Validators: []validator.String{stringvalidator.OneOf(enumNames(client.AllProductVariantInventoryPolicy)...)},
+			},
+			"taxable":           schema.BoolAttribute{MarkdownDescription: "Whether taxes are charged." + unmanaged, Optional: true, Computed: true},
+			"tracked":           schema.BoolAttribute{MarkdownDescription: "Whether Shopify tracks inventory for the variant." + unmanaged, Optional: true, Computed: true},
+			"requires_shipping": schema.BoolAttribute{MarkdownDescription: "Whether the variant is shipped." + unmanaged, Optional: true, Computed: true},
+			"weight": schema.SingleNestedAttribute{
+				MarkdownDescription: "Shipping weight, used by weight-based shipping rates." + unmanaged,
+				Optional:            true,
+				Computed:            true,
+				Attributes: map[string]schema.Attribute{
+					"value": schema.Float64Attribute{MarkdownDescription: "Weight value.", Required: true},
+					"unit": schema.StringAttribute{
+						MarkdownDescription: "`KILOGRAMS`, `GRAMS`, `POUNDS` or `OUNCES`.",
+						Required:            true,
+						Validators:          []validator.String{stringvalidator.OneOf(enumNames(client.AllWeightUnit)...)},
+					},
+				},
+			},
+		}},
+	}
+}
+
+func enumNames[T ~string](all []T) []string {
+	out := make([]string, len(all))
+	for i, v := range all {
+		out[i] = string(v)
+	}
+	return out
 }
 
 func statusNames() []string {
@@ -174,11 +281,87 @@ func (r *Resource) Configure(ctx context.Context, req resource.ConfigureRequest,
 	r.client = c
 }
 
-// ModifyPlan warns about a replace, which deletes the product; attribute-level RequiresReplace isn't visible here.
+// ValidateConfig checks options and variants together: every variant needs a known value for every option.
+func (r *Resource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var opts, vars types.List
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("options"), &opts)...)
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("variants"), &vars)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	switch {
+	case vars.IsNull() && !opts.IsNull():
+		resp.Diagnostics.AddAttributeError(path.Root("variants"), "Missing variants", "Set variants together with options: every product has at least one variant.")
+		return
+	case !vars.IsNull() && opts.IsNull():
+		resp.Diagnostics.AddAttributeError(path.Root("options"), "Missing options", "Set options together with variants; use options = [] for a product without options.")
+		return
+	}
+	o, ok1 := optionsOf(ctx, opts)
+	_, cs, ok2 := variantsOf(ctx, vars)
+	if !ok1 || !ok2 {
+		return
+	}
+	if err := validateOptionsAndVariants(o, cs); err != nil {
+		resp.Diagnostics.AddAttributeError(path.Root("variants"), "Invalid options or variants", err.Error())
+	}
+}
+
+// ModifyPlan carries variant IDs and unset fields forward by option values, and warns about deleting changes.
 func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	if req.State.Raw.IsNull() || req.Plan.Raw.IsNull() {
 		return
 	}
+	r.planVariants(ctx, req, resp)
+	r.warnReplace(ctx, req, resp)
+}
+
+// planVariants matches configured variants to the ones in state, so the plan shows which survive and which are deleted.
+func (r *Resource) planVariants(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	var cfgOpts, cfgVars, stateOpts, stateVars types.List
+	var allow types.Bool
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("options"), &cfgOpts)...)
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("variants"), &cfgVars)...)
+	resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root("options"), &stateOpts)...)
+	resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root("variants"), &stateVars)...)
+	resp.Diagnostics.Append(req.Plan.GetAttribute(ctx, path.Root("allow_data_deletion"), &allow)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	plannedOpts, ok1 := optionsOf(ctx, cfgOpts)
+	planned, cs, ok2 := variantsOf(ctx, cfgVars)
+	priorOpts, ok3 := optionsOf(ctx, stateOpts)
+	prior, priorCs, ok4 := variantsOf(ctx, stateVars)
+	if !ok1 || !ok2 || !ok3 || !ok4 {
+		return
+	}
+	keep, removed := matchVariants(priorOpts, priorCs, plannedOpts, cs)
+	for i := range planned {
+		from := unknownVariant
+		if keep[i] >= 0 {
+			from = prior[keep[i]]
+		}
+		planned[i] = carryForward(planned[i], from)
+	}
+	list, d := types.ListValueFrom(ctx, variantType, planned)
+	resp.Diagnostics.Append(d...)
+	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("variants"), list)...)
+	if len(removed) == 0 {
+		return
+	}
+	gone := make([]string, len(removed))
+	for i, k := range removed {
+		gone[i] = describe(priorCs[k], priorOpts)
+	}
+	detail := fmt.Sprintf("This change deletes the variants %s with their inventory items and stock.", strings.Join(gone, "; "))
+	if !allow.ValueBool() {
+		detail += " Apply will fail unless allow_data_deletion = true."
+	}
+	resp.Diagnostics.AddWarning("This change deletes product variants", detail)
+}
+
+// warnReplace warns about a replace, which deletes the product; attribute-level RequiresReplace isn't visible here.
+func (r *Resource) warnReplace(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	var before, after types.Bool
 	var allow types.Bool
 	resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root("gift_card"), &before)...)
@@ -217,7 +400,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		}
 		id = &existing.Id
 	}
-	r.write(ctx, id, &plan, &cfg, &resp.Diagnostics, resp.Private)
+	r.write(ctx, id, existing, &plan, &cfg, &resp.Diagnostics, resp.Private)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -275,7 +458,20 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 		return
 	}
 	id := plan.ID.ValueString()
-	r.write(ctx, &id, &plan, &cfg, &resp.Diagnostics, resp.Private)
+	// Option, value and variant IDs come from the live product, so renames keep them.
+	var live *client.ProductFields
+	if !cfg.Variants.IsNull() {
+		var err error
+		if live, err = r.getByID(ctx, id); err != nil {
+			resp.Diagnostics.AddError("Failed to read "+what+" before the update", err.Error())
+			return
+		}
+		if live == nil {
+			resp.Diagnostics.AddError("Failed to update "+what, fmt.Sprintf("Product %s no longer exists; refresh to recreate it.", id))
+			return
+		}
+	}
+	r.write(ctx, &id, live, &plan, &cfg, &resp.Diagnostics, resp.Private)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -341,10 +537,17 @@ func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequ
 }
 
 // write sends the configured attributes to the product with the given ID (nil creates one) and writes the result into plan.
-func (r *Resource) write(ctx context.Context, id *string, plan, cfg *model, diags *diag.Diagnostics, private privateState) {
-	in, d := buildInput(ctx, cfg)
+// live is that product as it is now, nil on create.
+func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFields, plan, cfg *model, diags *diag.Diagnostics, private privateState) {
+	in, removed, d := buildInput(ctx, cfg, live)
 	diags.Append(d...)
 	if diags.HasError() {
+		return
+	}
+	// The planned flag counts, unlike for destroy: the variants go in this same apply.
+	if len(removed) > 0 && !plan.AllowDataDeletion.ValueBool() {
+		diags.AddAttributeError(path.Root("variants"), "Removing variants would delete their stock",
+			fmt.Sprintf("This change deletes the variants %s with their inventory items and stock. Set allow_data_deletion = true to allow it.", strings.Join(removed, "; ")))
 		return
 	}
 	var ident *client.ProductSetIdentifiers
@@ -365,6 +568,10 @@ func (r *Resource) write(ctx context.Context, id *string, plan, cfg *model, diag
 		return
 	}
 	p := &res.ProductSet.Product.ProductFields
+	if err := fetchAllVariants(ctx, r.client, p); err != nil {
+		diags.AddError("Failed to read the written "+what, err.Error())
+		return
+	}
 	diags.Append(setFromAPI(ctx, plan, p, &p.DescriptionHtml)...)
 	raw, err := json.Marshal(p.DescriptionHtml)
 	if err != nil {
@@ -395,18 +602,20 @@ func readWritten(ctx context.Context, private interface {
 	return &s, diags
 }
 
+// getByID returns the product with all its variants, or nil when it doesn't exist.
 func (r *Resource) getByID(ctx context.Context, id string) (*client.ProductFields, error) {
 	res, err := client.GetProduct(ctx, r.client, id)
 	if err != nil || res.Product == nil {
 		return nil, err
 	}
-	return &res.Product.ProductFields, nil
+	return &res.Product.ProductFields, fetchAllVariants(ctx, r.client, &res.Product.ProductFields)
 }
 
+// getByHandle returns the product with all its variants, or nil when no product has the handle.
 func (r *Resource) getByHandle(ctx context.Context, handle string) (*client.ProductFields, error) {
 	res, err := client.GetProductByHandle(ctx, r.client, handle)
 	if err != nil || res.ProductByIdentifier == nil {
 		return nil, err
 	}
-	return &res.ProductByIdentifier.ProductFields, nil
+	return &res.ProductByIdentifier.ProductFields, fetchAllVariants(ctx, r.client, &res.ProductByIdentifier.ProductFields)
 }

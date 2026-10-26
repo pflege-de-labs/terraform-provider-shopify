@@ -40,6 +40,7 @@ fragment ProductFields on Product {
   }
 }
 
+# TODO(verify): whether reading inventoryItem needs read_inventory; every scope is granted on the dev store.
 fragment VariantFields on ProductVariant {
   id
   price

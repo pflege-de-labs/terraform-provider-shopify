@@ -26,12 +26,15 @@ type model struct {
 	SEODescription    types.String `tfsdk:"seo_description"`
 	TemplateSuffix    types.String `tfsdk:"template_suffix"`
 	GiftCard          types.Bool   `tfsdk:"gift_card"`
+	Options           types.List   `tfsdk:"options"`
+	Variants          types.List   `tfsdk:"variants"`
 	AdoptExisting     types.Bool   `tfsdk:"adopt_existing"`
 	AllowDataDeletion types.Bool   `tfsdk:"allow_data_deletion"`
 }
 
 // buildInput is the one place that maps config to productSet; later steps add their keys here, and unset ones stay out.
-func buildInput(ctx context.Context, cfg *model) (client.ProductSetInput, diag.Diagnostics) {
+// live is the product being written (nil on create); it returns the live variants the input removes.
+func buildInput(ctx context.Context, cfg *model, live *client.ProductFields) (client.ProductSetInput, []string, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	in := client.ProductSetInput{
 		Handle:          patterns.ConfiguredString(cfg.Handle),
@@ -60,7 +63,13 @@ func buildInput(ctx context.Context, cfg *model) (client.ProductSetInput, diag.D
 		}
 		in.Tags = raw
 	}
-	return in, diags
+	var removed []string
+	if !cfg.Variants.IsNull() {
+		var d diag.Diagnostics
+		in.ProductOptions, in.Variants, removed, d = optionsAndVariantsInput(ctx, cfg, live)
+		diags.Append(d...)
+	}
+	return in, removed, diags
 }
 
 // setFromAPI copies the live product into m. written is the description Shopify returned at our last write, if known.
@@ -84,5 +93,6 @@ func setFromAPI(ctx context.Context, m *model, p *client.ProductFields, written 
 	m.SEODescription = types.StringPointerValue(p.Seo.Description)
 	m.TemplateSuffix = types.StringPointerValue(p.TemplateSuffix)
 	m.GiftCard = types.BoolValue(p.IsGiftCard)
+	diags.Append(setVariantsFromAPI(ctx, m, p)...)
 	return diags
 }
