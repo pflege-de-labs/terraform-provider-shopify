@@ -31,6 +31,7 @@ import (
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/checkoutandaccountsconfiguration"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/collection"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/deliveryprofile"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/file"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/location"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/market"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/menu"
@@ -194,6 +195,7 @@ func (p *ShopifyProvider) Resources(ctx context.Context) []func() resource.Resou
 		collection.NewResource,
 		blog.NewResource,
 		page.NewResource,
+		file.NewResource,
 		webpresence.NewResource,
 		checkoutandaccountsconfiguration.NewResource,
 	}
@@ -215,6 +217,7 @@ func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListR
 		collection.NewListResource,
 		blog.NewListResource,
 		page.NewListResource,
+		file.NewListResource,
 		webpresence.NewListResource,
 		checkoutandaccountsconfiguration.NewListResource,
 	}

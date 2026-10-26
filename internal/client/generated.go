@@ -3971,6 +3971,100 @@ func (v *CreateCollectionResponse) GetCollectionCreate() *CreateCollectionCollec
 	return v.CollectionCreate
 }
 
+// CreateFileFileCreateFileCreatePayload includes the requested fields of the GraphQL type FileCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `fileCreate` mutation.
+type CreateFileFileCreateFileCreatePayload struct {
+	// The newly created files.
+	Files json.RawMessage `json:"files"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError `json:"userErrors"`
+}
+
+// GetFiles returns CreateFileFileCreateFileCreatePayload.Files, and is useful for accessing the field via an interface.
+func (v *CreateFileFileCreateFileCreatePayload) GetFiles() json.RawMessage { return v.Files }
+
+// GetUserErrors returns CreateFileFileCreateFileCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateFileFileCreateFileCreatePayload) GetUserErrors() []CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError {
+	return v.UserErrors
+}
+
+// CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError includes the requested fields of the GraphQL type FilesUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that happens during the execution of a Files API query or mutation.
+type CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *FilesErrorCode `json:"code"`
+}
+
+// GetField returns CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError.Code, and is useful for accessing the field via an interface.
+func (v *CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError) GetCode() *FilesErrorCode {
+	return v.Code
+}
+
+// CreateFileResponse is returned by CreateFile on success.
+type CreateFileResponse struct {
+	// Creates file assets for a store from external URLs or files that were previously uploaded using the
+	// [`stagedUploadsCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/stageduploadscreate)
+	// mutation.
+	//
+	// Use the `fileCreate` mutation to add various types of media and documents to your store. These files are added to the
+	// [**Files** page](https://shopify.com/admin/settings/files) in the Shopify admin and can be referenced by other
+	// resources in your store.
+	//
+	// The `fileCreate` mutation supports multiple file types:
+	//
+	// - **Images**: Product photos, variant images, and general store imagery
+	// - **Videos**: Shopify-hosted videos for product demonstrations and marketing
+	// - **External videos**: YouTube and Vimeo videos for enhanced product experiences
+	// - **3D models**: Interactive 3D representations of products
+	// - **Generic files**: PDFs, documents, and other file types for store resources
+	//
+	// The mutation handles duplicate filenames using configurable resolution modes that automatically append UUIDs,
+	// replace existing files, or raise errors when conflicts occur.
+	//
+	// > Note:
+	// > Files are processed asynchronously. Check the
+	// > [`fileStatus`](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/File#fields-fileStatus)
+	// > field to monitor processing completion. The maximum number of files that can be created in a single batch is 250.
+	//
+	// After creating files, you can make subsequent updates using the following mutations:
+	//
+	// - [`fileUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileUpdate):
+	// Update file properties such as alt text or replace file contents while preserving the same URL.
+	// - [`fileDelete`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileDelete):
+	// Remove files from your store when they are no longer needed.
+	//
+	// To list all files in your store, use the
+	// [`files`](https://shopify.dev/docs/api/admin-graphql/latest/queries/files) query.
+	//
+	// Learn how to manage
+	// [product media and file assets](https://shopify.dev/docs/apps/build/online-store/product-media)
+	// in your app.
+	FileCreate *CreateFileFileCreateFileCreatePayload `json:"fileCreate"`
+}
+
+// GetFileCreate returns CreateFileResponse.FileCreate, and is useful for accessing the field via an interface.
+func (v *CreateFileResponse) GetFileCreate() *CreateFileFileCreateFileCreatePayload {
+	return v.FileCreate
+}
+
 // CreateMarketMarketCreateMarketCreatePayload includes the requested fields of the GraphQL type MarketCreatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -5766,6 +5860,95 @@ type DeleteCollectionResponse struct {
 // GetCollectionDelete returns DeleteCollectionResponse.CollectionDelete, and is useful for accessing the field via an interface.
 func (v *DeleteCollectionResponse) GetCollectionDelete() *DeleteCollectionCollectionDeleteCollectionDeletePayload {
 	return v.CollectionDelete
+}
+
+// DeleteFileFileDeleteFileDeletePayload includes the requested fields of the GraphQL type FileDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `fileDelete` mutation.
+type DeleteFileFileDeleteFileDeletePayload struct {
+	// The IDs of the deleted files.
+	DeletedFileIds []string `json:"deletedFileIds"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError `json:"userErrors"`
+}
+
+// GetDeletedFileIds returns DeleteFileFileDeleteFileDeletePayload.DeletedFileIds, and is useful for accessing the field via an interface.
+func (v *DeleteFileFileDeleteFileDeletePayload) GetDeletedFileIds() []string { return v.DeletedFileIds }
+
+// GetUserErrors returns DeleteFileFileDeleteFileDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteFileFileDeleteFileDeletePayload) GetUserErrors() []DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError {
+	return v.UserErrors
+}
+
+// DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError includes the requested fields of the GraphQL type FilesUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that happens during the execution of a Files API query or mutation.
+type DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *FilesErrorCode `json:"code"`
+}
+
+// GetField returns DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError.Code, and is useful for accessing the field via an interface.
+func (v *DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError) GetCode() *FilesErrorCode {
+	return v.Code
+}
+
+// DeleteFileResponse is returned by DeleteFile on success.
+type DeleteFileResponse struct {
+	// Deletes file assets that were previously uploaded to your store.
+	//
+	// Use the `fileDelete` mutation to permanently remove media and file assets from your store when they are no longer needed.
+	// This mutation handles the complete removal of files from both your store's file library and any associated references
+	// to products or other resources.
+	//
+	// The `fileDelete` mutation supports removal of multiple file types:
+	//
+	// - **Images**: Product photos, variant images, and general store imagery
+	// - **Videos**: Shopify-hosted videos for product demonstrations and marketing content
+	// - **External Videos**: YouTube and Vimeo videos linked to your products
+	// - **3D models**: Interactive 3D representations of products
+	// - **Generic files**: PDFs, documents, and other file types stored in your
+	// [**Files** page](https://shopify.com/admin/settings/files)
+	//
+	// When you delete files that are referenced by products, the mutation automatically removes those references and
+	// reorders any remaining media to maintain proper positioning. Product file references are database relationships
+	// managed through a media reference system, not just links in product descriptions. The Shopify admin provides a UI
+	// to manage these relationships, and when files are deleted, the system automatically cleans up all references.
+	// Files that are currently being processed by other operations are rejected to prevent conflicts.
+	//
+	// > Caution:
+	// > File deletion is permanent and can't be undone. When you delete a file that's being used in your store,
+	// > it will immediately stop appearing wherever it was displayed. For example, if you delete a product image,
+	// > that product will show a broken image or placeholder on your storefront and in the admin. The same applies
+	// > to any other files linked from themes, blog posts, or pages. Before deleting files, you can use the
+	// > [`files` query](https://shopify.dev/api/admin-graphql/latest/queries/files) to list and review
+	// > your store's file assets.
+	//
+	// Learn how to manage
+	// [product media and file assets](https://shopify.dev/docs/apps/build/online-store/product-media)
+	// in your app.
+	FileDelete *DeleteFileFileDeleteFileDeletePayload `json:"fileDelete"`
+}
+
+// GetFileDelete returns DeleteFileResponse.FileDelete, and is useful for accessing the field via an interface.
+func (v *DeleteFileResponse) GetFileDelete() *DeleteFileFileDeleteFileDeletePayload {
+	return v.FileDelete
 }
 
 // DeleteLocationLocationDeleteLocationDeletePayload includes the requested fields of the GraphQL type LocationDeletePayload.
@@ -8565,6 +8748,40 @@ var AllFileContentType = []FileContentType{
 	FileContentTypeModel3d,
 }
 
+// The input fields that are required to create a file object.
+type FileCreateInput struct {
+	// The name of the file. If provided, then the file is created with the specified filename.
+	// If not provided, then the filename from the `originalSource` is used.
+	Filename *string `json:"filename,omitempty"`
+	// The file content type. If omitted, then Shopify will attempt to determine the content type during file processing.
+	ContentType *FileContentType `json:"contentType,omitempty"`
+	// The alt text description of the file for screen readers and accessibility.
+	Alt *string `json:"alt,omitempty"`
+	// How to handle if filename is already in use.
+	DuplicateResolutionMode *FileCreateInputDuplicateResolutionMode `json:"duplicateResolutionMode,omitempty"`
+	// The source URL of the file. An external URL can be used for images, generic files, or external videos.
+	// Videos and 3D models require a
+	// [staged upload URL](https://shopify.dev/api/admin-graphql/latest/mutations/stageduploadscreate).
+	OriginalSource string `json:"originalSource"`
+}
+
+// GetFilename returns FileCreateInput.Filename, and is useful for accessing the field via an interface.
+func (v *FileCreateInput) GetFilename() *string { return v.Filename }
+
+// GetContentType returns FileCreateInput.ContentType, and is useful for accessing the field via an interface.
+func (v *FileCreateInput) GetContentType() *FileContentType { return v.ContentType }
+
+// GetAlt returns FileCreateInput.Alt, and is useful for accessing the field via an interface.
+func (v *FileCreateInput) GetAlt() *string { return v.Alt }
+
+// GetDuplicateResolutionMode returns FileCreateInput.DuplicateResolutionMode, and is useful for accessing the field via an interface.
+func (v *FileCreateInput) GetDuplicateResolutionMode() *FileCreateInputDuplicateResolutionMode {
+	return v.DuplicateResolutionMode
+}
+
+// GetOriginalSource returns FileCreateInput.OriginalSource, and is useful for accessing the field via an interface.
+func (v *FileCreateInput) GetOriginalSource() string { return v.OriginalSource }
+
 // The input fields for handling if filename is already in use.
 type FileCreateInputDuplicateResolutionMode string
 
@@ -8621,6 +8838,145 @@ func (v *FileSetInput) GetId() *string { return v.Id }
 
 // GetOriginalSource returns FileSetInput.OriginalSource, and is useful for accessing the field via an interface.
 func (v *FileSetInput) GetOriginalSource() *string { return v.OriginalSource }
+
+// The input fields that are required to update a file object.
+type FileUpdateInput struct {
+	// The ID of the file to be updated.
+	Id string `json:"id"`
+	// The alt text description of the file for screen readers and accessibility.
+	Alt *string `json:"alt,omitempty"`
+	// The source from which to update a media image or generic file.
+	// This can be an external URL or a
+	// [staged upload URL](https://shopify.dev/api/admin-graphql/latest/mutations/stageduploadscreate).
+	OriginalSource *string `json:"originalSource,omitempty"`
+	// The source from which to update the media preview image.
+	// May be an external URL or a
+	// [staged upload URL](https://shopify.dev/api/admin-graphql/latest/mutations/stageduploadscreate).
+	PreviewImageSource *string `json:"previewImageSource,omitempty"`
+	// The name of the file including its extension.
+	Filename *string `json:"filename,omitempty"`
+	// The IDs of the references to add to the file. Currently only accepts product IDs.
+	ReferencesToAdd []string `json:"referencesToAdd,omitempty"`
+	// The IDs of the references to remove from the file. Currently only accepts product IDs.
+	ReferencesToRemove []string `json:"referencesToRemove,omitempty"`
+}
+
+// GetId returns FileUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetId() string { return v.Id }
+
+// GetAlt returns FileUpdateInput.Alt, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetAlt() *string { return v.Alt }
+
+// GetOriginalSource returns FileUpdateInput.OriginalSource, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetOriginalSource() *string { return v.OriginalSource }
+
+// GetPreviewImageSource returns FileUpdateInput.PreviewImageSource, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetPreviewImageSource() *string { return v.PreviewImageSource }
+
+// GetFilename returns FileUpdateInput.Filename, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetFilename() *string { return v.Filename }
+
+// GetReferencesToAdd returns FileUpdateInput.ReferencesToAdd, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetReferencesToAdd() []string { return v.ReferencesToAdd }
+
+// GetReferencesToRemove returns FileUpdateInput.ReferencesToRemove, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetReferencesToRemove() []string { return v.ReferencesToRemove }
+
+// Possible error codes that can be returned by `FilesUserError`.
+type FilesErrorCode string
+
+const (
+	// The input value is invalid.
+	FilesErrorCodeInvalid FilesErrorCode = "INVALID"
+	// File does not exist.
+	FilesErrorCodeFileDoesNotExist FilesErrorCode = "FILE_DOES_NOT_EXIST"
+	// File has a pending operation.
+	FilesErrorCodeFileLocked FilesErrorCode = "FILE_LOCKED"
+	// Filename update is only supported on Image and GenericFile.
+	FilesErrorCodeUnsupportedMediaTypeForFilenameUpdate FilesErrorCode = "UNSUPPORTED_MEDIA_TYPE_FOR_FILENAME_UPDATE"
+	// Specify one argument: search, IDs, or deleteAll.
+	FilesErrorCodeTooManyArguments FilesErrorCode = "TOO_MANY_ARGUMENTS"
+	// The search term must not be blank.
+	FilesErrorCodeBlankSearch FilesErrorCode = "BLANK_SEARCH"
+	// At least one argument is required.
+	FilesErrorCodeMissingArguments FilesErrorCode = "MISSING_ARGUMENTS"
+	// Search query isn't supported.
+	FilesErrorCodeInvalidQuery FilesErrorCode = "INVALID_QUERY"
+	// One or more associated products are suspended.
+	FilesErrorCodeProductSuspended FilesErrorCode = "PRODUCT_SUSPENDED"
+	// Invalid filename extension.
+	FilesErrorCodeInvalidFilenameExtension FilesErrorCode = "INVALID_FILENAME_EXTENSION"
+	// The provided filename is invalid.
+	FilesErrorCodeInvalidFilename FilesErrorCode = "INVALID_FILENAME"
+	// The provided filename already exists.
+	FilesErrorCodeFilenameAlreadyExists FilesErrorCode = "FILENAME_ALREADY_EXISTS"
+	// The file is not supported on trial accounts that have not validated their email. Either select a plan or verify the shop owner email to upload this file.
+	FilesErrorCodeUnacceptableUnverifiedTrialAsset FilesErrorCode = "UNACCEPTABLE_UNVERIFIED_TRIAL_ASSET"
+	// The file type is not supported.
+	FilesErrorCodeUnacceptableAsset FilesErrorCode = "UNACCEPTABLE_ASSET"
+	// The file is not supported on trial accounts. Select a plan to upload this file.
+	FilesErrorCodeUnacceptableTrialAsset FilesErrorCode = "UNACCEPTABLE_TRIAL_ASSET"
+	// The alt value exceeds the maximum limit of 512 characters.
+	FilesErrorCodeAltValueLimitExceeded FilesErrorCode = "ALT_VALUE_LIMIT_EXCEEDED"
+	// The file is not in the READY state.
+	FilesErrorCodeNonReadyState FilesErrorCode = "NON_READY_STATE"
+	// File cannot be updated in a failed state.
+	FilesErrorCodeInvalidFailedMediaState FilesErrorCode = "INVALID_FAILED_MEDIA_STATE"
+	// Exceeded the limit of non-image media per shop.
+	FilesErrorCodeNonImageMediaPerShopLimitExceeded FilesErrorCode = "NON_IMAGE_MEDIA_PER_SHOP_LIMIT_EXCEEDED"
+	// Cannot create file with custom filename which does not match original source extension.
+	FilesErrorCodeMismatchedFilenameAndOriginalSource FilesErrorCode = "MISMATCHED_FILENAME_AND_ORIGINAL_SOURCE"
+	// Duplicate resolution mode is not supported for this file type.
+	FilesErrorCodeInvalidDuplicateModeForType FilesErrorCode = "INVALID_DUPLICATE_MODE_FOR_TYPE"
+	// Invalid image source url value provided.
+	FilesErrorCodeInvalidImageSourceUrl FilesErrorCode = "INVALID_IMAGE_SOURCE_URL"
+	// Duplicate resolution mode REPLACE cannot be used without specifying filename.
+	FilesErrorCodeMissingFilenameForDuplicateModeReplace FilesErrorCode = "MISSING_FILENAME_FOR_DUPLICATE_MODE_REPLACE"
+	// Exceeded the limit of media per product.
+	FilesErrorCodeProductMediaLimitExceeded FilesErrorCode = "PRODUCT_MEDIA_LIMIT_EXCEEDED"
+	// The file type is not supported for referencing.
+	FilesErrorCodeUnsupportedFileReference FilesErrorCode = "UNSUPPORTED_FILE_REFERENCE"
+	// The target resource does not exist.
+	FilesErrorCodeReferenceTargetDoesNotExist FilesErrorCode = "REFERENCE_TARGET_DOES_NOT_EXIST"
+	// Cannot add more than 10000 references to a file.
+	FilesErrorCodeTooManyFileReference FilesErrorCode = "TOO_MANY_FILE_REFERENCE"
+	// Invalid duplicate resolution mode provided.
+	FilesErrorCodeInvalidDuplicateResolutionMode FilesErrorCode = "INVALID_DUPLICATE_RESOLUTION_MODE"
+	// Media cannot be modified. It is currently being modified by another operation.
+	FilesErrorCodeMediaCannotBeModified FilesErrorCode = "MEDIA_CANNOT_BE_MODIFIED"
+)
+
+var AllFilesErrorCode = []FilesErrorCode{
+	FilesErrorCodeInvalid,
+	FilesErrorCodeFileDoesNotExist,
+	FilesErrorCodeFileLocked,
+	FilesErrorCodeUnsupportedMediaTypeForFilenameUpdate,
+	FilesErrorCodeTooManyArguments,
+	FilesErrorCodeBlankSearch,
+	FilesErrorCodeMissingArguments,
+	FilesErrorCodeInvalidQuery,
+	FilesErrorCodeProductSuspended,
+	FilesErrorCodeInvalidFilenameExtension,
+	FilesErrorCodeInvalidFilename,
+	FilesErrorCodeFilenameAlreadyExists,
+	FilesErrorCodeUnacceptableUnverifiedTrialAsset,
+	FilesErrorCodeUnacceptableAsset,
+	FilesErrorCodeUnacceptableTrialAsset,
+	FilesErrorCodeAltValueLimitExceeded,
+	FilesErrorCodeNonReadyState,
+	FilesErrorCodeInvalidFailedMediaState,
+	FilesErrorCodeNonImageMediaPerShopLimitExceeded,
+	FilesErrorCodeMismatchedFilenameAndOriginalSource,
+	FilesErrorCodeInvalidDuplicateModeForType,
+	FilesErrorCodeInvalidImageSourceUrl,
+	FilesErrorCodeMissingFilenameForDuplicateModeReplace,
+	FilesErrorCodeProductMediaLimitExceeded,
+	FilesErrorCodeUnsupportedFileReference,
+	FilesErrorCodeReferenceTargetDoesNotExist,
+	FilesErrorCodeTooManyFileReference,
+	FilesErrorCodeInvalidDuplicateResolutionMode,
+	FilesErrorCodeMediaCannotBeModified,
+}
 
 // FindBlogsBlogsBlogConnection includes the requested fields of the GraphQL type BlogConnection.
 // The GraphQL type's documentation follows.
@@ -10364,6 +10720,19 @@ type GetDeliveryProfileResponse struct {
 func (v *GetDeliveryProfileResponse) GetDeliveryProfile() *GetDeliveryProfileDeliveryProfile {
 	return v.DeliveryProfile
 }
+
+// GetFileResponse is returned by GetFile on success.
+type GetFileResponse struct {
+	// Returns a specific node (any object that implements the
+	// [Node](https://shopify.dev/api/admin-graphql/latest/interfaces/Node)
+	// interface) by ID, in accordance with the
+	// [Relay specification](https://relay.dev/docs/guides/graphql-server-specification/#object-identification).
+	// This field is commonly used for refetching an object.
+	Node json.RawMessage `json:"node"`
+}
+
+// GetNode returns GetFileResponse.Node, and is useful for accessing the field via an interface.
+func (v *GetFileResponse) GetNode() json.RawMessage { return v.Node }
 
 // GetFulfillmentServicesResponse is returned by GetFulfillmentServices on success.
 type GetFulfillmentServicesResponse struct {
@@ -13134,6 +13503,69 @@ type ListDeliveryProfilesResponse struct {
 func (v *ListDeliveryProfilesResponse) GetDeliveryProfiles() ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection {
 	return v.DeliveryProfiles
 }
+
+// ListFilesFilesFileConnection includes the requested fields of the GraphQL type FileConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Files.
+type ListFilesFilesFileConnection struct {
+	// A list of nodes that are contained in FileEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes json.RawMessage `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListFilesFilesFileConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListFilesFilesFileConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListFilesFilesFileConnection) GetNodes() json.RawMessage { return v.Nodes }
+
+// GetPageInfo returns ListFilesFilesFileConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListFilesFilesFileConnection) GetPageInfo() ListFilesFilesFileConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListFilesFilesFileConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListFilesFilesFileConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListFilesFilesFileConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListFilesFilesFileConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ListFilesFilesFileConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListFilesFilesFileConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
+
+// ListFilesResponse is returned by ListFiles on success.
+type ListFilesResponse struct {
+	// Retrieves a paginated list of files that have been uploaded to a Shopify store. Files represent digital assets
+	// that merchants can upload to their store for various purposes including product images, marketing materials,
+	// documents, and brand assets.
+	//
+	// Use the `files` query to retrieve information associated with the following workflows:
+	//
+	// - [Managing product media and images](https://shopify.dev/docs/apps/build/online-store/product-media)
+	// - [Theme development and asset management](https://shopify.dev/docs/storefronts/themes/store/success/brand-assets)
+	// - Brand asset management and [checkout branding](https://shopify.dev/docs/apps/build/checkout/styling/add-favicon)
+	//
+	// Files can include multiple [content types](https://shopify.dev/docs/api/admin-graphql/latest/enums/FileContentType),
+	// such as images, videos, 3D models, and generic files. Each file has
+	// properties like dimensions, file size, alt text for accessibility, and upload status. Files can be filtered
+	// by [media type](https://shopify.dev/docs/api/admin-graphql/latest/enums/MediaContentType) and can be associated with
+	// [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product),
+	// [themes](https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreTheme),
+	// and other store resources.
+	Files ListFilesFilesFileConnection `json:"files"`
+}
+
+// GetFiles returns ListFilesResponse.Files, and is useful for accessing the field via an interface.
+func (v *ListFilesResponse) GetFiles() ListFilesFilesFileConnection { return v.Files }
 
 // ListLocationsLocationsLocationConnection includes the requested fields of the GraphQL type LocationConnection.
 // The GraphQL type's documentation follows.
@@ -22735,6 +23167,96 @@ func (v *UpdateDeliveryProfileResponse) GetDeliveryProfileUpdate() *UpdateDelive
 	return v.DeliveryProfileUpdate
 }
 
+// UpdateFileFileUpdateFileUpdatePayload includes the requested fields of the GraphQL type FileUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `fileUpdate` mutation.
+type UpdateFileFileUpdateFileUpdatePayload struct {
+	// The list of updated files.
+	Files json.RawMessage `json:"files"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError `json:"userErrors"`
+}
+
+// GetFiles returns UpdateFileFileUpdateFileUpdatePayload.Files, and is useful for accessing the field via an interface.
+func (v *UpdateFileFileUpdateFileUpdatePayload) GetFiles() json.RawMessage { return v.Files }
+
+// GetUserErrors returns UpdateFileFileUpdateFileUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateFileFileUpdateFileUpdatePayload) GetUserErrors() []UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError {
+	return v.UserErrors
+}
+
+// UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError includes the requested fields of the GraphQL type FilesUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that happens during the execution of a Files API query or mutation.
+type UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *FilesErrorCode `json:"code"`
+}
+
+// GetField returns UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError.Code, and is useful for accessing the field via an interface.
+func (v *UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError) GetCode() *FilesErrorCode {
+	return v.Code
+}
+
+// UpdateFileResponse is returned by UpdateFile on success.
+type UpdateFileResponse struct {
+	// Updates properties, content, and metadata associated with an existing file asset that has already been uploaded to Shopify.
+	//
+	// Use the `fileUpdate` mutation to modify various aspects of files already stored in your store.
+	// Files can be updated individually or in batches.
+	//
+	// The `fileUpdate` mutation supports updating multiple file properties:
+	//
+	// - **Alt text**: Update accessibility descriptions for images and other media.
+	// - **File content**: Replace image or generic file content while maintaining the same URL.
+	// - **Filename**: Modify file names (extension must match the original).
+	// - **Product references**: Add or remove associations between files and products. Removing file-product associations
+	// deletes the file from the product's media gallery and clears the image from any product variants that were using it.
+	//
+	// The mutation handles different file types with specific capabilities:
+	//
+	// - **Images**: Update preview images, original source, filename, and alt text.
+	// - **Generic files**: Update original source, filename, and alt text.
+	// - **Videos and 3D models**: Update alt text and product references.
+	//
+	// > Note:
+	// > Files must be in `ready` state before they can be updated. The mutation includes file locking to prevent
+	// > conflicts during updates. You can't simultaneously update both `originalSource` and `previewImageSource`.
+	//
+	// After updating files, you can use related mutations for additional file management:
+	//
+	// - [`fileCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileCreate):
+	// Create new file assets from external URLs or staged uploads.
+	// - [`fileDelete`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileDelete):
+	// Remove files from your store when they are no longer needed.
+	//
+	// Learn how to manage
+	// [product media and file assets](https://shopify.dev/docs/apps/build/online-store/product-media)
+	// in your app.
+	FileUpdate *UpdateFileFileUpdateFileUpdatePayload `json:"fileUpdate"`
+}
+
+// GetFileUpdate returns UpdateFileResponse.FileUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateFileResponse) GetFileUpdate() *UpdateFileFileUpdateFileUpdatePayload {
+	return v.FileUpdate
+}
+
 // UpdateMarketMarketUpdateMarketUpdatePayload includes the requested fields of the GraphQL type MarketUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -24491,6 +25013,14 @@ type __CreateCollectionInput struct {
 // GetCollection returns __CreateCollectionInput.Collection, and is useful for accessing the field via an interface.
 func (v *__CreateCollectionInput) GetCollection() CollectionCreateInput { return v.Collection }
 
+// __CreateFileInput is used internally by genqlient
+type __CreateFileInput struct {
+	Files []FileCreateInput `json:"files"`
+}
+
+// GetFiles returns __CreateFileInput.Files, and is useful for accessing the field via an interface.
+func (v *__CreateFileInput) GetFiles() []FileCreateInput { return v.Files }
+
 // __CreateMarketInput is used internally by genqlient
 type __CreateMarketInput struct {
 	Input MarketCreateInput `json:"input"`
@@ -24578,6 +25108,14 @@ type __DeleteCollectionInput struct {
 
 // GetId returns __DeleteCollectionInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteCollectionInput) GetId() string { return v.Id }
+
+// __DeleteFileInput is used internally by genqlient
+type __DeleteFileInput struct {
+	Ids []string `json:"ids"`
+}
+
+// GetIds returns __DeleteFileInput.Ids, and is useful for accessing the field via an interface.
+func (v *__DeleteFileInput) GetIds() []string { return v.Ids }
 
 // __DeleteLocationInput is used internally by genqlient
 type __DeleteLocationInput struct {
@@ -24809,6 +25347,14 @@ type __GetDeliveryProfileInput struct {
 // GetId returns __GetDeliveryProfileInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetDeliveryProfileInput) GetId() string { return v.Id }
 
+// __GetFileInput is used internally by genqlient
+type __GetFileInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetFileInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetFileInput) GetId() string { return v.Id }
+
 // __GetLocationInput is used internally by genqlient
 type __GetLocationInput struct {
 	Id string `json:"id"`
@@ -24958,6 +25504,18 @@ type __ListDeliveryProfilesInput struct {
 
 // GetAfter returns __ListDeliveryProfilesInput.After, and is useful for accessing the field via an interface.
 func (v *__ListDeliveryProfilesInput) GetAfter() *string { return v.After }
+
+// __ListFilesInput is used internally by genqlient
+type __ListFilesInput struct {
+	After *string `json:"after"`
+	Query *string `json:"query"`
+}
+
+// GetAfter returns __ListFilesInput.After, and is useful for accessing the field via an interface.
+func (v *__ListFilesInput) GetAfter() *string { return v.After }
+
+// GetQuery returns __ListFilesInput.Query, and is useful for accessing the field via an interface.
+func (v *__ListFilesInput) GetQuery() *string { return v.Query }
 
 // __ListLocationsInput is used internally by genqlient
 type __ListLocationsInput struct {
@@ -25128,6 +25686,14 @@ func (v *__UpdateDeliveryProfileInput) GetId() string { return v.Id }
 
 // GetProfile returns __UpdateDeliveryProfileInput.Profile, and is useful for accessing the field via an interface.
 func (v *__UpdateDeliveryProfileInput) GetProfile() DeliveryProfileInput { return v.Profile }
+
+// __UpdateFileInput is used internally by genqlient
+type __UpdateFileInput struct {
+	Files []FileUpdateInput `json:"files"`
+}
+
+// GetFiles returns __UpdateFileInput.Files, and is useful for accessing the field via an interface.
+func (v *__UpdateFileInput) GetFiles() []FileUpdateInput { return v.Files }
 
 // __UpdateMarketInput is used internally by genqlient
 type __UpdateMarketInput struct {
@@ -25637,6 +26203,83 @@ func CreateCollection(
 	}
 
 	data_ = &CreateCollectionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateFile.
+const CreateFile_Operation = `
+mutation CreateFile ($files: [FileCreateInput!]!) {
+	fileCreate(files: $files) {
+		files {
+			__typename
+			... FileFields
+		}
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+fragment FileFields on File {
+	__typename
+	id
+	alt
+	fileStatus
+	fileErrors {
+		code
+		message
+		details
+	}
+	... on MediaImage {
+		image {
+			url
+		}
+	}
+	... on GenericFile {
+		url
+	}
+	... on Video {
+		filename
+		sources {
+			url
+		}
+	}
+	... on Model3d {
+		filename
+		sources {
+			url
+		}
+	}
+	... on ExternalVideo {
+		originUrl
+	}
+}
+`
+
+// previewImageSource is never sent (roadmap) and neither are product references (the product owns that link).
+func CreateFile(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	files []FileCreateInput,
+) (data_ *CreateFileResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateFile",
+		Query:  CreateFile_Operation,
+		Variables: &__CreateFileInput{
+			Files: files,
+		},
+	}
+
+	data_ = &CreateFileResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -26165,6 +26808,45 @@ func DeleteCollection(
 	}
 
 	data_ = &DeleteCollectionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteFile.
+const DeleteFile_Operation = `
+mutation DeleteFile ($ids: [ID!]!) {
+	fileDelete(fileIds: $ids) {
+		deletedFileIds
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+`
+
+func DeleteFile(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	ids []string,
+) (data_ *DeleteFileResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteFile",
+		Query:  DeleteFile_Operation,
+		Variables: &__DeleteFileInput{
+			Ids: ids,
+		},
+	}
+
+	data_ = &DeleteFileResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -28918,6 +29600,76 @@ func GetDeliveryProfile(
 	return data_, err_
 }
 
+// The query executed by GetFile.
+const GetFile_Operation = `
+query GetFile ($id: ID!) {
+	node(id: $id) {
+		__typename
+		... FileFields
+	}
+}
+fragment FileFields on File {
+	__typename
+	id
+	alt
+	fileStatus
+	fileErrors {
+		code
+		message
+		details
+	}
+	... on MediaImage {
+		image {
+			url
+		}
+	}
+	... on GenericFile {
+		url
+	}
+	... on Video {
+		filename
+		sources {
+			url
+		}
+	}
+	... on Model3d {
+		filename
+		sources {
+			url
+		}
+	}
+	... on ExternalVideo {
+		originUrl
+	}
+}
+`
+
+// There is no file(id:) root field. A GID of another type still returns __typename, which the caller checks.
+func GetFile(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetFileResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetFile",
+		Query:  GetFile_Operation,
+		Variables: &__GetFileInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetFileResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetFulfillmentServices.
 const GetFulfillmentServices_Operation = `
 query GetFulfillmentServices {
@@ -31572,6 +32324,84 @@ func ListDeliveryProfiles(
 	return data_, err_
 }
 
+// The query executed by ListFiles.
+const ListFiles_Operation = `
+query ListFiles ($after: String, $query: String) {
+	files(first: 250, after: $after, query: $query) {
+		nodes {
+			__typename
+			... FileFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment FileFields on File {
+	__typename
+	id
+	alt
+	fileStatus
+	fileErrors {
+		code
+		message
+		details
+	}
+	... on MediaImage {
+		image {
+			url
+		}
+	}
+	... on GenericFile {
+		url
+	}
+	... on Video {
+		filename
+		sources {
+			url
+		}
+	}
+	... on Model3d {
+		filename
+		sources {
+			url
+		}
+	}
+	... on ExternalVideo {
+		originUrl
+	}
+}
+`
+
+// Used for the filename lookup too: the search is token-based, so the caller compares exactly.
+func ListFiles(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+	query *string,
+) (data_ *ListFilesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListFiles",
+		Query:  ListFiles_Operation,
+		Variables: &__ListFilesInput{
+			After: after,
+			Query: query,
+		},
+	}
+
+	data_ = &ListFilesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListLocations.
 const ListLocations_Operation = `
 query ListLocations ($includeInactive: Boolean!, $after: String) {
@@ -34150,6 +34980,83 @@ func UpdateDeliveryProfile(
 	}
 
 	data_ = &UpdateDeliveryProfileResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateFile.
+const UpdateFile_Operation = `
+mutation UpdateFile ($files: [FileUpdateInput!]!) {
+	fileUpdate(files: $files) {
+		files {
+			__typename
+			... FileFields
+		}
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+fragment FileFields on File {
+	__typename
+	id
+	alt
+	fileStatus
+	fileErrors {
+		code
+		message
+		details
+	}
+	... on MediaImage {
+		image {
+			url
+		}
+	}
+	... on GenericFile {
+		url
+	}
+	... on Video {
+		filename
+		sources {
+			url
+		}
+	}
+	... on Model3d {
+		filename
+		sources {
+			url
+		}
+	}
+	... on ExternalVideo {
+		originUrl
+	}
+}
+`
+
+// alt "" clears it, so a set pointer is sent and only nil is omitted.
+func UpdateFile(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	files []FileUpdateInput,
+) (data_ *UpdateFileResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateFile",
+		Query:  UpdateFile_Operation,
+		Variables: &__UpdateFileInput{
+			Files: files,
+		},
+	}
+
+	data_ = &UpdateFileResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

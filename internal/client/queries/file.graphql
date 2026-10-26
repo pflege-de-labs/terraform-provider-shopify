@@ -1,0 +1,120 @@
+# Every file query is bound to raw JSON: File is an interface of five types, and the resource decodes them itself.
+fragment FileFields on File {
+  __typename
+  id
+  alt
+  fileStatus
+  fileErrors {
+    code
+    message
+    details
+  }
+  ... on MediaImage {
+    image {
+      url
+    }
+  }
+  ... on GenericFile {
+    url
+  }
+  ... on Video {
+    filename
+    sources {
+      url
+    }
+  }
+  ... on Model3d {
+    filename
+    sources {
+      url
+    }
+  }
+  ... on ExternalVideo {
+    originUrl
+  }
+}
+
+# There is no file(id:) root field. A GID of another type still returns __typename, which the caller checks.
+query GetFile(
+  $id: ID!
+) {
+  # @genqlient(bind: "encoding/json.RawMessage")
+  node(id: $id) {
+    __typename
+    ...FileFields
+  }
+}
+
+# Used for the filename lookup too: the search is token-based, so the caller compares exactly.
+query ListFiles(
+  $after: String
+  $query: String
+) {
+  files(first: 250, after: $after, query: $query) {
+    # @genqlient(bind: "encoding/json.RawMessage")
+    nodes {
+      ...FileFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# previewImageSource is never sent (roadmap) and neither are product references (the product owns that link).
+# @genqlient(for: "FileCreateInput.filename", omitempty: true)
+# @genqlient(for: "FileCreateInput.contentType", omitempty: true)
+# @genqlient(for: "FileCreateInput.alt", omitempty: true)
+# @genqlient(for: "FileCreateInput.duplicateResolutionMode", omitempty: true)
+mutation CreateFile(
+  $files: [FileCreateInput!]!
+) {
+  fileCreate(files: $files) {
+    # @genqlient(bind: "encoding/json.RawMessage")
+    files {
+      ...FileFields
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+# alt "" clears it, so a set pointer is sent and only nil is omitted.
+# @genqlient(for: "FileUpdateInput.alt", omitempty: true)
+# @genqlient(for: "FileUpdateInput.originalSource", omitempty: true)
+# @genqlient(for: "FileUpdateInput.previewImageSource", omitempty: true)
+# @genqlient(for: "FileUpdateInput.filename", omitempty: true)
+# @genqlient(for: "FileUpdateInput.referencesToAdd", omitempty: true)
+# @genqlient(for: "FileUpdateInput.referencesToRemove", omitempty: true)
+mutation UpdateFile(
+  $files: [FileUpdateInput!]!
+) {
+  fileUpdate(files: $files) {
+    # @genqlient(bind: "encoding/json.RawMessage")
+    files {
+      ...FileFields
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation DeleteFile(
+  $ids: [ID!]!
+) {
+  fileDelete(fileIds: $ids) {
+    deletedFileIds
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}

@@ -56,7 +56,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_content` | `shopify_page`, `shopify_blog`; articles; their metafield definitions ⚠ | ✅ pages, blogs, the rest planned | volatile (content) |
 | `write_discounts` | discounts; metafield definitions for `DISCOUNT` ⚠ | planned | volatile (content) |
 | `write_metaobjects` | metaobject entries | planned | volatile (content) |
-| `write_files` | files and media | planned | volatile (content) |
+| `write_files` | `shopify_file` (URL sources; uploads of local files planned) | ✅ | volatile (content) |
 | `write_inventory` | inventory levels | planned | volatile |
 | `read_fulfillments` (or `write_fulfillments`) | `shopify_fulfillment_service` data source (fulfillment services are owned by Shopify or other apps, not managed) | ✅ data source | good (read-only) |
 | `write_payment_customizations`, `write_delivery_customizations`, `write_validations`, `write_cart_transforms`, `write_fulfillment_constraint_rules` | Function-backed customizations (need a Function from an installed app) | planned | good once the Function exists |
