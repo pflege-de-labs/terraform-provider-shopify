@@ -858,6 +858,44 @@ Notes:
 
 ---
 
+## 9j. Data source: `shopify_publication`
+
+Decision D4 (2026-10-26). Discovery found 3 publications on staging (Online Store, Point of Sale, Shop) and 5 on production (Online Store, Point of Sale, Konstantins Headless Store, Shopify GraphiQL App, Pflege.De Shop Headless 04). Each belongs to a sales channel app and its app catalog (§9i), so none is managed here (D3). The data source makes them referenceable, for example as a publication ID for a future product or collection resource that publishes to channels. There is no resource.
+
+```hcl
+data "shopify_publication" "online_store" {
+  name = "Online Store"
+}
+```
+
+**Argument (Required):** `name`, matched exactly (case-sensitive).
+
+**Attributes (all Computed, from `Publication` in the 2026-10 schema):**
+
+| Attribute | API field | Why |
+|---|---|---|
+| `id` | `id` | `Publication` GID, what publishing mutations take |
+| `auto_publish` | `autoPublish` | whether new products are published to it automatically |
+| `catalog_id` | `catalog.id` | the catalog the publication belongs to (an `AppCatalog` GID for channels); null if none |
+
+Left out: `supportsFuturePublishing`, `operation`, the product and collection connections (content), and the deprecated `app` (use the catalog).
+
+**Name, not handle.** Publications have no handle. `Publication.name` is deprecated in 2026-10 ("Use `Catalog.title` instead"), but `Catalog.title` of a channel's app catalog is `Channel Catalog <publication id> for Online Store`, which differs per store and can't be a key. The channel behind a publication has a handle (`online_store`, `pos`, `shop-72` on the dev store), but the `shop-72` suffix suggests it is not the same on every store. So the key stays the name, read from the deprecated field: it returns the channel name on the dev store, and genqlient copies descriptions, not deprecation reasons, into generated code, so lint should stay quiet (`make lint` confirms it at implementation). If a later API version removes the field, the generated code stops compiling, which is the intended signal. `TODO(verify)`: whether every channel publication has a matching `channels.nodes[].name` (true for all three on the dev store), which would be the non-deprecated fallback.
+
+**Lookup:** root `publications(first: 250)` without `catalogType`, paged (`patterns.Paginate`). On the dev store it returns the channel publications only; a market catalog's publication (empty `name`) shows up only with `catalogType: MARKET` (checked, §9i). Publications with an empty name are skipped. No fallback by GID and nothing is written beyond the read.
+
+**Duplicate names:** the API doesn't stop two channels from having the same publication name (none found: the five production names are distinct). More than one match is an error that lists the GIDs and catalog IDs of the matches, never a pick. Not found: error naming the name and listing the names that exist (`no publication named "Onlne Store"; available: Online Store, Point of Sale, Shop`), as `shopify_fulfillment_service` does.
+
+**Errors:** missing scope (`read_publications`): Shopify's `ACCESS_DENIED`, reported with the scope name. Nothing is retried (throttling is handled in the client).
+
+**Scopes:** `read_publications` (or `write_publications`). `TODO(verify)`: checked only with both `read_publications` and `read_products` granted.
+
+**Fit:** good. Read-only reference; channels come and go with app installs, and the data source reads the current state on every plan.
+
+**Tests:** acceptance: read `Online Store` and check `id` (`^gid://shopify/Publication/`), `catalog_id` (`^gid://shopify/AppCatalog/`) and `auto_publish`; not found. Unit: exact match, empty names skipped, the duplicate and not-found messages, mapping.
+
+---
+
 ## 10. Not covered
 
 Since 2026-10-23 the provider aims to cover every store object the Admin API can manage; remaining types are planned in [[implementation-plan]] Phase 2. Not covered:
