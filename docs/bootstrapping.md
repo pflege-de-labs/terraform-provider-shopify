@@ -35,8 +35,8 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | Scope | Resource types | Status | Fit |
 |---|---|---|---|
 | none | `shopify_shop` data source | ✅ | |
-| `write_products` | `shopify_metafield_definition` (owner types `PRODUCT`, `PRODUCTVARIANT`, `COLLECTION`), catalogs, price lists, selling plan groups; products and collections | ✅ definitions (`PRODUCT`), rest planned | definitions good; products, collections volatile |
-| `write_metaobject_definitions` | `shopify_metaobject_definition` | ✅ | good |
+| `write_products` | `shopify_metafield_definition` resource and data source (owner types `PRODUCT`, `PRODUCTVARIANT`, `COLLECTION`), catalogs, price lists, selling plan groups; products and collections | ✅ definitions (`PRODUCT`), rest planned | definitions good; products, collections volatile |
+| `write_metaobject_definitions` | `shopify_metaobject_definition` resource and data source | ✅ | good |
 | `write_online_store_navigation` | `shopify_menu`, URL redirects | ✅ menus, redirects planned | menus good; redirects volatile |
 | `write_locations` | `shopify_location` | ✅ | good |
 | `write_markets` | `shopify_market`, `shopify_web_presence` | ✅ | good |
@@ -60,7 +60,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_fulfillments` | fulfillment services | planned | app-owned (callback URL) |
 | `write_payment_customizations`, `write_delivery_customizations`, `write_validations`, `write_cart_transforms`, `write_fulfillment_constraint_rules` | Function-backed customizations (need a Function from an installed app) | planned | good once the Function exists |
 
-⚠ Which scope a metafield definition needs per owner type is not documented by Shopify. Without it, listing returns an empty result instead of an error (checked on the dev store). Verify each mapping when its owner type is implemented.
+⚠ Which scope a metafield definition needs per owner type is not documented by Shopify. Without it, listing returns an empty result instead of an error (checked on the dev store), and the `shopify_metafield_definition` data source reports "not found" with a hint about the scope. Verify each mapping when its owner type is implemented.
 
 Not covered, because another tool owns them or they are records, not configuration:
 - Themes (`write_themes`): theme tooling (GitHub integration, `shopify theme push`).
