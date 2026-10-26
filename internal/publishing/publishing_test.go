@@ -81,16 +81,15 @@ func TestComplete_singlePageAndError(t *testing.T) {
 }
 
 func TestMismatch(t *testing.T) {
-	if err := mismatch([]string{"a", "b"}, []string{"b", "a"}); err != nil {
-		t.Errorf("equal sets: %v", err)
+	if msg := mismatch([]string{"a", "b"}, []string{"b", "a"}); msg != "" {
+		t.Errorf("equal sets: %v", msg)
 	}
-	err := mismatch([]string{"a", "m"}, []string{"a"})
-	if err == nil || !strings.Contains(err.Error(), "m") || !strings.Contains(err.Error(), "market") {
-		t.Errorf("missing ID should name it and the market catalog hint: %v", err)
+	msg := mismatch([]string{"a", "m"}, []string{"a"})
+	if !strings.Contains(msg, "m") || !strings.Contains(msg, "market") {
+		t.Errorf("a missing ID should be named with the market catalog hint: %q", msg)
 	}
-	err = mismatch([]string{"a"}, []string{"a", "x"})
-	if err == nil || !strings.Contains(err.Error(), "x") {
-		t.Errorf("extra ID should be named: %v", err)
+	if msg := mismatch([]string{"a"}, []string{"a", "x"}); msg != "" {
+		t.Errorf("an extra ID is drift for the next plan, not an error: %q", msg)
 	}
 }
 

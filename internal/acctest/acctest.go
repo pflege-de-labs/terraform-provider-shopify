@@ -2,6 +2,7 @@
 package acctest
 
 import (
+	"context"
 	"os"
 	"testing"
 
@@ -42,4 +43,35 @@ func Client(t *testing.T) *client.Client {
 		t.Fatal(err)
 	}
 	return c
+}
+
+// PublicationID returns the ID of the publication with this exact name, for out-of-band checks.
+func PublicationID(t *testing.T, name string) string {
+	t.Helper()
+	res, err := client.ListPublications(context.Background(), Client(t), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range res.Publications.Nodes {
+		if p.Name == name {
+			return p.Id
+		}
+	}
+	t.Fatalf("no publication named %q on the dev store", name)
+	return ""
+}
+
+// Publish publishes a product or collection to a publication, outside Terraform.
+func Publish(t *testing.T, resourceID, publicationID string) {
+	t.Helper()
+	res, err := client.PublishPublishable(context.Background(), Client(t), resourceID, []client.PublicationInput{{PublicationId: &publicationID}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.PublishablePublish == nil {
+		t.Fatal("publishablePublish returned no payload")
+	}
+	if errs := res.PublishablePublish.UserErrors; len(errs) > 0 {
+		t.Fatalf("publishablePublish: %v", errs)
+	}
 }

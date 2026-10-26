@@ -33,7 +33,7 @@ func Attribute(what string) schema.SetAttribute {
 	return schema.SetAttribute{
 		MarkdownDescription: fmt.Sprintf("`Publication` GIDs of the sales channels this %[1]s is published to, usually from `data.shopify_publication`. "+
 			"**Removing an ID unpublishes the %[1]s from that channel: it disappears there for customers**, so check the plan before applying. "+
-			"A new %[1]s is published nowhere until this is set. Channels that publish automatically (`auto_publish`) add themselves, and a set value removes them again on the next plan. "+
+			"A new %[1]s is published nowhere until this is set. A channel that publishes automatically (`auto_publish`) and isn't listed here is unpublished again. "+
 			"Only sales channel publications are supported; the publication of a market catalog is rejected. Scheduled publishing is not supported. "+
 			"Unset means unmanaged: publications set in the admin are kept. `[]` unpublishes everywhere. Needs the `write_publications` scope.", what),
 		ElementType: types.StringType,
@@ -117,7 +117,7 @@ func Want(ctx context.Context, cfg types.Set) ([]string, diag.Diagnostics) {
 // Target is one product or collection to publish.
 type Target struct {
 	ID   string
-	More func(ctx context.Context, after *string) ([]string, *string, error) // pages publications after a cursor
+	More func(after *string) ([]string, *string, error) // pages publications after a cursor
 }
 
 // Sync publishes and unpublishes the difference between live and want and returns the publications Shopify lists afterwards.
@@ -135,6 +135,10 @@ func Sync(ctx context.Context, c *client.Client, t Target, live, want []string) 
 			diags.AddError("Failed to publish", err.Error())
 			return live, diags
 		}
+		if res.PublishablePublish == nil {
+			diags.AddError("Failed to publish", "Shopify returned no result.")
+			return live, diags
+		}
 		diags.Append(client.UserErrorDiagsWith("Failed to publish", res.PublishablePublish.UserErrors, attributePath)...)
 		if diags.HasError() {
 			return live, diags
@@ -149,6 +153,10 @@ func Sync(ctx context.Context, c *client.Client, t Target, live, want []string) 
 			diags.AddError("Failed to unpublish", err.Error())
 			return live, diags
 		}
+		if res.PublishableUnpublish == nil {
+			diags.AddError("Failed to unpublish", "Shopify returned no result.")
+			return live, diags
+		}
 		diags.Append(client.UserErrorDiagsWith("Failed to unpublish", res.PublishableUnpublish.UserErrors, attributePath)...)
 		if diags.HasError() {
 			return live, diags
@@ -157,15 +165,17 @@ func Sync(ctx context.Context, c *client.Client, t Target, live, want []string) 
 			after = (*p).GetResourcePublicationsV2()
 		}
 	}
-	if err := Complete(ctx, &after, func(cursor *string) ([]string, *string, error) { return t.More(ctx, cursor) }); err != nil {
+	if err := Complete(ctx, &after, t.More); err != nil {
 		diags.AddError("Failed to read the publications", err.Error())
 		return live, diags
 	}
 	got := IDs(after)
-	if err := mismatch(want, got); err != nil {
-		diags.AddAttributeError(path.Root("publication_ids"), "Publications differ from the configuration", err.Error())
+	if msg := mismatch(want, got); msg != "" {
+		diags.AddAttributeError(path.Root("publication_ids"), "Publications differ from the configuration", msg)
+		return got, diags
 	}
-	return got, diags
+	// An extra publication (a racing auto-publish channel) would make the result differ from the plan; the next refresh shows it as drift.
+	return want, diags
 }
 
 func inputs(ids []string) []client.PublicationInput {
@@ -179,20 +189,13 @@ func inputs(ids []string) []client.PublicationInput {
 // attributePath maps every publishing error to publication_ids, the only thing the mutations take.
 func attributePath([]string) (path.Path, bool) { return path.Root("publication_ids"), true }
 
-// mismatch explains why the publications Shopify lists differ from the wanted ones.
-func mismatch(want, got []string) error {
-	missing, extra := Diff(got, want)
-	var parts []string
-	if len(missing) > 0 {
-		parts = append(parts, fmt.Sprintf("Shopify accepted %s but doesn't list them as sales channel publications. A market catalog's publication can't be managed here.", strings.Join(missing, ", ")))
+// mismatch explains why Shopify doesn't list a wanted publication, or returns "" when it does; an extra one is no error, since the next plan removes it.
+func mismatch(want, got []string) string {
+	missing, _ := Diff(got, want)
+	if len(missing) == 0 {
+		return ""
 	}
-	if len(extra) > 0 {
-		parts = append(parts, fmt.Sprintf("Shopify also lists %s, for example a channel that publishes automatically. Add it to publication_ids or turn auto-publish off for the channel.", strings.Join(extra, ", ")))
-	}
-	if len(parts) == 0 {
-		return nil
-	}
-	return fmt.Errorf("%s", strings.Join(parts, " "))
+	return fmt.Sprintf("Shopify accepted %s but doesn't list them as sales channel publications. A market catalog's publication can't be managed here.", strings.Join(missing, ", "))
 }
 
 // CreateFailedNote tells how to recover when publishing failed right after a create, which leaves the new object tainted.

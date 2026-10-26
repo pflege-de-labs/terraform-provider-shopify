@@ -11,6 +11,7 @@ import (
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/publishing"
 )
 
 var _ list.ListResourceWithConfigure = &ListResource{}
@@ -55,7 +56,7 @@ func listPage(ctx context.Context, c *client.Client) func(after *string) ([]clie
 		nodes := make([]client.ProductFields, len(conn.Nodes))
 		for i, n := range conn.Nodes {
 			nodes[i] = n.ProductFields
-			if err := fetchAllVariants(ctx, c, &nodes[i]); err != nil {
+			if err := completeProduct(ctx, c, &nodes[i]); err != nil {
 				return nil, nil, err
 			}
 		}
@@ -80,6 +81,7 @@ func listResult(ctx context.Context, req list.ListRequest, p *client.ProductFiel
 func listModel(ctx context.Context, p *client.ProductFields) (model, diag.Diagnostics) {
 	m := model{AdoptExisting: types.BoolValue(false), AllowDataDeletion: types.BoolValue(false)}
 	diags := setFromAPI(ctx, &m, p, nil)
+	m.PublicationIDs = publishing.NullIfEmpty(m.PublicationIDs)
 	if linkedOptionError(p) != nil {
 		m.Options, m.Variants = types.ListNull(optionType), types.ListNull(variantType)
 	}

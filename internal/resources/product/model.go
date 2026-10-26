@@ -10,6 +10,7 @@ import (
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/publishing"
 )
 
 type model struct {
@@ -28,6 +29,7 @@ type model struct {
 	GiftCard          types.Bool   `tfsdk:"gift_card"`
 	Options           types.List   `tfsdk:"options"`
 	Variants          types.List   `tfsdk:"variants"`
+	PublicationIDs    types.Set    `tfsdk:"publication_ids"`
 	AdoptExisting     types.Bool   `tfsdk:"adopt_existing"`
 	AllowDataDeletion types.Bool   `tfsdk:"allow_data_deletion"`
 }
@@ -92,6 +94,8 @@ func setFromAPI(ctx context.Context, m *model, p *client.ProductFields, written 
 	m.SEODescription = types.StringPointerValue(p.Seo.Description)
 	m.TemplateSuffix = types.StringPointerValue(p.TemplateSuffix)
 	m.GiftCard = types.BoolValue(p.IsGiftCard)
+	m.PublicationIDs, d = publishing.Value(ctx, publishing.IDs(p.GetResourcePublicationsV2()))
+	diags.Append(d...)
 	diags.Append(setVariantsFromAPI(ctx, m, p)...)
 	return diags
 }

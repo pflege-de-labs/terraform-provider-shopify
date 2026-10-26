@@ -23,6 +23,7 @@ import (
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/publishing"
 )
 
 const what = "product"
@@ -63,7 +64,8 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 		MarkdownDescription: "A product's core fields: title, handle, status, description, tags and SEO. " +
 			"**A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository:** products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, " +
 			"and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. " +
-			"Publishing and media are not managed yet; Shopify keeps whatever they hold. " +
+			"`publication_ids` publishes the product to sales channels; removing an ID unpublishes it there, so it disappears for customers. " +
+			"Media is not managed yet; Shopify keeps whatever it holds. " +
 			"Options linked to a metafield are read but can't be managed yet: leave `options` and `variants` unset for such a product. " +
 			"Destroying a product deletes its variants, inventory, media and metafield values: archive it with `status = \"ARCHIVED\"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. " +
 			"A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. " +
@@ -149,6 +151,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			},
 			"options":             optionsAttribute(),
 			"variants":            variantsAttribute(),
+			"publication_ids":     publishing.Attribute(what),
 			"adopt_existing":      patterns.AdoptExistingAttribute(what),
 			"allow_data_deletion": patterns.AllowDataDeletionAttribute(what + ", its variants, inventory and media"),
 		},
@@ -384,12 +387,15 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		}
 		id = &existing.Id
 	}
-	r.write(ctx, id, existing, &plan, &cfg, &resp.Diagnostics, resp.Private)
-	if resp.Diagnostics.HasError() {
+	if !r.write(ctx, id, existing, &plan, &cfg, &resp.Diagnostics, resp.Private) {
 		return
 	}
+	// The product exists even if publishing failed, so it goes into state, tainted.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
+	if resp.Diagnostics.HasError() {
+		resp.Diagnostics.AddWarning("The product was created", publishing.CreateFailedNote(what))
+	}
 }
 
 func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -455,10 +461,10 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 			return
 		}
 	}
-	r.write(ctx, &id, live, &plan, &cfg, &resp.Diagnostics, resp.Private)
-	if resp.Diagnostics.HasError() {
+	if !r.write(ctx, &id, live, &plan, &cfg, &resp.Diagnostics, resp.Private) {
 		return
 	}
+	// Written even if publishing failed: the product changed, and plan holds the publications it really has.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
@@ -521,17 +527,18 @@ func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequ
 }
 
 // write sends the configured attributes to the product with the given ID and live state (both nil create one) and writes the result into plan.
-func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFields, plan, cfg *model, diags *diag.Diagnostics, private patterns.PrivateSetter) {
+// It reports whether the product was written; publishing errors still land in diags after that.
+func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFields, plan, cfg *model, diags *diag.Diagnostics, private patterns.PrivateSetter) bool {
 	in, removed, d := buildInput(ctx, cfg, live)
 	diags.Append(d...)
 	if diags.HasError() {
-		return
+		return false
 	}
 	// The planned flag counts, unlike for destroy: the variants go in this same apply.
 	if len(removed) > 0 && !plan.AllowDataDeletion.ValueBool() {
 		diags.AddAttributeError(path.Root("variants"), "Removing variants would delete their stock",
 			fmt.Sprintf("This change deletes the variants %s with their inventory items and stock. Set allow_data_deletion = true to allow it.", strings.Join(removed, "; ")))
-		return
+		return false
 	}
 	var ident *client.ProductSetIdentifiers
 	if id != nil {
@@ -540,23 +547,25 @@ func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFi
 	res, err := client.SetProduct(ctx, r.client, ident, in)
 	if err != nil {
 		diags.AddError("Failed to write "+what, err.Error())
-		return
+		return false
 	}
 	diags.Append(client.UserErrorDiagsWith("Failed to write "+what, res.ProductSet.UserErrors, errorPath)...)
 	if diags.HasError() {
-		return
+		return false
 	}
 	if res.ProductSet.Product == nil {
 		diags.AddError("Failed to write "+what, "Shopify returned no product.")
-		return
+		return false
 	}
 	p := &res.ProductSet.Product.ProductFields
-	if err := fetchAllVariants(ctx, r.client, p); err != nil {
+	if err := completeProduct(ctx, r.client, p); err != nil {
 		diags.AddError("Failed to read the written "+what, err.Error())
-		return
+		return false
 	}
 	diags.Append(setFromAPI(ctx, plan, p, &p.DescriptionHtml)...)
 	diags.Append(patterns.RememberWrittenHTML(ctx, private, p.DescriptionHtml)...)
+	diags.Append(r.publish(ctx, p, plan, cfg)...)
+	return true
 }
 
 // getByID returns the product with all its variants, or nil when it doesn't exist.
@@ -565,7 +574,7 @@ func (r *Resource) getByID(ctx context.Context, id string) (*client.ProductField
 	if err != nil || res.Product == nil {
 		return nil, err
 	}
-	return &res.Product.ProductFields, fetchAllVariants(ctx, r.client, &res.Product.ProductFields)
+	return &res.Product.ProductFields, completeProduct(ctx, r.client, &res.Product.ProductFields)
 }
 
 // getByHandle returns the product with all its variants, or nil when no product has the handle.
@@ -574,5 +583,5 @@ func (r *Resource) getByHandle(ctx context.Context, handle string) (*client.Prod
 	if err != nil || res.ProductByIdentifier == nil {
 		return nil, err
 	}
-	return &res.ProductByIdentifier.ProductFields, fetchAllVariants(ctx, r.client, &res.ProductByIdentifier.ProductFields)
+	return &res.ProductByIdentifier.ProductFields, completeProduct(ctx, r.client, &res.ProductByIdentifier.ProductFields)
 }
