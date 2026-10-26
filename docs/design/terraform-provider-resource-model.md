@@ -54,6 +54,8 @@ provider "shopify" {
 | `shopify_menu` | `<handle>` |
 | `shopify_shop_locale` | `<locale>`, e.g. `fr` (no GID exists; `id` is the locale code) |
 | `shopify_shop_policy` | `<TYPE>`, e.g. `TERMS_OF_SERVICE` |
+| `shopify_privacy_settings` | `default` (singleton; `id` is the shop GID) |
+| `shopify_consent_policy` | `<COUNTRY>` or `<COUNTRY>/<REGION>`, e.g. `DE`, `US/USCA` |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -528,6 +530,92 @@ Notes:
 - **Review Focus 1:** acceptance step reads the policy back through the client after destroy and expects the body unchanged. **Review Focus 2:** `body` is the only writable attribute, so the step doesn't apply; the test instead edits another type's policy through the client and expects an empty plan.
 
 **List:** no config. Lists every policy with a non-empty body; empty rows are skipped, since they fail the `body` validator and mean "no policy". `DisplayName`: `TERMS_OF_SERVICE (Terms of service)`, from `type` and `title`. Results carry `type` and `body`.
+
+---
+
+## 9d. Resources: `shopify_privacy_settings` and `shopify_consent_policy`
+
+One task, one package (`privacysettings`), two resource types: consent policies can only be written once Shopify's cookie banner is off, which is a privacy setting.
+
+```hcl
+resource "shopify_privacy_settings" "this" {
+  cookie_banner_auto_managed = false # we use our own consent banner (CMP)
+  # data_sale_opt_out_page_auto_managed, privacy_policy_auto_managed: unset = unmanaged
+}
+
+resource "shopify_consent_policy" "de" {
+  country_code     = "DE"
+  consent_required = true
+  depends_on       = [shopify_privacy_settings.this]
+}
+
+resource "shopify_consent_policy" "us_ca" {
+  country_code               = "US"
+  region_code                = "USCA"
+  data_sale_opt_out_required = true
+  depends_on                 = [shopify_privacy_settings.this]
+}
+```
+
+### `shopify_privacy_settings`
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | Computed, UseStateForUnknown. The shop GID (`gid://shopify/Shop/<n>`): `PrivacySettings` has no ID of its own |
+| `cookie_banner_auto_managed` | bool | Optional + Computed, UseStateForUnknown; unset = unmanaged. Can only be switched off, see below |
+| `data_sale_opt_out_page_auto_managed` | bool | Same |
+| `privacy_policy_auto_managed` | bool | Same |
+| `cookie_banner_enabled` | bool | Computed. `banner.enabled`, informational |
+
+Import key: `default` (the store's only privacy settings, as for `shopify_delivery_profile`). Read: `privacySettings { banner { autoManaged enabled } dataSaleOptOutPage { autoManaged } privacyPolicy { autoManaged } }` plus `shop { id }`.
+
+Granularity: one aggregate resource. `privacySettings` is a singleton and `privacyFeaturesDisable` takes the feature list in one call.
+
+Notes:
+- **The API can only switch features off.** The Mutation type has `privacyFeaturesDisable(featuresToDisable: [COOKIE_BANNER | DATA_SALE_OPT_OUT_PAGE | PRIVACY_POLICY])` and nothing that enables them (checked: no other mutation mentions privacy, banner or cookies). So:
+  - `false` in config and `true` live: Create/Update call `privacyFeaturesDisable` with every such feature in one call.
+  - `true` in config and `false` live: error, "can only be turned back on in the Shopify admin". ModifyPlan raises it at plan time when state is known; Create (adopting) raises it at apply time.
+  - Someone re-enabling a feature in the admin shows as drift, and the next apply turns it off again.
+- **Why a resource and not a data source:** it is the declared, enforced precondition for `shopify_consent_policy` (a shop with its own consent banner wants Shopify's banner to stay off), and it corrects admin drift in the one direction the API allows. If the controller prefers, the read side alone works as a data source; then consent policies document the admin step instead.
+- `TODO(verify)`: which read field flips on disable: `autoManaged`, `banner.enabled`, or both. Not tried on the dev store: there is no API path back, and an acceptance test that disables a feature is one-way too (see Testing).
+- **Pattern A (implicit):** singleton. Create = read, then disable what config asks; destroy only removes it from state with a warning and never touches a feature.
+- **No Pattern B.**
+- Errors: `PrivacyFeaturesDisableUserError`, only code `FAILED`. Reported, not retried.
+- **Fit:** good. Set once, rarely changed.
+- **Scopes:** `read_privacy_settings` / `write_privacy_settings` (reads checked).
+
+### `shopify_consent_policy`
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `ConsentPolicy` GID. Computed, UseStateForUnknown. Shopify's defaults have synthetic IDs `gid://shopify/ConsentPolicy/SD-<code>`; a written policy has a numeric ID |
+| `country_code` | string | Required, **RequiresReplace** (part of the key). `PrivacyCountryCode`, two uppercase letters |
+| `region_code` | string | Optional, **RequiresReplace** (part of the key). Country code plus subdivision, e.g. `USCA`, `CAQC`; only US and CA regions exist. Unset = the country-level policy |
+| `consent_required` | bool | Optional + Computed, UseStateForUnknown; unset = unmanaged |
+| `data_sale_opt_out_required` | bool | Optional + Computed, UseStateForUnknown; unset = unmanaged |
+
+Import key: `<COUNTRY>` or `<COUNTRY>/<REGION>` (`DE`, `US/USCA`), parsed with `patterns.SplitImportKey`. Read: `consentPolicy(id:)` when the GID is numeric, otherwise or when it returns nothing, `consentPolicy(countryCode:, regionCode:)`. `SD-` IDs don't resolve through `consentPolicy(id:)` (returns `[]`, checked), and writing a default turns it into a numeric row, so the GID changes and `MutableIdentity` is set. `consentPolicy(countryCode: X)` without `regionCode` returns only the country-level row (checked for `CA`); Read still filters `regionCode == null` to be safe.
+
+Granularity: one resource per country or region. Each of the 319 rows is written independently, and a shop changes a handful; an aggregate resource would make every config carry all 319 rows.
+
+Notes:
+- `consentPolicyUpdate(consentPolicies: [...])` upserts by country and region; there is no delete. Create and Update send one element.
+- **Precondition:** every write fails while Shopify's cookie banner is on: `SHOPIFY_COOKIE_BANNER_NOT_DISABLED`, "Shopify's cookie banner must be disabled.", `field = null` (checked on the dev store, also for a no-op write). The diagnostic says to set `cookie_banner_auto_managed = false` on `shopify_privacy_settings` and add `depends_on`.
+- **Pattern A (implicit):** a policy exists for every supported country and region (Shopify's default if none was written), so Create always adopts: it upserts the configured values. No `adopt_existing` flag: the values are two booleans, nothing a merchant authored. Destroy only removes it from state with a warning; the row keeps its values (it does not fall back to Shopify's default, and there is no API to make it).
+- **No Pattern B.**
+- `TODO(verify)` (blocked by the precondition on the dev store): that an input with only one of the two booleans leaves the other unchanged (needed for "unset = unmanaged"; if it resets it, the resource sends the current value for unset attributes); that writing an `SD-` row returns a numeric ID; whether `consentPolicyRegions` (317 entries) must be checked locally or `UNSUPORTED_CONSENT_POLICY` is enough (it is enough until shown otherwise).
+- Errors: `COUNTRY_CODE_REQUIRED`, `REGION_CODE_REQUIRED`, `REGION_CODE_MUST_MATCH_COUNTRY_CODE` (mapped to `region_code`), `SHOPIFY_COOKIE_BANNER_NOT_DISABLED`, `UNSUPORTED_CONSENT_POLICY` (Shopify's spelling). None is retried.
+- **Checked on the dev store (2026-10-26):** 319 policies, 3 of them non-default (`DE` consent required, `IS`, `LI`), all others `SD-` with both flags `false`. The 3 non-default rows exist while the banner is auto-managed and nothing was written, so Shopify creates non-`SD-` rows too: "non-default" means "not a system default row", not "written by the merchant". `consentPolicy(countryCode: DE)` returns only the numeric row, not an `SD-DE` one.
+- **Fit:** good when the shop runs its own consent banner (CMP); not manageable while Shopify's banner is on. Description says so.
+- **Scopes:** `read_privacy_settings` / `write_privacy_settings` (reads checked; writes blocked by the precondition, not by scope).
+
+### Testing (both)
+- Writes are one-way (privacy settings) or need the banner off (consent policies). Default acceptance runs therefore cover read, import, identity and the list resource; the write steps run only when the dev store's banner is already off, otherwise `t.Skip("Shopify's cookie banner is on; consent policies can't be written")`. Turning the dev store's banner off is a one-time user decision (admin can turn it back on), not something a test does.
+- Review Focus 1: after destroy, read back through the client and expect unchanged values. Review Focus 2 (consent policy, banner off): set `consent_required` only, change `data_sale_opt_out_required` through the client, expect an empty plan.
+
+**List (`shopify_privacy_settings`):** no config. One result, `DisplayName` `Privacy settings`, with the three `*_auto_managed` values.
+
+**List (`shopify_consent_policy`):** no config. Lists only rows whose ID has no `SD-` prefix (the schema documents the prefix as "system default"), so Shopify's 316 untouched defaults stay out; on the dev store that leaves `DE`, `IS`, `LI`. `DisplayName`: `DE` or `US/USCA`, the import key. Results carry the key and both booleans; importing them plans as import-only even while the banner is on (no write).
 
 ---
 
