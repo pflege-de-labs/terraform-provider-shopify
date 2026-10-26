@@ -45,3 +45,5 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 2: complete. #13 closed, branch deleted.
 - D1 still blocks Phase B: merge provider #20 first (so `app/shopify.app.toml` has `include_config_on_deploy`), then link + deploy the dev app and reinstall it on the dev store.
 - Task list revised for D4–D6 (in Phase 2 step order): 4 web presence (7); 5 shop locales, 6 shop policies, 7 privacy settings + consent policy, 8 checkout and accounts configuration, 9 checkout branding (8); 10 data sources `shopify_metafield_definition` + `shopify_metaobject_definition` (9); 11 data source `shopify_fulfillment_service` (10); 12 catalogs, 13 data source `shopify_publication` (11); 14 products, 15 collections, 16 pages, 17 blogs, 18 files, 19 discounts, 20 customer segments, 21 data source `shopify_metaobject` (13).
+- Task 3: branch layout: `feat/phase2-07-web-presence` from `feat/phase2-resources` @ fa5cdc0 (main merged in at fa5cdc0). Plain git stacking; pushes over HTTPS (gh token) while the SSH key is unavailable.
+- Task 3: complete
