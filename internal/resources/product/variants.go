@@ -9,6 +9,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
@@ -140,9 +141,9 @@ func comboKey(c combo) string {
 	return strings.Join(parts, "\x01")
 }
 
-// linkedOptionError says why a product with a linked option can't be managed: writing it without linkedMetafield would unlink it.
+// linkedOptionError says why options and variants of a product with a linked option can't be written: without linkedMetafield it would be unlinked.
 func linkedOptionError(p *client.ProductFields) error {
-	// TODO(verify): whether staging or production products use linked options.
+	// TODO(verify): how many staging/production products have linked options; Read, list and this refusal are unit-tested only, the dev store has none.
 	for _, o := range p.Options {
 		if lm := o.LinkedMetafield; lm != nil {
 			ns, key := "", ""
@@ -152,7 +153,8 @@ func linkedOptionError(p *client.ProductFields) error {
 			if lm.Key != nil {
 				key = *lm.Key
 			}
-			return fmt.Errorf("option %q of product %s is linked to the metafield %s.%s. Linked options are not supported yet", o.Name, p.Handle, ns, key)
+			return fmt.Errorf("option %q of product %s is linked to the metafield %s.%s, and linked options can't be managed yet. "+
+				"Leave options and variants unset for this product; Shopify then keeps them as they are", o.Name, p.Handle, ns, key)
 		}
 	}
 	return nil
@@ -161,10 +163,6 @@ func linkedOptionError(p *client.ProductFields) error {
 // setVariantsFromAPI sets options and variants from the live product; m.Variants, if known, supplies the spellings to keep.
 func setVariantsFromAPI(ctx context.Context, m *model, p *client.ProductFields) diag.Diagnostics {
 	var diags diag.Diagnostics
-	if err := linkedOptionError(p); err != nil {
-		diags.AddError("Unsupported product option", err.Error())
-		return diags
-	}
 	prior := map[string]variantModel{}
 	if ms, cs, ok := variantsOf(ctx, m.Variants); ok {
 		for i := range ms {
@@ -255,6 +253,10 @@ func optionsAndVariantsInput(ctx context.Context, cfg *model, live *client.Produ
 	}
 	liveOpts, liveCombos := []option{}, []combo{}
 	if live != nil {
+		if err := linkedOptionError(live); err != nil {
+			diags.AddAttributeError(path.Root("options"), "Linked product option", err.Error())
+			return nil, nil, nil, diags
+		}
 		liveOpts, liveCombos = liveShape(live)
 	}
 	keep, removed := matchVariants(liveOpts, liveCombos, opts, cs)

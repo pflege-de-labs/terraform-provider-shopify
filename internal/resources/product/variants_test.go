@@ -235,13 +235,60 @@ func TestSetVariantsFromAPIDefaultVariant(t *testing.T) {
 	}
 }
 
-func TestSetVariantsFromAPILinkedOption(t *testing.T) {
+// linkedSizeSM is sizeSM with Size linked to a category metafield.
+func linkedSizeSM() *client.ProductFields {
 	p := sizeSM()
 	p.Options[0].LinkedMetafield = &client.ProductFieldsOptionsProductOptionLinkedMetafield{Namespace: ptr("shopify"), Key: ptr("size")}
+	return p
+}
+
+func TestSetVariantsFromAPILinkedOption(t *testing.T) {
 	m := unsetModel()
-	d := setVariantsFromAPI(context.Background(), &m, p)
-	if !d.HasError() || !strings.Contains(d[0].Detail(), `"Size"`) || !strings.Contains(d[0].Detail(), "shopify.size") {
-		t.Errorf("diags = %v, want an error naming the option and its metafield", d)
+	if d := setVariantsFromAPI(context.Background(), &m, linkedSizeSM()); d.HasError() {
+		t.Fatalf("diags = %v, want a linked option read without error", d)
+	}
+	if want := optionsList(t, option{"Size", []string{"S", "M"}}); !m.Options.Equal(want) {
+		t.Errorf("options = %s, want %s", m.Options, want)
+	}
+}
+
+func TestBuildInputRefusesLinkedOption(t *testing.T) {
+	m := unsetModel()
+	m.Options = optionsList(t, option{"Size", []string{"S", "M"}})
+	m.Variants = variantsList(t, cfgVariant(combo{"Size": "S"}, nil), cfgVariant(combo{"Size": "M"}, nil))
+	in, _, d := buildInput(context.Background(), &m, linkedSizeSM())
+	if !d.HasError() || !strings.Contains(d[0].Detail(), `"Size"`) || !strings.Contains(d[0].Detail(), "shopify.size") || !strings.Contains(d[0].Detail(), "unset") {
+		t.Fatalf("diags = %v, want an error naming the linked option and saying to leave options and variants unset", d)
+	}
+	if in.ProductOptions != nil || in.Variants != nil {
+		t.Errorf("input carries options or variants for a linked product: %+v", in)
+	}
+}
+
+func TestBuildInputLinkedOptionCoreOnly(t *testing.T) {
+	m := unsetModel()
+	m.Vendor = types.StringValue("v")
+	in, _, d := buildInput(context.Background(), &m, linkedSizeSM())
+	if d.HasError() {
+		t.Fatalf("diags = %v, want core fields written to a linked product", d)
+	}
+	if in.ProductOptions != nil || in.Variants != nil || in.Vendor == nil {
+		t.Errorf("input = %+v, want only the core fields", in)
+	}
+}
+
+func TestListModelLinkedOption(t *testing.T) {
+	ctx := context.Background()
+	m, d := listModel(ctx, linkedSizeSM())
+	if d.HasError() {
+		t.Fatal(d)
+	}
+	if !m.Options.IsNull() || !m.Variants.IsNull() || m.Handle.ValueString() != "h" {
+		t.Errorf("linked product listed with options %s, variants %s, handle %s; want options and variants null", m.Options, m.Variants, m.Handle)
+	}
+	m, _ = listModel(ctx, sizeSM())
+	if m.Options.IsNull() || m.Variants.IsNull() {
+		t.Errorf("unlinked product listed without options or variants")
 	}
 }
 

@@ -69,6 +69,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"**A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository:** products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, " +
 			"and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. " +
 			"Publishing and media are not managed yet; Shopify keeps whatever they hold. " +
+			"Options linked to a metafield are read but can't be managed yet: leave `options` and `variants` unset for such a product. " +
 			"Destroying a product deletes its variants, inventory, media and metafield values: archive it with `status = \"ARCHIVED\"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. " +
 			"A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. " +
 			"Import with the handle.",
@@ -163,7 +164,9 @@ func optionsAttribute() schema.ListNestedAttribute {
 	return schema.ListNestedAttribute{
 		MarkdownDescription: "Options in position order, at most 3, each with its values in position order. Set together with `variants`; when both are unset they are unmanaged. " +
 			"`[]` is a product without options, which has one default variant. " +
-			"Renaming an option or value where it stands keeps its variants. A new name at another position counts as removing the old value and adding a new one, so rename and reorder in separate applies.",
+			"Renaming an option or value where it stands keeps its variants. A new name at another position counts as removing the old value and adding a new one, so rename and reorder in separate applies. " +
+			"Dropping an option while adding another in the same apply deletes and recreates every variant. " +
+			"A product with an option linked to a metafield (such as a category metafield) can't have its options and variants managed yet; they are read only, and setting them fails.",
 		Optional:      true,
 		Computed:      true,
 		PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},

@@ -28,7 +28,7 @@ func (r *ListResource) ListResourceConfigSchema(ctx context.Context, req list.Li
 	resp.Schema = listschema.Schema{
 		MarkdownDescription: "Lists all products of the store, gift card products included. " +
 			"Generated config carries every core attribute and one block per variant, so a large catalogue produces a long file. " +
-			"A product with a linked option is listed with an error, since linked options are not supported yet.",
+			"A product with a linked option is listed with `options` and `variants` left out, so they stay unmanaged.",
 	}
 }
 
@@ -69,11 +69,21 @@ func listResult(ctx context.Context, req list.ListRequest, p *client.ProductFiel
 	res.DisplayName = displayName(p)
 	res.Diagnostics.Append(res.Identity.Set(ctx, patterns.IDIdentity{ID: types.StringValue(p.Id)})...)
 	if req.IncludeResource {
-		m := model{AdoptExisting: types.BoolValue(false), AllowDataDeletion: types.BoolValue(false)}
-		res.Diagnostics.Append(setFromAPI(ctx, &m, p, nil)...)
+		m, d := listModel(ctx, p)
+		res.Diagnostics.Append(d...)
 		res.Diagnostics.Append(res.Resource.Set(ctx, &m)...)
 	}
 	return res
+}
+
+// listModel is what Read would set, minus options and variants of a product with a linked option, which can't be managed.
+func listModel(ctx context.Context, p *client.ProductFields) (model, diag.Diagnostics) {
+	m := model{AdoptExisting: types.BoolValue(false), AllowDataDeletion: types.BoolValue(false)}
+	diags := setFromAPI(ctx, &m, p, nil)
+	if linkedOptionError(p) != nil {
+		m.Options, m.Variants = types.ListNull(optionType), types.ListNull(variantType)
+	}
+	return m, diags
 }
 
 func displayName(p *client.ProductFields) string {
