@@ -129,4 +129,12 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 10: minor (deferred): `accSetup` test helper copied into ~7 packages; candidate for internal/acctest
 - Task 10: complete (commits 54e56c7..a9fb025, review clean after 1 fix round)
 - Step 9 complete (for real).
-- Task 11 (fulfillment service data source): dispatched (model sonnet)
+- Step 10: branch feat/phase2-10-fulfillment-service-data-source from step 9 @ 3f537c1. Task 11 brief written by controller.
+- Task 11 (fulfillment service data source): dispatched (base 3f537c1, model sonnet)
+- Task 11: implemented 3f537c1..761ceb7 (DONE; schema differs from brief: no permitsSkuSharing, manual id is gid://shopify/FulfillmentService/manual; dev store has only manual; TODO(verify) location scope for the list). Controller re-ran make fmt lint test with SHOPIFY_*/TF_ACC unset: exit 0, 0 issues; make generate: no diff. Review dispatched (sonnet).
+- Task 11: review: spec ✅, quality Approved, 0 Critical/Important. ⚠️ app toml scopes: resolved, dev token holds write_fulfillments (D1 check).
+- Task 11: minor (deferred): `manual` acc test asserts only Set on booleans/service_name; assert values and that callback_url is null (data_source_test.go:724)
+- Task 11: minor (deferred): no unit test of ACCESS_DENIED branch (same as sibling data sources)
+- Task 11: complete (commits 3f537c1..761ceb7, review clean)
+- Step 10 complete.
+- Ruling S11-1: step 11 design (catalogs resource + publication data source) runs as one design-only dispatch (opus), controller reviews before implementation — catalogs have three subtypes (market, app, company location) and link to publications and price lists, which needs real design — costs one more dispatch.

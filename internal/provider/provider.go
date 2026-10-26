@@ -22,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/fulfillmentservice"
 	metafielddefinitionds "github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/metafielddefinition"
 	metaobjectdefinitionds "github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/metaobjectdefinition"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/shop"
@@ -208,6 +209,7 @@ func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListR
 
 func (p *ShopifyProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
+		fulfillmentservice.NewDataSource,
 		metafielddefinitionds.NewDataSource,
 		metaobjectdefinitionds.NewDataSource,
 		shop.NewDataSource,

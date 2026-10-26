@@ -57,7 +57,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_metaobjects` | metaobject entries | planned | volatile (content) |
 | `write_files` | files and media | planned | volatile (content) |
 | `write_inventory` | inventory levels | planned | volatile |
-| `write_fulfillments` | fulfillment services | planned | app-owned (callback URL) |
+| `read_fulfillments` (or `write_fulfillments`) | `shopify_fulfillment_service` data source (fulfillment services are owned by Shopify or other apps, not managed) | ✅ data source | good (read-only) |
 | `write_payment_customizations`, `write_delivery_customizations`, `write_validations`, `write_cart_transforms`, `write_fulfillment_constraint_rules` | Function-backed customizations (need a Function from an installed app) | planned | good once the Function exists |
 
 ⚠ Which scope a metafield definition needs per owner type is not documented by Shopify. Without it, listing returns an empty result instead of an error (checked on the dev store), and the `shopify_metafield_definition` data source reports "not found" with a hint about the scope. Verify each mapping when its owner type is implemented.

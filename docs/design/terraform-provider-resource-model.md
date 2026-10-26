@@ -754,6 +754,48 @@ data "shopify_metaobject_definition" "material" {
 
 ---
 
+## 9h. Data source: `shopify_fulfillment_service`
+
+Decision D4 (2026-10-26). Discovery found two fulfillment services on staging and production: `manual` (Shopify's built-in) and `test_fulfillmentservice_creation` (owned by another app). Both are excluded from import (D3). The data source makes them referenceable, for example by a configuration that needs the service's location or ID. There is no resource: this provider doesn't manage fulfillment services.
+
+```hcl
+data "shopify_fulfillment_service" "manual" {
+  handle = "manual"
+}
+```
+
+**Argument (Required):** `handle`, the service's human-readable unique identifier (`manual`).
+
+**Attributes (all Computed, from `FulfillmentService` in the 2026-10 schema):**
+
+| Attribute | API field | Why |
+|---|---|---|
+| `id` | `id` | GID; `manual`'s is `gid://shopify/FulfillmentService/manual`, not numeric (checked on the dev store) |
+| `service_name` | `serviceName` | name merchants see |
+| `type` | `type` | `MANUAL`, `THIRD_PARTY` or `GIFT_CARD`; tells built-in from app services |
+| `location_id` | `location.id` | the service's location GID, the usual reason to look it up; null if the API returns none |
+| `callback_url` | `callbackUrl` | where Shopify calls the service; null for `manual` |
+| `inventory_management` | `inventoryManagement` | whether the service reports inventory |
+| `tracking_support` | `trackingSupport` | whether the service supplies tracking numbers |
+| `requires_shipping_method` | `requiresShippingMethod` | whether products must be physically shipped |
+
+Left out: `fulfillmentOrdersOptIn` (deprecated, always `true`), `createdAt` (not a useful reference). `permitsSkuSharing` no longer exists in 2026-10, so it isn't offered.
+
+**Lookup:** `shop { fulfillmentServices { ... } }` (not deprecated; there is no root field and no `query:` filter) lists every installed service, and the data source picks the one whose `handle` matches exactly. The list is small, so no pagination. There is no fallback by GID and nothing is written beyond the read.
+
+**Errors:**
+- Not found: error naming the handle and listing the handles that exist (`no fulfillment service with handle "x"; available handles: manual, ...`).
+- Missing scope (`read_fulfillments`): Shopify's `ACCESS_DENIED` is reported with the scope name.
+- Nothing is retried (throttling is handled in the client).
+
+**Scopes:** `read_fulfillments` (or `write_fulfillments`). `TODO(verify)`: whether the list also needs a location scope to return `location`.
+
+**Fit:** good. Read-only reference; services installed by apps come and go, and the data source reads the current state on every plan.
+
+**Tests:** acceptance: read `manual` and check its attributes (the dev store has only `manual`, so a third-party service is covered by unit tests only); not found. Unit: match by handle, the not-found message, mapping from the API result.
+
+---
+
 ## 10. Not covered
 
 Since 2026-10-23 the provider aims to cover every store object the Admin API can manage; remaining types are planned in [[implementation-plan]] Phase 2. Not covered:
