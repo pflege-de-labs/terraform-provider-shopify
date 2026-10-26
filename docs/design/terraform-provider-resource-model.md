@@ -59,6 +59,7 @@ provider "shopify" {
 | `shopify_checkout_and_accounts_configuration` | `published`, or the configuration `<name>` |
 | `shopify_catalog` | `<title>` (unique across all catalogs; market catalogs only, see §9i) |
 | `shopify_product` | `<handle>` (unique per shop, see §9k) |
+| `shopify_collection` | `<handle>` (unique per shop, see §9l) |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -1072,6 +1073,89 @@ resource "shopify_collection" "pflegehilfsmittel" {
 Open for that task: whether detaching a file through `productSet` deletes it (deleting the product deleted its only image, checked; Pattern B of `shopify_file` must account for it), variant media (`ProductVariantSetInput.file`), and collection images (`CollectionCreateInput.image` takes an `ImageInput` URL, not a file ID; `TODO(verify)`). Deprecated `productCreateMedia`, `productUpdateMedia`, `productDeleteMedia` are not used.
 
 **Dev store (2026-10-26):** probes created three products (`tf-design-probe-1`, `-2`, `-3`) and published, unpublished and re-statused them; all three were deleted, along with the one image added to `-2`. Two probes landed in `frontpage`, which gained an empty `Untitled Source`; the source was removed again, so `frontpage` is back to `sources: []`, 0 products, `MOST_RELEVANT`. End state equals the start: 0 products, 0 files, 1 collection.
+
+---
+
+## 9l. Resource: `shopify_collection`
+
+Discovery: 14 collections on staging, 17 on production, merchant-owned (D2: build). Collections are closer to configuration than products (they back navigation and menus, §9), but their membership and texts are edited in the admin, so the type is volatile too.
+
+```hcl
+# Rule-based ("smart"): products match conditions
+resource "shopify_collection" "pflegehilfsmittel" {
+  handle     = "pflegehilfsmittel"
+  title      = "Pflegehilfsmittel"
+  sort_order = "BEST_SELLING"   # optional, unset = unmanaged (created as MOST_RELEVANT)
+  match_type = "ANY"
+  conditions = jsonencode([
+    { productTag = { relation = "TAGGED_WITH", values = ["pflegehilfsmittel"], matchType = "ANY" } },
+    { variantPrice = { relation = "GREATER_THAN", value = { amount = "5", currencyCode = "EUR" } } },
+  ])
+  publication_ids = [data.shopify_publication.online_store.id] # §9k.3
+}
+
+# Manual: an explicit product list
+resource "shopify_collection" "empfehlungen" {
+  handle      = "empfehlungen"
+  title       = "Unsere Empfehlungen"
+  product_ids = [shopify_product.bettschutz.id]
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `Collection` GID. Computed, UseStateForUnknown |
+| `handle` | string | Required, import key. Updatable in place. Same validator as `shopify_product.handle` (`TODO(verify)`: that collections normalise handles like products) |
+| `title` | string | Required |
+| `description_html` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. Same keep-or-take rule as products (§9k.1); `TODO(verify)`: that collections repair HTML the same way |
+| `sort_order` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `CollectionSortOrder`: `ALPHA_ASC`, `ALPHA_DESC`, `BEST_SELLING`, `MOST_RELEVANT`, `CREATED`, `CREATED_DESC`, `MANUAL`, `PRICE_ASC`, `PRICE_DESC`. Created as `MOST_RELEVANT` when unset (checked) |
+| `seo_title`, `seo_description` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged |
+| `template_suffix` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged |
+| `match_type` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `ANY` or `ALL`: how `conditions` combine. Null for a collection without conditions |
+| `conditions` | string (JSON) | Optional; unset = unmanaged. A JSON list of `CollectionSourceInclusionConditionInput` objects in the API's camelCase, one key each. See "Conditions" |
+| `product_ids` | set(string) | Optional + Computed, UseStateForUnknown; unset = unmanaged. Products included by hand (the source's `selections`), whatever the conditions say |
+| `source_id` | string | Computed, UseStateForUnknown. The `CollectionConditionsSource` GID that holds `match_type`, `conditions` and `product_ids` |
+| `adopt_existing` | bool | Pattern A, see below |
+
+**Manual and smart collections are one model in 2026-10.** `Collection.ruleSet` is deprecated ("Use `sources` instead"), `collectionCreate` and `collectionUpdate` take only `collection: CollectionCreateInput` / `CollectionUpdateInput` (the legacy `input: CollectionInput` with `ruleSet` and `products` is gone), and `collectionAddProducts`/`collectionRemoveProducts` are deprecated in favour of `collectionUpdate(... inclusion.selectionsToAdd/selectionsToRemove)`. Membership lives in **sources**: a `CollectionConditionsSource` has an inclusion with `conditions` (the old rules) and `selections` (the old manual product list), both at once if wanted, plus exclusions. There are also sub-collection sources and shareable app-owned sources.
+- Checked on the dev store (2026-10-26): collections created with the legacy API (2026-07, `ruleSet` and `products`) read back in 2026-10 as exactly one non-shareable `CollectionConditionsSource` titled `Untitled Source`, target `PRODUCTS`, app `null`. A manual one holds its products as `selections` with `matchType = null`; a smart one holds its rules as `conditions`: `TAG EQUALS a` became `productTag { relation: TAGGED_WITH, values: ["a"], matchType: ALL }`, `VARIANT_PRICE GREATER_THAN 5` became `variantPrice { relation: GREATER_THAN, value: { amount: "5.0", currencyCode: "EUR" } }`, and `appliedDisjunctively: false` became `matchType: ALL`. Staging and production collections were made before 2026-10, so they are expected to look the same (`TODO(verify)` at the first import).
+- A collection with no sources is valid: `collectionCreate` without `sources` gives `sources: []`, and deleting the last source with `sourcesToDelete` works (both checked).
+
+**v1 manages one conditions source per collection**, the shape every legacy collection has. `match_type`, `conditions` and `product_ids` are that source's inclusion; `product_ids` are product-level selections (no `variantIds`, target `PRODUCTS`). Read decides per collection:
+- No source: the three attributes read as null / empty; `source_id` null.
+- Exactly one non-shareable `CollectionConditionsSource` with app `null`, target `PRODUCTS`, no variant-level selections and no `Unknown` condition: managed as above.
+- Anything else (several sources, a sub-collection source, a shareable or app-owned source, `VARIANTS` target, variant selections, a condition Shopify reports as `CollectionSourceInclusionConditionUnknown`): membership is unsupported. If config sets any of the three attributes, Read and plan fail with an error naming the source types; otherwise they stay null and import and list warn that membership is not managed.
+- Not managed in v1: exclusions (conditions and products), sub-collection and shareable sources (`collectionConditionsSource*` mutations), variant selections, the product order of `MANUAL` collections (`collectionReorderProducts`), collection image (with §9k.4), metafield values, translations. All roadmap.
+
+**Conditions: a JSON attribute, like checkout branding (§9f).** 18 inclusion condition kinds, each with its own relation enum and value shape (strings, `MoneyInput`, `WeightInput`, booleans, metafield definition IDs, taxonomy categories with `includeDescendants`, metaobject IDs). A typed block would need one nested block per kind or a flattened block with kind-specific fields; JSON in the input's own shape keeps Shopify's docs usable one to one, and users write `jsonencode([...])`.
+- Write: sent as is (`# @genqlient(for: "CollectionCreateSourceInclusionInput.conditions", bind: "encoding/json.RawMessage")` and the same for `CollectionUpdateSourceInclusionInput.conditionsToCreate`). Shopify validates kinds and values. ValidateConfig only checks that the value is a JSON list of objects with exactly one key each.
+- Read: map each output condition back to its input shape (pure logic, unit tests first): `__typename` `CollectionSourceInclusionCondition<Kind>` → key `<kind>` in lowerCamelCase (`ProductTag` → `productTag`, `MetafieldInt` → `metafieldInt`); `definition { id }` → `definitionId`; `value: Metaobject` / `values: [Metaobject]` → IDs; `values: [{ category { id } includeDescendants }]` → `[{ categoryId, includeDescendants }]`; `MoneyV2 { amount currencyCode }` and `Weight { value unit }` keep their keys; `id` is dropped. `MetafieldInteger` is deprecated in favour of `MetafieldInt` and not requested.
+- Equality: a custom string type with semantic equality, order-sensitive for the list (Read returned conditions in creation order, checked), numbers compared numerically (`"5"` reads back as `"5.0"`, checked), everything else exactly. Import and list use the mapped live list.
+- Update: when `conditions` or `match_type` change, one `collectionUpdate` call deletes every live condition and creates the planned list: `sourcesToUpdate: [{ condition: { id: source_id, inclusion: { matchType, conditionsToDelete: [<live ids>], conditionsToCreate: [<planned>] } } }]`. Checked: one call replaced a condition, changed `matchType` and swapped a selection at once, with no userErrors. `conditionsToUpdate` (per-condition patch by ID) is not used, so condition IDs are never stored.
+
+**`product_ids`:** Update sends the difference as `selectionsToAdd` / `selectionsToRemove` in the same `sourcesToUpdate` call (checked). Read pages `selections(first: 250)`. With no source yet (an empty collection, or `frontpage` on the dev store), the first write creates one with `sourcesToCreate: [{ source: { title: "Untitled Source", inclusion } }]`, the title Shopify gives migrated collections. Create sends the same in `sources`. Products deleted elsewhere drop out of the selections, which shows as drift; config that references `shopify_product.<x>.id` avoids it through dependency order.
+- The collection owns membership. `shopify_product` never sends `collections` / `collectionsToJoin` / `collectionsToLeave` (§9k.1), so the two can't fight.
+- Membership by conditions is computed asynchronously: `productsCount` was 0 right after the create and correct after the next call (checked), and `CollectionUpdatePayload` has a `job` (it was `null` in every probe). The provider never reads the matched products, only `conditions` and `selections`, which the payload returns at once (checked), so it doesn't wait for the job. `TODO(verify)`: whether selections on large collections ever come back only after the job.
+
+Import key: the handle. Read: `collection(id:)` first; if it is gone, `collectionByIdentifier(identifier: { handle })`; `MutableIdentity` is set. `collectionByHandle` is deprecated and not used. A taken handle fails on create ("Handle has already been taken", plain `UserError` with `field = ["collection"]`, checked; no `-1` suffix), mapped to `handle` by message since `field` names only the input.
+
+**Pattern A: `adopt_existing` only.** Every store has `frontpage` ("Home page", created with the shop; on the dev store `sources: []`, `MOST_RELEVANT`). It is an ordinary collection as far as the schema shows (no `isDefault`), so it needs `adopt_existing = true` like any taken handle: Create looks the handle up and updates it, destroy only removes it from state with a warning. `TODO(verify)`: whether `frontpage` can be deleted; not tried, since it couldn't be restored with its GID. On the dev store, Shopify put two of three new draft products into `frontpage` by itself (§9k.1), so a `frontpage` resource with `product_ids` set would see drift.
+
+**No Pattern B.** `collectionDelete` removes the collection, its sources, publications, translations and metafield values; the products stay (schema). Nothing outside the collection is destroyed, and a recreate from config restores it with a new GID. Menu items that point at it (`shopify_menu`, type `COLLECTION`) lose their target (`TODO(verify)`: whether Shopify removes such items or leaves them dangling); dependency order handles it when the menu references `shopify_collection.<x>.id`. The docs recommend `lifecycle { prevent_destroy = true }` for collections that back navigation. "Collection does not exist" on delete (`field = ["id"]`, checked) means already gone: removed from state without error.
+
+Notes:
+- Uses `collection(id:)`, `collectionByIdentifier`, `collections(first:)`, `collectionCreate(collection:)`, `collectionUpdate(collection:)`, `collectionDelete(input:)`. `collectionPublish`/`collectionUnpublish`, `collectionAddProducts(V2)`, `collectionRemoveProducts` and `ruleSet` are deprecated and not used; publishing is §9k.3.
+- `redirectNewHandle` is not sent (no URL redirects; roadmap type).
+- Conditions referencing metafield definitions or metaobjects carry store-specific GIDs; users reference `shopify_metafield_definition.<x>.id` or the data sources (§9g).
+- Errors: plain `UserError` from all three mutations, mapped by `field` where it names an attribute (`["collection","title"]` → `title`), otherwise to the resource with Shopify's message. Condition errors are reported as returned (no codes exist to map). None is retried.
+- **Fit: volatile.** The description says so; the rules of a smart collection are the part that suits Terraform best.
+- **Scopes:** `read_products` / `write_products` (collections belong to the products scope, `docs/bootstrapping.md`). `TODO(verify)`: confirmed only with every scope granted.
+- **Review Focus 1:** after destroy of an adopted collection, read it back through the client and expect it unchanged. **Review Focus 2:** set `sort_order` in one step, leave it out in the next, change it through the client in between: the config without `sort_order` plans empty; likewise `product_ids` unset while the client adds a product.
+- **Testing:** handles `tf-acc-collection-<random>`; one product made by the test (`shopify_product`, so §9k.1 lands first). Steps: manual (`product_ids` add and remove), smart (`conditions` change, `match_type` change), a collection that starts empty and gains a source, import by handle and identity. Unit tests first: condition output → input mapping for every kind in the schema, semantic equality, the source support check, selection diff.
+
+**List:** no config. `collections(first: 100)`, paged; requested cost with sources, `selections(first: 250)` and publications was 380 for 100 collections (checked). `DisplayName`: `<title> (<handle>)`. Results carry `handle`, `title`, the non-null Optional + Computed attributes, and `match_type` / `conditions` / `product_ids` when the source is supported; generated config then holds product GIDs, which tie it to the store (the docs say to replace them with references). App-owned collections aren't distinguishable in the schema; all collections are listed.
+
+**Dev store (2026-10-26):** probes created four collections (`tf-probe-legacy-smart` and `tf-probe-legacy-manual` with API 2026-07, `tf-probe-new` and `tf-probe-empty` with 2026-10) and deleted all four. `frontpage` gained an empty source twice through the product probes; both were removed with `sourcesToDelete`, so it is back to `sources: []`, 0 products, `MOST_RELEVANT`.
 
 ---
 
