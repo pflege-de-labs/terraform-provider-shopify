@@ -568,7 +568,7 @@ resource "shopify_consent_policy" "us_ca" {
 | `cookie_banner_auto_managed` | bool | Optional + Computed, UseStateForUnknown; unset = unmanaged. Can only be switched off, see below |
 | `data_sale_opt_out_page_auto_managed` | bool | Same |
 | `privacy_policy_auto_managed` | bool | Same |
-| `cookie_banner_enabled` | bool | Computed, UseStateForUnknown. `banner.enabled`, informational |
+| `cookie_banner_enabled` | bool | Computed, no `UseStateForUnknown`: it flips with the banner, so a plan that changes the banner shows it as known after apply. `banner.enabled`, informational |
 
 Import key: `default` (the store's only privacy settings, as for `shopify_delivery_profile`). Read: `privacySettings { banner { autoManaged enabled } dataSaleOptOutPage { autoManaged } privacyPolicy { autoManaged } }` plus `shop { id }`.
 
@@ -580,7 +580,7 @@ Notes:
   - `true` in config and `false` live: error, "can only be turned back on in the Shopify admin". ModifyPlan raises it at plan time when state is known; Create (adopting) raises it at apply time.
   - Someone re-enabling a feature in the admin shows as drift, and the next apply turns it off again.
 - **Why a resource and not a data source:** it is the declared, enforced precondition for `shopify_consent_policy` (a shop with its own consent banner wants Shopify's banner to stay off), and it corrects admin drift in the one direction the API allows. If the controller prefers, the read side alone works as a data source; then consent policies document the admin step instead.
-- **Checked on the dev store (2026-10-26):** `privacyFeaturesDisable([COOKIE_BANNER])` flips both `banner.autoManaged` and `banner.enabled` (`true`/`true` before, `false`/`false` after); `dataSaleOptOutPage` and `privacyPolicy` stayed `autoManaged: true`. The mutation returned `featuresDisabled: [COOKIE_BANNER]` and no userErrors. The other two features were never disabled. Read re-reads after the disable, because `cookie_banner_enabled` changes with it (it has no `UseStateForUnknown`, so a plan that changes the banner shows it as known after apply).
+- **Checked on the dev store (2026-10-26):** `privacyFeaturesDisable([COOKIE_BANNER])` flips both `banner.autoManaged` and `banner.enabled` (`true`/`true` before, `false`/`false` after); `dataSaleOptOutPage` and `privacyPolicy` stayed `autoManaged: true`. The mutation returned `featuresDisabled: [COOKIE_BANNER]` and no userErrors. The other two features were never disabled. Read re-reads after the disable, because `cookie_banner_enabled` changes with it (see the attribute table).
 - **Pattern A (implicit):** singleton. Create = read, then disable what config asks; destroy only removes it from state with a warning and never touches a feature.
 - **No Pattern B.**
 - Errors: `PrivacyFeaturesDisableUserError`, only code `FAILED`. Reported, not retried.
@@ -591,7 +591,7 @@ Notes:
 
 | Attribute | Type | Behaviour |
 |---|---|---|
-| `id` | string | `ConsentPolicy` GID. Computed, UseStateForUnknown. Shopify's defaults have synthetic IDs `gid://shopify/ConsentPolicy/SD-<code>`; a written policy has a numeric ID |
+| `id` | string | `ConsentPolicy` GID. Computed; a custom `UseStateForUnknown` keeps it unless it is an `SD-` ID, because the first write gives a system default a numeric ID. Shopify's defaults have synthetic IDs `gid://shopify/ConsentPolicy/SD-<code>`; a written policy has a numeric ID |
 | `country_code` | string | Required, **RequiresReplace** (part of the key). `PrivacyCountryCode`, two uppercase letters |
 | `region_code` | string | Optional, **RequiresReplace** (part of the key). Country code plus subdivision, e.g. `USCA`, `CAQC`; only US and CA regions exist. Unset = the country-level policy |
 | `consent_required` | bool | Optional + Computed, UseStateForUnknown; unset = unmanaged |
