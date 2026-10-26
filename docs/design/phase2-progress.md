@@ -143,4 +143,10 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Ruling S11-2: `shopify_catalog` (Task 12) goes on the roadmap with its §9i design kept — discovery's catalogs are all channel app catalogs (excluded by D3) and market catalogs are 0 on staging/production, so D5's "likely defaults" premise doesn't hold and D6 applies — costs a later task if the user wants catalogs now (user informed, reversible).
 - Ruling S11-3: `shopify_publication` keys on the deprecated `Publication.name` — publications have no handle and `Catalog.title` differs per store; a later API removal surfaces as a compile error — costs a migration when the field goes.
 - Task 12: deferred to roadmap (S11-2).
-- Task 13 (publication data source): dispatched (model sonnet)
+- Task 13 (publication data source): dispatched (base 5ec58c0, model sonnet)
+- Task 13: implemented 5ec58c0..61aa4c2 (DONE_WITH_CONCERNS minor: lint quiet on deprecated Publication.name, S11-3 holds; step-2 commit alone leaves a generate diff; §9j TODO(verify)s open; duplicate path unit-tested only). Controller re-ran make fmt lint test (SHOPIFY_*/TF_ACC unset): exit 0, 0 issues; make generate: no diff. Review dispatched (sonnet).
+- Task 13: review: spec ✅, quality Approved, 0 Critical/Important.
+- Task 13: minor (deferred): dead `&& name != ""` (logic.go:846); no multi-page unit test; duplicate names in `available:`; no LengthAtLeast(1) validator on `name`; provider registration order; acc test pins dev-store `auto_publish = false`
+- Task 13: complete (commits 5ec58c0..61aa4c2, review clean)
+- Step 11 complete (Task 12 deferred to roadmap, S11-2).
+- Ruling S13-1: step 13 design runs in two sequential design-only dispatches (opus), each reviewed by the controller before implementation: (a) products + collections, (b) pages, blogs, files, discounts, customer segments, metaobject data source — products alone are large (variants, options, media), and parallel design dispatches would race on the same model doc — costs one extra dispatch.
