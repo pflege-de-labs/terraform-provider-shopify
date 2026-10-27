@@ -69,7 +69,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"Destroying or replacing a file deletes it for good and breaks every product, page and theme that uses it, so that needs `allow_data_deletion = true` in state first. " +
 			"**Shopify also deletes a file when the last product that uses it lets go of it:** removing its ID from a `shopify_product`'s `media_ids` (guarded by that product's `allow_data_deletion`, not this one's), " +
 			"or destroying that product. The file's own `allow_data_deletion` can't prevent that; the next plan then shows a create for this resource. " +
-			"Destroying this resource first detaches the file from every product, so removing it from config together with its ID in `media_ids` needs only this resource's flag. " +
+			"Removing this resource together with its ID in `media_ids`: if the file is destroyed before the product update, the product needs no flag; if the product update runs first, its guard fails the apply and nothing is deleted, so re-apply or set the product's flag. " +
 			"A file that already has the filename needs `adopt_existing = true`; destroy then leaves it in place. " +
 			"Import with the filename, or with the URL for an external video.",
 		Blocks: map[string]schema.Block{
