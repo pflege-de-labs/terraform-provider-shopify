@@ -198,6 +198,7 @@ func TestAccCustomerSegment_basic(t *testing.T) {
 		CheckDestroy:             checkGone(t, name, renamed),
 		Steps: []resource.TestStep{
 			{Config: segmentConfig("", someQuery), PlanOnly: true, ExpectError: regexp.MustCompile(`(?s)Attribute name string length`)},
+			{Config: segmentConfig(" x ", someQuery), PlanOnly: true, ExpectError: regexp.MustCompile(`must not start or end with whitespace`)},
 			{Config: segmentConfig("x", ""), PlanOnly: true, ExpectError: regexp.MustCompile(`(?s)Attribute query string length`)},
 			{
 				// Shopify's message lands on the attribute it names.

@@ -63,9 +63,12 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			"name": schema.StringAttribute{
-				MarkdownDescription: "The segment name, unique per shop. Changing it renames the segment in place. Shopify gives a taken name a suffix instead of failing; the provider fails instead.",
+				MarkdownDescription: "The segment name, unique per shop, without leading or trailing whitespace (Shopify trims it). Changing it renames the segment in place. Shopify gives a taken name a suffix instead of failing; the provider fails instead.",
 				Required:            true,
-				Validators:          []validator.String{stringvalidator.LengthAtLeast(1)},
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+					stringvalidator.RegexMatches(nameRe, "must not start or end with whitespace"),
+				},
 			},
 			"query": schema.StringAttribute{
 				MarkdownDescription: "The segment definition in [segment query syntax](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference), such as `email_subscription_status = 'SUBSCRIBED'`. " +
@@ -226,6 +229,10 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	}
 
 	del, err := client.DeleteSegment(ctx, r.client, state.ID.ValueString())
+	// segmentDelete reports a missing segment as a userError (checked); a NOT_FOUND error, as segment(id:) gives, is tolerated too.
+	if client.IsNotFound(err) {
+		return
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to delete "+what, err.Error())
 		return

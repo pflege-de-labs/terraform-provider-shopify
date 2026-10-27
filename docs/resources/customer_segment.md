@@ -32,7 +32,7 @@ resource "shopify_customer_segment" "email_subscribers" {
 
 ### Required
 
-- `name` (String) The segment name, unique per shop. Changing it renames the segment in place. Shopify gives a taken name a suffix instead of failing; the provider fails instead.
+- `name` (String) The segment name, unique per shop, without leading or trailing whitespace (Shopify trims it). Changing it renames the segment in place. Shopify gives a taken name a suffix instead of failing; the provider fails instead.
 - `query` (String) The segment definition in [segment query syntax](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference), such as `email_subscription_status = 'SUBSCRIBED'`. Shopify validates it on write and stores it verbatim, so a changed spelling shows as a change.
 
 ### Optional

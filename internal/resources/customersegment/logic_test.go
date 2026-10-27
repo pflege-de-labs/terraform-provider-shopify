@@ -80,3 +80,14 @@ func deref(s *string) string {
 	}
 	return *s
 }
+
+func TestNameRe(t *testing.T) {
+	for name, want := range map[string]bool{
+		"x": true, "Email subscribers (2)": true, "a  b": true, "a\nb": true,
+		"": false, " x": false, "x ": false, " x ": false, "\tx": false, "x\n": false, "x\u00a0": false, " ": false,
+	} {
+		if got := nameRe.MatchString(name); got != want {
+			t.Errorf("nameRe(%q) = %v, want %v", name, got, want)
+		}
+	}
+}
