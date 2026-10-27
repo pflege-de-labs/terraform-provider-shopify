@@ -299,3 +299,16 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 19: fix round 1/5 (4 addressed + example, 0 open — item paging + id on finish failure, status via resource ModifyPlan, patterns.DiffIDs, variant read-back verified; commits 1a5980d..f8e598f)
 - Task 19: minor (deferred): paging query GetDiscountItemsPage never ran live (>250 items); Create-keeps-ID-on-failed-read-back path untested
 - Task 19: complete (commits a11b9f7..f8e598f, review clean after 1 fix round)
+- Task 20 (shopify_customer_segment, §9q): dispatched (base 602db87, model sonnet); takes over ListSegments from discount.graphql and makes the discount example valid
+- Task 20: implemented 45a5c52 (DONE_WITH_CONCERNS: name lookup scans segments(first: 250) paged instead of search (index lags 2-4 s); client.IsNotFound for segment(id:) NOT_FOUND error; names case-sensitive (resolves TODO); edge whitespace trimmed by Shopify (doc only); race paths unit-only; blog handleDrift moved to patterns.KeyDrift; controller re-ran checks green)
+- Ruling T20-1: accept full paged scan for segment name lookup instead of segments(query:) — search index lags 2-4 s and would miss a just-created segment; stores have few segments — costs one extra page per 250 segments on lookups
+- Task 20: review (sonnet): 1 Important (edge whitespace in name → create-then-delete with false "already exists"); IsNotFound matches only extensions.code NOT_FOUND (ok); KeyDrift refactor keeps blog behaviour
+- Ruling T20-2: raised Minor "Delete tolerates only userError 'does not exist', not top-level NOT_FOUND" into fix round 1 — one line, prevents a failing destroy of an already-deleted segment — costs nothing
+- Task 20: minor (deferred): removeDuplicate mirrors blog's structure (client types differ; acceptable)
+- Task 20: minor (deferred): TestIsNotFound not RED-first; no acceptance test for list Limit
+- Task 20: fix round 1 dispatched (resume implementer; name whitespace validator, delete NOT_FOUND tolerance)
+- Task 20: fix round 1 implemented (8d26fd5: name edge-whitespace validator + plan-only step; probe: segmentDelete on missing ID returns userError field=[id] 'Segment does not exist' (already handled); IsNotFound tolerance added anyway, untested); scoped re-review dispatched (model haiku)
+- Task 20: fix round 1/5 (2 addressed, 0 open — name whitespace validator, delete NOT_FOUND tolerance; commits 45a5c52..8d26fd5)
+- Task 20: minor (deferred): nameRe misses U+000B and U+0085 (use \p{White_Space}); §9q claims trimming of all whitespace though only ASCII space was probed
+- Task 20: minor (deferred): goneOnDelete matches userError message text, not a code
+- Task 20: complete (commits 45a5c52..8d26fd5, review clean after 1 fix round)
