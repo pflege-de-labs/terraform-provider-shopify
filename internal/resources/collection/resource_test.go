@@ -223,6 +223,7 @@ const (
 
 func TestAccCollection_basic(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	renamed := handle + "-b"
 	productHandle := handle + "-p"
@@ -411,6 +412,7 @@ func TestAccCollection_basic(t *testing.T) {
 // Pattern A: an existing collection is only taken over with adopt_existing, and destroy leaves it as Terraform left it.
 func TestAccCollection_adopt(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)
 	order := client.CollectionSortOrderBestSelling
@@ -480,6 +482,7 @@ func sourceCount(t *testing.T, c *client.CollectionFields) int {
 // Adopting and importing a collection whose membership can't be managed works while config leaves membership unset.
 func TestAccCollection_unsupportedAdopt(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)
 	mustCreate(t, client.CollectionCreateInput{Title: "tf-acc unsupported (client)", Handle: &handle, Sources: twoSources("tf-acc-unsupported")})
@@ -537,6 +540,7 @@ resource "shopify_collection" "test" {
 // A managed collection that gains a second source outside Terraform still refreshes; only config that sets membership fails.
 func TestAccCollection_becomesUnsupported(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)
 	managed := fmt.Sprintf(`

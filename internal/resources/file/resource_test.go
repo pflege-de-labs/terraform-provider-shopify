@@ -310,6 +310,7 @@ func planAction(a plancheck.ResourceActionType) resource.ConfigPlanChecks {
 
 func TestAccFile_validation(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	cases := map[string]struct{ body, err string }{
 		"local path":      {`content_type = "IMAGE"` + "\n" + `filename = "a.png"` + "\n" + `source = "./a.png"`, `local files`},
 		"video source":    {`content_type = "VIDEO"` + "\n" + `filename = "a.mp4"` + "\n" + `source = "https://example.com/a.mp4"`, `staged upload`},
@@ -336,6 +337,7 @@ func TestAccFile_validation(t *testing.T) {
 
 func TestAccFile_basic(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	name := testFilename()
 	renamed := strings.Replace(name, "tf-acc-file-", "tf-acc-file-r-", 1)
 	tr := newTracker(t, name, renamed)
@@ -449,6 +451,7 @@ func TestAccFile_basic(t *testing.T) {
 // Pattern B: deleting or replacing a file destroys it and breaks its references, used or not.
 func TestAccFile_dataDeletion(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	name := testFilename()
 	tr := newTracker(t, name)
 	body := func(contentType, allow string) string {
@@ -509,6 +512,7 @@ func TestAccFile_dataDeletion(t *testing.T) {
 // A different extension (here only in case, since the source fixes the extension) can't be changed in place, so it plans a replace, which Pattern B refuses without allow_data_deletion.
 func TestAccFile_extensionReplaces(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	name := testFilename()
 	renamed := strings.TrimSuffix(name, ".png") + ".PNG"
 	tr := newTracker(t, name, renamed)
@@ -548,6 +552,7 @@ func TestAccFile_extensionReplaces(t *testing.T) {
 // Pattern A: an existing file is only taken over with adopt_existing, and destroy leaves it as Terraform left it.
 func TestAccFile_adopt(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	name := testFilename()
 	tr := newTracker(t, name)
 	id := mustCreate(t, name, "client alt")
@@ -590,6 +595,7 @@ func TestAccFile_adopt(t *testing.T) {
 // A file that fails processing is deleted again, so its filename isn't blocked.
 func TestAccFile_failedProcessing(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	name := testFilename()
 	tr := newTracker(t, name)
 	// A failed file has no URL, so no filename to search by: compare the whole library instead.
@@ -623,6 +629,7 @@ func TestAccFile_failedProcessing(t *testing.T) {
 // A create that outlives its timeout keeps the file: state has its ID, and the next plan replaces the tainted resource.
 func TestAccFile_timeout(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	name := testFilename()
 	tr := newTracker(t, name)
 	body := func(timeouts string) string {
@@ -647,6 +654,7 @@ func TestAccFile_timeout(t *testing.T) {
 
 func TestAccFile_externalVideo(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	tr := newTracker(t)
 	// External videos have no filename to sweep by, and a failed apply is not tracked.
 	t.Cleanup(func() {
@@ -698,6 +706,7 @@ func TestAccFile_externalVideo(t *testing.T) {
 // A file deleted outside Terraform is planned for recreation.
 func TestAccFile_deletedOutside(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	name := testFilename()
 	tr := newTracker(t, name)
 	cfg := config(fmt.Sprintf("  content_type = \"IMAGE\"\n  filename = %q\n  source = %q\n  allow_data_deletion = true", name, imageURL))

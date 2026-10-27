@@ -25,6 +25,7 @@ list "shopify_collection" "all" {
 
 func TestAccListCollection(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	handleA, handleB := testHandle(), testHandle()
 	productHandle := handleA + "-p"
 	cleanup(t, handleA, handleB, productHandle)

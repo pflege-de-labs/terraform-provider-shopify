@@ -32,6 +32,7 @@ list "shopify_file" "all" {
 
 func TestAccListFile(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	nameA, nameB := testFilename(), testFilename()
 	tr := newTracker(t, nameA, nameB)
 	files := fmt.Sprintf(`

@@ -26,6 +26,7 @@ list "shopify_product" "all" {
 
 func TestAccListProduct(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	handleA, handleB := testHandle(), testHandle()
 	cleanup(t, handleA, handleB)
 	f := newFiles(t)

@@ -2,7 +2,6 @@ package discount_test
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"os"
 	"regexp"
@@ -216,59 +215,6 @@ func checkGone(t *testing.T, codes, titles, handles []string) resource.TestCheck
 	}
 }
 
-// frontpageSources are the IDs of frontpage's sources with whether each is empty.
-func frontpageSources(t *testing.T) map[string]bool {
-	t.Helper()
-	res, err := client.GetCollectionByHandle(context.Background(), acctest.Client(t), "frontpage")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if res.CollectionByIdentifier == nil {
-		return nil
-	}
-	var sources []struct {
-		ID        string
-		Inclusion struct {
-			Conditions []json.RawMessage
-			Selections struct{ Nodes []json.RawMessage }
-		}
-	}
-	if err := json.Unmarshal(res.CollectionByIdentifier.Sources, &sources); err != nil {
-		t.Fatal(err)
-	}
-	out := map[string]bool{}
-	for _, s := range sources {
-		out[s.ID] = len(s.Inclusion.Conditions) == 0 && len(s.Inclusion.Selections.Nodes) == 0
-	}
-	return out
-}
-
-// keepFrontpage removes the empty source Shopify adds to frontpage when a test creates a draft product (§9k.1).
-func keepFrontpage(t *testing.T) {
-	t.Helper()
-	before := frontpageSources(t)
-	t.Cleanup(func() {
-		var stray []string
-		for id, empty := range frontpageSources(t) {
-			if _, ok := before[id]; !ok && empty {
-				stray = append(stray, id)
-			}
-		}
-		if len(stray) == 0 {
-			return
-		}
-		res, err := client.GetCollectionByHandle(context.Background(), acctest.Client(t), "frontpage")
-		if err != nil || res.CollectionByIdentifier == nil {
-			t.Errorf("frontpage: %v", err)
-			return
-		}
-		up, err := client.UpdateCollection(context.Background(), acctest.Client(t), client.CollectionUpdateInput{Id: &res.CollectionByIdentifier.Id, SourcesToDelete: stray})
-		if err != nil || up.CollectionUpdate.Collection == nil || len(up.CollectionUpdate.UserErrors) > 0 {
-			t.Errorf("removing frontpage sources %v: %v %+v", stray, err, up)
-		}
-	})
-}
-
 // segmentID is a segment every store has, so the segment context needs no shopify_customer_segment yet.
 func segmentID(t *testing.T) string {
 	t.Helper()
@@ -321,7 +267,7 @@ func basic(body string) string {
 
 func TestAccDiscountBasic_code(t *testing.T) {
 	accSetup(t)
-	keepFrontpage(t)
+	acctest.KeepFrontpage(t)
 	code, renamed := testCode(), testCode()
 	title := testTitle()
 	handle := strings.ToLower(title)
@@ -692,7 +638,7 @@ func ptr[T any](v T) *T { return &v }
 // A selection of single variants must read back as variant_ids only, so it plans empty after apply.
 func TestAccDiscountBasic_variants(t *testing.T) {
 	accSetup(t)
-	keepFrontpage(t)
+	acctest.KeepFrontpage(t)
 	title := testTitle()
 	handle := strings.ToLower(title)
 	cleanup(t, nil, []string{title}, []string{handle})

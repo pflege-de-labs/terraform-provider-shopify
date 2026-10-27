@@ -144,6 +144,7 @@ func mediaState(names ...string) []statecheck.StateCheck {
 
 func TestAccProduct_media(t *testing.T) {
 	accSetup(t)
+	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)
 	f := newFiles(t)
