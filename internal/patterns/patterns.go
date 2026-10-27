@@ -130,3 +130,11 @@ func DiffIDs(live, want []string) (add, remove []string) {
 	slices.Sort(remove)
 	return add, remove
 }
+
+// KeyDrift reports a natural key Shopify suffixed (news-1, "Name (2)") because the requested one was taken, which it does without a userError.
+func KeyDrift(what, attr, want, got string) error {
+	if want == got {
+		return nil
+	}
+	return fmt.Errorf("the %s got the %s %q instead of %q, because %q is taken", what, attr, got, want, want)
+}

@@ -30,6 +30,7 @@ import (
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/blog"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/checkoutandaccountsconfiguration"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/collection"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/customersegment"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/deliveryprofile"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/discount"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/file"
@@ -200,6 +201,7 @@ func (p *ShopifyProvider) Resources(ctx context.Context) []func() resource.Resou
 		webpresence.NewResource,
 		checkoutandaccountsconfiguration.NewResource,
 		discount.NewBasicResource,
+		customersegment.NewResource,
 	}
 }
 
@@ -223,6 +225,7 @@ func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListR
 		webpresence.NewListResource,
 		checkoutandaccountsconfiguration.NewListResource,
 		discount.NewBasicListResource,
+		customersegment.NewListResource,
 	}
 }
 

@@ -435,13 +435,3 @@ mutation DeleteDiscountAutomatic(
     }
   }
 }
-
-# Tests of the segment context use a segment every store has.
-query ListSegments {
-  segments(first: 10) {
-    nodes {
-      id
-      name
-    }
-  }
-}

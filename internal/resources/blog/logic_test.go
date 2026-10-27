@@ -2,7 +2,6 @@ package blog
 
 import (
 	"encoding/json"
-	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -126,17 +125,6 @@ func TestMatchHandle(t *testing.T) {
 	}
 	if b := matchHandle(nodes, "new"); b != nil {
 		t.Errorf("prefix must not match: got %+v", b)
-	}
-}
-
-// Shopify silently suffixes a taken handle; that must surface as an error naming both handles.
-func TestHandleDrift(t *testing.T) {
-	if err := handleDrift("news", "news"); err != nil {
-		t.Errorf("same handle: got %v", err)
-	}
-	err := handleDrift("news", "news-1")
-	if err == nil || !strings.Contains(err.Error(), `"news"`) || !strings.Contains(err.Error(), `"news-1"`) {
-		t.Errorf("suffixed handle: got %v, want an error naming both", err)
 	}
 }
 

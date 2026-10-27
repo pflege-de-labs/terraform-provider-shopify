@@ -5014,6 +5014,134 @@ func (v *CreatePageResponse) GetPageCreate() *CreatePagePageCreatePageCreatePayl
 	return v.PageCreate
 }
 
+// CreateSegmentResponse is returned by CreateSegment on success.
+type CreateSegmentResponse struct {
+	// Creates a segment.
+	SegmentCreate *CreateSegmentSegmentCreateSegmentCreatePayload `json:"segmentCreate"`
+}
+
+// GetSegmentCreate returns CreateSegmentResponse.SegmentCreate, and is useful for accessing the field via an interface.
+func (v *CreateSegmentResponse) GetSegmentCreate() *CreateSegmentSegmentCreateSegmentCreatePayload {
+	return v.SegmentCreate
+}
+
+// CreateSegmentSegmentCreateSegmentCreatePayload includes the requested fields of the GraphQL type SegmentCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `segmentCreate` mutation.
+type CreateSegmentSegmentCreateSegmentCreatePayload struct {
+	// The newly created segment.
+	Segment *CreateSegmentSegmentCreateSegmentCreatePayloadSegment `json:"segment"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetSegment returns CreateSegmentSegmentCreateSegmentCreatePayload.Segment, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayload) GetSegment() *CreateSegmentSegmentCreateSegmentCreatePayloadSegment {
+	return v.Segment
+}
+
+// GetUserErrors returns CreateSegmentSegmentCreateSegmentCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayload) GetUserErrors() []CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// CreateSegmentSegmentCreateSegmentCreatePayloadSegment includes the requested fields of the GraphQL type Segment.
+// The GraphQL type's documentation follows.
+//
+// A group of [customers](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) that meet specific criteria defined through [ShopifyQL query](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference) conditions. Common use cases for segments include customer analytics, targeted marketing campaigns, and automated discount eligibility.
+//
+// The segment's [`query`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-query) field contains ShopifyQL conditions that determine membership, such as purchase history, location, or engagement patterns. Tracks when the segment was created with [`creationDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-creationDate) and when it was last modified with [`lastEditDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-lastEditDate).
+type CreateSegmentSegmentCreateSegmentCreatePayloadSegment struct {
+	SegmentFields `json:"-"`
+}
+
+// GetId returns CreateSegmentSegmentCreateSegmentCreatePayloadSegment.Id, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadSegment) GetId() string {
+	return v.SegmentFields.Id
+}
+
+// GetName returns CreateSegmentSegmentCreateSegmentCreatePayloadSegment.Name, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadSegment) GetName() string {
+	return v.SegmentFields.Name
+}
+
+// GetQuery returns CreateSegmentSegmentCreateSegmentCreatePayloadSegment.Query, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadSegment) GetQuery() string {
+	return v.SegmentFields.Query
+}
+
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadSegment) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateSegmentSegmentCreateSegmentCreatePayloadSegment
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateSegmentSegmentCreateSegmentCreatePayloadSegment = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.SegmentFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateSegmentSegmentCreateSegmentCreatePayloadSegment struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Query string `json:"query"`
+}
+
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadSegment) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadSegment) __premarshalJSON() (*__premarshalCreateSegmentSegmentCreateSegmentCreatePayloadSegment, error) {
+	var retval __premarshalCreateSegmentSegmentCreateSegmentCreatePayloadSegment
+
+	retval.Id = v.SegmentFields.Id
+	retval.Name = v.SegmentFields.Name
+	retval.Query = v.SegmentFields.Query
+	return &retval, nil
+}
+
+// CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
 // CreateWebPresenceResponse is returned by CreateWebPresence on success.
 type CreateWebPresenceResponse struct {
 	// Creates a web presence.
@@ -6570,6 +6698,59 @@ type DeleteProductResponse struct {
 // GetProductDelete returns DeleteProductResponse.ProductDelete, and is useful for accessing the field via an interface.
 func (v *DeleteProductResponse) GetProductDelete() *DeleteProductProductDeleteProductDeletePayload {
 	return v.ProductDelete
+}
+
+// DeleteSegmentResponse is returned by DeleteSegment on success.
+type DeleteSegmentResponse struct {
+	// Deletes a segment.
+	SegmentDelete *DeleteSegmentSegmentDeleteSegmentDeletePayload `json:"segmentDelete"`
+}
+
+// GetSegmentDelete returns DeleteSegmentResponse.SegmentDelete, and is useful for accessing the field via an interface.
+func (v *DeleteSegmentResponse) GetSegmentDelete() *DeleteSegmentSegmentDeleteSegmentDeletePayload {
+	return v.SegmentDelete
+}
+
+// DeleteSegmentSegmentDeleteSegmentDeletePayload includes the requested fields of the GraphQL type SegmentDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `segmentDelete` mutation.
+type DeleteSegmentSegmentDeleteSegmentDeletePayload struct {
+	// ID of the deleted segment.
+	DeletedSegmentId *string `json:"deletedSegmentId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetDeletedSegmentId returns DeleteSegmentSegmentDeleteSegmentDeletePayload.DeletedSegmentId, and is useful for accessing the field via an interface.
+func (v *DeleteSegmentSegmentDeleteSegmentDeletePayload) GetDeletedSegmentId() *string {
+	return v.DeletedSegmentId
+}
+
+// GetUserErrors returns DeleteSegmentSegmentDeleteSegmentDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteSegmentSegmentDeleteSegmentDeletePayload) GetUserErrors() []DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
 }
 
 // DeleteWebPresenceResponse is returned by DeleteWebPresence on success.
@@ -16558,6 +16739,86 @@ type GetProductVariantsResponse struct {
 // GetProduct returns GetProductVariantsResponse.Product, and is useful for accessing the field via an interface.
 func (v *GetProductVariantsResponse) GetProduct() *GetProductVariantsProduct { return v.Product }
 
+// GetSegmentResponse is returned by GetSegment on success.
+type GetSegmentResponse struct {
+	// Retrieves a customer [`Segment`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment) by ID. Segments are dynamic groups of customers that meet specific criteria defined through [ShopifyQL queries](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference).
+	//
+	// Use segments for targeted marketing campaigns, analyzing customer behavior, or creating personalized experiences. Each segment includes its name, creation date, and the query that defines which [`Customer`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) objects belong to it.
+	Segment *GetSegmentSegment `json:"segment"`
+}
+
+// GetSegment returns GetSegmentResponse.Segment, and is useful for accessing the field via an interface.
+func (v *GetSegmentResponse) GetSegment() *GetSegmentSegment { return v.Segment }
+
+// GetSegmentSegment includes the requested fields of the GraphQL type Segment.
+// The GraphQL type's documentation follows.
+//
+// A group of [customers](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) that meet specific criteria defined through [ShopifyQL query](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference) conditions. Common use cases for segments include customer analytics, targeted marketing campaigns, and automated discount eligibility.
+//
+// The segment's [`query`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-query) field contains ShopifyQL conditions that determine membership, such as purchase history, location, or engagement patterns. Tracks when the segment was created with [`creationDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-creationDate) and when it was last modified with [`lastEditDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-lastEditDate).
+type GetSegmentSegment struct {
+	SegmentFields `json:"-"`
+}
+
+// GetId returns GetSegmentSegment.Id, and is useful for accessing the field via an interface.
+func (v *GetSegmentSegment) GetId() string { return v.SegmentFields.Id }
+
+// GetName returns GetSegmentSegment.Name, and is useful for accessing the field via an interface.
+func (v *GetSegmentSegment) GetName() string { return v.SegmentFields.Name }
+
+// GetQuery returns GetSegmentSegment.Query, and is useful for accessing the field via an interface.
+func (v *GetSegmentSegment) GetQuery() string { return v.SegmentFields.Query }
+
+func (v *GetSegmentSegment) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetSegmentSegment
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetSegmentSegment = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.SegmentFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetSegmentSegment struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Query string `json:"query"`
+}
+
+func (v *GetSegmentSegment) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetSegmentSegment) __premarshalJSON() (*__premarshalGetSegmentSegment, error) {
+	var retval __premarshalGetSegmentSegment
+
+	retval.Id = v.SegmentFields.Id
+	retval.Name = v.SegmentFields.Name
+	retval.Query = v.SegmentFields.Query
+	return &retval, nil
+}
+
 // GetShopResponse is returned by GetShop on success.
 type GetShopResponse struct {
 	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
@@ -19008,11 +19269,18 @@ func (v *ListSegmentsResponse) GetSegments() ListSegmentsSegmentsSegmentConnecti
 type ListSegmentsSegmentsSegmentConnection struct {
 	// A list of nodes that are contained in SegmentEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
 	Nodes []ListSegmentsSegmentsSegmentConnectionNodesSegment `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListSegmentsSegmentsSegmentConnectionPageInfo `json:"pageInfo"`
 }
 
 // GetNodes returns ListSegmentsSegmentsSegmentConnection.Nodes, and is useful for accessing the field via an interface.
 func (v *ListSegmentsSegmentsSegmentConnection) GetNodes() []ListSegmentsSegmentsSegmentConnectionNodesSegment {
 	return v.Nodes
+}
+
+// GetPageInfo returns ListSegmentsSegmentsSegmentConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListSegmentsSegmentsSegmentConnection) GetPageInfo() ListSegmentsSegmentsSegmentConnectionPageInfo {
+	return v.PageInfo
 }
 
 // ListSegmentsSegmentsSegmentConnectionNodesSegment includes the requested fields of the GraphQL type Segment.
@@ -19022,17 +19290,90 @@ func (v *ListSegmentsSegmentsSegmentConnection) GetNodes() []ListSegmentsSegment
 //
 // The segment's [`query`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-query) field contains ShopifyQL conditions that determine membership, such as purchase history, location, or engagement patterns. Tracks when the segment was created with [`creationDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-creationDate) and when it was last modified with [`lastEditDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-lastEditDate).
 type ListSegmentsSegmentsSegmentConnectionNodesSegment struct {
-	// A globally-unique ID.
-	Id string `json:"id"`
-	// The name of the segment.
-	Name string `json:"name"`
+	SegmentFields `json:"-"`
 }
 
 // GetId returns ListSegmentsSegmentsSegmentConnectionNodesSegment.Id, and is useful for accessing the field via an interface.
-func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) GetId() string { return v.Id }
+func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) GetId() string { return v.SegmentFields.Id }
 
 // GetName returns ListSegmentsSegmentsSegmentConnectionNodesSegment.Name, and is useful for accessing the field via an interface.
-func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) GetName() string { return v.Name }
+func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) GetName() string {
+	return v.SegmentFields.Name
+}
+
+// GetQuery returns ListSegmentsSegmentsSegmentConnectionNodesSegment.Query, and is useful for accessing the field via an interface.
+func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) GetQuery() string {
+	return v.SegmentFields.Query
+}
+
+func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListSegmentsSegmentsSegmentConnectionNodesSegment
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListSegmentsSegmentsSegmentConnectionNodesSegment = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.SegmentFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListSegmentsSegmentsSegmentConnectionNodesSegment struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Query string `json:"query"`
+}
+
+func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) __premarshalJSON() (*__premarshalListSegmentsSegmentsSegmentConnectionNodesSegment, error) {
+	var retval __premarshalListSegmentsSegmentsSegmentConnectionNodesSegment
+
+	retval.Id = v.SegmentFields.Id
+	retval.Name = v.SegmentFields.Name
+	retval.Query = v.SegmentFields.Query
+	return &retval, nil
+}
+
+// ListSegmentsSegmentsSegmentConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListSegmentsSegmentsSegmentConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListSegmentsSegmentsSegmentConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListSegmentsSegmentsSegmentConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ListSegmentsSegmentsSegmentConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListSegmentsSegmentsSegmentConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
 
 // ListShopLocalesResponse is returned by ListShopLocales on success.
 type ListShopLocalesResponse struct {
@@ -25822,6 +26163,30 @@ func (v *SEOInput) GetTitle() *string { return v.Title }
 // GetDescription returns SEOInput.Description, and is useful for accessing the field via an interface.
 func (v *SEOInput) GetDescription() *string { return v.Description }
 
+// SegmentFields includes the GraphQL fields of Segment requested by the fragment SegmentFields.
+// The GraphQL type's documentation follows.
+//
+// A group of [customers](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) that meet specific criteria defined through [ShopifyQL query](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference) conditions. Common use cases for segments include customer analytics, targeted marketing campaigns, and automated discount eligibility.
+//
+// The segment's [`query`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-query) field contains ShopifyQL conditions that determine membership, such as purchase history, location, or engagement patterns. Tracks when the segment was created with [`creationDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-creationDate) and when it was last modified with [`lastEditDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-lastEditDate).
+type SegmentFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The name of the segment.
+	Name string `json:"name"`
+	// A precise definition of the segment. The definition is composed of a combination of conditions on facts about customers.
+	Query string `json:"query"`
+}
+
+// GetId returns SegmentFields.Id, and is useful for accessing the field via an interface.
+func (v *SegmentFields) GetId() string { return v.Id }
+
+// GetName returns SegmentFields.Name, and is useful for accessing the field via an interface.
+func (v *SegmentFields) GetName() string { return v.Name }
+
+// GetQuery returns SegmentFields.Query, and is useful for accessing the field via an interface.
+func (v *SegmentFields) GetQuery() string { return v.Query }
+
 // SetProductProductSetProductSetPayload includes the requested fields of the GraphQL type ProductSetPayload.
 // The GraphQL type's documentation follows.
 //
@@ -28684,6 +29049,134 @@ func (v *UpdatePageResponse) GetPageUpdate() *UpdatePagePageUpdatePageUpdatePayl
 	return v.PageUpdate
 }
 
+// UpdateSegmentResponse is returned by UpdateSegment on success.
+type UpdateSegmentResponse struct {
+	// Updates a segment.
+	SegmentUpdate *UpdateSegmentSegmentUpdateSegmentUpdatePayload `json:"segmentUpdate"`
+}
+
+// GetSegmentUpdate returns UpdateSegmentResponse.SegmentUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentResponse) GetSegmentUpdate() *UpdateSegmentSegmentUpdateSegmentUpdatePayload {
+	return v.SegmentUpdate
+}
+
+// UpdateSegmentSegmentUpdateSegmentUpdatePayload includes the requested fields of the GraphQL type SegmentUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `segmentUpdate` mutation.
+type UpdateSegmentSegmentUpdateSegmentUpdatePayload struct {
+	// The updated segment.
+	Segment *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment `json:"segment"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetSegment returns UpdateSegmentSegmentUpdateSegmentUpdatePayload.Segment, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayload) GetSegment() *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment {
+	return v.Segment
+}
+
+// GetUserErrors returns UpdateSegmentSegmentUpdateSegmentUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayload) GetUserErrors() []UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment includes the requested fields of the GraphQL type Segment.
+// The GraphQL type's documentation follows.
+//
+// A group of [customers](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) that meet specific criteria defined through [ShopifyQL query](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference) conditions. Common use cases for segments include customer analytics, targeted marketing campaigns, and automated discount eligibility.
+//
+// The segment's [`query`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-query) field contains ShopifyQL conditions that determine membership, such as purchase history, location, or engagement patterns. Tracks when the segment was created with [`creationDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-creationDate) and when it was last modified with [`lastEditDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-lastEditDate).
+type UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment struct {
+	SegmentFields `json:"-"`
+}
+
+// GetId returns UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment.Id, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment) GetId() string {
+	return v.SegmentFields.Id
+}
+
+// GetName returns UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment.Name, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment) GetName() string {
+	return v.SegmentFields.Name
+}
+
+// GetQuery returns UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment.Query, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment) GetQuery() string {
+	return v.SegmentFields.Query
+}
+
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.SegmentFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Query string `json:"query"`
+}
+
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment) __premarshalJSON() (*__premarshalUpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment, error) {
+	var retval __premarshalUpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment
+
+	retval.Id = v.SegmentFields.Id
+	retval.Name = v.SegmentFields.Name
+	retval.Query = v.SegmentFields.Query
+	return &retval, nil
+}
+
+// UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
 // UpdateShopLocaleResponse is returned by UpdateShopLocale on success.
 type UpdateShopLocaleResponse struct {
 	// Updates a locale for a shop.
@@ -29671,6 +30164,18 @@ type __CreatePageInput struct {
 // GetPage returns __CreatePageInput.Page, and is useful for accessing the field via an interface.
 func (v *__CreatePageInput) GetPage() PageCreateInput { return v.Page }
 
+// __CreateSegmentInput is used internally by genqlient
+type __CreateSegmentInput struct {
+	Name  string `json:"name"`
+	Query string `json:"query"`
+}
+
+// GetName returns __CreateSegmentInput.Name, and is useful for accessing the field via an interface.
+func (v *__CreateSegmentInput) GetName() string { return v.Name }
+
+// GetQuery returns __CreateSegmentInput.Query, and is useful for accessing the field via an interface.
+func (v *__CreateSegmentInput) GetQuery() string { return v.Query }
+
 // __CreateWebPresenceInput is used internally by genqlient
 type __CreateWebPresenceInput struct {
 	Input WebPresenceCreateInput `json:"input"`
@@ -29792,6 +30297,14 @@ type __DeleteProductInput struct {
 
 // GetId returns __DeleteProductInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteProductInput) GetId() string { return v.Id }
+
+// __DeleteSegmentInput is used internally by genqlient
+type __DeleteSegmentInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteSegmentInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteSegmentInput) GetId() string { return v.Id }
 
 // __DeleteWebPresenceInput is used internally by genqlient
 type __DeleteWebPresenceInput struct {
@@ -30123,6 +30636,14 @@ func (v *__GetProductVariantsInput) GetId() string { return v.Id }
 // GetAfter returns __GetProductVariantsInput.After, and is useful for accessing the field via an interface.
 func (v *__GetProductVariantsInput) GetAfter() *string { return v.After }
 
+// __GetSegmentInput is used internally by genqlient
+type __GetSegmentInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetSegmentInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetSegmentInput) GetId() string { return v.Id }
+
 // __GetWebPresenceInput is used internally by genqlient
 type __GetWebPresenceInput struct {
 	Id string `json:"id"`
@@ -30262,6 +30783,14 @@ type __ListPublicationsInput struct {
 
 // GetAfter returns __ListPublicationsInput.After, and is useful for accessing the field via an interface.
 func (v *__ListPublicationsInput) GetAfter() *string { return v.After }
+
+// __ListSegmentsInput is used internally by genqlient
+type __ListSegmentsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListSegmentsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListSegmentsInput) GetAfter() *string { return v.After }
 
 // __ListWebPresencesInput is used internally by genqlient
 type __ListWebPresencesInput struct {
@@ -30460,6 +30989,22 @@ func (v *__UpdatePageInput) GetId() string { return v.Id }
 
 // GetPage returns __UpdatePageInput.Page, and is useful for accessing the field via an interface.
 func (v *__UpdatePageInput) GetPage() PageUpdateInput { return v.Page }
+
+// __UpdateSegmentInput is used internally by genqlient
+type __UpdateSegmentInput struct {
+	Id    string  `json:"id"`
+	Name  *string `json:"name,omitempty"`
+	Query *string `json:"query,omitempty"`
+}
+
+// GetId returns __UpdateSegmentInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateSegmentInput) GetId() string { return v.Id }
+
+// GetName returns __UpdateSegmentInput.Name, and is useful for accessing the field via an interface.
+func (v *__UpdateSegmentInput) GetName() *string { return v.Name }
+
+// GetQuery returns __UpdateSegmentInput.Query, and is useful for accessing the field via an interface.
+func (v *__UpdateSegmentInput) GetQuery() *string { return v.Query }
 
 // __UpdateShopLocaleInput is used internally by genqlient
 type __UpdateShopLocaleInput struct {
@@ -31413,6 +31958,53 @@ func CreatePage(
 	return data_, err_
 }
 
+// The mutation executed by CreateSegment.
+const CreateSegment_Operation = `
+mutation CreateSegment ($name: String!, $query: String!) {
+	segmentCreate(name: $name, query: $query) {
+		segment {
+			... SegmentFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment SegmentFields on Segment {
+	id
+	name
+	query
+}
+`
+
+func CreateSegment(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	name string,
+	query string,
+) (data_ *CreateSegmentResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateSegment",
+		Query:  CreateSegment_Operation,
+		Variables: &__CreateSegmentInput{
+			Name:  name,
+			Query: query,
+		},
+	}
+
+	data_ = &CreateSegmentResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by CreateWebPresence.
 const CreateWebPresence_Operation = `
 mutation CreateWebPresence ($input: WebPresenceCreateInput!) {
@@ -31991,6 +32583,44 @@ func DeleteProduct(
 	}
 
 	data_ = &DeleteProductResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteSegment.
+const DeleteSegment_Operation = `
+mutation DeleteSegment ($id: ID!) {
+	segmentDelete(id: $id) {
+		deletedSegmentId
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DeleteSegment(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteSegmentResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteSegment",
+		Query:  DeleteSegment_Operation,
+		Variables: &__DeleteSegmentInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteSegmentResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -35888,6 +36518,45 @@ func GetProductVariants(
 	return data_, err_
 }
 
+// The query executed by GetSegment.
+const GetSegment_Operation = `
+query GetSegment ($id: ID!) {
+	segment(id: $id) {
+		... SegmentFields
+	}
+}
+fragment SegmentFields on Segment {
+	id
+	name
+	query
+}
+`
+
+func GetSegment(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetSegmentResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetSegment",
+		Query:  GetSegment_Operation,
+		Variables: &__GetSegmentInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetSegmentResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetShop.
 const GetShop_Operation = `
 query GetShop {
@@ -38472,24 +39141,36 @@ func ListPublications(
 
 // The query executed by ListSegments.
 const ListSegments_Operation = `
-query ListSegments {
-	segments(first: 10) {
+query ListSegments ($after: String) {
+	segments(first: 250, after: $after) {
 		nodes {
-			id
-			name
+			... SegmentFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
 		}
 	}
 }
+fragment SegmentFields on Segment {
+	id
+	name
+	query
+}
 `
 
-// Tests of the segment context use a segment every store has.
+// Unfiltered on purpose: the segment search index lags a few seconds behind writes, so lookups by name page through this.
 func ListSegments(
 	ctx_ context.Context,
 	client_ graphql.Client,
+	after *string,
 ) (data_ *ListSegmentsResponse, err_ error) {
 	req_ := &graphql.Request{
 		OpName: "ListSegments",
 		Query:  ListSegments_Operation,
+		Variables: &__ListSegmentsInput{
+			After: after,
+		},
 	}
 
 	data_ = &ListSegmentsResponse{}
@@ -41045,6 +41726,56 @@ func UpdatePage(
 	}
 
 	data_ = &UpdatePageResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateSegment.
+const UpdateSegment_Operation = `
+mutation UpdateSegment ($id: ID!, $name: String, $query: String) {
+	segmentUpdate(id: $id, name: $name, query: $query) {
+		segment {
+			... SegmentFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment SegmentFields on Segment {
+	id
+	name
+	query
+}
+`
+
+// Omitted arguments stay unchanged.
+func UpdateSegment(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	name *string,
+	query *string,
+) (data_ *UpdateSegmentResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateSegment",
+		Query:  UpdateSegment_Operation,
+		Variables: &__UpdateSegmentInput{
+			Id:    id,
+			Name:  name,
+			Query: query,
+		},
+	}
+
+	data_ = &UpdateSegmentResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

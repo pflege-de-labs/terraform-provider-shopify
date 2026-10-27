@@ -1,3 +1,8 @@
+resource "shopify_customer_segment" "subscribers" {
+  name  = "Newsletter-Abonnenten DE"
+  query = "email_subscription_status = 'SUBSCRIBED' AND customer_countries CONTAINS 'DE'"
+}
+
 resource "shopify_collection" "pflegehilfsmittel" {
   handle = "pflegehilfsmittel"
   title  = "Pflegehilfsmittel"

@@ -39,14 +39,6 @@ func matchHandle(nodes []client.FindBlogsBlogsBlogConnectionNodesBlog, handle st
 	return nil
 }
 
-// handleDrift reports a handle Shopify suffixed (news-1) because the requested one was taken, which it does without a userError.
-func handleDrift(want, got string) error {
-	if want == got {
-		return nil
-	}
-	return fmt.Errorf("the blog got the handle %q instead of %q, because %q is taken", got, want, want)
-}
-
 // goneOnDelete reports whether blogDelete failed only because the blog no longer exists.
 func goneOnDelete(errs []client.DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError) bool {
 	for _, e := range errs {

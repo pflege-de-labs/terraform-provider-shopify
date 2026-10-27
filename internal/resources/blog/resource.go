@@ -137,7 +137,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 			b = r.update(ctx, existing.Id, in, &resp.Diagnostics)
 		}
 	} else if b = r.create(ctx, cfg.createInput(), &resp.Diagnostics); b != nil {
-		if err := handleDrift(plan.Handle.ValueString(), b.Handle); err != nil {
+		if err := patterns.KeyDrift(what, "handle", plan.Handle.ValueString(), b.Handle); err != nil {
 			r.removeDuplicate(ctx, b, plan.Handle.ValueString(), &resp.Diagnostics)
 			return
 		}
@@ -225,7 +225,7 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 	// State takes the handle Shopify returned, so the next plan shows the drift.
 	setFromAPI(&plan, b)
 	if in.Handle != nil {
-		if err := handleDrift(*in.Handle, b.Handle); err != nil {
+		if err := patterns.KeyDrift(what, "handle", *in.Handle, b.Handle); err != nil {
 			resp.Diagnostics.AddAttributeError(path.Root("handle"), "Blog handle was changed by Shopify", err.Error())
 		}
 	}

@@ -13,6 +13,8 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
+
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 const shopJSON = `{"data":{"shop":{"id":"gid://shopify/Shop/1","name":"Dev","myshopifyDomain":"dev.myshopify.com","primaryDomain":{"host":"dev.example"},"currencyCode":"EUR","plan":{"publicDisplayName":"Development"},"enabledPresentmentCurrencies":["EUR"],"ianaTimezone":"Europe/Berlin"}}}`
@@ -270,5 +272,17 @@ func TestNew_Validation(t *testing.T) {
 		if _, err := New(cfg); err == nil {
 			t.Errorf("%s: want error", name)
 		}
+	}
+}
+
+// segment(id:) answers a missing record with a NOT_FOUND error instead of null.
+func TestIsNotFound(t *testing.T) {
+	err := fmt.Errorf("input:3:2: segment Segment does not exist: %w", gqlerror.List{{Message: "Segment does not exist", Extensions: map[string]any{"code": "NOT_FOUND"}}})
+	if !IsNotFound(err) {
+		t.Errorf("IsNotFound(%v) = false", err)
+	}
+	denied := gqlerror.List{{Message: "Access denied", Extensions: map[string]any{"code": "ACCESS_DENIED"}}}
+	if IsNotFound(denied) || IsNotFound(errors.New("not found")) || IsNotFound(nil) {
+		t.Error("IsNotFound matched something else")
 	}
 }

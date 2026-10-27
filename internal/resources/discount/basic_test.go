@@ -272,7 +272,7 @@ func keepFrontpage(t *testing.T) {
 // segmentID is a segment every store has, so the segment context needs no shopify_customer_segment yet.
 func segmentID(t *testing.T) string {
 	t.Helper()
-	res, err := client.ListSegments(context.Background(), acctest.Client(t))
+	res, err := client.ListSegments(context.Background(), acctest.Client(t), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
