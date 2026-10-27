@@ -285,3 +285,17 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 14d: minor (deferred): AllowDataDeletionAttribute text "its variants, inventory and media" reads as gating media_ids removal; reword
 - Task 14d: minor (deferred): no acceptance step for adopt_existing + media_ids; >20 media paging unit-tested only
 - Task 14d: complete (commits f060228..623628a, review clean; rework per T14d-2 before review)
+- Task 19 (shopify_discount_basic + shared discount package, §9p 13b-4a): dispatched (base d205f89, model opus); free_shipping/bxgy stay deferred per S13-6
+- Task 19: implemented a11b9f7..1a5980d (DONE_WITH_CONCERNS: items/markets read ≤250 unpaged, >250 fails Read / list skips with warning; status keeps state unless dates change (inconsistent-result risk at start/end boundary); several paths unit-only; example references shopify_customer_segment (Task 20); 4 acc tests; controller re-ran checks green); review dispatched (model opus)
+- Task 19: review (opus): spec ❌ (Read doesn't page item lists), 3 Important: >250 items blocks plan/update or orphans on Create; status kept from state → inconsistent result at start/end boundary; addRemove copies publishing.Diff/collection diffIDs
+- Ruling T19-1: raised Minor "variant read-back unverified" into fix round 1 (probe + acceptance step) — a variant_ids-only config may plan forever — costs a probe
+- Task 19: minor (deferred): report overstates unit coverage (list skipping other methods/app discounts untested)
+- Task 19: minor (deferred): acceptance gaps: automatic→code replace, adopt automatic by title, MutableIdentity re-adopt, in-place starts_at change, admin change with context/minimum unset after set, replace warning text, market context / multi-code import / unsupported contexts unit-only
+- Task 19: minor (deferred): contextFromAPI returns [] for empty segment/market list → generated config fails SizeAtLeast(1) (unlikely)
+- Task 19: minor (deferred): test-only ListSegments query in discount.graphql; move to §9q task
+- Task 19: minor (deferred, branch review): further copies of the ID diff helper in publishing, collection, market/diff.go, deliveryprofile/diff.go — consolidate on the new patterns helper
+- Task 19: fix round 1 dispatched (resume implementer; item paging + id in state on finish failure, status via resource ModifyPlan, shared diff helper, variant read-back probe, example fix)
+- Task 19: fix round 1 implemented (f8e598f: item paging via GetDiscountItemsPage + id in state on finish failure; status via resource ModifyPlan; patterns.DiffIDs; variant probe: selection reads back as variant only, product_ids null, plan empty — TestAccDiscountBasic_variants; example fixed); paging query not exercised live (>250); scoped re-review dispatched (model sonnet)
+- Task 19: fix round 1/5 (4 addressed + example, 0 open — item paging + id on finish failure, status via resource ModifyPlan, patterns.DiffIDs, variant read-back verified; commits 1a5980d..f8e598f)
+- Task 19: minor (deferred): paging query GetDiscountItemsPage never ran live (>250 items); Create-keeps-ID-on-failed-read-back path untested
+- Task 19: complete (commits a11b9f7..f8e598f, review clean after 1 fix round)
