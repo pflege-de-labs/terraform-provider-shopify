@@ -91,7 +91,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				Optional: true,
 			},
 			"source": schema.StringAttribute{
-				MarkdownDescription: "The `http://` or `https://` URL Shopify fetches the file from; for `EXTERNAL_VIDEO`, the video URL, which is read back. " +
+				MarkdownDescription: "The `http://` or `https://` URL Shopify fetches the file from; for `EXTERNAL_VIDEO`, the video URL, which is read back. Shopify rewrites video URLs (`https://youtu.be/<id>` for YouTube), and the duplicate check, adoption and import only match that form, so use it. " +
 					"Required to create a file; without it only `adopt_existing` works. Not readable for hosted files: Read keeps the configured value, and an imported file has none (unmanaged). " +
 					"A new value replaces the content in place for `IMAGE` and `FILE`; for the other content types it replaces the file. Not allowed for `VIDEO` and `MODEL_3D` yet (roadmap).",
 				Optional: true,
@@ -289,7 +289,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		// Shopify suffixes a name that is still in use instead of failing, which would break the key.
 		resp.Diagnostics.Append(r.removeFile(ctx, ready)...)
 		resp.Diagnostics.AddAttributeError(path.Root("filename"), "Shopify renamed the file",
-			fmt.Sprintf("Shopify named it %q because %q was still in use, for example by a file deleted moments ago. The new file was removed again; apply again.", name, plan.Filename.ValueString()))
+			fmt.Sprintf("Shopify named it %q because %q was still in use, for example by a file deleted moments ago, or by a file whose name differs only in case. The new file was removed again; apply again, or rename the other file.", name, plan.Filename.ValueString()))
 		return
 	}
 	setFromAPI(&plan, ready, &ready.OriginUrl)
@@ -614,8 +614,12 @@ func (r *Resource) findOne(ctx context.Context, k key) (*apiFile, error) {
 	return nil, fmt.Errorf("%d files match %s, so none is picked: %s", len(matches), describeKey(k), strings.Join(ids, ", "))
 }
 
+// keyOf prefers url for an external video: it is the form Shopify stores, while source may be the configured one.
 func keyOf(m *model) key {
 	if m.ContentType.ValueString() == typeExternalVideo {
+		if !m.URL.IsNull() && !m.URL.IsUnknown() {
+			return key{externalURL: m.URL.ValueString()}
+		}
 		return key{externalURL: m.Source.ValueString()}
 	}
 	return key{filename: m.Filename.ValueString()}

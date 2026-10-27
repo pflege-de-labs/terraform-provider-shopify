@@ -36,10 +36,10 @@ resource "shopify_file" "datasheet" {
   }
 }
 
-# External videos have no filename; the URL is their key.
+# External videos have no filename; the URL is their key, in the form Shopify stores (youtu.be/<id> for YouTube).
 resource "shopify_file" "howto" {
   content_type = "EXTERNAL_VIDEO"
-  source       = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  source       = "https://youtu.be/dQw4w9WgXcQ"
 }
 
 # Take over a file that exists: without source, only alt is managed.
@@ -64,7 +64,7 @@ resource "shopify_file" "existing" {
 - `allow_data_deletion` (Boolean) Allow destroying or replacing this file, which deletes the data stored in it. Defaults to `false`. Must already be `true` in state when the delete runs, so set it in a separate apply first.
 - `alt` (String) Alt text for screen readers. `""` clears it. Unset means unmanaged: the value set in the admin is kept.
 - `filename` (String) The filename with its extension, unique per shop and the import key. Required for every content type except `EXTERNAL_VIDEO`, where it must be unset. ASCII letters, digits, `.`, `_` and `-` only, because Shopify rewrites anything else. Changing it renames the file in place and **changes its CDN URL**, so links in pages and themes break; images and generic files only. A different extension replaces the file.
-- `source` (String) The `http://` or `https://` URL Shopify fetches the file from; for `EXTERNAL_VIDEO`, the video URL, which is read back. Required to create a file; without it only `adopt_existing` works. Not readable for hosted files: Read keeps the configured value, and an imported file has none (unmanaged). A new value replaces the content in place for `IMAGE` and `FILE`; for the other content types it replaces the file. Not allowed for `VIDEO` and `MODEL_3D` yet (roadmap).
+- `source` (String) The `http://` or `https://` URL Shopify fetches the file from; for `EXTERNAL_VIDEO`, the video URL, which is read back. Shopify rewrites video URLs (`https://youtu.be/<id>` for YouTube), and the duplicate check, adoption and import only match that form, so use it. Required to create a file; without it only `adopt_existing` works. Not readable for hosted files: Read keeps the configured value, and an imported file has none (unmanaged). A new value replaces the content in place for `IMAGE` and `FILE`; for the other content types it replaces the file. Not allowed for `VIDEO` and `MODEL_3D` yet (roadmap).
 - `source_hash` (String) Not interpreted; any change fetches `source` again, like a change of `source` itself. A file behind a URL that changes later is otherwise invisible to Terraform, because the URL is not fetched at plan time.
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
@@ -88,7 +88,7 @@ Import is supported using the following syntax:
 The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
-# <filename>, or the video URL for an external video
+# <filename>, or the video URL in the form Shopify stores for an external video
 terraform import shopify_file.logo logo.png
-terraform import shopify_file.howto "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+terraform import shopify_file.howto "https://youtu.be/dQw4w9WgXcQ"
 ```

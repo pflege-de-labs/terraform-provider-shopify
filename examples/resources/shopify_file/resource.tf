@@ -21,10 +21,10 @@ resource "shopify_file" "datasheet" {
   }
 }
 
-# External videos have no filename; the URL is their key.
+# External videos have no filename; the URL is their key, in the form Shopify stores (youtu.be/<id> for YouTube).
 resource "shopify_file" "howto" {
   content_type = "EXTERNAL_VIDEO"
-  source       = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  source       = "https://youtu.be/dQw4w9WgXcQ"
 }
 
 # Take over a file that exists: without source, only alt is managed.
