@@ -88,7 +88,7 @@ Deleting some objects deletes the data stored in them: metafield and metaobject 
 
 ### Volatile types
 
-Some resources manage content or objects that people and other systems edit in the admin all the time: `shopify_product`, `shopify_collection`, `shopify_page`, `shopify_file`, `shopify_shop_policy` and `shopify_checkout_and_accounts_configuration`. They are implemented, but their pages call them a poor fit for Terraform in general: every admin edit to a managed attribute is reverted on the next apply, and `terraform plan` shows drift constantly. They suit a few objects kept in a repository, or bootstrapping a store; leave attributes unset (see above) to keep the managed surface small. Whether to manage them is your decision. Catalogue data at scale belongs in a product data system or a sync job, not in Terraform state.
+Some resources manage content or objects that people and other systems edit in the admin all the time: `shopify_product`, `shopify_collection`, `shopify_page`, `shopify_file`, `shopify_discount_basic`, `shopify_customer_segment`, `shopify_shop_policy` and `shopify_checkout_and_accounts_configuration`. They are implemented, but their pages call them a poor fit for Terraform in general: every admin edit to a managed attribute is reverted on the next apply, and `terraform plan` shows drift constantly. They suit a few objects kept in a repository, or bootstrapping a store; leave attributes unset (see above) to keep the managed surface small. Whether to manage them is your decision. Catalogue data at scale belongs in a product data system or a sync job, not in Terraform state.
 
 ### Throttling and concurrency
 

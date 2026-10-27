@@ -19,10 +19,13 @@ FEATURES:
 * **New Resource:** `shopify_file`
 * **New Resource:** `shopify_web_presence`
 * **New Resource:** `shopify_checkout_and_accounts_configuration`
+* **New Resource:** `shopify_discount_basic`
+* **New Resource:** `shopify_customer_segment`
 * **New Data Source:** `shopify_fulfillment_service`
 * **New Data Source:** `shopify_publication`
 * **New Data Source:** `shopify_metafield_definition`
 * **New Data Source:** `shopify_metaobject_definition`
+* **New Data Source:** `shopify_metaobject`
 * **New Data Source:** `shopify_shop`
 * **New List Resource:** `shopify_metafield_definition`
 * **New List Resource:** `shopify_metaobject_definition`
@@ -41,5 +44,5 @@ FEATURES:
 * **New List Resource:** `shopify_file`
 * **New List Resource:** `shopify_web_presence`
 * **New List Resource:** `shopify_checkout_and_accounts_configuration`
-
-<!-- TODO: add types merged after 7d33ad0 -->
+* **New List Resource:** `shopify_discount_basic`
+* **New List Resource:** `shopify_customer_segment`
