@@ -35,7 +35,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | Scope | Resource types | Status | Fit |
 |---|---|---|---|
 | none | `shopify_shop` data source | ✅ | |
-| `write_products` | `shopify_metafield_definition` resource and data source (owner types `PRODUCT`, `PRODUCTVARIANT`, `COLLECTION`), catalogs, price lists, selling plan groups; products and collections | ✅ definitions (`PRODUCT`), `shopify_product` core fields (options, variants, publishing and media planned), `shopify_collection` (publishing planned), rest planned | definitions good; products, collections volatile |
+| `write_products` | `shopify_metafield_definition` resource and data source (owner types `PRODUCT`, `PRODUCTVARIANT`, `COLLECTION`), catalogs, price lists, selling plan groups; products and collections | ✅ definitions (`PRODUCT`), `shopify_product` (core fields, options, variants, publishing, media), `shopify_collection` (with publishing), rest planned | definitions good; products, collections volatile |
 | `write_metaobject_definitions` | `shopify_metaobject_definition` resource and data source | ✅ | good |
 | `write_online_store_navigation` | `shopify_menu`, URL redirects | ✅ menus, redirects planned | menus good; redirects volatile |
 | `write_locations` | `shopify_location` | ✅ | good |
@@ -53,7 +53,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_customers` | `shopify_customer_segment`; metafield definitions for `CUSTOMER` ⚠ | ✅ segments, the rest planned | segments volatile |
 | `write_companies` | metafield definitions for `COMPANY`, `COMPANY_LOCATION` ⚠ (B2B stores only; not in the reference configs) | planned | good |
 | `write_orders`, `write_draft_orders` | metafield definitions for `ORDER`, `DRAFTORDER` ⚠ | planned | good |
-| `write_content` | `shopify_page`, `shopify_blog`; articles; their metafield definitions ⚠ | ✅ pages, blogs, the rest planned | volatile (content) |
+| `write_content` | `shopify_page`, `shopify_blog`; articles; their metafield definitions ⚠ | ✅ pages, blogs, the rest planned | blogs good (settings only); pages, articles volatile (content) |
 | `write_discounts` | `shopify_discount_basic`; free shipping and buy X get Y discounts; metafield definitions for `DISCOUNT` ⚠ (segment and market contexts were read with every scope granted, so whether they also need `read_customers` / `read_markets` is untested) | ✅ basic, the rest planned | volatile (promotions) |
 | `read_metaobjects` (or `write_metaobjects`) | `shopify_metaobject` data source (entries by type and handle, for referencing; Shopify-owned types are not managed) | ✅ data source | good (read-only) |
 | `write_metaobjects` | metaobject entries (resource) | planned | volatile (content) |
