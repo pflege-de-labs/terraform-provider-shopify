@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Status:** In progress, D2/D3 decided, D1 pending · **Owner:** Jens Hausherr · **Last updated:** 2026-10-23
+**Status:** Executed; results in [the report](../reports/2026-10-27-phase2-resources.md) · **Owner:** Jens Hausherr · **Last updated:** 2026-10-27
 **Related:** [[implementation-plan]] (Phase 2 table), [[terraform-provider-resource-model]], [[list-resources-plan]], [bootstrapping](../bootstrapping.md)
 
 **Goal:** Find out, with the wider scopes, which store objects exist on staging and production that the provider can't manage yet, and implement those resource types (resource, identity, list resource, docs, acceptance tests).
@@ -30,10 +30,9 @@
 
 The last run lost its ledger because it was git-ignored inside a worktree. This time:
 
-- Work happens in the worktree `~/src/worktrees/terraform-provider-shopify/phase2` on branch `feat/phase2-resources` (and stacked branches per step, see Task 3).
-- The ledger is `docs/design/phase2-progress.md`, **committed**: the controller appends task status, review verdicts, deferred findings and rulings after every task and commits it with the task's commit.
-- Implementers commit after every green step (`wip(<pkg>): …` allowed); every commit is pushed right away. Temporary commits are not squashed: the PR is merged with a merge commit, as before.
-- The ledger and this plan's "Discovery" section are removed or condensed into a report under `docs/reports/` in the last task.
+- Work happened in the worktree `~/src/worktrees/terraform-provider-shopify/phase2` on branch `feat/phase2-resources` (and stacked branches per step, see Task 3).
+- The ledger was committed, with task status, review verdicts, deferred findings and rulings appended after every task. It was removed in the wrap-up; its content is in the report.
+- Implementers committed after every green step and pushed right away. Temporary commits were not squashed: PRs are merged with a merge commit, as before.
 
 ## Decisions needed before execution
 
@@ -127,36 +126,4 @@ Type-specific notes the design step must settle:
 
 ## Discovery 2026-10-26 (phase 2)
 
-Run 40024477009 attempt 5 on pflege-de/shopify-provisioning#13, discover@00eaf32, after the readonly apps were redeployed with `include_config_on_deploy` (provisioning#16) and reinstalled. Every row `ok`, none "no scope". Raw tables: `phase2-discovery/`.
-
-Non-zero counts (staging / production) and gate outcome:
-
-| Step | Type | Count | Owner (from keys) | Outcome |
-|---|---|---|---|---|
-| 7 | webPresences | 2 / 3 | merchant | build |
-| 8 | shopLocales | 1 / 1 | merchant (`de`) | build |
-| 8 | shopPolicies | 1 / 2 | merchant | build |
-| 8 | privacySettings, consentPolicy | 1 / 1, 319 / 319 per region | merchant | build (one task; consent policy is part of privacy settings) |
-| 8 | checkoutAndAccountsConfigurations | 1 / 1 | merchant | build |
-| 8 | checkoutBranding | 1 / 1 per configuration | merchant | build |
-| 9 | metafieldDefinitions ORDER, SHOP | 0 / 1 each | `checkoutblocks.*` (Checkout Blocks app) | data source (D4) |
-| 10 | fulfillmentServices | 2 / 2 | `manual` (Shopify), `test_fulfillmentservice_creation` (app) | data source (D4) |
-| 11 | catalogs | 3 / 5 | likely Shopify defaults | build as resource (D5) |
-| 11 | publications | 3 / 5 | channel apps (Online Store, POS, Headless, GraphiQL) | data source (D4) |
-| 13 | products | 86 / 214 | merchant | build |
-| 13 | collections | 14 / 17 | merchant | build |
-| 13 | pages | 8 / 9 | merchant | build |
-| 13 | blogs | 1 / 1 | merchant | build |
-| 13 | discountNodes | 0 / 7 | likely Shopify defaults | build as resource (D5) |
-| 13 | files | 269 / 432 | merchant | build |
-| 13 | segments | 5 / 5 | likely Shopify defaults (same count on both stores) | build as resource (D5) |
-| 13 | metaobjects | 0 / ~40 | all in `shopify--` standard definitions | data source (D4) |
-| – | returnPolicyProfiles | 1 / 1 | – | roadmap (D6); readable with the current scopes |
-
-Zero on both: custom delivery profiles, carrier services, URL redirects, price lists, selling plan groups, every step 12 type, articles. Not counted: translations (single locale `de`), market localizations, inventory levels. All of these go on the roadmap, to be built after the first successful import (D6).
-
-Already built types with Shopify/app-owned instances: `metaobjectDefinitions` 0 / 26 (all `shopify--`), PRODUCT metafield definitions in `shopify.*` / `shopify--discovery--*`: excluded from import by D3, readable through the D4 data sources.
-
-- D4 (2026-10-26): Shopify-owned objects get a data source in this phase so configuration can reference them: `shopify_metafield_definition` (any owner type, by owner type + namespace + key), `shopify_metaobject_definition` (by type), `shopify_publication` (by name), `shopify_fulfillment_service` (by handle), `shopify_metaobject` (by type + handle). Lookup by key also covers app-owned objects; they stay out of import (D3).
-- D5 (2026-10-26): customer segments, catalogs and discounts are probably Shopify's defaults, but are built as resources so they can be configured with Terraform. The design step settles adopting defaults (Pattern A or `adopt_existing`).
-- D6 (2026-10-26): return policy profiles and every type with no instances stay on the roadmap until after the first successful import.
+Condensed into [the report](../reports/2026-10-27-phase2-resources.md) (counts, outcome per type, decisions D4-D6). Raw tables: `phase2-discovery/`.

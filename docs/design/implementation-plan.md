@@ -1,6 +1,6 @@
 # Terraform Provider for Shopify: Implementation Plan
 
-**Status:** Phase 1 done, Phase 2 planned · **Owner:** Jens Hausherr · **Last updated:** 2026-10-23
+**Status:** Phase 1 done, Phase 2 built except the roadmap items below · **Owner:** Jens Hausherr · **Last updated:** 2026-10-27
 **Related:** [[shopify-infra-automation-approach]], [[terraform-provider-resource-model]]
 
 This plan follows the implementation order in section 12 of the resource model, with a Step 0 added for template cleanup.
@@ -95,16 +95,26 @@ Working rules, in addition to the ones above:
 - A step needing a new scope waits until the user has granted it on the dev store (`docs/bootstrapping.md`); record the scope in its table and in `app/*.toml`.
 - The docs of a volatile type say so in the resource description.
 
-| Step | Resource types | Scopes (write) | Fit | Notes |
+Status 2026-10-27: steps 7-11 merged (#25-#29), step 13 in review. Counts are staging / production instances from the 2026-10-26 discovery; see [the report](../reports/2026-10-27-phase2-resources.md) for rulings and open points.
+
+| Step | Resource types | Scopes (write) | Fit | Status |
 |---|---|---|---|---|
-| 7 | `shopify_web_presence` | `markets`, `locales` | good | design in resource model §9a |
-| 8 | Shop-level singletons: shop locales, shop policies, privacy settings, checkout and accounts configuration, checkout branding | `locales`, `legal_policies`, `privacy_settings`, `checkout_and_accounts_configurations`, `checkout_branding_settings` | good | Pattern A; use non-deprecated checkout APIs |
-| 9 | `shopify_metafield_definition` for all owner types | per owner type ⚠ | good | find the scope per owner type; unscoped types list as empty |
-| 10 | Custom delivery profiles, carrier services, fulfillment services | `shipping`, `fulfillments` | good; carrier/fulfillment services app-owned | extends `shopify_delivery_profile` or a new type, decide in the model |
-| 11 | URL redirects, publications, catalogs, price lists, selling plan groups | `online_store_navigation`, `publications`, `products`, `purchase_options` | volatile | |
-| 12 | Payment and delivery customizations, validations, cart transforms, fulfillment constraint rules | matching `*_customizations`, `validations`, `cart_transforms`, `fulfillment_constraint_rules` | good | reference a Function by ID; the Function ships with an app |
-| 13 | Products, collections, pages, blogs, articles, discounts, metaobject entries, files, translations, market localizations, customer segments, inventory levels | `products`, `content`, `discounts`, `metaobjects`, `files`, `translations`, `customers`, `inventory` | volatile | content; large schemas, split per type when planned in detail |
+| 7 | `shopify_web_presence` | `markets`, `locales` | good | ✅ |
+| 8 | Shop-level singletons | `locales`, `legal_policies`, `privacy_settings`, `checkout_and_accounts_configurations`, `checkout_branding_settings` | good | ✅ `shopify_shop_locale`, `shopify_shop_policy`, `shopify_privacy_settings`, `shopify_consent_policy`, `shopify_checkout_and_accounts_configuration` (branding as JSON attribute) |
+| 9 | Metafield and metaobject definitions of Shopify- or app-owned objects | per owner type | good | ✅ data sources `shopify_metafield_definition`, `shopify_metaobject_definition`. Other owner types: only app-owned instances found (ORDER, SHOP 0 / 1), scope per owner type unverified |
+| 10 | Fulfillment services | `shipping`, `fulfillments` | good; app-owned | ✅ data source `shopify_fulfillment_service`. Roadmap: custom delivery profiles (0 / 0), carrier services (0 / 0) |
+| 11 | Publications, catalogs, URL redirects, price lists, selling plan groups | `online_store_navigation`, `publications`, `products`, `purchase_options` | volatile | ✅ data source `shopify_publication`. Roadmap: `shopify_catalog` (3 / 5, all channel app catalogs; design §9i kept), URL redirects, price lists, selling plan groups (0 / 0) |
+| 12 | Payment and delivery customizations, validations, cart transforms, fulfillment constraint rules | matching `*_customizations`, `validations`, `cart_transforms`, `fulfillment_constraint_rules` | good | Roadmap: 0 / 0 on both stores |
+| 13 | Content | `products`, `content`, `discounts`, `metaobjects`, `files`, `customers`, `inventory` | volatile | ✅ `shopify_product` (options, variants, publishing, `media_ids`), `shopify_collection`, `shopify_page`, `shopify_blog`, `shopify_file` (URL sources), `shopify_discount_basic`, `shopify_customer_segment`, data source `shopify_metaobject`. Roadmap: see below |
 
 ## Roadmap
 
 - **Market-driven shipping (investigate).** The store admin warns "Some of your apps are not compatible with market-driven shipping". Shipping options by market replace shipping profiles and rates in the admin ([help](https://help.shopify.com/en/manual/fulfillment/setup/shipping-options)). Shopify's changelog deprecates the merchant-owned delivery profile APIs (`deliveryProfile(s)`, `deliveryProfileCreate/Update/Remove`) for it: on migrated shops reads may be stale and writes may succeed without changing live shipping ([changelog](https://shopify.dev/changelog/merchant-owned-delivery-profile-apis-are-deprecated-for-market-driven-shipping)). Timeline ([next-gen fulfillment](https://shopify.dev/changelog/blog/next-gen-fulfillment)): merchant opt-in from 2026-10-01, on for all shops 2027-07-01; Shopify won't migrate a shop while an installed app is incompatible. To do: find which of our apps triggers the warning, read the upgrade guide, decide how `shopify_delivery_profile` and Phase 2 step 10 move to the Markets shipping APIs, and update scopes and app config (`app/*.toml`, `docs/bootstrapping.md`, shopify-provisioning) if they change.
+- **Phase 2 types not built** (counts staging / production; reasons in [the report](../reports/2026-10-27-phase2-resources.md)). Decide after the first successful import (D6):
+  - `shopify_catalog` (3 / 5, channel app catalogs only; design in resource model §9i).
+  - `shopify_discount_free_shipping` and `shopify_discount_bxgy`: check the kinds of production's 7 discounts at first import. App discounts are not creatable here.
+  - `shopify_file` uploads of local files (staged uploads), needed for videos and 3D models.
+  - Variant media and collection images.
+  - Articles (0 / 0), return policy profiles (1 / 1), custom delivery profiles, carrier services, URL redirects, price lists, selling plan groups and all step 12 types (0 / 0).
+  - Translations, market localizations, inventory levels (not counted; single locale `de`).
+- **Post-merge fixes:** the `media_managed` residual on product destroy, the flaky parallel `make testacc` (web presence and shop locale tests both toggle locale `fr`), and the fix-later groups and 13 open `TODO(verify)` listed in the report.

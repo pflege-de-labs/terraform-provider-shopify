@@ -7,7 +7,7 @@ Repo started from HashiCorp's `terraform-provider-scaffolding-framework` templat
 
 - `docs/design/shopify-infra-automation-approach.md`: why a hybrid approach, what is in/out of scope, pitfalls.
 - `docs/design/terraform-provider-resource-model.md`: resource schemas, import keys, Patterns A/B, implementation order.
-- `docs/design/implementation-plan.md`: steps done and planned (Phase 2: remaining resource types).
+- `docs/design/implementation-plan.md`: steps done, Phase 2 status per type, roadmap.
 - `docs/bootstrapping.md`: app setup and the scope each resource type needs.
 
 Read the relevant sections before implementing or changing any resource. If code and design docs disagree, stop and ask; don't silently pick one.
