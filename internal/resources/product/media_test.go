@@ -230,3 +230,15 @@ func TestNeedsMediaRecord(t *testing.T) {
 		}
 	}
 }
+
+func TestMediaRecord(t *testing.T) {
+	for _, c := range []struct {
+		cfgSet bool
+		prior  string
+		want   bool
+	}{{true, "", true}, {true, "false", true}, {false, "true", true}, {false, "false", false}, {false, "", false}} {
+		if got := mediaRecord(c.cfgSet, []byte(c.prior)); got != c.want {
+			t.Errorf("cfgSet=%v prior=%q: got %v, want %v", c.cfgSet, c.prior, got, c.want)
+		}
+	}
+}

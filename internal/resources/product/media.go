@@ -89,18 +89,23 @@ func needsMediaRecord(cfgSet bool, record []byte) bool {
 	return cfgSet && string(record) == "false"
 }
 
-// planMediaManaged forces an update, which records the managed state, when media_ids goes from unset (to set.
+// planMediaManaged forces an update, which records the media as managed, when media_ids (known or not yet) is set and the record is false.
 func (r *Resource) planMediaManaged(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	var ids types.List
 	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("media_ids"), &ids)...)
 	raw, d := req.Private.GetKey(ctx, mediaManagedKey)
 	resp.Diagnostics.Append(d...)
-	if resp.Diagnostics.HasError() || ids.IsUnknown() || !needsMediaRecord(!ids.IsNull(), raw) {
+	if resp.Diagnostics.HasError() || !needsMediaRecord(!ids.IsNull(), raw) {
 		return
 	}
 	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("media_managed"), types.BoolUnknown())...)
 	resp.Diagnostics.AddWarning("Updating the product to manage its media",
 		"media_ids is set but the provider has recorded it as unmanaged. The update changes no media; it makes a destroy detach them so the files survive.")
+}
+
+// mediaRecord is what a write records: sticky once true, since detaching on destroy only keeps files in the library.
+func mediaRecord(cfgSet bool, prior []byte) bool {
+	return cfgSet || string(prior) == "true"
 }
 
 // removedIDs returns the prior IDs that are not planned, in prior order.

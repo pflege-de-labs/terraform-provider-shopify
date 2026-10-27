@@ -390,3 +390,49 @@ func TestAccProduct_mediaUnsetToSetKeepsFile(t *testing.T) {
 		},
 	})
 }
+
+// The file is created in the same apply as the media_ids change (unknown at plan time); unsetting media_ids later keeps the record.
+func TestAccProduct_mediaUnsetToSetSameApply(t *testing.T) {
+	acctest.Setup(t)
+	acctest.KeepFrontpage(t)
+	handle := testHandle()
+	cleanup(t, handle)
+	f := newFiles(t)
+	product := func(media string) string {
+		return config(fmt.Sprintf(`
+  handle              = %q
+  title               = "tf-acc media same apply"
+  status              = "DRAFT"
+  allow_data_deletion = true
+  %s
+`, handle, media))
+	}
+	fileName := testFilename()
+	file := func(allow bool) string {
+		return strings.Replace(fileConfig("a", fileName), "allow_data_deletion = true", fmt.Sprintf("allow_data_deletion = %t", allow), 1)
+	}
+	empty := resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}}
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             resource.ComposeTestCheckFunc(checkGone(t, handle), checkFiles(t, f, map[string]bool{"a": false})),
+		Steps: []resource.TestStep{
+			{Config: product("")},
+			{
+				Config:            file(false) + product("media_ids = [shopify_file.a.id]"),
+				Check:             resource.ComposeTestCheckFunc(f.track("a"), checkMedia(t, handle, f, "a")),
+				ConfigStateChecks: mediaState("a"),
+			},
+			{Config: file(false) + product("media_ids = [shopify_file.a.id]"), ConfigPlanChecks: empty},
+			{Config: file(false) + product("depends_on = [shopify_file.a]"), ConfigPlanChecks: empty},
+			{
+				Config: file(false),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(addr, plancheck.ResourceActionDestroy)},
+				},
+				Check: resource.ComposeTestCheckFunc(checkGone(t, handle), checkFiles(t, f, map[string]bool{"a": true})),
+			},
+			{Config: file(true)},
+		},
+	})
+}
