@@ -296,3 +296,37 @@ func TestAccProduct_destroyKeepsManagedFile(t *testing.T) {
 		},
 	})
 }
+
+// With media_ids unset, destroy keeps Shopify's behaviour: the unused file goes, and its own destroy then skips the guard.
+func TestAccProduct_destroyUnmanagedMedia(t *testing.T) {
+	acctest.Setup(t)
+	acctest.KeepFrontpage(t)
+	handle := testHandle()
+	cleanup(t, handle)
+	f := newFiles(t)
+	cfg := strings.Replace(fileConfig("a", testFilename()), "allow_data_deletion = true", "allow_data_deletion = false", 1) + config(fmt.Sprintf(`
+  handle              = %q
+  title               = "tf-acc destroy unmanaged media"
+  status              = "DRAFT"
+  allow_data_deletion = true
+  depends_on          = [shopify_file.a]
+`, handle))
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             resource.ComposeTestCheckFunc(checkGone(t, handle), checkFiles(t, f, map[string]bool{"a": false})),
+		Steps: []resource.TestStep{
+			{Config: cfg, Check: f.track("a")},
+			{
+				PreConfig: func() {
+					raw, _ := json.Marshal([]map[string]string{{"id": f.id("a")}})
+					id := mustLookup(t, handle).Id
+					mustSet(t, &id, client.ProductSetInput{Files: raw})
+				},
+				Config:           cfg,
+				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}},
+				Check:            checkMedia(t, handle, f, "a"),
+			},
+		},
+	})
+}
