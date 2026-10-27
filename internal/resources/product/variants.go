@@ -236,7 +236,7 @@ func keepDecimal(prior types.String, live *string) types.String {
 	if live == nil {
 		return types.StringNull()
 	}
-	if !prior.IsNull() && !prior.IsUnknown() && decimalEqual(prior.ValueString(), *live) {
+	if !prior.IsNull() && !prior.IsUnknown() && patterns.DecimalEqual(prior.ValueString(), *live) {
 		return prior
 	}
 	return types.StringValue(*live)

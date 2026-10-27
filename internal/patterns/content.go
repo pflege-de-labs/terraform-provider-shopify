@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math/big"
 	"strings"
 	"unicode"
 
@@ -96,4 +97,11 @@ func WrittenHTML(ctx context.Context, private PrivateGetter) (*string, diag.Diag
 		return nil, diags
 	}
 	return &s, diags
+}
+
+// DecimalEqual compares decimal strings numerically, since Shopify returns "10" as "10.00".
+func DecimalEqual(a, b string) bool {
+	x, ok1 := new(big.Rat).SetString(a)
+	y, ok2 := new(big.Rat).SetString(b)
+	return ok1 && ok2 && x.Cmp(y) == 0
 }

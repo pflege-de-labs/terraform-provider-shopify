@@ -77,3 +77,23 @@ func TestWrittenHTMLRoundTrip(t *testing.T) {
 		t.Errorf("got %v %v", got, d)
 	}
 }
+
+func TestDecimalEqual(t *testing.T) {
+	cases := []struct {
+		a, b string
+		want bool
+	}{
+		{"10", "10.00", true},
+		{"19.9", "19.90", true},
+		{"0", "0.00", true},
+		{"50", "50.0", true},
+		{"10.01", "10.00", false},
+		{"abc", "abc", false},
+		{"", "0.00", false},
+	}
+	for _, c := range cases {
+		if got := DecimalEqual(c.a, c.b); got != c.want {
+			t.Errorf("DecimalEqual(%q, %q) = %t, want %t", c.a, c.b, got, c.want)
+		}
+	}
+}

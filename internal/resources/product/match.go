@@ -2,7 +2,6 @@ package product
 
 import (
 	"fmt"
-	"math/big"
 	"slices"
 	"strings"
 )
@@ -193,11 +192,4 @@ func validateOptionsAndVariants(opts []option, variants []combo) error {
 		keys[key] = true
 	}
 	return nil
-}
-
-// decimalEqual compares decimal strings numerically, since Shopify returns "10" as "10.00".
-func decimalEqual(a, b string) bool {
-	x, ok1 := new(big.Rat).SetString(a)
-	y, ok2 := new(big.Rat).SetString(b)
-	return ok1 && ok2 && x.Cmp(y) == 0
 }

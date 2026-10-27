@@ -56,3 +56,15 @@ func Paginate[T any](ctx context.Context, limit int64, page func(after *string) 
 		after = next
 	}
 }
+
+// PaginateCounting is Paginate where push reports whether the item counted toward limit, so skipped items don't use it up.
+func PaginateCounting[T any](ctx context.Context, limit int64, page func(after *string) ([]T, *string, error), push func(T) (counted, ok bool)) error {
+	var n int64
+	return Paginate(ctx, 0, page, func(it T) bool {
+		counted, ok := push(it)
+		if counted {
+			n++
+		}
+		return ok && (limit <= 0 || n < limit)
+	})
+}

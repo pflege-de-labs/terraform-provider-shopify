@@ -62,3 +62,21 @@ func TestPaginate(t *testing.T) {
 		}
 	})
 }
+
+func TestPaginateCountingSkipsDontUseLimit(t *testing.T) {
+	page := func(*string) ([]int, *string, error) { return []int{1, -1, 2, -2, 3}, nil, nil }
+	var pushed []int
+	err := PaginateCounting(context.Background(), 2, page, func(i int) (bool, bool) {
+		if i < 0 {
+			return false, true
+		}
+		pushed = append(pushed, i)
+		return true, true
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(pushed) != 2 || pushed[1] != 2 {
+		t.Fatalf("pushed %v, want [1 2]", pushed)
+	}
+}
