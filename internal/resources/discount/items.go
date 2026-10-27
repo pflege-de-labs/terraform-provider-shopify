@@ -116,7 +116,7 @@ func customerGetsAttribute() schema.SingleNestedAttribute {
 								Validators:          []validator.String{decimalValidator},
 							},
 							"applies_on_each_item": schema.BoolAttribute{
-								MarkdownDescription: "Whether the amount comes off each selected item instead of once per order. Defaults to `false`.",
+								MarkdownDescription: "Whether the amount comes off each selected item instead of once per order. Defaults to `false`; must be `false` when `items` is `all`.",
 								Optional:            true,
 								Computed:            true,
 								Default:             booldefault.StaticBool(false),
@@ -198,13 +198,18 @@ func itemsFromAPI(items client.DiscountItemsFields) (itemsSel, error) {
 	return itemsSel{}, fmt.Errorf("has an item selection of type %T, which this provider doesn't know", items)
 }
 
-// itemsInput writes want over live (nil on create): a difference within one kind, otherwise the new kind, which replaces the old.
+// itemsInput writes want over live (nil on create): a difference within one kind, otherwise the new kind.
+// Shopify refuses collections together with products, so a switch between them removes the old kind in the same call; all replaces either.
 func itemsInput(want itemsSel, live *itemsSel) *client.DiscountItemsInput {
 	liveProducts := live != nil && (live.ProductIDs != nil || live.VariantIDs != nil)
 	switch {
 	case want.ProductIDs != nil || want.VariantIDs != nil:
 		if !liveProducts {
-			return &client.DiscountItemsInput{Products: &client.DiscountProductsInput{ProductsToAdd: want.ProductIDs, ProductVariantsToAdd: want.VariantIDs}}
+			in := &client.DiscountItemsInput{Products: &client.DiscountProductsInput{ProductsToAdd: want.ProductIDs, ProductVariantsToAdd: want.VariantIDs}}
+			if live != nil && live.CollectionIDs != nil {
+				in.Collections = &client.DiscountCollectionsInput{Remove: live.CollectionIDs}
+			}
+			return in
 		}
 		addP, removeP := addRemove(want.ProductIDs, live.ProductIDs)
 		addV, removeV := addRemove(want.VariantIDs, live.VariantIDs)
@@ -216,7 +221,11 @@ func itemsInput(want itemsSel, live *itemsSel) *client.DiscountItemsInput {
 		}}
 	case want.CollectionIDs != nil:
 		if live == nil || live.CollectionIDs == nil {
-			return &client.DiscountItemsInput{Collections: &client.DiscountCollectionsInput{Add: want.CollectionIDs}}
+			in := &client.DiscountItemsInput{Collections: &client.DiscountCollectionsInput{Add: want.CollectionIDs}}
+			if liveProducts {
+				in.Products = &client.DiscountProductsInput{ProductsToRemove: live.ProductIDs, ProductVariantsToRemove: live.VariantIDs}
+			}
+			return in
 		}
 		add, remove := addRemove(want.CollectionIDs, live.CollectionIDs)
 		if add == nil && remove == nil {
@@ -280,15 +289,15 @@ func minimumFromAPI(m *client.DiscountMinimumFields) (minimumSel, error) {
 	return minimumSel{}, fmt.Errorf("has a minimum requirement of type %T, which this provider doesn't know", *m)
 }
 
-// minimumInput sends the configured minimum; none clears it, since minimumRequirement: null is ignored.
+// minimumInput sends both kinds, the unused one as null: minimumRequirement: null is ignored, and Shopify refuses both kinds set at once.
 func minimumInput(m minimumSel) *client.DiscountMinimumRequirementInput {
-	switch {
-	case m.Subtotal != nil:
-		return &client.DiscountMinimumRequirementInput{Subtotal: &client.DiscountMinimumSubtotalInput{GreaterThanOrEqualToSubtotal: m.Subtotal}}
-	case m.Quantity != nil:
-		q := strconv.FormatInt(*m.Quantity, 10)
-		return &client.DiscountMinimumRequirementInput{Quantity: &client.DiscountMinimumQuantityInput{GreaterThanOrEqualToQuantity: &q}}
+	in := &client.DiscountMinimumRequirementInput{
+		Subtotal: &client.DiscountMinimumSubtotalInput{GreaterThanOrEqualToSubtotal: m.Subtotal},
+		Quantity: &client.DiscountMinimumQuantityInput{},
 	}
-	// TODO(verify): whether clearing the subtotal also removes a quantity minimum.
-	return &client.DiscountMinimumRequirementInput{Subtotal: &client.DiscountMinimumSubtotalInput{}}
+	if m.Quantity != nil {
+		q := strconv.FormatInt(*m.Quantity, 10)
+		in.Quantity.GreaterThanOrEqualToQuantity = &q
+	}
+	return in
 }

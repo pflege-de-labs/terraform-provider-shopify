@@ -237,7 +237,9 @@ func TestItemsInput(t *testing.T) {
 		{"collections unchanged", itemsSel{CollectionIDs: []string{"c1"}}, &itemsSel{CollectionIDs: []string{"c1"}}, `null`},
 		{"products diff, variants dropped", itemsSel{ProductIDs: []string{"p1", "p2"}}, &itemsSel{ProductIDs: []string{"p1"}, VariantIDs: []string{"v1"}}, `{"products":{"productsToAdd":["p2"],"productVariantsToRemove":["v1"]}}`},
 		{"collections to all", all, &itemsSel{CollectionIDs: []string{"c1"}}, `{"all":true}`},
-		{"products to collections", itemsSel{CollectionIDs: []string{"c"}}, &itemsSel{ProductIDs: []string{"p"}}, `{"collections":{"add":["c"]}}`},
+		// Shopify refuses collections together with products, so a switch removes the old kind in the same call.
+		{"products to collections", itemsSel{CollectionIDs: []string{"c"}}, &itemsSel{ProductIDs: []string{"p"}, VariantIDs: []string{"v"}}, `{"products":{"productsToRemove":["p"],"productVariantsToRemove":["v"]},"collections":{"add":["c"]}}`},
+		{"collections to products", itemsSel{ProductIDs: []string{"p"}}, &itemsSel{CollectionIDs: []string{"c"}}, `{"products":{"productsToAdd":["p"]},"collections":{"remove":["c"]}}`},
 		{"all to products", itemsSel{ProductIDs: []string{"p"}}, &all, `{"products":{"productsToAdd":["p"]}}`},
 	}
 	for _, c := range cases {
@@ -252,9 +254,10 @@ func TestMinimum(t *testing.T) {
 		in   minimumSel
 		json string
 	}{
-		{minimumSel{}, `{"subtotal":{"greaterThanOrEqualToSubtotal":null}}`},
-		{minimumSel{Subtotal: ptr("30.00")}, `{"subtotal":{"greaterThanOrEqualToSubtotal":"30.00"}}`},
-		{minimumSel{Quantity: ptr(int64(3))}, `{"quantity":{"greaterThanOrEqualToQuantity":"3"}}`},
+		// The other kind is always cleared, since Shopify refuses a subtotal and a quantity together.
+		{minimumSel{}, `{"quantity":{"greaterThanOrEqualToQuantity":null},"subtotal":{"greaterThanOrEqualToSubtotal":null}}`},
+		{minimumSel{Subtotal: ptr("30.00")}, `{"quantity":{"greaterThanOrEqualToQuantity":null},"subtotal":{"greaterThanOrEqualToSubtotal":"30.00"}}`},
+		{minimumSel{Quantity: ptr(int64(3))}, `{"quantity":{"greaterThanOrEqualToQuantity":"3"},"subtotal":{"greaterThanOrEqualToSubtotal":null}}`},
 	}
 	for _, c := range inputs {
 		if got := jsonOf(t, minimumInput(c.in)); got != c.json {

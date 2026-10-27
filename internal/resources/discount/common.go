@@ -360,6 +360,7 @@ func commonAttributes() map[string]schema.Attribute {
 		"status": schema.StringAttribute{
 			MarkdownDescription: "`ACTIVE`, `SCHEDULED` or `EXPIRED`, from the dates.",
 			Computed:            true,
+			PlanModifiers:       []planmodifier.String{statusFromDates{}},
 		},
 		"context":       contextAttribute(),
 		"combines_with": combinesAttribute(),
@@ -379,6 +380,13 @@ func commonAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Bool{patterns.UseStateForUnknownIncludingNullBool()},
 		},
 		"adopt_existing": patterns.AdoptExistingAttribute("discount with the same code, or automatic discount with the same title,"),
+	}
+}
+
+// takeDefaults copies objects whose nested defaults only the plan holds; config still decides whether combines_with is managed.
+func (m *commonModel) takeDefaults(plan *commonModel) {
+	if !m.CombinesWith.IsNull() {
+		m.CombinesWith = plan.CombinesWith
 	}
 }
 
@@ -701,4 +709,29 @@ func modifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resou
 		}
 		resp.Diagnostics.AddAttributeError(path.Root("context"), "Context can't be managed", unsupportedContextDetail(kind))
 	}
+}
+
+// statusFromDates keeps the status unless the dates change; unset nested objects otherwise make every plan look like an update.
+type statusFromDates struct{}
+
+func (statusFromDates) Description(context.Context) string {
+	return "Keeps the prior status while starts_at and ends_at stay the same."
+}
+
+func (m statusFromDates) MarkdownDescription(ctx context.Context) string { return m.Description(ctx) }
+
+func (statusFromDates) PlanModifyString(ctx context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
+	if req.State.Raw.IsNull() || req.Plan.Raw.IsNull() || !req.PlanValue.IsUnknown() {
+		return
+	}
+	// Config, not plan: other attributes' modifiers haven't run on the plan yet, and unset dates are unmanaged.
+	for _, a := range []string{"starts_at", "ends_at"} {
+		var before, cfg instantValue
+		resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root(a), &before)...)
+		resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root(a), &cfg)...)
+		if !cfg.IsNull() && (cfg.IsUnknown() || before.IsNull() || !(instantEquality{}).Equal(before.ValueString(), cfg.ValueString())) {
+			return
+		}
+	}
+	resp.PlanValue = req.StateValue
 }

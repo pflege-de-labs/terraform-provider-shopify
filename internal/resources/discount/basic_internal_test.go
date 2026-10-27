@@ -104,7 +104,7 @@ func TestCreateInputSendsEveryConfiguredAttribute(t *testing.T) {
 		"context":{"customerSegments":{"add":["s1"]}},
 		"combinesWith":{"productDiscounts":false,"orderDiscounts":false,"shippingDiscounts":true},
 		"usageLimit":1000,"appliesOncePerCustomer":true,
-		"minimumRequirement":{"subtotal":{"greaterThanOrEqualToSubtotal":"30.00"}},
+		"minimumRequirement":{"quantity":{"greaterThanOrEqualToQuantity":null},"subtotal":{"greaterThanOrEqualToSubtotal":"30.00"}},
 		"customerGets":{"value":{"discountAmount":{"amount":"5","appliesOnEachItem":false}},"items":{"collections":{"add":["c1"]}}}}`)
 }
 

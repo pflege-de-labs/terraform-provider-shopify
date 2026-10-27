@@ -109,7 +109,7 @@ func (r *BasicResource) Create(ctx context.Context, req resource.CreateRequest, 
 			live = n
 		}
 	}
-	id := r.write(ctx, &cfg, live, &resp.Diagnostics)
+	id := r.write(ctx, &cfg, &plan, live, &resp.Diagnostics)
 	if id == "" || !r.finish(ctx, id, &cfg, &plan, &resp.Diagnostics, resp.Private) {
 		return
 	}
@@ -196,7 +196,7 @@ func (r *BasicResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Wrong discount type", fmt.Sprintf("Discount %s: %s.", live.ID, err))
 		return
 	}
-	if r.write(ctx, &cfg, live, &resp.Diagnostics) == "" || !r.finish(ctx, live.ID, &cfg, &plan, &resp.Diagnostics, resp.Private) {
+	if r.write(ctx, &cfg, &plan, live, &resp.Diagnostics) == "" || !r.finish(ctx, live.ID, &cfg, &plan, &resp.Diagnostics, resp.Private) {
 		return
 	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
@@ -258,7 +258,9 @@ func naturalKey(m *commonModel) (bool, string) {
 }
 
 // write creates the discount, or updates live; cfg is the config, so unset attributes are never sent. It returns the GID, or "" on error.
-func (r *BasicResource) write(ctx context.Context, cfg *basicModel, live *node, diags *diag.Diagnostics) string {
+func (r *BasicResource) write(ctx context.Context, cfg, plan *basicModel, live *node, diags *diag.Diagnostics) string {
+	cfg.takeDefaults(&plan.commonModel)
+	cfg.CustomerGets = plan.CustomerGets
 	isCode := !cfg.Code.IsNull()
 	summary := "Failed to create " + whatBasic
 	if live != nil {
