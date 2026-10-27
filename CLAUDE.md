@@ -7,7 +7,7 @@ Repo started from HashiCorp's `terraform-provider-scaffolding-framework` templat
 
 - `docs/design/shopify-infra-automation-approach.md`: why a hybrid approach, what is in/out of scope, pitfalls.
 - `docs/design/terraform-provider-resource-model.md`: resource schemas, import keys, Patterns A/B, implementation order.
-- `docs/design/implementation-plan.md`: steps done and planned (Phase 2: remaining resource types).
+- `docs/design/implementation-plan.md`: steps done, Phase 2 status per type, roadmap.
 - `docs/bootstrapping.md`: app setup and the scope each resource type needs.
 
 Read the relevant sections before implementing or changing any resource. If code and design docs disagree, stop and ask; don't silently pick one.
@@ -16,7 +16,7 @@ Read the relevant sections before implementing or changing any resource. If code
 
 Goal (decided 2026-10-23): cover every store object the Admin API can manage, even if a given project won't use it. Volatile types (content, or objects often edited in the admin or by other systems) are implemented too, but their docs say they are a poor fit for Terraform; the choice is the user's.
 
-Implemented: `shopify_shop` data source, `shopify_metafield_definition`, `shopify_metaobject_definition`, `shopify_menu`, `shopify_location`, `shopify_market`, `shopify_delivery_profile` (general profile only). Planned: Phase 2 in `docs/design/implementation-plan.md`, scopes per type in `docs/bootstrapping.md`.
+Status per type: `docs/design/implementation-plan.md`; scopes per type: `docs/bootstrapping.md`.
 
 Not covered, do not add:
 - App config, extensions, Functions themselves, app webhooks, web pixels, script tags: `shopify.app.toml` + Shopify CLI. Resources may reference a Function by ID.
@@ -28,33 +28,14 @@ A new resource type that needs a new scope: add it to the scope table in `docs/b
 
 ## Stack
 
-- Go, `terraform-plugin-framework` (not SDKv2), `terraform-plugin-testing` for acceptance tests.
 - Typed GraphQL via `genqlient`, generated from the pinned Admin API schema (**2026-10**). API upgrades should surface as compile errors.
 - Docs generated with `tfplugindocs`; keep `examples/` and `templates/` in sync with schemas.
 
-## Layout
-
-```
-main.go
-internal/client/       GraphQL client: auth, version pinning, throttling, retries, userErrors
-internal/provider/     provider schema + Configure
-internal/resources/<name>/   one package per resource
-internal/datasources/shop/
-internal/patterns/     adopt, data-deletion guard, natural-key import helpers
-examples/  docs/  templates/
-```
-
-The template's `example_*` resources, data sources, functions and ephemeral resources in `internal/provider/` are placeholders: remove them as real ones replace them. Provider address and names still need renaming from `hashicorp/scaffolding` to `registry.terraform.io/pflege-de-labs/shopify` (module `github.com/pflege-de-labs/terraform-provider-shopify`).
-
 ## Commands
 
-Use the template's `GNUmakefile`:
+`GNUmakefile` targets. Non-obvious ones:
 
-- `make build`: compile
-- `make fmt`: gofmt
-- `make lint`: golangci-lint (config in `.golangci.yml`)
 - `make generate`: regenerate docs and GraphQL code; commit the output
-- `make test`: unit tests (fast, no network)
 - `make testacc`: acceptance tests (`TF_ACC=1`), **real API calls**, see safety rules
 
 Before declaring a task done: `make fmt lint test` must pass, and `make generate` must leave no uncommitted diff.

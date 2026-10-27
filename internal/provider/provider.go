@@ -24,17 +24,25 @@ import (
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/fulfillmentservice"
 	metafielddefinitionds "github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/metafielddefinition"
+	metaobjectds "github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/metaobject"
 	metaobjectdefinitionds "github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/metaobjectdefinition"
 	publicationds "github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/publication"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/datasources/shop"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/blog"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/checkoutandaccountsconfiguration"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/collection"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/customersegment"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/deliveryprofile"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/discount"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/file"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/location"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/market"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/menu"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/metafielddefinition"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/metaobjectdefinition"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/page"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/privacysettings"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/product"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/shoplocale"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/shoppolicy"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/webpresence"
@@ -186,8 +194,15 @@ func (p *ShopifyProvider) Resources(ctx context.Context) []func() resource.Resou
 		privacysettings.NewPrivacySettings,
 		privacysettings.NewConsentPolicy,
 		shoppolicy.NewResource,
+		product.NewResource,
+		collection.NewResource,
+		blog.NewResource,
+		page.NewResource,
+		file.NewResource,
 		webpresence.NewResource,
 		checkoutandaccountsconfiguration.NewResource,
+		discount.NewBasicResource,
+		customersegment.NewResource,
 	}
 }
 
@@ -203,8 +218,15 @@ func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListR
 		privacysettings.NewPrivacySettingsList,
 		privacysettings.NewConsentPolicyList,
 		shoppolicy.NewListResource,
+		product.NewListResource,
+		collection.NewListResource,
+		blog.NewListResource,
+		page.NewListResource,
+		file.NewListResource,
 		webpresence.NewListResource,
 		checkoutandaccountsconfiguration.NewListResource,
+		discount.NewBasicListResource,
+		customersegment.NewListResource,
 	}
 }
 
@@ -214,6 +236,7 @@ func (p *ShopifyProvider) DataSources(ctx context.Context) []func() datasource.D
 		publicationds.NewDataSource,
 		metafielddefinitionds.NewDataSource,
 		metaobjectdefinitionds.NewDataSource,
+		metaobjectds.NewDataSource,
 		shop.NewDataSource,
 	}
 }

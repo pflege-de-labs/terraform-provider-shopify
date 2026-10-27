@@ -1,0 +1,315 @@
+fragment CollectionFields on Collection {
+  id
+  handle
+  title
+  descriptionHtml
+  sortOrder
+  templateSuffix
+  seo {
+    title
+    description
+  }
+  ...PublicationsOfPublishable
+  # Raw JSON: the provider maps conditions to their input shape, not to 18 generated types.
+  # Aliases (`<field>__<kind>`) keep fields with different types apart, as GraphQL requires; the mapping strips them.
+  # Written from admin-2026-10.graphql; regenerate it when the API version changes.
+  # @genqlient(bind: "encoding/json.RawMessage")
+  sources {
+    __typename
+    id
+    # A source without an app is Shopify's own; the provider never deletes it (S13-9).
+    app {
+      id
+    }
+    ... on CollectionConditionsSource {
+      shareable
+      targetType
+      # Only whether exclusions exist: deleting the source would lose them (S13-9).
+      exclusion {
+        conditions {
+          id
+        }
+        selections(first: 1) {
+          nodes {
+            product {
+              id
+            }
+          }
+        }
+      }
+      inclusion {
+        matchType
+        conditions {
+          __typename
+          id
+          ... on CollectionSourceInclusionConditionMetafield {
+            definition {
+              id
+            }
+          }
+          ... on CollectionSourceInclusionConditionProductTag {
+            relation__ProductTag: relation
+            values
+            matchType
+          }
+          ... on CollectionSourceInclusionConditionProductTitle {
+            relation__ProductTitle: relation
+            values
+            matchType
+          }
+          ... on CollectionSourceInclusionConditionProductType {
+            relation__ProductType: relation
+            values
+            matchType
+          }
+          ... on CollectionSourceInclusionConditionProductVendor {
+            relation__ProductVendor: relation
+            values
+            matchType
+          }
+          ... on CollectionSourceInclusionConditionProductStatus {
+            relation__ProductStatus: relation
+            values__ProductStatus: values
+            matchType
+          }
+          ... on CollectionSourceInclusionConditionProductCategory {
+            relation__ProductCategory: relation
+            values__ProductCategory: values {
+              category {
+                id
+              }
+              includeDescendants
+            }
+            matchType
+          }
+          ... on CollectionSourceInclusionConditionVariantTitle {
+            relation__VariantTitle: relation
+            values
+            matchType
+          }
+          ... on CollectionSourceInclusionConditionVariantPrice {
+            relation__VariantPrice: relation
+            value__VariantPrice: value {
+              amount
+              currencyCode
+            }
+          }
+          ... on CollectionSourceInclusionConditionVariantCompareAtPrice {
+            relation__VariantCompareAtPrice: relation
+            value__VariantCompareAtPrice: value {
+              amount
+              currencyCode
+            }
+          }
+          ... on CollectionSourceInclusionConditionVariantInventory {
+            relation__VariantInventory: relation
+            value__VariantInventory: value
+          }
+          ... on CollectionSourceInclusionConditionVariantWeight {
+            relation__VariantWeight: relation
+            value__VariantWeight: value {
+              value
+              unit
+            }
+          }
+          ... on CollectionSourceInclusionConditionMetafieldBoolean {
+            relation__MetafieldBoolean: relation
+            value__MetafieldBoolean: value
+          }
+          ... on CollectionSourceInclusionConditionMetafieldInt {
+            relation__MetafieldInt: relation
+            value__MetafieldInt: value
+          }
+          ... on CollectionSourceInclusionConditionMetafieldDecimal {
+            relation__MetafieldDecimal: relation
+            value__MetafieldDecimal: value
+          }
+          ... on CollectionSourceInclusionConditionMetafieldString {
+            relation__MetafieldString: relation
+            values
+            matchType
+          }
+          ... on CollectionSourceInclusionConditionMetafieldStringList {
+            relation__MetafieldStringList: relation
+            values
+            matchType
+          }
+          ... on CollectionSourceInclusionConditionMetafieldMetaobject {
+            relation__MetafieldMetaobject: relation
+            value__MetafieldMetaobject: value {
+              id
+            }
+          }
+          ... on CollectionSourceInclusionConditionMetafieldMetaobjectList {
+            relation__MetafieldMetaobjectList: relation
+            values__MetafieldMetaobjectList: values {
+              id
+            }
+            matchType
+          }
+        }
+        selections(first: 250) {
+          nodes {
+            product {
+              id
+            }
+            variantIds
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetCollection(
+  $id: ID!
+) {
+  collection(id: $id) {
+    ...CollectionFields
+  }
+}
+
+# collectionByHandle is deprecated, so this is the exact handle lookup.
+query GetCollectionByHandle(
+  $handle: String!
+) {
+  collectionByIdentifier(identifier: { handle: $handle }) {
+    ...CollectionFields
+  }
+}
+
+# Pages selections after the first 250 that CollectionFields carries.
+query GetCollectionSelections(
+  $id: ID!
+  $after: String
+) {
+  collection(id: $id) {
+    # @genqlient(bind: "encoding/json.RawMessage")
+    sources {
+      id
+      ... on CollectionConditionsSource {
+        inclusion {
+          selections(first: 250, after: $after) {
+            nodes {
+              product {
+                id
+              }
+              variantIds
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# Requested cost with sources and selections(first: 250) stays under the 1000-point limit at 100 collections.
+query ListCollections(
+  $after: String
+) {
+  collections(first: 100, after: $after) {
+    nodes {
+      ...CollectionFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# Omitted keys stay unchanged, so every optional field is omitempty; conditions are raw JSON in the input's own shape.
+# @genqlient(for: "CollectionCreateInput.descriptionHtml", omitempty: true)
+# @genqlient(for: "CollectionCreateInput.handle", omitempty: true)
+# @genqlient(for: "CollectionCreateInput.image", omitempty: true)
+# @genqlient(for: "CollectionCreateInput.templateSuffix", omitempty: true)
+# @genqlient(for: "CollectionCreateInput.sortOrder", omitempty: true)
+# @genqlient(for: "CollectionCreateInput.metafields", omitempty: true)
+# @genqlient(for: "CollectionCreateInput.seo", omitempty: true)
+# @genqlient(for: "CollectionCreateInput.sources", omitempty: true)
+# @genqlient(for: "CollectionCreateSourceTargetInput.source", omitempty: true)
+# @genqlient(for: "CollectionCreateSourceTargetInput.subCollections", omitempty: true)
+# @genqlient(for: "CollectionCreateSourceTargetInput.shareableSource", omitempty: true)
+# @genqlient(for: "CollectionCreateConditionsSourceInput.description", omitempty: true)
+# @genqlient(for: "CollectionCreateConditionsSourceInput.inclusion", omitempty: true)
+# @genqlient(for: "CollectionCreateConditionsSourceInput.exclusion", omitempty: true)
+# @genqlient(for: "CollectionCreateConditionsSourceInput.targetType", omitempty: true)
+# @genqlient(for: "CollectionCreateSourceInclusionInput.matchType", omitempty: true)
+# @genqlient(for: "CollectionCreateSourceInclusionInput.conditions", omitempty: true, bind: "encoding/json.RawMessage")
+# @genqlient(for: "CollectionCreateSourceInclusionInput.selections", omitempty: true)
+# @genqlient(for: "CollectionInclusionProductSelectionInput.variantIds", omitempty: true)
+# @genqlient(for: "SEOInput.title", omitempty: true)
+# @genqlient(for: "SEOInput.description", omitempty: true)
+mutation CreateCollection(
+  $collection: CollectionCreateInput!
+) {
+  collectionCreate(collection: $collection) {
+    collection {
+      ...CollectionFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# @genqlient(for: "CollectionUpdateInput.descriptionHtml", omitempty: true)
+# @genqlient(for: "CollectionUpdateInput.handle", omitempty: true)
+# @genqlient(for: "CollectionUpdateInput.image", omitempty: true)
+# @genqlient(for: "CollectionUpdateInput.templateSuffix", omitempty: true)
+# @genqlient(for: "CollectionUpdateInput.sortOrder", omitempty: true)
+# @genqlient(for: "CollectionUpdateInput.title", omitempty: true)
+# @genqlient(for: "CollectionUpdateInput.metafields", omitempty: true)
+# @genqlient(for: "CollectionUpdateInput.seo", omitempty: true)
+# @genqlient(for: "CollectionUpdateInput.redirectNewHandle", omitempty: true)
+# @genqlient(for: "CollectionUpdateInput.sourcesToDelete", omitempty: true)
+# @genqlient(for: "CollectionUpdateInput.sourcesToCreate", omitempty: true)
+# @genqlient(for: "CollectionUpdateInput.sourcesToUpdate", omitempty: true)
+# @genqlient(for: "CollectionUpdateSourceTargetInput.condition", omitempty: true)
+# @genqlient(for: "CollectionUpdateSourceTargetInput.subCollections", omitempty: true)
+# @genqlient(for: "CollectionUpdateConditionsSourceInput.title", omitempty: true)
+# @genqlient(for: "CollectionUpdateConditionsSourceInput.description", omitempty: true)
+# @genqlient(for: "CollectionUpdateConditionsSourceInput.inclusion", omitempty: true)
+# @genqlient(for: "CollectionUpdateConditionsSourceInput.exclusion", omitempty: true)
+# @genqlient(for: "CollectionUpdateSourceInclusionInput.matchType", omitempty: true)
+# @genqlient(for: "CollectionUpdateSourceInclusionInput.conditionsToCreate", omitempty: true, bind: "encoding/json.RawMessage")
+# @genqlient(for: "CollectionUpdateSourceInclusionInput.conditionsToDelete", omitempty: true)
+# @genqlient(for: "CollectionUpdateSourceInclusionInput.conditionsToUpdate", omitempty: true)
+# @genqlient(for: "CollectionUpdateSourceInclusionInput.selectionsToAdd", omitempty: true)
+# @genqlient(for: "CollectionUpdateSourceInclusionInput.selectionsToRemove", omitempty: true)
+# @genqlient(for: "SEOInput.title", omitempty: true)
+# @genqlient(for: "SEOInput.description", omitempty: true)
+mutation UpdateCollection(
+  $collection: CollectionUpdateInput!
+) {
+  collectionUpdate(collection: $collection) {
+    collection {
+      ...CollectionFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeleteCollection(
+  $id: ID!
+) {
+  collectionDelete(input: { id: $id }) {
+    deletedCollectionId
+    userErrors {
+      field
+      message
+    }
+  }
+}

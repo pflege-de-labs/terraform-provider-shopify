@@ -67,7 +67,7 @@ func importedBranding(want ...string) resource.ImportStateCheckFunc {
 }
 
 func TestAccCheckoutAndAccountsConfiguration_basic(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownBranding(t, pBase, pSmall, pCheckbox, pColor)
 	name := published(t).Name
 	first := `{ designTokens = { cornerRadius = { base = 6 }, colors = { palette = { color1 = "#1a4d8f" } } } }`
@@ -169,7 +169,7 @@ func TestAccCheckoutAndAccountsConfiguration_basic(t *testing.T) {
 
 // Without branding nothing is written: adopting and destroying leave the branding as it was.
 func TestAccCheckoutAndAccountsConfiguration_unmanaged(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownBranding(t, pBase)
 	name := published(t).Name
 	resource.Test(t, resource.TestCase{

@@ -41,3 +41,47 @@ func TestUserErrorDiags(t *testing.T) {
 		t.Errorf("second diag detail = %q", diags[1].Detail())
 	}
 }
+
+func TestUserErrorDiagsWith(t *testing.T) {
+	mapper := func(field []string) (path.Path, bool) {
+		if len(field) == 2 && field[1] == "seo" {
+			return path.Root("seo_title"), true
+		}
+		return path.Empty(), false
+	}
+	diags := UserErrorDiagsWith("Write failed", []CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadUserErrorsMetafieldDefinitionCreateUserError{
+		{Field: []string{"input", "seo"}, Message: "mapped"},
+		{Field: []string{"definition", "key"}, Message: "not mapped by the custom mapper"},
+	}, mapper)
+	if len(diags) != 2 {
+		t.Fatalf("got %v", diags)
+	}
+	if d, ok := diags[0].(interface{ Path() path.Path }); !ok || !d.Path().Equal(path.Root("seo_title")) {
+		t.Errorf("first diag not scoped by the mapper: %v", diags[0])
+	}
+	if _, ok := diags[1].(interface{ Path() path.Path }); ok {
+		t.Errorf("second diag must stay resource-level: %v", diags[1])
+	}
+}
+
+func TestUserErrorDiagsBy(t *testing.T) {
+	mapper := func(e UserError) (path.Path, bool) {
+		if e.GetMessage() == "Handle has already been taken" {
+			return path.Root("handle"), true
+		}
+		return path.Empty(), false
+	}
+	diags := UserErrorDiagsBy("Write failed", []CreateMetafieldDefinitionMetafieldDefinitionCreateMetafieldDefinitionCreatePayloadUserErrorsMetafieldDefinitionCreateUserError{
+		{Field: []string{"collection"}, Message: "Handle has already been taken"},
+		{Field: []string{"collection"}, Message: "other"},
+	}, mapper)
+	if len(diags) != 2 {
+		t.Fatalf("got %v", diags)
+	}
+	if d, ok := diags[0].(interface{ Path() path.Path }); !ok || !d.Path().Equal(path.Root("handle")) {
+		t.Errorf("first diag not scoped by its message: %v", diags[0])
+	}
+	if _, ok := diags[1].(interface{ Path() path.Path }); ok {
+		t.Errorf("second diag must stay resource-level: %v", diags[1])
+	}
+}

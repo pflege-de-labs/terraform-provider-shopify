@@ -55,7 +55,7 @@ func attr(name string, v bool) string { return fmt.Sprintf("%s = %t", name, v) }
 // Adopting a row whose values already match writes nothing, so this runs with Shopify's banner on too:
 // DE is a written row, AT is Shopify's `SD-` default.
 func TestAccConsentPolicy_adoptWithoutWrite(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	de, at := consentRow(t, "DE", ""), consentRow(t, "AT", "")
 	deCR, deDS := boolOr(de.ConsentRequired), boolOr(de.DataSaleOptOutRequired)
 	atCfg := cpConfig("AT", "", attr("consent_required", boolOr(at.ConsentRequired)))
@@ -111,7 +111,7 @@ func TestAccConsentPolicy_adoptWithoutWrite(t *testing.T) {
 
 // Writes: runs only with Shopify's banner off, and puts every row it wrote back.
 func TestAccConsentPolicy_write(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	requireBannerOff(t)
 	restoreConsent(t, "IS", "")
 	restoreConsent(t, "US", "USCA")
@@ -163,7 +163,7 @@ func TestAccConsentPolicy_write(t *testing.T) {
 
 // A value changed outside Terraform for an attribute that config leaves unset isn't drift.
 func TestAccConsentPolicy_unmanagedValueIgnored(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	requireBannerOff(t)
 	restoreConsent(t, "LI", "")
 	li := consentRow(t, "LI", "")

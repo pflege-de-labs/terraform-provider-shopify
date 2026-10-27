@@ -3,7 +3,6 @@ package shoppolicy_test
 import (
 	"context"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -38,15 +37,6 @@ func body(s string) string { return marker + s + "</p>" }
 
 func config(typ client.ShopPolicyType, body string, extra ...string) string {
 	return fmt.Sprintf("resource \"shopify_shop_policy\" \"test\" {\n  type = %q\n  body = %q\n%s\n}\n", typ, body, strings.Join(extra, "\n"))
-}
-
-// accSetup skips without TF_ACC, because these tests call the API before resource.Test would skip them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
 }
 
 // lookup returns nil when the type has no row.
@@ -118,7 +108,7 @@ func checkBody(t *testing.T, typ client.ShopPolicyType, want string) resource.Te
 }
 
 func TestAccShopPolicy_basic(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownPolicy(t, typeLegal)
 	first, second := body("one"), body("two &amp; <br> <b>verbatim</b>")
 	resource.Test(t, resource.TestCase{
@@ -173,7 +163,7 @@ func TestAccShopPolicy_basic(t *testing.T) {
 
 // A type with text needs adopt_existing, so hand-written text isn't overwritten silently.
 func TestAccShopPolicy_adopt(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownPolicy(t, typeShipping)
 	written, want := body("by hand"), body("from config")
 	resource.Test(t, resource.TestCase{
@@ -207,7 +197,7 @@ func TestAccShopPolicy_adopt(t *testing.T) {
 
 // Safety path: destroying a policy that was imported rather than adopted leaves its text alone too.
 func TestAccShopPolicy_destroyKeepsImported(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownPolicy(t, typeShipping)
 	text := body("imported")
 	resource.Test(t, resource.TestCase{
@@ -230,7 +220,7 @@ func TestAccShopPolicy_destroyKeepsImported(t *testing.T) {
 
 // Body is the only managed attribute: other types stay untouched, edits to this one show as drift, and an emptied row counts as gone.
 func TestAccShopPolicy_drift(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownPolicy(t, typeShipping, typeLegal)
 	want, other := body("managed"), body("other type")
 	resource.Test(t, resource.TestCase{

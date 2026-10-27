@@ -143,13 +143,18 @@ func retryWait(err error, resp *graphql.Response, attempt int) (time.Duration, b
 }
 
 // IsAccessDenied reports whether Shopify rejected the request for a missing access scope.
-func IsAccessDenied(err error) bool {
+func IsAccessDenied(err error) bool { return hasCode(err, "ACCESS_DENIED") }
+
+// IsNotFound reports whether Shopify answered a lookup with a NOT_FOUND error, as segment(id:) does instead of null.
+func IsNotFound(err error) bool { return hasCode(err, "NOT_FOUND") }
+
+func hasCode(err error, code string) bool {
 	var errs gqlerror.List
 	if !errors.As(err, &errs) {
 		return false
 	}
 	for _, e := range errs {
-		if e.Extensions["code"] == "ACCESS_DENIED" {
+		if e.Extensions["code"] == code {
 			return true
 		}
 	}

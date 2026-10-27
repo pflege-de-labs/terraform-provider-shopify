@@ -51,3 +51,23 @@ func TestUseStateForUnknownIncludingNull(t *testing.T) {
 		})
 	}
 }
+
+func TestUseStateForUnknownIncludingNullOtherTypes(t *testing.T) {
+	existing := tfsdk.State{Raw: tftypes.NewValue(tftypes.Object{}, map[string]tftypes.Value{})}
+	ctx := context.Background()
+	i := &planmodifier.Int64Response{PlanValue: types.Int64Unknown()}
+	UseStateForUnknownIncludingNullInt64().PlanModifyInt64(ctx, planmodifier.Int64Request{State: existing, ConfigValue: types.Int64Null(), PlanValue: types.Int64Unknown(), StateValue: types.Int64Null()}, i)
+	if !i.PlanValue.IsNull() {
+		t.Errorf("int64: got %s, want null", i.PlanValue)
+	}
+	b := &planmodifier.BoolResponse{PlanValue: types.BoolUnknown()}
+	UseStateForUnknownIncludingNullBool().PlanModifyBool(ctx, planmodifier.BoolRequest{State: existing, ConfigValue: types.BoolNull(), PlanValue: types.BoolUnknown(), StateValue: types.BoolNull()}, b)
+	if !b.PlanValue.IsNull() {
+		t.Errorf("bool: got %s, want null", b.PlanValue)
+	}
+	o := &planmodifier.ObjectResponse{PlanValue: types.ObjectUnknown(nil)}
+	UseStateForUnknownIncludingNullObject().PlanModifyObject(ctx, planmodifier.ObjectRequest{State: existing, ConfigValue: types.ObjectNull(nil), PlanValue: types.ObjectUnknown(nil), StateValue: types.ObjectNull(nil)}, o)
+	if !o.PlanValue.IsNull() {
+		t.Errorf("object: got %s, want null", o.PlanValue)
+	}
+}

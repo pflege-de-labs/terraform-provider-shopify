@@ -60,16 +60,11 @@ func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *l
 
 // eachRegionMarket applies limit to region markets only, so skipped ones don't use up the caller's limit.
 func eachRegionMarket(ctx context.Context, limit int64, page func(*string) ([]client.MarketFields, *string, error), push, skip func(*client.MarketFields) bool) error {
-	var n int64
-	return patterns.Paginate(ctx, 0, page, func(m client.MarketFields) bool {
+	return patterns.PaginateCounting(ctx, limit, page, func(m client.MarketFields) (bool, bool) {
 		if !isRegionMarket(&m) {
-			return skip(&m)
+			return false, skip(&m)
 		}
-		if !push(&m) {
-			return false
-		}
-		n++
-		return limit <= 0 || n < limit
+		return true, push(&m)
 	})
 }
 

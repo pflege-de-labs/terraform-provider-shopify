@@ -28,7 +28,7 @@ provider "shopify" {
 **Authentication.** Dev Dashboard apps get Admin API tokens through the client credentials grant, and those tokens expire after 24 hours. A static token alone would need refreshing before every CI run.
 - `client_id` + `client_secret`: Configure POSTs `grant_type=client_credentials` to `https://<store_domain>/admin/oauth/access_token`. The client keeps the token in memory only, never in state, and fetches a new one shortly before `expires_in` runs out, so long applies keep working.
 - `access_token`: static token, used as is. For tokens obtained elsewhere.
-- Exactly one of the two modes must be set (plan-time validation; env vars count). Both credentials and the token are `Sensitive`.
+- Exactly one of the two modes must be set (env vars count). Config validation only rejects `access_token` next to `client_id`/`client_secret` (`ConflictsWith`); an exactly-one check there would reject credentials from env vars. Missing or half-set credentials surface in Configure (`client.New`), when the provider connects. Both credentials and the token are `Sensitive`.
 - Only works when the app and the store belong to the same Shopify organization; otherwise Shopify returns `shop_not_permitted`. Dev stores must be created from the Dev Dashboard for this reason.
 - Scopes come from the released app version, not from the token request. Missing-scope errors from the API are reported clearly, naming the scope where the API gives it. Checked 2026-10-23: `ACCESS_DENIED` says only "Access denied for orders field." plus a docs link, no scope name; the message is passed through as is.
 - Source: [Get API access tokens for Dev Dashboard apps](https://shopify.dev/docs/apps/build/dev-dashboard/get-api-access-tokens)
@@ -58,6 +58,13 @@ provider "shopify" {
 | `shopify_consent_policy` | `<COUNTRY>` or `<COUNTRY>/<REGION>`, e.g. `DE`, `US/USCA` |
 | `shopify_checkout_and_accounts_configuration` | `published`, or the configuration `<name>` |
 | `shopify_catalog` | `<title>` (unique across all catalogs; market catalogs only, see §9i) |
+| `shopify_product` | `<handle>` (unique per shop, see §9k) |
+| `shopify_collection` | `<handle>` (unique per shop, see §9l) |
+| `shopify_page` | `<handle>` (unique per shop, see §9m) |
+| `shopify_blog` | `<handle>` (unique per shop; Shopify suffixes a taken handle, see §9n) |
+| `shopify_file` | `<filename>`, e.g. `logo.png` (unique per shop); an external video by its URL, see §9o |
+| `shopify_discount_basic`, `shopify_discount_free_shipping`, `shopify_discount_bxgy` | `code/<code>` for code discounts (codes are unique per shop), `automatic/<title>` for automatic ones (titles are unique among them), see §9p |
+| `shopify_customer_segment` | `<name>` (unique per shop; Shopify suffixes a taken name, see §9q) |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -425,7 +432,7 @@ Import key: the subfolder suffix for subfolder presences, the domain host (e.g. 
 
 Notes:
 - Uses `webPresenceCreate` / `webPresenceUpdate` / `webPresenceDelete` and the top-level `webPresences` query. The `marketWebPresence*` mutations are deprecated and not used. Linking to markets stays on `shopify_market.web_presence_ids`.
-- **Pattern A:** the shop's primary-domain presence can't be removed: the error code `SHOP_MUST_HAVE_PRIMARY_DOMAIN_WEB_PRESENCE` exists, and on the dev store a delete of it left it in place; the userError text was not captured. Adopting it (`adopt_existing = true`) updates it in place, and destroy only removes it from state with a warning. Every store has one such presence (dev: the myshopify domain, locale `en`, no markets). `CANNOT_DELETE_PRIMARY_MARKET_WEB_PRESENCE` is deprecated ("No longer used").
+- **Pattern A:** the shop's primary-domain presence can't be removed: the error code `SHOP_MUST_HAVE_PRIMARY_DOMAIN_WEB_PRESENCE` exists, and on the dev store a delete of it left it in place (the userError text is in the notes below). Adopting it (`adopt_existing = true`) updates it in place, and destroy only removes it from state with a warning. Every store has one such presence (dev: the myshopify domain, locale `en`, no markets). `CANNOT_DELETE_PRIMARY_MARKET_WEB_PRESENCE` is deprecated ("No longer used").
 - **No Pattern B:** deleting a presence removes routing/SEO configuration, not stored data.
 - Errors are reported as returned and not retried: `CANNOT_HAVE_SUBFOLDER_AND_DOMAIN`, `REQUIRES_DOMAIN_OR_SUBFOLDER`, `SUBFOLDER_SUFFIX_MUST_BE_AT_LEAST_2_LETTERS`, `SUBFOLDER_SUFFIX_CANNOT_BE_SCRIPT_CODE`, `DISABLED_LANGUAGE`, `REGION_SPECIFIC_LANGUAGE`, `DOMAIN_NOT_FOUND`, `CANNOT_ADD_CUSTOMER_DOMAIN`.
 - No enum-typed attributes, so there's no output-only enum mapping.
@@ -700,7 +707,7 @@ Checkout branding is **not a resource of its own**. In 2026-10 the non-deprecate
 3. With prior state: build the result from the paths in the state's JSON only. A write-only path keeps the state value; any other path takes the live value (`null` if absent). If every leaf is equal, state keeps its string unchanged; otherwise the projected object is written and the drift shows. Paths not in state are ignored, so admin edits elsewhere don't plan (Review Focus 2).
 4. Without prior state (import, list): the normalised live branding.
 
-Leaf equality: numbers numerically, `#RRGGBB` strings case-insensitively, everything else exactly. The attribute uses a custom string type with semantic equality (`basetypes.StringValuableWithSemanticEquals`, part of the framework, no new dependency), so key order and whitespace never plan. ValidateConfig only checks that the value is a JSON object; Shopify validates keys and values.
+Leaf equality: numbers numerically, `#RRGGBB` strings case-insensitively, everything else exactly. The attribute uses a custom string type with semantic equality (`basetypes.StringValuableWithSemanticEquals`, part of the framework, no new dependency), so key order and whitespace never show as drift against state; a reformatted hand-written string still plans one update (below). ValidateConfig only checks that the value is a JSON object; Shopify validates keys and values.
 
 **Write-only paths.** Comparing the output and input trees: 846 leaf paths match, and three groups differ. v1 treats them as write-only: never drift-checked, never emitted on import or list. The docs list them.
 - **Images** (8 paths: `components.favicon`, `components.header.logo.image`, `surfaces.{checkout,customerAccounts,signIn}.components.header.logo.image`, `surfaces.checkout.components.header.cartLink.image`, `surfaces.checkout.components.orderSummary.backgroundImage`, `surfaces.signIn.components.main.backgroundImage`). The input takes `{ mediaImageId }`; the output is a union over `Image`, whose `id` isn't a `MediaImage` GID. `TODO(verify)`: whether the media image can be resolved from the read value.
@@ -893,6 +900,739 @@ Left out: `supportsFuturePublishing`, `operation`, the product and collection co
 **Fit:** good. Read-only reference; channels come and go with app installs, and the data source reads the current state on every plan.
 
 **Tests:** acceptance: read `Online Store` and check `id` (`^gid://shopify/Publication/`), `catalog_id` (`^gid://shopify/AppCatalog/`) and `auto_publish`; not found. On the dev store all three publications (Online Store, Shop, Point of Sale) have `auto_publish = false`, so the test asserts `false` for the Online Store. Unit: exact match, empty names skipped, the duplicate and not-found messages, mapping.
+
+---
+
+## 9k. Resource: `shopify_product`
+
+Discovery: 86 products on staging, 214 on production, all merchant-owned (D2: build). Products are content: merchants and other systems (PIM, ERP, apps) edit them in the admin all the time. The resource exists so a store can be bootstrapped or a small catalogue kept in a repository; the description says it is a poor fit for Terraform otherwise.
+
+```hcl
+resource "shopify_product" "bettschutz" {
+  handle            = "bettschutzeinlage"
+  title             = "Bettschutzeinlage"
+  status            = "ACTIVE"                 # optional, unset = unmanaged (created as ACTIVE)
+  vendor            = "pflege.de"              # optional, unset = unmanaged (Shopify sets the shop name)
+  product_type      = "Pflegehilfsmittel"
+  tags              = ["pflegehilfsmittel", "waschbar"]
+  description_html  = file("${path.module}/products/bettschutzeinlage.html")
+  seo_title         = "Waschbare Bettschutzeinlage"
+  publication_ids   = [data.shopify_publication.online_store.id] # §9k.3
+
+  options = [
+    { name = "Größe", values = ["S", "M"] },
+  ]
+
+  variants = [
+    { option_values = { "Größe" = "S" }, price = "19.90", sku = "BSE-S" },
+    { option_values = { "Größe" = "M" }, price = "24.90", sku = "BSE-M", compare_at_price = "29.90" },
+  ]
+
+  allow_data_deletion = false
+}
+```
+
+**Granularity: one resource per product, holding its options, variants, publications and (later) media.** Every product has at least one variant, Shopify creates and deletes variants together with option values, and `productSet` writes options and variants of one product in a single synchronous call. Separate variant resources would split one `productSet` call over many resources, with no natural key of their own (a variant is identified by its option values within its product) and constant ordering trouble. Publishing is a set of IDs on the product (§9k.3), not a resource, so only one resource ever writes a product's publications. Media is a list of file IDs on the product (§9k.4).
+
+The work is split into four tasks (implementation order): §9k.1 core, §9k.2 options and variants, §9l collection (next section), §9k.3 publishing for both products and collections, §9k.4 media (after the files type, step 13 part b).
+
+### 9k.1 Product core
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `Product` GID. Computed, UseStateForUnknown |
+| `handle` | string | Required, import key. Updatable in place. Validated: no upper-case letters and no whitespace, since Shopify normalises them (`TF-Design Probe_3` became `tf-design-probe_3`, checked), which would otherwise plan forever |
+| `title` | string | Required |
+| `status` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `ACTIVE`, `DRAFT`, `ARCHIVED`, `UNLISTED` (2026-10 has all four). Create without it gives `ACTIVE` (checked) |
+| `description_html` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. See "HTML normalisation" |
+| `vendor` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. Shopify sets the shop name when it is missing (checked) |
+| `product_type` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. Free text; Shopify returns `""` when unset |
+| `category_id` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `TaxonomyCategory` GID (`gid://shopify/TaxonomyCategory/aa-1`) |
+| `tags` | set(string) | Optional + Computed, UseStateForUnknown; unset = unmanaged. Shopify trims, de-duplicates case-insensitively and sorts (`["Zeta"," spaced ","zeta"]` read back as `["spaced","Zeta"]`, checked); a validator rejects leading or trailing whitespace and case-insensitive duplicates so the read matches the config |
+| `seo_title`, `seo_description` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. Null when Shopify uses the defaults |
+| `template_suffix` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged |
+| `gift_card` | bool | Optional + Computed, UseStateForUnknown, **RequiresReplace** (`GIFT_CARD_ATTRIBUTE_CANNOT_BE_CHANGED`). Gift card *products* are catalogue entries; issued gift cards stay out of scope |
+| `adopt_existing` | bool | Pattern A, see below |
+| `allow_data_deletion` | bool | Pattern B, see below |
+
+Import key: the handle (`bettschutzeinlage`). Handles are unique per shop (`productSet` and `productCreate` both fail with `HANDLE_NOT_UNIQUE` / "already in use" on a taken handle, checked; no `-1` suffix as with menus). Read: `product(id:)` first; if it is gone, `productByIdentifier(identifier: { handle })` (not search-indexed, unlike `products(query:)`); `MutableIdentity` is set. `productByHandle` is deprecated and not used.
+
+**Writes go through `productSet` (synchronous), never `productCreate`/`productUpdate`.** One mutation covers the core fields, options and variants, so §9k.2 extends the same call instead of adding a second write path.
+- Create: `productSet(input)` without `identifier`; a taken handle fails with `HANDLE_NOT_UNIQUE`, mapped to `handle`. With `adopt_existing = true`, Create looks the handle up first and, if found, writes the config with `identifier: { id }`.
+- Update: `productSet(identifier: { id }, input)`. `ProductSetInput` has no `id`; the identifier alone selects the product, and a new `handle` in `input` renames it in place (checked). With `identifier: { handle }`, `input.handle` is required (`MISSING_FIELD_REQUIRED`), so the provider never uses the handle identifier.
+- **Omit, don't empty:** keys left out of `ProductSetInput` are unchanged, list fields included: omitting `metafields`, `collections`, `productOptions` and `variants` kept all of them (checked). `tags`, `metafields` and `collections` given as a list are replaced as a whole. The provider sends only attributes that are set in config, and never sends `collections` (§9l owns membership), `metafields` (metafield values are a separate roadmap type), `files` unless `media_ids` is set (§9k.4), `requiresSellingPlan`, `claimOwnership` or `combinedListingRole`.
+- `redirectNewHandle` is not sent: a handle change creates no URL redirect (checked: none was created). URL redirects are a roadmap type.
+- Large products: `synchronous: true` may time out for products with many variants; Shopify's answer is `synchronous: false` plus `productOperation` polling. `TODO(verify)`: whether any staging/production product needs it. v1 is synchronous only.
+
+**HTML normalisation.** Shopify repairs `descriptionHtml`: `<p>Hi<br>there<b>bold</p>` came back as `<p>Hi<br>there<b>bold</b></p>` (checked); well-formed HTML, `<script>` tags and trailing whitespace come back verbatim. To avoid a permanent diff for HTML Shopify rewrites, Create and Update store the value Shopify returned in private state (`description_html_written`). Read keeps the configured value in state while the live value equals that stored value, and takes the live value otherwise (an admin edit then shows as drift). Pure logic, unit-tested first.
+
+**Pattern A: `adopt_existing` only.** Products have no store defaults. With `adopt_existing = true`, Create updates the product with that handle (above), and destroy only removes it from state with a warning.
+
+**Pattern B: deleting a product destroys data.** `productDelete` removes the product's variants and their inventory items with all stock levels, media not used by another product, option values, publications, metafield values and translations (schema description). Checked on the dev store: after `productDelete`, the product's only `MediaImage` was gone from `files`, and the variant's `InventoryItem` returned `null` a few seconds later. Completed orders and refunds keep their copy of the product data; draft orders lose the reference (schema). So Delete, or a replace that would delete (only `gift_card` forces one), fails unless `allow_data_deletion = true`; ModifyPlan warns on a planned replace. With `media_ids` managed, Delete detaches the media first and they survive (§9k.4). The docs suggest `status = "ARCHIVED"` instead of destroy, and `lifecycle { prevent_destroy = true }`. A missing product on delete (`Product does not exist`, plain `UserError`, `field = ["id"]`, checked) means already gone: removed from state without error.
+
+Notes:
+- **Not managed in v1** (left out of `ProductSetInput`, so admin values stay): metafield values (roadmap type; `metafields` would replace all of them), translations (roadmap), inventory quantities (`inventoryQuantities`; inventory levels are a roadmap type), collections (§9l), selling plans (`requiresSellingPlan`, `productJoinSellingPlanGroups`; selling plan groups are on the roadmap), combined listings and bundles (`combinedListingRole`, `productBundle*`), `claimOwnership`, `giftCardTemplateSuffix`. Deprecated fields (`bodyHtml`, `productCategory`, `customProductType`, `productChangeStatus`, `productPublish`, `productCreateMedia`, `productByHandle`) are not used.
+- The dev store put two of three new `DRAFT` probe products into its `frontpage` collection without being asked (an `ACTIVE` one stayed out). `TODO(verify)`: the cause. The product never reads or writes collections, so it doesn't drift; a `shopify_collection` for `frontpage` would (§9l).
+- **genqlient:** `Money` needs a string binding in `internal/client/genqlient.yaml` (like `Decimal`); `HTML` and `Decimal` already have one.
+- Errors: `ProductSetUserError` (`code`, `field` relative to `input`): `HANDLE_NOT_UNIQUE` (`handle`), `INVALID_PRODUCT`, `INVALID_INPUT`, `PRODUCT_DOES_NOT_EXIST` (Read handles the gone case before writing), `PRODUCT_SUSPENDED`, `GIFT_CARDS_NOT_ACTIVATED` / `GIFT_CARD_ATTRIBUTE_CANNOT_BE_CHANGED` (`gift_card`), `CAPABILITY_VIOLATION`, `GENERIC_ERROR`, plus the option and variant codes in §9k.2. `productDelete`: plain `UserError`. None is retried.
+- **Fit: volatile.** The description says so: products are usually owned by merchants or a PIM; managing them here means every admin edit to a managed attribute is reverted on the next apply. Unset attributes stay unmanaged to keep that small.
+- **Scopes:** `read_products` / `write_products` (`docs/bootstrapping.md` already lists products). `TODO(verify)`: whether `read_inventory` is needed for the `inventoryItem` fields read in §9k.2; every scope is granted on the dev store, so it can't tell.
+- **Review Focus 1:** acceptance step reads the product back through the client after an adopted product's destroy and expects it unchanged. **Review Focus 2:** set `vendor` in one step, leave it out in the next, change it through the client in between: the config without `vendor` plans empty.
+- **Testing:** handles `tf-acc-product-<random>`; destroy with `allow_data_deletion = true` (allowed on the dev store). Unit tests first: the handle and tag validators, the description-HTML keep-or-take rule, input mapping (only set attributes are sent).
+- **Implemented (§9k.1, verified on the dev store):** the input is built in one function (`buildInput`) that §9k.2 extends; every `ProductSetInput` key is `omitempty` in the query, and `tags` is raw JSON so `[]` clears while unset is omitted. A configured description is kept in state while the live value equals the one Shopify returned at the last write (private state key `description_html_written`); an admin edit shows as drift and the next apply restores it. Delete looks the product up first instead of matching the `Product does not exist` message. `adopt_existing = true` makes destroy state-only for that resource, also when the product was created by it. An import test config must leave out `allow_data_deletion = true`, which an import can't know. `seo` is sent as one `SEOInput` with only the configured sibling set: leaving `description` out kept an admin-set SEO description, and setting only `description` through the API kept the title (checked).
+
+**List:** no config. `products(first: 50)`, paged (`patterns.Paginate`); requested cost with options, variants (first 250) and `barcodes(first: 20)` per variant (§9k.2) was 1,064 for a page of 100, refused against the 1,000 limit, and 828 for 50 (checked). With `resourcePublicationsV2(first: 10)` per product (§9k.3) a page of 50 costs 898 (checked on the dev store, 2026-10-26), so pages stay at 50; 100 would cost about twice that. With `media(first: N) { nodes { id } }` (§9k.4) it costs 940 for N = 10, 947 for 20 and 961 for 50 (checked, 2026-10-27); N = 20 is used. `DisplayName`: `<title> (<handle>)`. Results carry `handle`, `title` and every Optional + Computed attribute that is not null, so generated config plans as import-only; with §9k.2 they also carry `options` and `variants` (generated config for 214 products is long, one block per variant). Gift card products are listed (`gift_card = true`).
+
+### 9k.2 Options and variants
+
+```hcl
+  options = [
+    { name = "Größe", values = ["S", "M", "L"] },
+    { name = "Farbe", values = ["Weiß"] },
+  ]
+
+  variants = [
+    {
+      option_values     = { "Größe" = "S", "Farbe" = "Weiß" }
+      price             = "19.90"
+      sku               = "BSE-S-W"
+      barcodes          = [{ value = "4012345678901", type = "EAN" }]
+      inventory_policy  = "DENY"
+      taxable           = true
+      tracked           = true
+      requires_shipping = true
+      weight            = { value = 0.4, unit = "KILOGRAMS" }
+    },
+    # ...
+  ]
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `options` | list(object) | Optional + Computed, UseStateForUnknown; unset = unmanaged together with `variants`. Up to 3 options (`OPTIONS_OVER_LIMIT`), order = position. `name` (string, Required), `values` (list(string), Required, order = position) |
+| `variants` | list(object) | Optional + Computed, UseStateForUnknown. Required when `options` is set. Order = position |
+| `variants[].option_values` | map(string) | Required. Option name → value; keys must equal the option names, values must be in that option's `values`, combinations unique (ValidateConfig). Empty for a product without options |
+| `variants[].id`, `variants[].inventory_item_id` | string | Computed. Carried forward by ModifyPlan from the matched prior variant (below), unknown for new variants |
+| `variants[].price`, `compare_at_price` | string | Optional + Computed; unset = unmanaged. Decimal strings; compared numerically (`"10"` reads back as `"10.00"`, checked), the configured spelling stays in state when equal |
+| `variants[].sku` | string | Optional + Computed; unset = unmanaged. Not an identity: SKUs can be empty or repeated |
+| `variants[].barcodes` | list(object) | Optional + Computed; unset = unmanaged. `value`, `type` (optional, `BarcodeType`). 2026-10 replaces the deprecated single `barcode` |
+| `variants[].inventory_policy` | string | Optional + Computed; `DENY` / `CONTINUE` |
+| `variants[].taxable` | bool | Optional + Computed |
+| `variants[].tracked`, `requires_shipping` | bool | Optional + Computed. Written through `inventoryItem` |
+| `variants[].weight` | object | Optional + Computed. `value` (number), `unit` (`WeightUnit`). Written through `inventoryItem.measurement.weight`; matters for weight-based shipping rates (§8) |
+
+**Unset `options` and `variants`:** neither is sent; Shopify keeps the existing ones (checked). A new product then has Shopify's default: one option `Title` with value `Default Title` and one variant. Read maps a product with `hasOnlyDefaultVariant = true` to `options = []` and one variant with empty `option_values`; writing that variant sends `productOptions: [{ name: "Title", values: [{ name: "Default Title" }] }]` and `optionValues: [{ optionName: "Title", name: "Default Title" }]`, which updated the default variant in place (checked, same variant GID). `productSet` refuses `variants` without `productOptions` (`PRODUCT_OPTIONS_INPUT_MISSING`, checked), so both are always sent together.
+
+**Variant identity is the option-value combination, not the SKU.** `productSet` matches variants without `id` by their option values: re-sending the same variants with a changed price kept every variant and inventory item GID (checked), and adding an option kept the existing variant (`S` → `S / Red`, same GID). But renaming an option without its `id` re-created every variant (new variant and inventory item GIDs, SKU lost; checked), and with the option, option-value and variant IDs the same rename kept all GIDs (checked). So Update always sends IDs:
+1. Read the live product (options with `optionValues { id name }`, variants with `id` and `selectedOptions`).
+2. Match planned options to prior-state options by name, then leftovers by position: same position and a new name is a rename. Within each matched option, match values the same way (name first, then position among the leftovers). Inserting `XS` before `S` therefore adds a value instead of shifting names.
+3. Map each prior variant's option values through those renames; a planned variant whose combination equals a mapped prior combination keeps that variant's `id`.
+4. Send `productOptions` with `id`s for matched options and values, and `variants` with `id`s for matched variants. Everything unmatched is created; prior variants without a match are deleted.
+
+The same matching runs in ModifyPlan to carry `id` and `inventory_item_id` (and the unset Optional + Computed variant fields) forward, so the plan shows which variants survive. Pure logic in `match.go`, unit-tested first. `ProductOption.values` lists only values that have variants; Read uses `optionValues` (a value without variants is allowed, `hasVariants = false`, checked).
+
+**Pattern B for variants.** Removing a variant, or an option value or option whose variants go with it, deletes those variants' inventory items and stock (checked: a removed variant's inventory item returned `null`). Like a removed metaobject field (§5), such an update fails unless `allow_data_deletion = true` (the planned value counts), and ModifyPlan warns, naming the variants by option values. Renames detected by the matching above don't count as removals.
+
+Notes:
+- Writes: options and variants go in the same `productSet` call as §9k.1. `productVariantsBulk*` and `productOption*` are not used: `productSet` covers creation, update, deletion and ordering in one synchronous call, and splitting writes across mutations would make a partly applied change possible.
+- Within a variant, unset fields are omitted and keep their value (checked: a variant sent without `price` and `sku` kept both).
+- Variant order = list order, sent as `position`; option and value order likewise. Reordering in the admin plans a change back.
+- **Not managed in v1:** inventory quantities (`inventoryQuantities`; inventory levels roadmap), cost, country/province of origin and HS codes, `unitPriceMeasurement` / `showUnitPrice`, `taxCode` (its read field is deprecated without replacement), `requiresComponents`, variant `metafields`, variant media (`file`; roadmap, §9k.4), linked options (`linkedMetafield`). Ruling S13-7 (2026-10-26) replaced "Read fails on a linked option" so that staging and production imports aren't blocked: Read, import and list map a linked option's names and values read-only. The list leaves `options` and `variants` null for such a product, so generated config keeps them unmanaged. A write that sends options or variants to a product with a linked option (update, or create with `adopt_existing`) is refused before `productSet`, naming the option and its metafield, since writing it without `linkedMetafield` would unlink it. Writes of core fields only work as usual. `TODO(verify)`: how many staging/production products use linked options; the acceptance path is untested because the dev store has none.
+- Read pages `variants(first: 250)` per product (up to 2,048 variants per product).
+- Errors (`ProductSetUserError`, `field` relative to `input`): `OPTIONS_OVER_LIMIT`, `OPTION_VALUES_OVER_LIMIT`, `OPTION_VALUES_MISSING`, `DUPLICATED_OPTION_NAME`, `DUPLICATED_OPTION_VALUE`, `OPTION_DOES_NOT_EXIST`, `OPTION_VALUE_DOES_NOT_EXIST` (`options`), `VARIANTS_OVER_LIMIT`, `INVALID_VARIANT`, `PRODUCT_VARIANT_DOES_NOT_EXIST`, `DUPLICATED_VALUE`, `INPUT_MISMATCH` (`variants`), the barcode codes (`INCOMPATIBLE_BARCODE_FIELDS`, `BLANK_BARCODE_VALUE`, `TOO_MANY_BARCODES`, `BARCODE_VALUE_TOO_LONG`, `DUPLICATE_BARCODE_VALUE`, `INVALID_BARCODE_TYPE`, `INVALID_BARCODE_SEPARATORS`, `INVALID_BARCODE_LENGTH`, `INVALID_BARCODE_PREFIX`, `INVALID_BARCODE_CHARACTERS`, `BARCODE_CHECKSUM_VALIDATION_FAILED`) mapped to the variant's `barcodes`. `field` paths carry list indexes (`BLANK_BARCODE_VALUE` came back as `["input","variants","0","barcodes"]`, checked), the index of the sent list, which follows config order, so they map to `variants[i]`. None is retried.
+- **Review Focus 2:** leave `sku` out of one variant, change it through the client: the plan stays empty.
+- **Testing:** acceptance steps for add variant, rename option and value (variant `id`s unchanged), remove variant with and without `allow_data_deletion`, default-variant product price change. Unit tests first for matching, validation and price comparison.
+- **Implemented (§9k.2, verified on the dev store):**
+  - "Position" for leftovers means the same index in the list: a new name takes the place of an unmatched old name at the same index (rename), otherwise it is new. A rename that also moves (`[S, M]` → `[Medium, S]`) is therefore a removal plus an addition, guarded like any removal; rename and reorder go in separate applies. This is the safer reading: a false rename would silently move a variant's stock to another value.
+  - A variant is kept when its combination, mapped through renames, equals a planned one on the options both sides share. This covers adding an option, which keeps variants, and removing one: when that collapses several variants onto one combination, the first keeps its IDs and the rest count as removed. When an option is dropped and another one added in the same apply (no rename at the same index), the shared options can't tell variants apart, so no variant is kept: all count as removed (guard and warning), and all planned ones are new. Without this, stock would move between unrelated variants.
+  - `options` and `variants` are set together (ValidateConfig); `options = []` with one variant with `option_values = {}` is the only spelling of a product without options, which is what Read produces.
+  - Update sends option and value IDs plus variant IDs; variants reference options by (new) name, which resolved renames (checked). Removing an option with the variant IDs kept every variant, and so did default variant → options and options → default variant (the first variant becomes the default one) (checked).
+  - A barcode sent without `type` reads back with `type = null`, so `type` is Optional only; `barcodes = []` clears them (checked; sent as raw JSON, since an `omitempty` list would drop `[]`). A weight of 250 `GRAMS` reads back as 250 `GRAMS` (checked).
+  - A configured `sku = ""` stays in state when Shopify returns null. `compare_at_price` can't be cleared: unset means unmanaged and the input can't send null.
+  - The variant-removal guard uses the planned `allow_data_deletion`, so one apply can set it and remove a variant; product destroy still needs it in state.
+
+### 9k.3 Publishing (products and collections)
+
+```hcl
+resource "shopify_product" "bettschutz" {
+  # ...
+  publication_ids = [data.shopify_publication.online_store.id]
+}
+
+resource "shopify_collection" "pflegehilfsmittel" {
+  # ...
+  publication_ids = [data.shopify_publication.online_store.id]
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `publication_ids` | set(string) | Optional + Computed, UseStateForUnknown; unset = unmanaged. `Publication` GIDs of sales channels, usually from `data.shopify_publication` (§9j) |
+
+**A set on the resource, not a separate resource.** A `shopify_product_publication` would write the same relation as this attribute; with only the attribute there is one writer per product or collection. The same attribute and the same small helper (`publishablePublish` / `publishableUnpublish`, `resourcePublicationsV2`) serve both types, so one task adds it to both after §9l.
+
+- Read: `resourcePublicationsV2(first: 10, onlyPublished: false) { nodes { publication { id } } }`. With `onlyPublished: false` a draft product shows its publications too (`isPublished = false` until it is `ACTIVE`; checked: publishing a `DRAFT` product listed both publications as unpublished, and `ACTIVE` flipped Online Store to published). Membership, not `isPublished`, is what the attribute holds, so a status change doesn't plan a publication change. The first page is 10 because 50 per product would blow the list query's cost limit (§9k.1); a resource with more publications is paged by `GetProductPublications` / `GetCollectionPublications`.
+- Update: publish the added IDs with `publishablePublish(id, input: [{ publicationId }])`, unpublish the removed ones with `publishableUnpublish` (both checked; publishing an already-published ID is a no-op). `publishDate` (scheduled publishing) is not managed. A new product is published nowhere (checked) and a new collection neither (schema), so Create calls `publishablePublish` after the create when the attribute is set.
+- **Channel publications only.** `resourcePublicationsV2` returns `APP` catalog publications unless `catalogType` is passed, and for collections only `APP`. A market catalog's publication ID (§9i) would publish but never read back, planning forever; the docs say to use channel publications, and Update fails with a clear error when Shopify accepts an ID that the follow-up read doesn't return. `TODO(verify)`: whether market-catalog product publishing is wanted; then a `catalogType: MARKET` read can be added.
+- Channels with `autoPublish = true` publish new products themselves (all three dev-store channels are `false`; staging and production unknown). With `publication_ids` set, the next plan removes such an automatic publication; unset, it stays unmanaged.
+- Errors: plain `UserError`, mapped to `publication_ids` (e.g. an unknown publication ID). Products sold only by subscription can be published to online stores only (schema), which surfaces as Shopify's error.
+- **Scopes:** `write_publications` (already in `docs/bootstrapping.md`, "publishing to channels"). `TODO(verify)`: whether `write_products` alone suffices for product publishing; all scopes are granted on the dev store.
+- **Fit: volatile**, like products: merchants publish and unpublish in the admin.
+- **Testing:** acceptance step adds and removes the Online Store publication for a product and a collection; Review Focus 2: publish through the client while the config leaves `publication_ids` unset, expect an empty plan. The list results include `publication_ids` when not empty.
+
+**Implemented (§9k.3, verified on the dev store, 2026-10-26):**
+- One shared package, `internal/publishing`, holds the attribute schema, the diff, the paging and the `publishablePublish` / `publishableUnpublish` calls (`Sync`); `shopify_product` and `shopify_collection` each add only the paging query and a call. Both build the desired set from config, so unset is never sent.
+- Publish runs before unpublish, so a rejected ID unpublishes nothing. After the calls, `Sync` compares the publications the mutation returned with the configured ones; a configured ID Shopify accepted but doesn't list (a market catalog's) is an attribute error on `publication_ids` that names it, and state then holds the real publications. An extra one (an `autoPublish` channel racing the apply) is not an error: the result is the planned set and the next refresh shows the drift.
+- Published to a draft product and to a collection: both read back with `onlyPublished: false`; Online Store, Shop and Point of Sale all accept products and collections. An unknown publication ID (`gid://shopify/Publication/1`) fails with a `UserError` mapped to `publication_ids`.
+- A failed publish after a create leaves the product or collection in state, so Terraform marks it tainted; the error carries a note to run `terraform untaint` and fix `publication_ids` first. For a product, a replace would hit the `allow_data_deletion` guard.
+- The `PublicationsOfPublishable` fragment on the `Publishable` interface is spread into `ProductFields` and `CollectionFields`. genqlient can't generate `node(id:)` queries (`interface Node had non-object implementation Catalog`), so paging has one query per type. `DateTime` needed a string binding in `genqlient.yaml` (`PublicationInput.publishDate`, never sent).
+- List results leave `publication_ids` null when a product or collection is published nowhere, so generated config doesn't claim to manage it; Read gives an empty set.
+- `TODO(verify)`: market-catalog publishing (the dev store has none, so the "accepted but not listed" error is unit-tested only), and whether `write_products` alone suffices (all scopes are granted).
+
+### 9k.4 Media (after the files type)
+
+`media_ids` (list(string), Optional + Computed, UseStateForUnknown, unset = unmanaged, order = position): file GIDs attached to the product, sent as `productSet(input: { files: [{ id }] })`. Product media are files: an image added through `productSet(files: [{ originalSource }])` showed up in `files` with the same `MediaImage` GID (checked). So a product references files from the planned `shopify_file` type (step 13 part b) instead of uploading its own, and this sub-task waits for it. `files` given as a list replaces all media (list semantics of `productSet`); omitted, it keeps them.
+
+Open for that task: whether detaching a file through `productSet` deletes it (deleting the product deleted its only image, checked; Pattern B of `shopify_file` must account for it), variant media (`ProductVariantSetInput.file`), and collection images (`CollectionCreateInput.image` takes an `ImageInput` URL, not a file ID; `TODO(verify)`). Deprecated `productCreateMedia`, `productUpdateMedia`, `productDeleteMedia` are not used.
+
+**Implemented (§9k.4, verified on the dev store, 2026-10-27):** rulings T14d-1 (product-level `media_ids` only) and T14d-2 (removal must not delete files).
+- **Probe 1 (throwaway products `tf-acc-probe-<n>` and files from the 1×1 PNG URL, all deleted again):** `productSet(files: [{id: A}, {id: B}])` attached both, `status = READY` in the mutation response (no polling needed for files that are already `READY`); `[B, A]` reordered and kept both GIDs. **Setting `files` to `[A]` deleted B:** `node(id: B)` returned `null` at once and `files(query: "filename:…")` found nothing; `files: []` deleted A the same way. A file that another product still had (B on P1 and P2, then detached from P1) stayed `READY`. An `ExternalVideo` attached and was deleted on detach like an image. `productDelete` deleted a file only that product used and kept one another product had (refines §9k.1). A `GenericFile` GID fails the whole request with a top-level GraphQL error (`productSet Invalid id: gid://shopify/GenericFile/…`), not a userError; an unknown `MediaImage` GID gives `INVALID_INPUT`, `field = ["input","files"]`, "Media ids [1] do not exist". `fileUpdate(files: [{ id: A, referencesToRemove: [P1] }])` detached A and A stayed `READY`.
+- **Probe 2 (T14d-2):** P1 `[a, b, c, v]` (v an `ExternalVideo`), P2 `[b]`. One `fileUpdate` with `{id: b, referencesToRemove: [P1]}` and `{id: v, …}` detached both (P1 then `[a, c]`); `productSet(files: [c, a])` reordered; 5 s later b and v were `READY` and P2 still had b. Detaching a and c, then `productSet(files: [])`: both stayed `READY`. Detaching a file that is not attached: no error. Unknown file: `FILE_DOES_NOT_EXIST`, `field = ["files"]`, "File id [\"gid://shopify/MediaImage/1\"] does not exist."; unknown product: `REFERENCE_TARGET_DOES_NOT_EXIST`, `field = ["files"]`. A batch with one valid and one unknown file failed as a whole (the valid file stayed attached). The fields carry no index, so the provider maps every error to `media_ids` with Shopify's message, which names the file.
+- **Removal is non-destructive:** when `media_ids` is set, Update reads the live product; IDs it has that the config lacks (removed from config, or attached in the admin) are detached with one `fileUpdate(referencesToRemove: [<product>])` call before `productSet(files:)` sends the configured list, so `productSet` never removes a file. A failed detach stops before `productSet`. Create with `adopt_existing` does the same against the adopted product. No `allow_data_deletion` guard and no plan warning for media; `allow_data_deletion` still guards product destroy and variant removal. The product is still the only writer of the link (§9o).
+- **File and ID removed together:** if `shopify_file` is destroyed first, the file is gone from the live product and nothing is detached; if the product update runs first, it detaches the file, then `shopify_file` deletes it. Either way only `shopify_file` deletes it, under its own `allow_data_deletion` (acceptance step with the product's flag `false`). A file deleted between the product's read and the detach would fail the detach with `FILE_DOES_NOT_EXIST`; a re-apply succeeds (not reproduced).
+- **Media types:** `Product.media` is the `Media` interface (`MediaImage`, `Video`, `Model3d`, `ExternalVideo`, all of which implement `File`), read through a flattened `MediaID` fragment. `FileSetInput.id` accepted `MediaImage` and `ExternalVideo` GIDs; a list validator allows those four types and unique values only, so a `GenericFile` fails at plan. `TODO(verify)`: `Video` and `Model3d` GIDs (none on the dev store; 13b-3b staged uploads needed to create them).
+- **Input:** `ProductSetInput.files` is raw JSON like `tags`, so `[]` is sent and clears (after the detach) while unset is omitted.
+- **Paging and cost:** `ProductFields` carries `media(first: 20)`; `GetProductMedia` pages the rest (`first: 250`) in `completeProduct`, like variants and publications. List page of 50: 898 without media, 940 / 947 / 961 with `first: 10 / 20 / 50` (limit 1,000). Only a single first page was exercised on the dev store; the follow-up paging is unit-tested with a fake page source.
+- **List:** results carry `media_ids` when not empty (null otherwise), so generated config holds file GIDs and is tied to the store, like a manual collection's `product_ids`.
+- **Product destroy** (ruling T14d-2 extended to destroy): Delete, and the delete half of a replace, detaches all the live product's media with the same `fileUpdate(referencesToRemove:)` call before `productDelete`, so a file `shopify_file` guards survives (acceptance step: file with `allow_data_deletion = false`, product destroyed, file still there). A failed detach stops before `productDelete`. Delete gets no config, so the last write records in private state (`media_managed`) whether `media_ids` was set; `false` keeps Shopify's behaviour (probe 1: the files no other product uses are deleted). No record (an imported product not written since) detaches, which keeps files rather than deleting them. The product and `shopify_file` docs say so.
+- **Roadmap:** variant media (`ProductVariantSetInput.file`) and collection images (`CollectionInput.image` takes an `ImageInput`, not a file GID; `TODO(verify)` whether a file URL works there).
+
+**Dev store (2026-10-26):** probes created three products (`tf-design-probe-1`, `-2`, `-3`) and published, unpublished and re-statused them; all three were deleted, along with the one image added to `-2`. Two probes landed in `frontpage`, which gained an empty `Untitled Source`; the source was removed again, so `frontpage` is back to `sources: []`, 0 products, `MOST_RELEVANT`. End state equals the start: 0 products, 0 files, 1 collection.
+
+---
+
+## 9l. Resource: `shopify_collection`
+
+Discovery: 14 collections on staging, 17 on production, merchant-owned (D2: build). Collections are closer to configuration than products (they back navigation and menus, §9), but their membership and texts are edited in the admin, so the type is volatile too.
+
+```hcl
+# Rule-based ("smart"): products match conditions
+resource "shopify_collection" "pflegehilfsmittel" {
+  handle     = "pflegehilfsmittel"
+  title      = "Pflegehilfsmittel"
+  sort_order = "BEST_SELLING"   # optional, unset = unmanaged (created as MOST_RELEVANT)
+  match_type = "ANY"
+  conditions = jsonencode([
+    { productTag = { relation = "TAGGED_WITH", values = ["pflegehilfsmittel"], matchType = "ANY" } },
+    { variantPrice = { relation = "GREATER_THAN", value = { amount = "5", currencyCode = "EUR" } } },
+  ])
+  publication_ids = [data.shopify_publication.online_store.id] # §9k.3
+}
+
+# Manual: an explicit product list
+resource "shopify_collection" "empfehlungen" {
+  handle      = "empfehlungen"
+  title       = "Unsere Empfehlungen"
+  product_ids = [shopify_product.bettschutz.id]
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `Collection` GID. Computed, UseStateForUnknown |
+| `handle` | string | Required, import key. Updatable in place. Same validator as `shopify_product.handle` (`TODO(verify)`: that collections normalise handles like products) |
+| `title` | string | Required |
+| `description_html` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. Same keep-or-take rule as products (§9k.1); `TODO(verify)`: that collections repair HTML the same way |
+| `sort_order` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `CollectionSortOrder`: `ALPHA_ASC`, `ALPHA_DESC`, `BEST_SELLING`, `MOST_RELEVANT`, `CREATED`, `CREATED_DESC`, `MANUAL`, `PRICE_ASC`, `PRICE_DESC`. Created as `MOST_RELEVANT` when unset (checked) |
+| `seo_title`, `seo_description` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged |
+| `template_suffix` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged |
+| `match_type` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `ANY` or `ALL`: how `conditions` combine. Null for a collection without a source; kept after its conditions are removed (checked) |
+| `conditions` | string (JSON) | Optional; unset = unmanaged. A JSON list of `CollectionSourceInclusionConditionInput` objects in the API's camelCase, one key each. See "Conditions" |
+| `product_ids` | set(string) | Optional + Computed, UseStateForUnknown; unset = unmanaged. Products included by hand (the source's `selections`), whatever the conditions say |
+| `source_id` | string | Computed, UseStateForUnknown. The `CollectionConditionsSource` GID that holds `match_type`, `conditions` and `product_ids` |
+| `adopt_existing` | bool | Pattern A, see below |
+
+**Manual and smart collections are one model in 2026-10.** `Collection.ruleSet` is deprecated ("Use `sources` instead"), `collectionCreate` and `collectionUpdate` take only `collection: CollectionCreateInput` / `CollectionUpdateInput` (the legacy `input: CollectionInput` with `ruleSet` and `products` is gone), and `collectionAddProducts`/`collectionRemoveProducts` are deprecated in favour of `collectionUpdate(... inclusion.selectionsToAdd/selectionsToRemove)`. Membership lives in **sources**: a `CollectionConditionsSource` has an inclusion with `conditions` (the old rules) and `selections` (the old manual product list), both at once if wanted, plus exclusions. There are also sub-collection sources and shareable app-owned sources.
+- Checked on the dev store (2026-10-26): collections created with the legacy API (2026-07, `ruleSet` and `products`) read back in 2026-10 as exactly one non-shareable `CollectionConditionsSource` titled `Untitled Source`, target `PRODUCTS`, app `null`. A manual one holds its products as `selections` with `matchType = null`; a smart one holds its rules as `conditions`: `TAG EQUALS a` became `productTag { relation: TAGGED_WITH, values: ["a"], matchType: ALL }`, `VARIANT_PRICE GREATER_THAN 5` became `variantPrice { relation: GREATER_THAN, value: { amount: "5.0", currencyCode: "EUR" } }`, and `appliedDisjunctively: false` became `matchType: ALL`. Staging and production collections were made before 2026-10, so they are expected to look the same (`TODO(verify)` at the first import).
+- A collection with no sources is valid: `collectionCreate` without `sources` gives `sources: []`, and deleting the last source with `sourcesToDelete` works (both checked).
+
+**v1 manages one conditions source per collection**, the shape every legacy collection has. `match_type`, `conditions` and `product_ids` are that source's inclusion; `product_ids` are product-level selections (no `variantIds`, target `PRODUCTS`). Read decides per collection:
+- No source: the three attributes read as null / empty; `source_id` null.
+- Exactly one non-shareable `CollectionConditionsSource`, whichever app created it (S13-8: sources created through 2026-10 carry the creating app, and plans run with a read-only app, so app ownership is not checked), target `PRODUCTS`, no variant-level selections and no `Unknown` condition: managed as above.
+- Anything else (several sources, a sub-collection source, a shareable source, `VARIANTS` target, variant selections, a condition Shopify reports as `CollectionSourceInclusionConditionUnknown`): membership is unsupported. If config sets any of the three attributes, Read and plan fail with an error naming the source types; otherwise they stay null and import and list warn that membership is not managed.
+- Not managed in v1: exclusions (conditions and products), sub-collection and shareable sources (`collectionConditionsSource*` mutations), variant selections, the product order of `MANUAL` collections (`collectionReorderProducts`), collection image (with §9k.4), metafield values, translations. All roadmap.
+
+**Conditions: a JSON attribute, like checkout branding (§9f).** 18 inclusion condition kinds, each with its own relation enum and value shape (strings, `MoneyInput`, `WeightInput`, booleans, metafield definition IDs, taxonomy categories with `includeDescendants`, metaobject IDs). A typed block would need one nested block per kind or a flattened block with kind-specific fields; JSON in the input's own shape keeps Shopify's docs usable one to one, and users write `jsonencode([...])`.
+- Write: sent as is (`# @genqlient(for: "CollectionCreateSourceInclusionInput.conditions", bind: "encoding/json.RawMessage")` and the same for `CollectionUpdateSourceInclusionInput.conditionsToCreate`). Shopify validates kinds and values. ValidateConfig only checks that the value is a JSON list of objects with exactly one key each.
+- Read: map each output condition back to its input shape (pure logic, unit tests first): `__typename` `CollectionSourceInclusionCondition<Kind>` → key `<kind>` in lowerCamelCase (`ProductTag` → `productTag`, `MetafieldInt` → `metafieldInt`); `definition { id }` → `definitionId`; `value: Metaobject` / `values: [Metaobject]` → IDs; `values: [{ category { id } includeDescendants }]` → `[{ categoryId, includeDescendants }]`; `MoneyV2 { amount currencyCode }` and `Weight { value unit }` keep their keys; `id` is dropped. `MetafieldInteger` is deprecated in favour of `MetafieldInt` and not requested.
+- Equality: a custom string type with semantic equality, order-sensitive for the list (Read returned conditions in creation order, checked), numbers compared numerically (`"5"` reads back as `"5.0"`, checked), everything else exactly. Import and list use the mapped live list.
+- Update: when `conditions` or `match_type` change, one `collectionUpdate` call deletes every live condition and creates the planned list: `sourcesToUpdate: [{ condition: { id: source_id, inclusion: { matchType, conditionsToDelete: [<live ids>], conditionsToCreate: [<planned>] } } }]`. Checked: one call replaced a condition, changed `matchType` and swapped a selection at once, with no userErrors. `conditionsToUpdate` (per-condition patch by ID) is not used, so condition IDs are never stored.
+
+**`product_ids`:** Update sends the difference as `selectionsToAdd` / `selectionsToRemove` in the same `sourcesToUpdate` call (checked). Read pages `selections(first: 250)`. With no source yet (an empty collection), the first write creates one with `sourcesToCreate: [{ source: { title: "Untitled Source", inclusion } }]`, the title Shopify gives migrated collections. Create sends the same in `sources`. Products deleted elsewhere drop out of the selections, which shows as drift; config that references `shopify_product.<x>.id` avoids it through dependency order.
+- The collection owns membership. `shopify_product` never sends `collections` / `collectionsToJoin` / `collectionsToLeave` (§9k.1), so the two can't fight.
+- Membership by conditions is computed asynchronously: `productsCount` was 0 right after the create and correct after the next call (checked), and `CollectionUpdatePayload` has a `job` (it was `null` in every probe). The provider never reads the matched products, only `conditions` and `selections`, which the payload returns at once (checked), so it doesn't wait for the job. `TODO(verify)`: whether selections on large collections ever come back only after the job.
+
+Import key: the handle. Read: `collection(id:)` first; if it is gone, `collectionByIdentifier(identifier: { handle })`; `MutableIdentity` is set. `collectionByHandle` is deprecated and not used. A taken handle fails on create ("Handle has already been taken", plain `UserError` with `field = ["collection"]`, checked; no `-1` suffix), mapped to `handle` by message since `field` names only the input.
+
+**Pattern A: `adopt_existing` only.** Every store has `frontpage` ("Home page", created with the shop; on the dev store one empty Shopify-made source (app `null`), `MOST_RELEVANT`). It is an ordinary collection as far as the schema shows (no `isDefault`), so it needs `adopt_existing = true` like any taken handle: Create looks the handle up and updates it, destroy only removes it from state with a warning. `TODO(verify)`: whether `frontpage` can be deleted; not tried, since it couldn't be restored with its GID. On the dev store, Shopify put two of three new draft products into `frontpage` by itself (§9k.1), so a `frontpage` resource with `product_ids` set would see drift.
+
+**No Pattern B.** `collectionDelete` removes the collection, its sources, publications, translations and metafield values; the products stay (schema). Nothing outside the collection is destroyed, and a recreate from config restores it with a new GID. Menu items that point at it (`shopify_menu`, type `COLLECTION`) lose their target (`TODO(verify)`: whether Shopify removes such items or leaves them dangling); dependency order handles it when the menu references `shopify_collection.<x>.id`. The docs recommend `lifecycle { prevent_destroy = true }` for collections that back navigation. "Collection does not exist" on delete (`field = ["id"]`, checked) means already gone: removed from state without error.
+
+Notes:
+- Uses `collection(id:)`, `collectionByIdentifier`, `collections(first:)`, `collectionCreate(collection:)`, `collectionUpdate(collection:)`, `collectionDelete(input:)`. `collectionPublish`/`collectionUnpublish`, `collectionAddProducts(V2)`, `collectionRemoveProducts` and `ruleSet` are deprecated and not used; publishing is §9k.3.
+- `redirectNewHandle` is not sent (no URL redirects; roadmap type).
+- Conditions referencing metafield definitions or metaobjects carry store-specific GIDs; users reference `shopify_metafield_definition.<x>.id` or the data sources (§9g).
+- Errors: plain `UserError` from all three mutations, mapped by `field` where it names an attribute (`["collection","title"]` → `title`), otherwise to the resource with Shopify's message. Condition errors are reported as returned (no codes exist to map). None is retried.
+- **Fit: volatile.** The description says so; the rules of a smart collection are the part that suits Terraform best.
+- **Scopes:** `read_products` / `write_products` (collections belong to the products scope, `docs/bootstrapping.md`). `TODO(verify)`: confirmed only with every scope granted.
+- **Review Focus 1:** after destroy of an adopted collection, read it back through the client and expect it unchanged. **Review Focus 2:** set `sort_order` in one step, leave it out in the next, change it through the client in between: the config without `sort_order` plans empty; likewise `product_ids` unset while the client adds a product.
+- **Testing:** handles `tf-acc-collection-<random>`; one product made by the test (`shopify_product`, so §9k.1 lands first). Steps: manual (`product_ids` add and remove), smart (`conditions` change, `match_type` change), a collection that starts empty and gains a source, import by handle and identity. Unit tests first: condition output → input mapping for every kind in the schema, semantic equality, the source support check, selection diff.
+
+**List:** no config. `collections(first: 100)`, paged; requested cost with sources and `selections(first: 250)` was 380 for 100 collections, and 434 with `resourcePublicationsV2(first: 10)` per collection (§9k.3; checked on the dev store, 2026-10-26), so pages stay at 100. `DisplayName`: `<title> (<handle>)`. Results carry `handle`, `title`, the non-null Optional + Computed attributes, and `match_type` / `conditions` / `product_ids` when the source is supported; generated config then holds product GIDs, which tie it to the store (the docs say to replace them with references). App-owned collections aren't distinguishable in the schema; all collections are listed.
+
+**Dev store (2026-10-26):** probes created four collections (`tf-probe-legacy-smart` and `tf-probe-legacy-manual` with API 2026-07, `tf-probe-new` and `tf-probe-empty` with 2026-10) and deleted all four. `frontpage` gained an empty source twice through the product probes; both were removed with `sourcesToDelete`, but by the time of task 15 it had one empty Shopify-made source again (see below), 0 products, `MOST_RELEVANT`.
+
+**Implementation findings (task 15, dev store, 2026-10-26):**
+- A source created through the 2026-10 `sources` input carries the creating app (`app: { id: "gid://shopify/App/…" }`, the provider's write app), while 2026-07-migrated sources and `frontpage`'s read `app: null`. Resolved by S13-8: the app is not checked. `TODO(verify)`: whether Shopify rejects writes to a source another app created; such a rejection surfaces as a userError.
+- A conditions source can't be empty: create without conditions and selections fails with "A condition based source must have at least one product selection or condition" (`field = ["collection","sources","0","source","inclusion"]`), and so does an update deleting the last condition without adding a selection. So when the planned conditions and products are both empty, the provider deletes the source (`sourcesToDelete`), and creates none. An empty source Shopify made itself (`frontpage`, or one whose products were all deleted) is left alone.
+- `matchType` is required on create when conditions are given ("Match type is required when conditions are provided"); ValidateConfig requires `match_type` with a non-empty `conditions`. `matchType` persists after all conditions are removed (an update deleting the condition while adding a selection kept `ALL`, and `matchType: ANY` could be set on a source without conditions), so `match_type` is read as returned, not forced to null.
+- Handles are normalised like products (`TF-Probe Upper A` → `tf-probe-upper-a`) and HTML is repaired like products (`<p>Hi<br>there<b>bold</p>` → `…<b>bold</b></p>`): both `TODO(verify)` above are confirmed, and the product validator and keep-or-take rule are shared (`internal/patterns`).
+- Deleting a product leaves the collection's source in place with no selections (and `matchType` unchanged).
+- S13-9: the provider deletes a source only when it would otherwise become empty, never one with exclusions (they are read only to check this; remove them in the admin first) or one Shopify made (app `null`, can't be recreated); both are refused with an error. `TODO(verify)`: whether exclusion-only sources exist.
+- Output conditions can't be selected with plain field names: every kind has its own `relation` enum and differently typed `value`/`values`, which GraphQL's field-merging rules reject. The query aliases them as `<field>__<Kind>` and the mapping strips the suffix.
+- `frontpage` on the dev store had one empty Shopify source (`CollectionConditionsSource/52052885835`, app `null`, `matchType` null) before this task's tests, not `sources: []`; the tests left it like that.
+
+---
+
+## 9m. Resource: `shopify_page`
+
+Discovery: 8 pages on staging, 9 on production, merchant-owned (D2: build). Online store pages are content (imprint, about us, landing pages), edited in the admin by people outside the infrastructure team, so the type is volatile.
+
+```hcl
+resource "shopify_page" "impressum" {
+  handle          = "impressum"
+  title           = "Impressum"
+  body            = file("${path.module}/pages/impressum.html") # optional, unset = unmanaged
+  published       = true                                       # optional, unset = unmanaged (created as true)
+  template_suffix = "legal"                                    # optional, unset = unmanaged
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `Page` GID. Computed, UseStateForUnknown |
+| `handle` | string | Required, import key. Updatable in place. Same validator as `shopify_product.handle` (§9k.1): Shopify normalises pages the same way (`TF Probe_1` became `tf-probe_1`, checked) |
+| `title` | string | Required. `title: ""` fails with `BLANK` (checked) |
+| `body` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. HTML. Same keep-or-take rule as `shopify_product.description_html` (§9k.1): Shopify repairs page bodies the same way (`<p>Hi<br>there<b>bold</p>` came back as `<p>Hi<br>there<b>bold</b></p>`, trailing whitespace kept, checked) |
+| `published` | bool | Optional + Computed, UseStateForUnknown; unset = unmanaged. `isPublished`. Create without it gives `true` (checked) |
+| `template_suffix` | string | Optional + Computed, UseStateForUnknownIncludingNull; unset = unmanaged. `""` and `null` both mean the default template, but they read back as given (`""` stays `""`, never set reads `null`; checked), so no normalisation is needed |
+| `adopt_existing` | bool | Pattern A, see below |
+
+Import key: the handle (`impressum`). Handles are unique per shop: a taken handle fails with `TAKEN`, `field = ["page","handle"]`, on create and on update (checked; no `-1` suffix, unlike blogs and menus). Read: `page(id:)` first. If it is gone, `pages(first: 5, query: "handle:<handle>")` and an exact handle match; there is no `pageByHandle` or `pageByIdentifier` root field, so the fallback is search-indexed (a new page was found right away in the probe; `TODO(verify)`: whether the index lags under load, as it does for menus). `MutableIdentity` is set.
+
+**Publishing: `published` only, no `publishDate`.** `Page` is not `Publishable`: there is no `publication_ids` as on products (§9k.3), and pages are visible on the online store only. `isPublished` is the switch. `publishDate` (scheduled publishing) is not managed and never sent: it is an admin workflow, and it fights with `isPublished` (`isPublished: true` with a future `publishDate` fails with `INVALID_PUBLISH_DATE`, checked). A scheduled page reads as `published = false` (checked: a future `publishDate` gave `isPublished = false` and `publishedAt` = that date), so a config with `published = true` publishes it at the next apply. `publishedAt` is not exposed.
+
+**Pattern A: `adopt_existing` only.** Every store has a `contact` page (`templateSuffix = "contact"`, created with the shop; on the dev store the only page). The schema doesn't mark it (no `isDefault`), so it is handled like `frontpage` (§9l): `adopt_existing = true` updates it in place, destroy only removes it from state with a warning. Without the flag, Create fails on the taken handle. `TODO(verify)`: whether `contact` can be deleted; not tried, it couldn't be restored with its GID.
+
+**No Pattern B.** `pageDelete` removes the page, its metafield values and translations. The body and settings come from config, so a recreate restores the page with a new GID; unmanaged metafield values and translations are lost, as for collections (§9l). Menu items of type `PAGE` lose their target (`TODO(verify)`, same open point as collections). `NOT_FOUND` on delete ("Page does not exist", checked) means already gone: removed from state without error.
+
+Notes:
+- Uses `page(id:)`, `pages(first:, query:)`, `pageCreate(page:)`, `pageUpdate(id:, page:)`, `pageDelete(id:)`.
+- Update sends only changed attributes. Never sent: `metafields` (metafield values are a roadmap type), `publishDate`, `redirectNewHandle` (a handle change creates no redirect; URL redirects are a roadmap type). Renaming the handle in place works (checked).
+- genqlient: `body` has the `HTML` scalar, already bound to `string`.
+- Errors (`PageCreateUserError` / `PageUpdateUserError`, `field` relative to `page`): `TAKEN` (`handle`), `BLANK` (`title`), `TOO_LONG`, `TOO_SHORT`, `TOO_BIG` (`body`), `INVALID`, `INVALID_PUBLISH_DATE` (can't happen, `publishDate` is never sent), `INVALID_VALUE` / `INVALID_TYPE` (metafields, never sent), `NOT_FOUND`. `pageDelete`: `NOT_FOUND`. None is retried.
+- **Fit: volatile.** The description says so: page texts are usually maintained in the admin; with `body` unset, Terraform can own the handle, title and template while editors own the text.
+- **Scopes:** `read_content` / `write_content` (`docs/bootstrapping.md`). `TODO(verify)`: checked only with every scope granted.
+- **Review Focus 1:** after destroy of the adopted page, read it back through the client and expect it unchanged. **Review Focus 2:** set `template_suffix` in one step, leave it out in the next, change it through the client in between: the config without it plans empty; likewise `body` unset while the client edits the body.
+- **Testing:** handles `tf-acc-page-<random>`. Steps: create, update `title`/`body`/`published`, handle rename, import by handle and by identity, adopt (`adopt_existing` on a page made through the client). Unit tests first: the handle validator (shared with products), the body keep-or-take rule (shared helper with §9k.1).
+
+**List:** no config. `pages(first: 250)`, paged; requested cost with all attributes was low (149 for pages, blogs and segments together at 250 each, checked). `DisplayName`: `<title> (<handle>)`. Results carry `handle`, `title`, `body`, `published` and `template_suffix` when not null; they pass the validators (Shopify-normalised handles) and plan as import-only.
+
+**Dev store (2026-10-26):** one probe page (`tf-probe_1`, renamed to `tf-probe-renamed`) was created, updated (publish toggles, template suffix, a future `publishDate`) and deleted. End state equals the start: only `contact`.
+
+**Implemented (§9m, verified on the dev store, 2026-10-26):**
+- Everything above held in the acceptance tests: create without `published` gives `true`; the body repair is no diff (`<p>Hi<br>there<b>bold</p>` stays configured, `...</b></p>` lives); `template_suffix` `""` reads back as `""`; a handle rename keeps the GID; import by handle, by identity and from generated config; the list shows `body`, `published` and `template_suffix` (null stays null).
+- `template_suffix` uses `UseStateForUnknownIncludingNull`, not plain `UseStateForUnknown`: a never-set suffix reads `null`, and plain keeps the plan unknown on every run.
+- The handle fallback sends `pages(first: 5, query: "handle:\"<handle>\"")` (quoted) and compares handles exactly; the quoted form found new pages immediately. `TODO(verify)` on index lag stays in `Create`.
+- Update sends only attributes that are configured and differ from state; a plan that changes only `adopt_existing` makes no API call. Adopt does the same against the live page, so a page that already matches is not written at all: adopting `contact` with its live title left it byte-identical (`TestAccPage_adoptContact`, Review Focus 1).
+- Review Focus 2 passed: `template_suffix`, `published` and `body` changed through the client while unset in config plan empty, and state takes the live values.
+- `pageDelete` is not preceded by a lookup: `NOT_FOUND` is recognised by its `code` and tolerated (`goneOnDelete`, unit-tested only: the refresh before destroy already drops a page deleted outside, which the acceptance test covers). A page deleted outside Terraform is planned for recreation.
+- Not verified, still `TODO(verify)`: whether `contact` can be deleted (not tried), menu items of type `PAGE` losing their target, search-index lag under load.
+- End state of the dev store equals the start: only `contact`.
+
+---
+
+## 9n. Resource: `shopify_blog`
+
+Discovery: 1 blog on staging and on production (D2: build); articles 0 / 0 (roadmap, D6). A blog is a container: handle, title, comment policy and template. Its articles are content and stay out of this resource.
+
+```hcl
+resource "shopify_blog" "news" {
+  handle          = "news"
+  title           = "Ratgeber"
+  comment_policy  = "MODERATED" # optional, unset = unmanaged (created as CLOSED)
+  template_suffix = "ratgeber"  # optional, unset = unmanaged
+  adopt_existing  = true        # every store has "news"
+
+  allow_data_deletion = false
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `Blog` GID. Computed, UseStateForUnknown |
+| `handle` | string | Required, import key. Updatable in place. Same validator as `shopify_product.handle` (`TF Probe_Blog` became `tf-probe_blog`, checked) |
+| `title` | string | Required |
+| `comment_policy` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `CommentPolicy`: `AUTO_PUBLISHED`, `CLOSED`, `MODERATED`. Create without it gives `CLOSED` (checked); in-place update checked |
+| `template_suffix` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `""` reads back as `""`, never set as `null` (checked), as for pages |
+| `adopt_existing` | bool | Pattern A, see below |
+| `allow_data_deletion` | bool | Pattern B, see below |
+
+Import key: the handle (`news`). Read: `blog(id:)` first; if it is gone, `blogs(first: 25, query: "handle:\"<handle>\"")` with an exact handle match (no `blogByHandle` root field, so search-indexed; same `TODO(verify)` on lag as pages). `MutableIdentity` is set.
+
+**Shopify suffixes a taken handle instead of failing**, on create and on update: `blogCreate` with `handle: "news"` returned a new blog `news-1`, and `blogUpdate` to `news` renamed the blog to `news-1` (both checked, no userError). So, as for menus (§9):
+- Create looks the handle up first (fails unless `adopt_existing`), then checks the returned handle; a suffixed handle (another writer won the race) means the new blog is deleted again and Create fails, naming the handle.
+- Update with a new handle looks it up first and fails if it is taken. If Shopify still returns a different handle, the update fails with an error naming both, and state takes the returned handle, so the next plan shows the drift.
+
+**Pattern A: `adopt_existing` only.** Every store has a `news` blog ("News", `CLOSED`, created with the shop; the dev store's only blog, and very likely the one blog on staging and production). The schema doesn't mark it as a default, so it is handled like `frontpage` (§9l) and `contact` (§9m): `adopt_existing = true` updates it in place, and destroy only removes it from state with a warning. `TODO(verify)`: whether `news` can be deleted; not tried.
+
+**Pattern B: deleting a blog deletes its articles.** `blogDelete` on a blog with one article removed the article too (`article(id:)` returned `null` afterwards, checked); the schema only says it "removes the blog container". So Delete reads `articlesCount` first and, if it is above 0 or missing (`null`, fail closed: the blog may hold articles), fails unless `allow_data_deletion = true`, naming the count when known. An empty blog is deleted without the guard (it holds only config). No attribute forces a replace, so there is no plan-time replace warning. `NOT_FOUND` on delete ("Blog does not exist", checked) means already gone: removed from state without error.
+
+Notes:
+- Uses `blog(id:)`, `blogs(first:, query:)`, `blogCreate(blog:)`, `blogUpdate(id:, blog:)`, `blogDelete(id:)`. Update sends only changed attributes.
+- Never sent: `metafields`, `redirectNewHandle`, `redirectArticles` (both default `false`; URL redirects are a roadmap type). Renaming a blog therefore changes its article URLs without redirects; the docs say so.
+- Not exposed: `feed` (legacy FeedBurner settings, `null` on the dev store), `tags` (derived from articles), `articlesCount` (only used by the Pattern B check).
+- Errors (`BlogCreateUserError` / `BlogUpdateUserError`, `field` relative to `blog`): `BLANK` (`title`), `INVALID`, `TOO_LONG`, `INCLUSION` (`comment_policy`), `INVALID_VALUE` / `INVALID_TYPE` (metafields, never sent), `NOT_FOUND`. `blogDelete`: `NOT_FOUND`. There is no `TAKEN`: see the handle check above. None is retried.
+- **Fit: good.** A blog's settings are stable configuration; articles, the content, are not managed (roadmap). The description says so, and that destroying a blog with articles needs `allow_data_deletion`.
+- **Scopes:** `read_content` / `write_content`. `TODO(verify)`: checked only with every scope granted.
+- **Review Focus 1:** after destroy of the adopted `news` blog, read it back through the client and expect it unchanged. **Review Focus 2:** set `comment_policy` in one step, leave it out in the next, change it through the client in between: the config without it plans empty.
+- **Testing:** handles `tf-acc-blog-<random>`. Steps: create, update, handle rename, import by handle and identity, adopt `news` (destroy leaves it), a taken handle fails without creating `-1`. Pattern B: create an article through the client (`articleCreate`), destroy fails without `allow_data_deletion`, succeeds with it, and the article is gone. Unit tests first: the suffixed-handle check.
+
+**List:** no config. `blogs(first: 250)`, paged. `DisplayName`: `<title> (<handle>)`. Results carry `handle`, `title`, `comment_policy` and `template_suffix` when not null, and plan as import-only.
+
+**Dev store (2026-10-26):** probes created blogs `tf-probe_blog` and `news-1` (the suffix probe) and one article; `news-1` was deleted, the probe blog was renamed (`news-1`, then `tf-probe-blog-2`) and deleted with its article. End state equals the start: only `news`, 0 articles.
+
+**Implemented (§9n, verified on the dev store, 2026-10-26):**
+- Everything above held in the acceptance tests: create without `comment_policy` gives `CLOSED`; `template_suffix` `""` reads back as `""` and a never-set one as `null` (so it uses `UseStateForUnknownIncludingNull`, as for pages); a handle rename keeps the GID; import by handle, by identity and from generated config; the list shows `comment_policy` and `template_suffix`. No attribute deviates from the table.
+- Review Focus 1: adopting `news` and destroying leaves it byte-identical (id, handle, title, comment policy, suffix). Review Focus 2: `comment_policy` set, then left out and changed through the client: the config without it plans empty and state takes the client's value.
+- Suffixed handles: a taken handle on create is refused by the lookup before `blogCreate`, on update before `blogUpdate`; neither test left a `-1` blog. The post-create check (delete the suffixed copy, then fail) and the post-update check (state takes the returned handle) only run when Shopify wins a race, so they are not reached by the tests; `handleDrift` is unit-tested.
+- Pattern B: `articlesCount` reflected an article created seconds earlier, so the guard fires on the first destroy (`holds 1 articles`, plus the `allow_data_deletion` hint); with `allow_data_deletion = true` blog and article are gone. An empty blog is deleted without the flag (every other test's destroy).
+- `NOT_FOUND` on delete is handled by `goneOnDelete` (unit-tested), not by an acceptance test: Terraform refreshes before destroy, so Read already drops a blog deleted outside. The `deletedOutside` test covers that Read path and the recreate.
+- The handle fallback sends `blogs(first: 25, query: "handle:\"<handle>\"")` and compares handles exactly; the quoted form found new blogs immediately. `TODO(verify)` on index lag stays in `Create`. `TODO(verify)` on deleting `news` stays untried.
+- The test-only `articleCreate` / `article(id:)` operations live in `blog.graphql`; the provider never calls them.
+
+---
+
+## 9o. Resource: `shopify_file`
+
+Discovery: 269 files on staging, 432 on production, merchant-owned (D2: build). Files are the store's media library: product images, theme and page assets, downloads. They are content, uploaded and replaced in the admin all the time, so the type is volatile. Product media (§9k.4) references files of this type by ID.
+
+```hcl
+resource "shopify_file" "logo" {
+  filename     = "logo.png"
+  content_type = "IMAGE"
+  source       = "${path.module}/assets/logo.png" # local file (staged upload) or https URL
+  source_hash  = filesha256("${path.module}/assets/logo.png")
+  alt          = "pflege.de Logo"                 # optional, unset = unmanaged
+
+  allow_data_deletion = false
+}
+
+resource "shopify_file" "howto" {
+  content_type = "EXTERNAL_VIDEO"
+  source       = "https://www.youtube.com/watch?v=..."
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | File GID; the kind follows the content type: `MediaImage`, `GenericFile`, `Video`, `ExternalVideo`, `Model3d`. Computed, UseStateForUnknown |
+| `content_type` | string | Required, **RequiresReplace** (a file can't change kind). `FileContentType`: `IMAGE`, `FILE`, `VIDEO`, `EXTERNAL_VIDEO`, `MODEL_3D`. Read maps `__typename` back. Required because the duplicate check needs it (below) |
+| `filename` | string | Optional in the schema; ValidateConfig requires it for every type except `EXTERNAL_VIDEO`, where it must be unset (external videos have no filename). Import key. Updatable in place for `IMAGE` and `FILE` (`fileUpdate`, same GID, checked); `VIDEO` and `MODEL_3D` can't be renamed (`UNSUPPORTED_MEDIA_TYPE_FOR_FILENAME_UPDATE`, schema), which is a plan error. The CDN URL changes with it (`…/files/tf-probe.png` → `…/files/tf-probe-renamed.png`, checked), so ModifyPlan warns that links to the old URL in pages and themes break. A different **extension forces replace**: `fileUpdate` rejects it with `INVALID_FILENAME_EXTENSION` (checked). Validated: ASCII letters, digits, `.`, `_`, `-`, and an extension, since Shopify rewrites anything else (`TF Probe ä.png` became `TF_Probe_a.png`, checked) |
+| `source` | string | Optional, but Create fails without it (ModifyPlan, on create only). A local file path (uploaded through a staged upload) or an `http(s)://` URL (Shopify fetches it). See "Sources". Not readable for hosted files: Read keeps the state value, import leaves it null (unmanaged). For `EXTERNAL_VIDEO` it is the video URL and is read back (`originUrl`) |
+| `source_hash` | string | Optional. Not interpreted; any change re-uploads the content, like a `source` change. Meant for `filesha256(<path>)`, since a changed file under the same path or URL is otherwise invisible to Terraform (the `aws_s3_object.source_hash` pattern) |
+| `alt` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. `""` clears it (checked) |
+| `url` | string | Computed. The public URL: `image.url` (`MediaImage`), `url` (`GenericFile`), `sources[0].url` (`Video`, `Model3d`; `TODO(verify)` that it is the public URL), `originUrl` (`ExternalVideo`). `originalSource.url` is never requested: it is a signed storage URL that expires after 300 s and differs on every read (checked for `MediaImage`), so it would plan drift forever. UseStateForUnknown, except ModifyPlan marks it unknown when `filename`, `source` or `source_hash` change (a content update changes the `?v=` query, checked) |
+| `adopt_existing` | bool | Pattern A, see below |
+| `allow_data_deletion` | bool | Pattern B, see below |
+| `timeouts` | block | `create`, `update` (durations, default `10m`). How long Create and Update wait for processing. Hand-rolled block (two strings parsed with `time.ParseDuration`): the `terraform-plugin-framework-timeouts` module would be a new dependency |
+
+**Sources: staged uploads for local files, `originalSource` URLs otherwise.** The brief asked for `originalSource` URLs only if they cover every file type. They don't: `FileCreateInput.originalSource` takes "an external URL … for images, generic files, or external videos. Videos and 3D models require a staged upload URL" (schema). Staged uploads cover every hosted type (`StagedUploadTargetGenerateUploadResource` has `IMAGE`, `FILE`, `VIDEO`, `MODEL_3D`), and a file kept in the repository is the usual Terraform workflow (`file()`, `filesha256()`), so they are the main path. A URL source stays because external videos (YouTube, Vimeo) have nothing to upload, and for images and generic files it is the same call minus the upload. The provider tells the two apart by the `http://` / `https://` prefix.
+- **Local path:** `stagedUploadsCreate(input: [{ resource: <content_type>, filename, mimeType, fileSize, httpMethod: PUT }])` → PUT the bytes to the returned `url` with the returned `parameters` as headers → `fileCreate(originalSource: <resourceUrl>)`. `mimeType` from the extension (`mime.TypeByExtension`); `fileSize` is required for videos and 3D models. Plain `net/http`, no new dependency. `TODO(verify)` on the dev store at implementation: the PUT flow, and whether `fileUpdate(originalSource: <resourceUrl>)` replaces the content as a URL does. Not probed here: no upload outside the brief's tiny public image.
+- **URL:** sent as `originalSource` as is. ValidateConfig rejects a URL for `VIDEO` and `MODEL_3D`, and a local path for `EXTERNAL_VIDEO`, with the schema's reason.
+- A file at a URL that changes later is not noticed unless `source_hash` changes (the URL itself isn't fetched at plan time).
+
+**Create, processing and the filename key.**
+- Create sends `filename`, `contentType`, `alt` (when set) and `duplicateResolutionMode: RAISE_ERROR`. The default, `APPEND_UUID`, would silently create `logo_<uuid>.png` and break the key. A taken filename then fails at once with `FILENAME_ALREADY_EXISTS`, `field = ["files","0","filename"]` (checked), mapped to `filename`. `RAISE_ERROR` without `contentType` fails with `INVALID_DUPLICATE_MODE_FOR_TYPE` ("not supported for 'MISSING' media type", checked), which is why `content_type` is required. External videos get neither `filename` nor `duplicateResolutionMode` (`TODO(verify)`: whether `RAISE_ERROR` is rejected for them).
+- **Processing is asynchronous.** `fileCreate` returns `fileStatus: UPLOADED` with `image: null`; the 1×1 PNG was `READY` with its URL about a second later (checked). Create and Update (after a content change) poll `node(id:)` every 2 s until `READY` or `FAILED`, within the `timeouts` value. `FAILED`: the file is deleted again (`fileDelete`, otherwise the next apply hits `FILENAME_ALREADY_EXISTS`) and Create fails with each `fileErrors` entry (`code`, `message`, `details`). Timeout: the file stays, state gets its ID (so the next plan sees it), and Create fails saying it is still processing.
+- `adopt_existing = true`: Create looks the filename up (below) and, if found, updates it to the config (`alt`, and the content when `source` is set) instead of creating.
+
+Import key: the filename (`logo.png`); for an external video, its URL (contains `://`, so it can't be a filename). Read: `node(id:)` first, bound to `json.RawMessage` with `... on MediaImage`, `... on GenericFile`, `... on Video`, `... on Model3d`, `... on ExternalVideo` fragments, like web presences (§9a); there is no `file(id:)` root field. If it is gone: `files(first: 10, query: "filename:<filename>")`, then an exact match on the derived filename. `MutableIdentity` is set.
+- `MediaImage` and `GenericFile` have no `filename` field; it is the last path segment of `image.url` / `url` without the query (`…/files/tf-probe.png?v=…` → `tf-probe.png`, checked for `MediaImage`; `TODO(verify)` for `GenericFile`). `Video` and `Model3d` have `filename`.
+- The search is token-based (`filename:tf-probe` and `filename:tf-probe.png` both found `tf-probe.png`) and search-indexed: right after `fileCreate` it returned nothing, a few seconds later the file (checked). Import and adopt of a file made moments ago can therefore miss it; the error says so.
+- External videos: `files(query: "media_type:EXTERNAL_VIDEO")`, paged, exact `originUrl` match (`TODO(verify)` the filter value).
+- **Duplicates:** with `RAISE_ERROR` Shopify keeps filenames unique, and `APPEND_UUID` uploads (the admin's default) get unique names too. More than one exact match (possible for external videos with the same URL; `TODO(verify)`: whether case-only differences count as distinct filenames, and whether production has duplicates) is an error listing the GIDs, never a pick.
+
+**Update:** `fileUpdate(files: [{ id, … }])` with only the changed fields: `alt`, `filename` (images and generic files only), and `originalSource` when `source` or `source_hash` changed. Replacing the content works in place for `IMAGE` and `FILE` only ("the source from which to update a media image or generic file", schema): same GID, same URL path, new `?v=` (checked for an image from a URL). For `VIDEO`, `MODEL_3D` and `EXTERNAL_VIDEO` a content change forces replace. Adding `source` to an imported file (state `null` → a value) counts as a content change: it re-uploads in place for `IMAGE` and `FILE` and is a guarded replace for the other kinds; the docs say so. Never sent by `shopify_file`: `referencesToAdd` / `referencesToRemove` (only product IDs; the product owns that link, §9k.4, one writer: `shopify_product` sends `referencesToRemove` itself to detach media without deleting them) and `previewImageSource` (roadmap).
+
+**Pattern A: `adopt_existing` only.** Shopify creates no default files (dev store: 0 files).
+
+**Pattern B: deleting a file destroys data and breaks references.** `fileDelete` is permanent; Shopify removes the file from every product that uses it, and links from themes, pages and blog posts break (schema). A recreate uploads the content again, but under a new GID and URL. So Delete, and every replace (`content_type`, a new extension, a content change of a video, 3D model or external video), fail unless `allow_data_deletion = true`, with no exception for unused files; ModifyPlan warns on a planned replace. `FILE_DOES_NOT_EXIST` on delete (checked) means already gone: removed from state without error.
+
+**Product media (§9k.4).** `id` is the file's own GID (`gid://shopify/MediaImage/…`), which `FileSetInput.id` of `productSet(files:)` takes, so `media_ids = [shopify_file.logo.id]` works without a conversion. Deleting a product deletes media that no other product uses (§9k.1, checked), files of this type included, unless the product manages `media_ids`: then its destroy detaches them first (§9k.4). A deleted file plans a create. Removing a file from `productSet(files:)` would delete it unless another product uses it (checked), so `shopify_product` detaches removed media with `fileUpdate(referencesToRemove:)` first and the file stays (§9k.4, ruling T14d-2). Destroying `shopify_file` detaches it from every product. The resource description says that detaching keeps the file and that only a product with `media_ids` unset deletes it on destroy. Delete looks the file up before the `allow_data_deletion` guard, so destroying a file already gone (with its product, or in the admin) never fails on the guard.
+
+Notes:
+- Uses `node(id:)`, `files(first:, after:, query:)`, `fileCreate`, `fileUpdate`, `fileDelete`, `stagedUploadsCreate`. Deprecated `stagedUploadTargetGenerate(s)` are not used.
+- Errors (`FilesUserError`, `field` like `["files","0","filename"]`): `FILENAME_ALREADY_EXISTS`, `INVALID_FILENAME`, `INVALID_FILENAME_EXTENSION`, `UNSUPPORTED_MEDIA_TYPE_FOR_FILENAME_UPDATE` (`filename`); `INVALID_IMAGE_SOURCE_URL`, `MISMATCHED_FILENAME_AND_ORIGINAL_SOURCE`, `UNACCEPTABLE_ASSET`, `UNACCEPTABLE_TRIAL_ASSET`, `UNACCEPTABLE_UNVERIFIED_TRIAL_ASSET` (`source`); `ALT_VALUE_LIMIT_EXCEEDED` (`alt`); `INVALID_DUPLICATE_MODE_FOR_TYPE`, `NON_IMAGE_MEDIA_PER_SHOP_LIMIT_EXCEEDED`, `FILE_LOCKED`, `NON_READY_STATE`, `MEDIA_CANNOT_BE_MODIFIED`, `INVALID` (resource level); `FILE_DOES_NOT_EXIST` (gone). Processing errors come later as `FileError` codes (`IMAGE_DOWNLOAD_FAILURE`, `GENERIC_FILE_DOWNLOAD_FAILURE`, `UNSUPPORTED_IMAGE_FILE_TYPE`, `FILE_STORAGE_LIMIT_EXCEEDED`, the `VIDEO_*` and `MODEL3D_*` codes, …), reported with `details`. None is retried; `FILE_LOCKED` / `NON_READY_STATE` ask the user to re-apply.
+- **Fit: volatile.** The description says so: most stores upload files in the admin or through product media; managing a few assets kept in the repository (logos, downloads) fits, mirroring the whole library doesn't.
+- **Scopes:** `read_files` / `write_files` (`docs/bootstrapping.md`). `TODO(verify)`: whether `files` also works with `read_themes` or `read_products` alone (Shopify's docs list alternatives); checked only with every scope granted.
+- **Review Focus 1:** after destroy of an adopted file, read it back through the client and expect it unchanged. **Review Focus 2:** set `alt` in one step, leave it out in the next, change it through the client in between: the config without `alt` plans empty.
+- **Testing:** filenames `tf-acc-file-<random>.png`. Steps: create from a URL (the 1×1 PNG at `upload.wikimedia.org`) and from a local `testdata/` PNG (13b-3b), alt change, rename (URL changes, GID stays), content change through `source_hash` (GID and URL path stay), extension change plans a replace and fails without `allow_data_deletion`, import by filename and identity, adopt, Pattern B. Unit tests first: the filename validator, filename-from-URL, import-key parsing (filename vs URL), source routing and the type/source checks, the poll loop (READY, FAILED with cleanup, timeout).
+
+**List:** optional config `query`, passed to `files(query:)` in Shopify's search syntax (for example `media_type:IMAGE` or `filename:logo`), so a store with hundreds of files can be imported in parts. `files(first: 250)`, paged; requested cost 24 per page with every field the resource reads (checked), so production's 432 files take two calls. `DisplayName`: `<filename> (<content_type>)`, `<url> (EXTERNAL_VIDEO)` for external videos. Results carry `filename`, `content_type`, `alt` when not null, and `source` for external videos only; hosted files come without `source` (unmanaged), which passes validation and plans as import-only. Files that failed processing are listed too.
+
+**Dev store (2026-10-26):** one probe image (`tf-probe.png` from the 1×1 PNG URL) was created, renamed twice, given a new alt, re-sourced from the same URL, and deleted; a duplicate create was refused. End state equals the start: 0 files.
+
+**Task split:** 13b-3a the resource with URL sources (everything above except the local-path upload); 13b-3b staged uploads of local files. 13b-3a alone is usable for images, generic files and external videos; videos and 3D models need 13b-3b.
+
+
+**Implemented (§9o 13b-3a, verified on the dev store, 2026-10-27):** URL sources only; staged uploads of local files (13b-3b) are roadmap.
+- **Scope of 13b-3a:** `source` takes `http://` / `https://` only (ValidateConfig: a path fails with a roadmap note). `VIDEO` and `MODEL_3D` can't have `source` (staged upload needed), so they can't be created or get new content; they can be imported, adopted, listed, read and given `alt`. ModifyPlan fails a create without `source` and without `adopt_existing`, with the same roadmap note for them; Terraform plans the create half of a replace again with no prior state, so a replace that couldn't recreate the file fails at plan too, before anything is deleted. No `net/http` upload code, no `stagedUploadsCreate` query, no `testdata/` step.
+- **Rename of VIDEO / MODEL_3D (ruling T18-1):** `fileUpdate` accepts a filename only for images and generic files (`UNSUPPORTED_MEDIA_TYPE_FOR_FILENAME_UPDATE`, schema), so a changed `filename` on a `VIDEO` / `MODEL_3D` is a plan error, not an in-place rename. Not run against a real video (the dev store has none).
+- **Deviation, Update failure:** only Create deletes a `FAILED` file (`fileDelete`, then one error per `fileErrors` entry). A failed content update keeps the file, reports the errors, and leaves `source` / `source_hash` at their old state values so the next plan tries again. A failed processing on the dev store (404 source) reported `UNKNOWN: Media processing failed (… 404 …)`, not `IMAGE_DOWNLOAD_FAILURE`; the file was deleted and the library stayed empty.
+- **Timeout:** with `create = "1ns"`, state keeps the file's ID, the apply fails saying it is still processing, and the next plan replaces the tainted resource; the error tells the user to run `terraform untaint <address>` first. Replace and destroy need `allow_data_deletion = true` in state.
+- **Replace logic** is one function (`replaceReasons`) used by ModifyPlan for `RequiresReplace` and the warning: `content_type`, a different extension (also case-only: `fileUpdate` refuses `.png` to `.PNG`, checked), and a new `source` / `source_hash` for every type but `IMAGE` and `FILE`. Shopify refuses a filename whose extension differs from the source URL's (`MISMATCHED_FILENAME_AND_ORIGINAL_SOURCE`, checked with `.jpg` for a PNG source: "extension must match original source"), and refuses it only after a replace has deleted the old file. ValidateConfig therefore compares the two extensions (case-insensitively; a URL path without an extension is not checked) for every create and update, so a replace to a refused extension fails at plan, before anything is deleted. Changing the extension means changing `source` too; the acceptance test replaces with a case-only change (`.png` to `.PNG`), the one extension change a single PNG URL allows.
+- **A deleted name stays taken for a moment.** Create then gets `<name>_<uuid>.png` although `duplicateResolutionMode: RAISE_ERROR` was sent, and no error: a replace right after the delete did it every time, and a 3 s wait avoided it. A file deleted seconds after its create, before the search index had it, kept the name even through 5 s, so the timeout test waits for the index first. Delete therefore waits until `node(id:)` is null, then 5 s; Create compares the READY filename with the planned one, deletes the stray file and fails with "Shopify renamed the file … apply again". Names that differ only in case count as taken in the same way (`Tf-Acc.png` then `tf-acc.png` gave a suffixed name); the case Shopify was given is kept, so uppercase is allowed and the key compare stays exact.
+- **External videos:** `duplicateResolutionMode: RAISE_ERROR` is rejected for them ("not supported for 'EXTERNAL_VIDEO' media type"), so it is not sent; Create looks the URL up first and fails with "File already exists" unless `adopt_existing`. Shopify rewrites the URL (`watch?v=ID` becomes `https://youtu.be/ID`), so `source` keeps the configured form while the live URL equals what Shopify returned at the last write (private state, the `KeepOrTake` rule of the HTML attributes), and `url` is the rewritten one. The create-time duplicate check, adopt and import compare `originUrl` exactly, so they need the rewritten form (the example, the import line and the `source` description say so; two resources with the `watch?v=` form would still create two videos); Read's fallback uses `url`, which has it. A `source` that is unknown at plan time plans a replace for these types, because it can't be told from a change. `media_type:EXTERNAL_VIDEO` is a valid filter (checked).
+- `alt` unset reads `""`, never `null`, and a cleared one reads back `""`; plain `UseStateForUnknown` as in the table. `GenericFile` filenames come from the URL like images (checked: an image replaced by a `FILE` of the same name). A content update through `source_hash` keeps the GID and the path and changes `?v=`; a rename keeps the GID and changes the URL (checked).
+- **Search:** `files(query: "filename:\"<name>\"")` finds an exact filename, but only a few seconds after the create (the tests wait for it before an adopt, a list or a replace of an unindexed file). Files that failed or are still processing have no URL, so no filename: Read keeps the state's, and the list skips them, and also files whose filename the validator rejects (no extension, spaces, non-ASCII), so every listed config passes validation; such files can't be imported by filename. Skipped files don't count toward the list limit (the filter runs before pagination counts).
+- Findings that held as written: one `fileCreate` takes the 1×1 PNG from `upload.wikimedia.org`; the exact URL is `https://upload.wikimedia.org/wikipedia/commons/c/ca/1x1.png` (the spec named only the host); `FILENAME_ALREADY_EXISTS` for a taken name (`Failed to create file`); adopt then destroy leaves the file with Terraform's `alt` and its original URL (Review Focus 1); `alt` unset plans empty after a change through the client (Review Focus 2); import by filename, by identity and from generated config; `query` narrows the list.
+- Still unverified: `sources[0].url` of `Video` / `Model3d` is the public URL (`TODO(verify)` in `publicURL`; no video on the dev store), and whether `files` also works with `read_themes` or `read_products` alone (all scopes were granted).
+- The timeouts block is `patterns.TimeoutsBlock` / `patterns.TimeoutOf` (durations by `time.ParseDuration`, default `10m`), reusable by the discounts. Dev store end state: 0 files, as at the start.
+---
+
+## 9p. Resources: `shopify_discount_basic`, `shopify_discount_free_shipping`, `shopify_discount_bxgy`
+
+Discovery: `discountNodes` 0 on staging, 7 on production. D5 assumed Shopify defaults. **They are not:** Shopify creates no discounts with a shop (the dev store, created 2026-10-22, has none, and staging has none), so production's 7 were made by the merchant or an app. Their kinds are unknown (discovery counted nodes only; `TODO(verify)` at the first import). Discounts are promotions, created and ended in the admin by marketing, so the types are volatile.
+
+```hcl
+resource "shopify_discount_basic" "newsletter" {
+  title = "Newsletter 10 %"
+  code  = "WILLKOMMEN10" # unset = automatic discount
+
+  starts_at = "2026-11-01T00:00:00+01:00" # optional, unset = unmanaged (created as now)
+  ends_at   = "2026-12-31T23:59:59+01:00" # optional, unset = unmanaged
+  context   = { customer_segment_ids = [shopify_customer_segment.subscribers.id] }
+
+  customer_gets = {
+    value = { percentage = 0.1 }
+    items = { collection_ids = [shopify_collection.pflegehilfsmittel.id] }
+  }
+  minimum_requirement       = { subtotal = "30.00" }
+  combines_with             = { shipping_discounts = true }
+  usage_limit               = 1000
+  applies_once_per_customer = true
+}
+
+resource "shopify_discount_free_shipping" "ab_50" {
+  title               = "Versandkostenfrei ab 50 €"
+  minimum_requirement = { subtotal = "50.00" }
+  destination         = { country_codes = ["DE", "AT"] }
+}
+```
+
+**Granularity: one resource per discount method (basic, free shipping, buy X get Y), each covering code and automatic discounts.** The API has eight node types (`Discount` union): {code, automatic} × {basic, BXGY, free shipping, app}, each with its own create and update mutation. Neither axis can change in place: a basic discount can't become BXGY, and a code discount can't become automatic. The method decides the shape of the core inputs (`customerGets` vs `customerBuys` + `customerGets` vs `destination` + `maximumShippingPrice`); code vs automatic only adds `code`, `usageLimit` and `appliesOncePerCustomer`. So:
+- One resource per method keeps each schema to the attributes that apply, with no "exactly one of three blocks" switch and no per-kind cross-validation of a dozen optional attributes. Each method is one implementation task.
+- Code vs automatic is the optional `code` attribute: set = code discount, unset = automatic. Switching between set and unset forces replace (RequiresReplaceIf on nullness); changing the code's value is in place.
+- The three share one package (`internal/resources/discount`, as `privacysettings` hosts two resources) with the common attributes, code handling, context, item selection and time comparison.
+
+**App discounts are not designed.** `DiscountCodeAppInput` and `DiscountAutomaticAppInput` take `functionHandle` only (2026-10 has no `functionId` input), and function handles are "scoped to your current app ID. Only finds functions within your app" (schema, on the delivery and payment customization inputs; `TODO(verify)` for discounts, where the description says only "the handle of the function providing the discount"). This provider's app ships no Functions (CLAUDE.md), so it can't create app discounts, and those of other apps belong to the Function's app (D3, Review Focus 5). The three list resources skip them, so generated config never contains one.
+
+### Common attributes (all three)
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `DiscountCodeNode` or `DiscountAutomaticNode` GID (checked). Computed, UseStateForUnknown |
+| `title` | string | Required. Unique among automatic discounts (`TAKEN`, "Title must be unique for automatic discount.", checked); code discounts may share titles with each other and with an automatic one (checked) |
+| `code` | string | Optional; unset = automatic discount. **RequiresReplace** when it changes between set and unset. Unique per shop, case-insensitively (`tfprobe` after `TfProbe` failed with `TAKEN`, checked); Shopify keeps the case as given. Renaming in place keeps the redeem code's GID (checked) |
+| `starts_at` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. RFC 3339. Required by the API on create for both kinds (`BLANK`, checked), so Create sends the current time when unset |
+| `ends_at` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged (no end date on create) |
+| `status` | string | Computed: `ACTIVE`, `SCHEDULED`, `EXPIRED`, from the dates; kept from state only in plans without a real change (see Implemented). Activate / deactivate mutations are not used: deactivating means setting `ends_at` |
+| `context` | object | Optional + Computed, UseStateForUnknown; unset = unmanaged. Who can use it, exactly one of: `all` (bool, must be `true`), `customer_segment_ids` (set(string)), `market_ids` (set(string)). Code discounts require a context on create (`BLANK`, checked), so Create sends `all` when unset |
+| `combines_with` | object | Optional + Computed, UseStateForUnknown; unset = unmanaged. `product_discounts`, `order_discounts`, `shipping_discounts` (bool). All `false` when created without it (checked) |
+| `usage_limit` | number | Optional + Computed, UseStateForUnknown; unset = unmanaged. Code discounts only (ValidateConfig). Total uses; `null` = unlimited |
+| `applies_once_per_customer` | bool | Optional + Computed, UseStateForUnknown; unset = unmanaged. Code discounts only |
+| `adopt_existing` | bool | Pattern A, see below |
+
+**Times:** Shopify returns UTC (`2026-10-26T12:00:00+01:00` read back as `2026-10-26T11:00:00Z`, checked), so `starts_at` and `ends_at` use a custom string type whose semantic equality compares the instant; the configured spelling stays in state. (`terraform-plugin-framework-timetypes` would be a new dependency.) An end date or usage limit set in the admin can't be removed from config (unset = unmanaged); the docs say to set a far end date or a high limit instead.
+
+**Context:** `DiscountContextInput` writes segments and markets as `add` / `remove` lists. Update reads the live context, sends the difference, or switches kind (`{ all: ALL }` after segments replaced them, checked). Individual customers (`DiscountCustomers`) are not offered: customers are records, not configuration. A live context of individual customers or `DiscountContextUnknown` is unsupported: if config sets `context`, plan fails naming the context type; otherwise it stays null and import and list warn. Deleting a discount's only segment **expires the discount** and resets its context to all buyers (checked: status `ACTIVE` → `EXPIRED`, context `DiscountCustomerSegments` → `DiscountBuyerSelectionAll`), so the docs say to reference `shopify_customer_segment.<x>.id` (dependency order then updates the discount first).
+
+**Codes: one per discount.** `code` is the discount's code. Bulk codes (`discountRedeemCodeBulkAdd`, async jobs, often thousands of personal codes) are not managed (roadmap). A discount with more than one code (`codesCount > 1`) can still be imported by any of its codes: Read keeps the state `code` while `codeDiscountNodeByCode(code)` returns this discount, and otherwise takes the first code. Update refuses to change `code` on such a discount, since which code `DiscountCodeBasicInput.code` replaces is unverified (`TODO(verify)`); the list's `DisplayName` shows the extra count.
+
+Import key: `code/<code>` for a code discount (`code/WILLKOMMEN10`), `automatic/<title>` for an automatic one (`automatic/Versandkostenfrei ab 50 €`), split at the first `/` (`patterns.SplitImportKey`), so codes and titles may contain `/`. Read: `discountNode(id:)` first (not deprecated; `codeDiscountNode` and `automaticDiscountNode` are). If it is gone: `codeDiscountNodeByCode(code:)` for code discounts (direct, case-insensitive: `TFPROBE` found `TfProbe`, checked), `discountNodes(query: "method:automatic AND title:\"<title>\"")` with an exact title match for automatic ones (search-indexed; the probe found a new discount at once). `MutableIdentity` is set. A match of another method fails with "is a <kind> discount; use shopify_discount_<kind>"; an app discount with "belongs to an app".
+
+**Pattern A: `adopt_existing` only.** No default discounts exist (above). With `adopt_existing = true`, Create looks the key up and updates the found discount; destroy only removes it from state with a warning. Without it, Create fails on a taken code or automatic title (`TAKEN` from the API, mapped to `code` / `title`).
+
+**No Pattern B.** Deleting a discount removes its configuration; orders keep their discount applications (schema), and the config recreates it. But a recreate restarts usage counting (`asyncUsageCount`), so `usage_limit` and `applies_once_per_customer` start from zero and customers can use a once-per-customer code again. ModifyPlan therefore warns on a planned replace (only `code` set ↔ unset forces one). A missing discount on delete (`INVALID`, "Automatic discount does not exist.", checked; the code message is `TODO(verify)`) means already gone: removed from state without error.
+
+**Not managed in v1:** `tags` (discount tags), `recurringCycleLimit` and the subscription flags (`appliesOnSubscription`, `appliesOnOneTimePurchase`, `isSubscription`; selling plans are a roadmap type), `productDiscountsWithTagsOnSameCartLine`, metafields, bulk codes, shareable URLs. `discountClasses` follows from the items (all items → `ORDER`, collections → `PRODUCT`, checked) and isn't exposed.
+
+### `shopify_discount_basic`
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `customer_gets` | object | Required. `value`: exactly one of `percentage` (number, 0 < x ≤ 1) or `amount` (object: `amount` decimal string, `applies_on_each_item` bool). `items`: exactly one of `all` (bool, `true`), `product_ids` and/or `variant_ids` (set(string)), `collection_ids` (set(string)) |
+| `minimum_requirement` | object | Optional + Computed, UseStateForUnknown; unset = unmanaged. At most one of `subtotal` (decimal string) and `quantity` (number); `{}` = no minimum. Every write sends both kinds, the unused one as `null` (see Implemented) |
+
+Mutations: `discountCodeBasicCreate` / `Update`, `discountAutomaticBasicCreate` / `Update`, `discountCodeDelete`, `discountAutomaticDelete`.
+- **Items** are written as add / remove lists (`DiscountProductsInput.productsToAdd/Remove`, `productVariantsToAdd/Remove`, `DiscountCollectionsInput.add/remove`), unlike the full lists Read returns. Update reads the live items and sends the difference; switching kind sends the new kind only (`{ all: true }` replaced a collection selection, checked). `collections: { add: [] }` changed nothing (checked). Read pages `products`, `productVariants`, `collections` (first 250).
+- **Minimum requirement:** `minimumRequirement: null` is ignored (the minimum stayed, checked); `{ subtotal: { greaterThanOrEqualToSubtotal: null } }` removes it (checked), so `{}` in config sends that. Subtotals read back as `MoneyV2` (`"50"` → `"50.0"`, checked) and compare numerically, as product prices do (§9k.2).
+- Value: `DiscountCustomerGetsValueInput.percentage` / `discountAmount`; `discountOnQuantity` is BXGY only.
+
+### `shopify_discount_free_shipping`
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `destination` | object | Optional + Computed, UseStateForUnknown; unset = unmanaged. Exactly one of `all` (bool, `true`) or `country_codes` (set(string), ISO codes). Countries are written as `add` / `remove`, like items. `includeRestOfWorld` is deprecated and not used |
+| `maximum_shipping_price` | string | Optional + Computed, UseStateForUnknown; unset = unmanaged. Decimal; only shipping rates up to it are discounted |
+| `minimum_requirement` | object | As for basic |
+
+Mutations: `discountCodeFreeShippingCreate` / `Update`, `discountAutomaticFreeShippingCreate` / `Update`. `TODO(verify)`: the create defaults (destination when unset), and whether automatic free-shipping titles share the uniqueness rule.
+
+### `shopify_discount_bxgy`
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `customer_buys` | object | Required. `items` (as for basic; `TODO(verify)` whether `all` is accepted) and exactly one of `quantity` (number) or `amount` (decimal string, purchase amount) |
+| `customer_gets` | object | Required. `items` (as above), `quantity` (number of discounted items) and exactly one of `percentage` or `amount`: `DiscountOnQuantityInput { quantity, effect }` |
+| `uses_per_order_limit` | number | Optional + Computed, UseStateForUnknown; unset = unmanaged |
+
+Mutations: `discountCodeBxgyCreate` / `Update`, `discountAutomaticBxgyCreate` / `Update`.
+
+### All three
+
+- Errors (`DiscountUserError`, `field` relative to the input, e.g. `["automaticBasicDiscount","title"]`): `TAKEN` (`title` or `code`), `BLANK`, `INVALID`, `TOO_LONG`, `TOO_SHORT`, `END_DATE_BEFORE_START_DATE` (`ends_at`), `VALUE_OUTSIDE_RANGE`, `GREATER_THAN` / `LESS_THAN` and their variants, `MINIMUM_SUBTOTAL_AND_QUANTITY_RANGE_BOTH_PRESENT` (`minimum_requirement`), `EXCEEDED_MAX`, `ACTIVE_PERIOD_OVERLAP`, `CONFLICT`, `DUPLICATE`, `IMPLICIT_DUPLICATE`, `INCLUSION`, `INVALID_COMBINES_WITH_FOR_DISCOUNT_CLASS` (`combines_with`), `APPLIES_ON_NOTHING`, `INTERNAL_ERROR`; `extraInfo` is appended to the message. The tag, subscription and function codes can't occur (never sent). None is retried.
+- **Fit: volatile.** The descriptions say so: promotions are usually run from the admin; long-running rules (free shipping thresholds, a newsletter code) fit Terraform.
+- **Scopes:** `read_discounts` / `write_discounts` (`docs/bootstrapping.md`). `TODO(verify)`: whether reading segment and market contexts also needs `read_customers` / `read_markets`; checked only with every scope granted.
+- **Review Focus 1:** after destroy of an adopted discount, read it back through the client and expect it unchanged. **Review Focus 2:** set `ends_at` in one step, leave it out in the next, change it through the client in between: the config without it plans empty; likewise `combines_with`.
+- **Testing:** codes `TFACC<random>`, titles `tf-acc-discount-<random>`. Per resource: code and automatic create, update (dates, value, items switch, minimum set and cleared), code rename, code ↔ automatic plans a replace, import by both key forms and identity, adopt, a taken automatic title. Unit tests first: the time equality, import-key parsing, item and context diffs (add / remove / kind switch), the minimum mapping (`{}` → clear), mapping the `Discount` union to state.
+
+**List:** one per resource, no config. `discountNodes(first: 50)`, paged; requested cost with the basic fragments (items and markets at first 250) was 359 for 50 (checked). Each list keeps its method and skips other methods and app discounts. `DisplayName`: `<title> (code <CODE>)`, `<title> (code <CODE>, +<n> codes)`, or `<title> (automatic)`. Results carry the attributes above; generated config then holds product, collection, segment and market GIDs, which tie it to the store (the docs say to replace them with references).
+
+**Dev store (2026-10-26):** probes created five basic discounts (three automatic, two code; plus refused duplicates), updated items, context, minimum and code, created two probe segments for the context check and deleted them (which expired the discount using them), and deleted everything. End state equals the start: 0 discounts, the 5 default segments.
+
+**Implemented (§9p 13b-4a, verified on the dev store, 2026-10-27):** ruling S13-6: only `shopify_discount_basic` and its list; free shipping and BXGY wait for production's kinds.
+- **Package `internal/resources/discount`:** `common.go` holds what every method shares (common attributes and model, the input of the common fields, the state mapping, context, Pattern A lookups, delete, import key, `userErrors` mapping, ModifyPlan); `items.go` the item selection, value and minimum requirement, which BXGY and free shipping reuse; `types.go` the time and decimal types. Both reuse `patterns.JSONType` (a string with semantic equality) with an instant or a numeric comparison (S13-5); no new type code. `basic.go` and `basic_list.go` add the two basic mutations and the list. The mutations return only the ID; every write reads the discount back by GID, so Read, Create, Update and list share one mapping. `patterns` gained `DecimalEqual` (moved from `product`), `DiffIDs`, `PaginateCounting` (now also used by `market`'s list) and the including-null modifier for Int64, Bool and Object.
+- **Item kind switch:** collections → products failed with "Cannot entitle collections in combination with product variants or products" (checked), so a switch between collections and products removes the old kind in the same call (then accepted, checked). `{ all: true }` replaces either. An update whose items are unchanged sends `customerGets` without `items` (accepted, checked). Selecting a product doesn't list its variants on read (`variant_ids` stays null, checked), and selecting one variant of a two-variant product reads back as that variant only, without its product (`product_ids` stays null, plans empty, checked). Read pages `products`, `productVariants` and `collections` past the first 250 (`GetDiscountItemsPage`, every list continued from its end cursor, so a finished one returns an empty page); the merge is unit-tested, the paging query was not reached on the dev store (no discount with more than 250 items).
+- **Minimum:** subtotal → quantity failed with "Minimum subtotal cannot be defined when minimum quantity is." and "Minimum quantity cannot be defined when minimum subtotal is." (checked), so every write sends both kinds with the unused one `null`; `{}` sends both `null`, which removed a quantity minimum too (checked). `"30"` read back as `"30.0"` without a diff.
+- **Errors (checked):** a taken code gives "Code must be unique. Please try a different code." on `code`; a taken automatic title "Title must be unique for automatic discount." on `title`. `applies_on_each_item = true` with `items = { all = true }` is refused: "'applies on each item' must be 'false' when there are no items specified in customer get" (documented, not validated).
+- **Plans:** Terraform proposes the non-computed nested attributes of an unset Optional + Computed object (`context`, `minimum_requirement`) from config, i.e. null, so the framework sees a change and marks computed values unknown although the object's own modifier restores it. The resource-level ModifyPlan (after the attribute modifiers) therefore sets `status` to its state value and keeps it only when the plan then equals the state: plans without a real change stay empty, and any real update shows `status` as known after apply, so a discount that starts or ends between plan and apply can't fail the apply. Nested defaults (`combines_with` flags, `applies_on_each_item`) exist only in the plan, so writes take `customer_gets` and a configured `combines_with` from the plan.
+- **Times:** `starts_at = "2026-10-01T12:00:00+02:00"` stays as written while Shopify holds `2026-10-01T10:00:00Z` (no diff, checked). Import can only return UTC, and a plan must take the configured value, so importing into a config that spells a time with an offset plans an in-place update of `starts_at` (harmless); generated config uses UTC and plans import-only (checked).
+- **Deviations:** the import key is split with `strings.Cut`, not `patterns.SplitImportKey` (which wants an exact number of parts), so `automatic/<title>` works for titles with `/` (checked with `…/50`). Markets are read at first 250 and not paged: more fails Read with a clear error and the list skips such a discount with a warning (shortcut in code). When the read-back after a successful create fails, Create still writes the ID (and identity) to state, so Terraform taints the discount instead of orphaning it (not reachable in the tests).
+- **Covered by acceptance tests:** code and automatic create; update of value, items (all → collections → products), context (all → segment → all, with a default segment), minimum (subtotal → quantity → `{}`), dates, limits and code rename in place (same GID); code → automatic replace; import by `code/…`, `automatic/…` and identity, generated config import-only; adopt and Review Focus 1; Review Focus 2 for `ends_at` and `combines_with` on both kinds; a taken code and a taken automatic title; the list with both kinds. **Unit tests only:** market contexts, unsupported live contexts (individual customers, `DiscountContextUnknown`), discounts with several codes, other methods and app discounts in the list. `TODO(verify)` in code: the scopes for segment and market contexts, a segments ↔ markets switch, changing the code of a discount with several codes.
+- **Dev store:** the tests leave 0 discounts, 0 products and `frontpage` with `sources: []`; the draft test product adds an empty `Untitled Source` to `frontpage`, which the test's cleanup removes (one left by a first run was removed by hand through the client).
+
+**Task split (implementation order):** 13b-4a `shopify_discount_basic` with the shared package (largest); 13b-4b `shopify_discount_free_shipping`; 13b-4c `shopify_discount_bxgy`. 13b-4a needs `shopify_customer_segment` (§9q) only for its tests' segment context, which can use a default segment instead.
+
+---
+
+## 9q. Resource: `shopify_customer_segment`
+
+Discovery: 5 segments on staging and on production. D5 assumed Shopify defaults, and **that holds:** the dev store has the same five, all created in the same second as the shop (`creationDate` 2026-10-22T19:29:11Z, shop `createdAt` 19:29:07Z, checked): "Customers who haven't purchased" (`number_of_orders = 0`), "Customers who have purchased more than once" (`number_of_orders > 1`), "Abandoned checkouts in the last 30 days" (`abandoned_checkout_date >= -30d`), "Email subscribers" (`email_subscription_status = 'SUBSCRIBED'`), "Customers who have purchased at least once" (`number_of_orders >= 1`). A segment is a saved customer query (ShopifyQL segment syntax); discounts target segments (§9p `context.customer_segment_ids`), and marketing edits them in the admin.
+
+```hcl
+resource "shopify_customer_segment" "subscribers" {
+  name  = "Newsletter-Abonnenten DE"
+  query = "email_subscription_status = 'SUBSCRIBED' AND customer_countries CONTAINS 'DE'"
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `Segment` GID. Computed, UseStateForUnknown |
+| `name` | string | Required, import key. Updatable in place |
+| `query` | string | Required. Stored and returned verbatim (`number_of_orders=0   AND   …` read back unchanged, checked), so no normalisation. Shopify validates it on write (`number_of_orderz = 0` failed with "Query Line 1 Column 0: 'number_of_orderz' filter cannot be found.", `field = ["query"]`, checked) |
+| `adopt_existing` | bool | Pattern A, see below |
+
+Import key: the name (`Email subscribers`). Read: `segment(id:)` first; if it is gone, `segments(first: 10, query: "name:\"<name>\"")` and an exact name match (search-indexed; a renamed segment was found at once, checked). `MutableIdentity` is set.
+
+**Names are unique, but Shopify suffixes a taken name instead of failing**, on create and on update: `segmentCreate(name: "Email subscribers")` created `Email subscribers (2)`, and renaming another segment to it gave `Email subscribers (3)` (both checked, no userError). So, as for blogs (§9n) and menus (§9):
+- Create looks the name up first (fails unless `adopt_existing`) and checks the returned name; a suffixed name means the new segment is deleted again and Create fails, naming the name.
+- Update with a new name looks it up first and fails if it is taken; if Shopify still returns a different name, the update fails naming both, and state takes the returned name.
+- `TODO(verify)`: whether names differing only in case count as taken.
+
+**Pattern A: `adopt_existing` only.** The five defaults are created with the shop, but they are ordinary segments as far as the API shows (no `isDefault`, same mutations), so they are handled like `frontpage` (§9l): `adopt_existing = true` updates the segment with that name, and destroy only removes it from state with a warning. Taking over a default by name works on every store, since the names are the same everywhere (in the shop's admin language; `TODO(verify)` that a German-language shop's defaults also have these English names: staging and production were not read by name). `TODO(verify)`: whether the defaults can be deleted; not tried, since a recreate gets a new GID and the defaults may be referenced by marketing automations.
+
+**No Pattern B.** A segment holds a query, not data: customers stay, and a recreate from config restores the same membership. But **deleting a segment expires the discounts that target only that segment** and resets their context to all buyers (checked, §9p); marketing automations and campaigns that use it may break (`TODO(verify)`). The docs say to reference segments as `shopify_customer_segment.<x>.id` from discounts, so dependency order changes the discount first. Nothing forces a replace (`name` and `query` are both updatable), so there is no replace warning. "Segment does not exist" on delete (plain `UserError`, `field = ["id"]`, checked) means already gone: removed from state without error.
+
+Notes:
+- Uses `segment(id:)`, `segments(first:, query:)`, `segmentCreate(name:, query:)`, `segmentUpdate(id:, name:, query:)`, `segmentDelete(id:)`. Update sends only the changed argument. `segmentMigrations` is deprecated and not used; `segmentFilters` / `segmentFilterSuggestions` (query building help) are not needed.
+- Errors: plain `UserError` (no codes) from all three mutations, mapped by `field` (`["query"]` → `query`, `["name"]` → `name`), otherwise to the resource. None is retried.
+- **Fit: volatile.** The description says so: segments are usually built and changed by marketing in the admin; the ones discounts or automations depend on fit Terraform.
+- **Scopes:** `read_customers` / `write_customers` (`docs/bootstrapping.md`: "customer segments"). `TODO(verify)`: checked only with every scope granted.
+- **Review Focus 1:** after destroy of an adopted default segment, read it back through the client and expect it unchanged. **Review Focus 2:** `name` and `query` are both Required, so the step doesn't apply; the test instead edits another segment through the client and expects an empty plan (as §9c does).
+- **Testing:** names `tf-acc-segment-<random>`. Steps: create, update `query` and `name`, import by name and identity, adopt a default (`Email subscribers`, `query` set to its current value so nothing changes; destroy leaves it), a taken name fails without leaving `… (2)` behind, an invalid query reports Shopify's message on `query`. Unit tests first: the suffixed-name check, userError field mapping.
+
+**List:** no config. `segments(first: 250)`, paged. `DisplayName`: the name. Results carry `name` and `query`, and plan as import-only. All segments are listed, the defaults included (they are merchant-editable, unlike D3's Shopify-owned definitions).
+
+**Dev store (2026-10-26):** probes created five segments (`Email subscribers (2)`, `TF Probe Segment` renamed to `Email subscribers (3)` and then `tf probe segment`, and `TF Probe Seg` three times for the discount check) and deleted all of them. End state equals the start: the five defaults, unchanged.
+
+**Implemented (§9q, verified on the dev store, 2026-10-27):**
+- Everything above held in the acceptance tests: create, in-place `query` update and rename (same GID), import by name, by identity and from generated config, `adopt_existing` on a client-made segment (destroy leaves it with Terraform's query), the list. `number_of_orderz = 0` fails on create and on update with Shopify's message ("'number_of_orderz' filter cannot be found"), a failed update leaves state and the live segment as they were. Empty `name` and `query` are rejected by validators and by Shopify ("Name can't be blank", "Query can't be blank", `field = ["name"]` / `["query"]`, checked), so every listed segment passes them.
+- **Deviation: the name lookup scans `segments(first: 250)` instead of searching.** The search index lags 2 to 4 seconds behind writes (a new segment was not found by `name:"..."` for about 4 s, while the unfiltered list showed it at once), so a lookup by search would miss a segment created just before and Create would produce the suffixed copy. The scan is exact, paged (one call up to 250 segments) and stops at the first match. The ID read of a missing segment is not `null` but a GraphQL error with `extensions.code = NOT_FOUND` ("Segment does not exist"); `client.IsNotFound` maps it to "gone", so Read falls back to the name.
+- `TODO(verify)` resolved: names differing only in case are **not** taken (`TF-ACC-...` next to `tf-acc-...` is created unsuffixed, `caseOnlyDiffers`), so the match is case-sensitive. Leading and trailing whitespace of a name is trimmed by Shopify (`" x "` came back as `"x"`), so a validator rejects it at plan time (`nameRe`, unit-tested; a plan-only acceptance step covers it); without it Create would see the trimmed copy as a name clash and delete it.
+- `segmentDelete` of an already deleted segment returns a plain userError (`field = ["id"]`, "Segment does not exist"), not a top-level error like `segment(id:)` (checked by deleting a throwaway segment twice); Delete also tolerates a `NOT_FOUND` error, untested since Shopify does not send one here.
+- Review Focus 1: adopting `Email subscribers` with its live query and destroying leaves it byte-identical (id, name, query). Review Focus 2: another segment edited through the client plans empty; an edit of the managed segment's query plans an update.
+- Suffixed names: a taken name on create is refused by the lookup before `segmentCreate`, on rename before `segmentUpdate`; no `(2)` copy was left. The post-create check (delete the copy, then fail) and the post-update check (state takes the returned name) only run when Shopify wins a race, so no acceptance test reaches them; `patterns.KeyDrift` (shared with `shopify_blog`) is unit-tested.
+- "Segment does not exist" on delete is handled by `goneOnDelete` (unit-tested, matched by message since the error has no code), not by an acceptance test: Terraform refreshes before destroy, so Read already drops a segment deleted outside (`deletedOutside` covers that and the recreate). The discount-expiry effect of a delete is not exercised by this resource's tests (§9p's probe covers it); the docs state it and no plan-time warning exists, as specified.
+- Not tested: the five defaults' names on a German-language shop, deleting a default, the scopes with fewer than all granted (`TODO(verify)` stays in the spec).
+
+---
+
+## 9r. Data source: `shopify_metaobject`
+
+Decision D4 (2026-10-26). Discovery found no metaobjects on staging and about 40 on production, all in Shopify's standard definitions (`shopify--*`). Metaobject entries are content; managing them is a roadmap type (`write_metaobjects`). Configuration still needs to point at single entries, for example a metafield value or a collection condition that references a metaobject (§9l), so the data source reads one entry by type and handle. Lookup by key works for merchant-owned types too.
+
+```hcl
+data "shopify_metaobject" "material_baumwolle" {
+  type   = "shopify--material"
+  handle = "baumwolle"
+}
+
+# data.shopify_metaobject.material_baumwolle.id
+# data.shopify_metaobject.material_baumwolle.fields["label"]
+```
+
+**Arguments (Required):** `type`, exactly as the API returns it (`shopify--material`, or a merchant type; usually `data.shopify_metaobject_definition.<x>.type` or `shopify_metaobject_definition.<x>.type`), and `handle`. `TODO(verify)`: whether `$app:foo` resolves to the caller's prefix, the same open point as §9g.
+
+**Attributes (all Computed, from `Metaobject` in the 2026-10 schema):**
+
+| Attribute | Type | API field | Why |
+|---|---|---|---|
+| `id` | string | `id` | `Metaobject` GID, what references take |
+| `display_name` | string | `displayName` | the entry's label (the display-name field's value, or Shopify's fallback) |
+| `fields` | map(string) | `fields { key value }` | field key → `value`, as Shopify serialises metafield values: plain text as is, references as GIDs, booleans and numbers as strings, list types as a JSON array string (use `jsondecode()`). Fields without a value are **null entries**, not left out (the dev store's entries have many: `value_string`, `references`, …), so `fields["x"]` works for every field of the definition without `lookup()` |
+| `status` | string | `capabilities.publishable.status` | `ACTIVE` or `DRAFT` when the definition has the publishable capability; null otherwise (null for the dev store's entries, checked) |
+| `updated_at` | string | `updatedAt` | RFC 3339 |
+
+**Map, not a list of objects.** §9g gives metaobject *definitions* a computed `field` list so it can be fed back into the resource with `dynamic "field"`. Entries have no resource yet (roadmap), and the use is a value lookup by key, which a map makes direct. A field's type is not exposed: it comes from the definition (`data.shopify_metaobject_definition.<x>.field`). Left out: `fields[].jsonValue` and `values` (the same data as JSON), `references`, `thumbnailField`, `createdBy*`, `referencedBy`, `capabilities.onlineStore` (template suffix, only with the online store capability).
+
+**Lookup:** `metaobjectByHandle(handle: { type, handle })`, one direct call (checked: `{ type: "shopify--knowledge-base-fact", handle: "delivery_countries" }` returned the entry). There is no fallback by GID and nothing is written beyond the read.
+
+**Errors:**
+- Not found: error, never an empty result, naming both (`no metaobject shopify--material/baumwolle`). Shopify returns `null` both for an unknown handle and for an unknown type (checked), so the message also says the type may not exist or the app may lack access to it (an app-owned type without merchant read access is expected to look the same; `TODO(verify)`).
+- Missing scope (`read_metaobjects`): Shopify's `ACCESS_DENIED`, reported with the scope name. Nothing is retried.
+
+**Scopes:** `read_metaobjects` (or `write_metaobjects`). `TODO(verify)`: checked only with every scope granted; whether `shopify--*` standard entries need anything else.
+
+**Fit:** good. Read-only reference; entries change in the admin, and the data source reads the current state on every plan.
+
+**Tests:** acceptance: (a) an entry created through the client (`metaobjectCreate`) in a definition made by `shopify_metaobject_definition` in the same config, every attribute checked, a field without a value as a null entry, then the entry deleted; (b) the dev store's `shopify--knowledge-base-fact` / `delivery_countries` entry, skipped when it is gone (Shopify created it, not the tests); (c) not found. Unit: mapping (null values, the publishable status), the not-found message.
+
+**Dev store (2026-10-26):** read-only; one standard definition with entries, `shopify--knowledge-base-fact` (2 entries, `delivery_countries` and `shipping_policy`, 18 fields each, most without a value).
+
+**Implemented (§9r, verified on the dev store, 2026-10-27):** the lookup, mapping and errors are as specified; `type` and `handle` are echoed from the configuration. Acceptance tests cover the three cases of the Tests paragraph: (a) creates the entry through the client between two steps (the definition first, then the entry and the data source), checks every attribute and the null `summary` field through an output (`fields["summary"] == null`), and deletes the entry in a last step before the definition goes; (b) reads `shopify--knowledge-base-fact` / `delivery_countries` and compares `id`, `display_name` and the field count with a direct API read, with `status` unset; (c) not found, matching the `no metaobject <type>/<handle>` message. Unit tests cover the mapping (null values, the publishable status) and the message text. Still `TODO(verify)`: `$app:foo` types (an inline TODO in `Read`), and the access-denied path, which no test reaches because the dev store has every scope. The queries bind GraphQL `JSON` to `json.RawMessage` in `genqlient.yaml`, only because `MetaobjectCreateInput.values` needs a binding to compile; it is never sent. `CreateMetaobject` / `DeleteMetaobject` exist for the tests only.
 
 ---
 

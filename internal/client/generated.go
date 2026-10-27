@@ -322,6 +322,252 @@ func (v *AddLocationResponse) GetLocationAdd() *AddLocationLocationAddLocationAd
 	return v.LocationAdd
 }
 
+// The input fields to create an article.
+type ArticleCreateInput struct {
+	// The ID of the blog containing the article.
+	BlogId *string `json:"blogId"`
+	// A unique, human-friendly string for the article that's automatically generated from the article's title.
+	// The handle is used in the article's URL.
+	Handle *string `json:"handle,omitempty"`
+	// The text of the article's body, complete with HTML markup.
+	Body *string `json:"body,omitempty"`
+	// A summary of the article, which can include HTML markup.
+	// The summary is used by the online store theme to display the article on other pages, such as the home page or the main blog page.
+	Summary *string `json:"summary,omitempty"`
+	// Whether or not the article should be visible.
+	IsPublished *bool `json:"isPublished,omitempty"`
+	// The date and time (ISO 8601 format) when the article should become visible.
+	PublishDate *string `json:"publishDate,omitempty"`
+	// The suffix of the template that's used to render the page.
+	// If the value is an empty string or `null`, then the default article template is used.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// The input fields to create or update a metafield.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// A comma-separated list of tags.
+	// Tags are additional short descriptors formatted as a string of comma-separated values.
+	Tags []string `json:"tags,omitempty"`
+	// The image associated with the article.
+	Image *ArticleImageInput `json:"image,omitempty"`
+	// The title of the article.
+	Title string `json:"title"`
+	// The name of the author of the article.
+	Author AuthorInput `json:"author"`
+}
+
+// GetBlogId returns ArticleCreateInput.BlogId, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetBlogId() *string { return v.BlogId }
+
+// GetHandle returns ArticleCreateInput.Handle, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetHandle() *string { return v.Handle }
+
+// GetBody returns ArticleCreateInput.Body, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetBody() *string { return v.Body }
+
+// GetSummary returns ArticleCreateInput.Summary, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetSummary() *string { return v.Summary }
+
+// GetIsPublished returns ArticleCreateInput.IsPublished, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetIsPublished() *bool { return v.IsPublished }
+
+// GetPublishDate returns ArticleCreateInput.PublishDate, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetPublishDate() *string { return v.PublishDate }
+
+// GetTemplateSuffix returns ArticleCreateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetMetafields returns ArticleCreateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetTags returns ArticleCreateInput.Tags, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetTags() []string { return v.Tags }
+
+// GetImage returns ArticleCreateInput.Image, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetImage() *ArticleImageInput { return v.Image }
+
+// GetTitle returns ArticleCreateInput.Title, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetTitle() string { return v.Title }
+
+// GetAuthor returns ArticleCreateInput.Author, and is useful for accessing the field via an interface.
+func (v *ArticleCreateInput) GetAuthor() AuthorInput { return v.Author }
+
+// The input fields for an image associated with an article.
+type ArticleImageInput struct {
+	// A word or phrase to share the nature or contents of an image.
+	AltText *string `json:"altText"`
+	// The URL of the image.
+	Url *string `json:"url"`
+}
+
+// GetAltText returns ArticleImageInput.AltText, and is useful for accessing the field via an interface.
+func (v *ArticleImageInput) GetAltText() *string { return v.AltText }
+
+// GetUrl returns ArticleImageInput.Url, and is useful for accessing the field via an interface.
+func (v *ArticleImageInput) GetUrl() *string { return v.Url }
+
+// The input fields for an author. Either the `name` or `user_id` fields can be supplied, but never both.
+type AuthorInput struct {
+	// The author's full name.
+	Name *string `json:"name"`
+	// The ID of a staff member's account.
+	UserId *string `json:"userId,omitempty"`
+}
+
+// GetName returns AuthorInput.Name, and is useful for accessing the field via an interface.
+func (v *AuthorInput) GetName() *string { return v.Name }
+
+// GetUserId returns AuthorInput.UserId, and is useful for accessing the field via an interface.
+func (v *AuthorInput) GetUserId() *string { return v.UserId }
+
+// The identifier standard that a barcode value conforms to. A single value can satisfy more than one
+// standard, so declare the standard that the merchant or supplier assigned. If no `BarcodeType` is provided,
+// then no standard was declared and the value is stored as entered.
+type BarcodeType string
+
+const (
+	// Universal Product Code. Used mainly in North America, as a 12-digit UPC-A or an 8-digit UPC-E.
+	BarcodeTypeUpc BarcodeType = "UPC"
+	// International Article Number. Used mainly outside North America, as a 13-digit EAN-13 or an 8-digit EAN-8.
+	BarcodeTypeEan BarcodeType = "EAN"
+	// International Standard Book Number. The 10-digit or 13-digit code assigned to a book. A 13-digit ISBN is also an EAN-13.
+	BarcodeTypeIsbn BarcodeType = "ISBN"
+	// Global Trade Item Number. Accepts 8, 12, 13, and 14-digit codes. Use `GTIN` when the code is registered with GS1. Acceptable formats are GTIN-8, GTIN-12 (UPC) GTIN-13 (EAN) and GTIN-14.
+	BarcodeTypeGtin BarcodeType = "GTIN"
+	// Amazon Standard Identification Number. Assigned by Amazon and unique to its catalog.
+	BarcodeTypeAsin BarcodeType = "ASIN"
+	// Non-standardised manufacturer Product Identifier. A code assigned by the manufacturer or supplier, such as a model or part number, used to identify a product in EU customs declarations. It follows no published standard, so the value is stored as entered.
+	BarcodeTypeNsPid BarcodeType = "NS_PID"
+)
+
+var AllBarcodeType = []BarcodeType{
+	BarcodeTypeUpc,
+	BarcodeTypeEan,
+	BarcodeTypeIsbn,
+	BarcodeTypeGtin,
+	BarcodeTypeAsin,
+	BarcodeTypeNsPid,
+}
+
+// The input fields to create a blog.
+type BlogCreateInput struct {
+	// A unique, human-friendly string for the blog. If no handle is specified, a handle will be generated automatically from the blog title.
+	// The handle is customizable and is used by the Liquid templating language to refer to the blog.
+	Handle *string `json:"handle,omitempty"`
+	// The name of the template a blog is using if it's using an alternate template.
+	// Returns `null` if a blog is using the default blog.liquid template.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// Attaches additional metadata to a store's resources.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// Indicates whether readers can post comments to the blog and whether comments are moderated.
+	CommentPolicy *CommentPolicy `json:"commentPolicy,omitempty"`
+	// The title of the blog.
+	Title string `json:"title"`
+}
+
+// GetHandle returns BlogCreateInput.Handle, and is useful for accessing the field via an interface.
+func (v *BlogCreateInput) GetHandle() *string { return v.Handle }
+
+// GetTemplateSuffix returns BlogCreateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *BlogCreateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetMetafields returns BlogCreateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *BlogCreateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetCommentPolicy returns BlogCreateInput.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *BlogCreateInput) GetCommentPolicy() *CommentPolicy { return v.CommentPolicy }
+
+// GetTitle returns BlogCreateInput.Title, and is useful for accessing the field via an interface.
+func (v *BlogCreateInput) GetTitle() string { return v.Title }
+
+// Possible error codes that can be returned by `BlogDeleteUserError`.
+type BlogDeleteUserErrorCode string
+
+const (
+	// The record with the ID used as the input value couldn't be found.
+	BlogDeleteUserErrorCodeNotFound BlogDeleteUserErrorCode = "NOT_FOUND"
+)
+
+var AllBlogDeleteUserErrorCode = []BlogDeleteUserErrorCode{
+	BlogDeleteUserErrorCodeNotFound,
+}
+
+// BlogFields includes the GraphQL fields of Blog requested by the fragment BlogFields.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type BlogFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A unique, human-friendly string for the blog. If no handle is specified, a handle will be generated automatically from the blog title.
+	// The handle is customizable and is used by the Liquid templating language to refer to the blog.
+	Handle string `json:"handle"`
+	// The title of the blog.
+	Title string `json:"title"`
+	// Indicates whether readers can post comments to the blog and if comments are moderated or not.
+	CommentPolicy CommentPolicy `json:"commentPolicy"`
+	// The name of the template a blog is using if it's using an alternate template.
+	// Returns `null` if a blog is using the default blog.liquid template.
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+// GetId returns BlogFields.Id, and is useful for accessing the field via an interface.
+func (v *BlogFields) GetId() string { return v.Id }
+
+// GetHandle returns BlogFields.Handle, and is useful for accessing the field via an interface.
+func (v *BlogFields) GetHandle() string { return v.Handle }
+
+// GetTitle returns BlogFields.Title, and is useful for accessing the field via an interface.
+func (v *BlogFields) GetTitle() string { return v.Title }
+
+// GetCommentPolicy returns BlogFields.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *BlogFields) GetCommentPolicy() CommentPolicy { return v.CommentPolicy }
+
+// GetTemplateSuffix returns BlogFields.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *BlogFields) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// The input fields to update a blog.
+type BlogUpdateInput struct {
+	// A unique, human-friendly string for the blog. If no handle is specified, a handle will be generated automatically from the blog title.
+	// The handle is customizable and is used by the Liquid templating language to refer to the blog.
+	Handle *string `json:"handle,omitempty"`
+	// The name of the template a blog is using if it's using an alternate template.
+	// Returns `null` if a blog is using the default blog.liquid template.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// Attaches additional metadata to a store's resources.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// Indicates whether readers can post comments to the blog and whether comments are moderated.
+	CommentPolicy *CommentPolicy `json:"commentPolicy,omitempty"`
+	// The title of the blog.
+	Title *string `json:"title,omitempty"`
+	// Whether a redirect is required after a new handle has been provided.
+	// If `true`, then the old handle is redirected to the new one automatically.
+	RedirectNewHandle *bool `json:"redirectNewHandle,omitempty"`
+	// Whether to redirect blog posts automatically.
+	RedirectArticles *bool `json:"redirectArticles,omitempty"`
+}
+
+// GetHandle returns BlogUpdateInput.Handle, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetHandle() *string { return v.Handle }
+
+// GetTemplateSuffix returns BlogUpdateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetMetafields returns BlogUpdateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetCommentPolicy returns BlogUpdateInput.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetCommentPolicy() *CommentPolicy { return v.CommentPolicy }
+
+// GetTitle returns BlogUpdateInput.Title, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetTitle() *string { return v.Title }
+
+// GetRedirectNewHandle returns BlogUpdateInput.RedirectNewHandle, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetRedirectNewHandle() *bool { return v.RedirectNewHandle }
+
+// GetRedirectArticles returns BlogUpdateInput.RedirectArticles, and is useful for accessing the field via an interface.
+func (v *BlogUpdateInput) GetRedirectArticles() *bool { return v.RedirectArticles }
+
 // CheckoutAndAccountsConfigurationFields includes the GraphQL fields of CheckoutAndAccountsConfiguration requested by the fragment CheckoutAndAccountsConfigurationFields.
 // The GraphQL type's documentation follows.
 //
@@ -388,6 +634,2047 @@ var AllCheckoutAndAccountsConfigurationUserErrorCode = []CheckoutAndAccountsConf
 	CheckoutAndAccountsConfigurationUserErrorCodeMissing,
 	CheckoutAndAccountsConfigurationUserErrorCodeNotFound,
 	CheckoutAndAccountsConfigurationUserErrorCodeTransient,
+}
+
+// Specifies whether products must match any or all conditions to be included in the collection.
+type CollectionConditionMatchType string
+
+const (
+	// Products match if they satisfy one or more of the conditions.
+	CollectionConditionMatchTypeAny CollectionConditionMatchType = "ANY"
+	// Products match only if they satisfy all of the conditions.
+	CollectionConditionMatchTypeAll CollectionConditionMatchType = "ALL"
+)
+
+var AllCollectionConditionMatchType = []CollectionConditionMatchType{
+	CollectionConditionMatchTypeAny,
+	CollectionConditionMatchTypeAll,
+}
+
+// The input fields required to create a collection source.
+type CollectionCreateConditionsSourceInput struct {
+	// The title of the source.
+	Title string `json:"title"`
+	// An optional description of the source.
+	Description *string `json:"description,omitempty"`
+	// The inclusion rules for the source.
+	Inclusion *CollectionCreateSourceInclusionInput `json:"inclusion,omitempty"`
+	// The exclusion rules for the source.
+	Exclusion *CollectionCreateSourceExclusionInput `json:"exclusion,omitempty"`
+	// What granularity this source operates at. Defaults to PRODUCTS.
+	TargetType *CollectionSourceTargetType `json:"targetType,omitempty"`
+}
+
+// GetTitle returns CollectionCreateConditionsSourceInput.Title, and is useful for accessing the field via an interface.
+func (v *CollectionCreateConditionsSourceInput) GetTitle() string { return v.Title }
+
+// GetDescription returns CollectionCreateConditionsSourceInput.Description, and is useful for accessing the field via an interface.
+func (v *CollectionCreateConditionsSourceInput) GetDescription() *string { return v.Description }
+
+// GetInclusion returns CollectionCreateConditionsSourceInput.Inclusion, and is useful for accessing the field via an interface.
+func (v *CollectionCreateConditionsSourceInput) GetInclusion() *CollectionCreateSourceInclusionInput {
+	return v.Inclusion
+}
+
+// GetExclusion returns CollectionCreateConditionsSourceInput.Exclusion, and is useful for accessing the field via an interface.
+func (v *CollectionCreateConditionsSourceInput) GetExclusion() *CollectionCreateSourceExclusionInput {
+	return v.Exclusion
+}
+
+// GetTargetType returns CollectionCreateConditionsSourceInput.TargetType, and is useful for accessing the field via an interface.
+func (v *CollectionCreateConditionsSourceInput) GetTargetType() *CollectionSourceTargetType {
+	return v.TargetType
+}
+
+// The input fields required to create a collection.
+type CollectionCreateInput struct {
+	// The description of the collection, in HTML format.
+	DescriptionHtml *string `json:"descriptionHtml,omitempty"`
+	// A unique human-friendly string for the collection. Automatically generated from the collection's title.
+	Handle *string `json:"handle,omitempty"`
+	// The image associated with the collection.
+	Image *ImageInput `json:"image,omitempty"`
+	// The theme template used when viewing the collection in a store.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// The order in which the collection's products are sorted.
+	SortOrder *CollectionSortOrder `json:"sortOrder,omitempty"`
+	// The title of the collection.
+	Title string `json:"title"`
+	// The metafields to associate with the collection.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// SEO information for the collection.
+	Seo *SEOInput `json:"seo,omitempty"`
+	// The sources to create for the collection.
+	Sources []CollectionCreateSourceTargetInput `json:"sources,omitempty"`
+}
+
+// GetDescriptionHtml returns CollectionCreateInput.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetDescriptionHtml() *string { return v.DescriptionHtml }
+
+// GetHandle returns CollectionCreateInput.Handle, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetHandle() *string { return v.Handle }
+
+// GetImage returns CollectionCreateInput.Image, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetImage() *ImageInput { return v.Image }
+
+// GetTemplateSuffix returns CollectionCreateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetSortOrder returns CollectionCreateInput.SortOrder, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetSortOrder() *CollectionSortOrder { return v.SortOrder }
+
+// GetTitle returns CollectionCreateInput.Title, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetTitle() string { return v.Title }
+
+// GetMetafields returns CollectionCreateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetSeo returns CollectionCreateInput.Seo, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetSeo() *SEOInput { return v.Seo }
+
+// GetSources returns CollectionCreateInput.Sources, and is useful for accessing the field via an interface.
+func (v *CollectionCreateInput) GetSources() []CollectionCreateSourceTargetInput { return v.Sources }
+
+// The input fields for creating exclusion rules for a collection source.
+type CollectionCreateSourceExclusionInput struct {
+	// Whether products must match all or any of the conditions to be excluded.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+	// The conditions that products must match to be excluded from the collection.
+	Conditions []CollectionSourceExclusionConditionInput `json:"conditions"`
+	// The products to explicitly exclude from the collection.
+	Selections []CollectionExclusionProductSelectionInput `json:"selections"`
+}
+
+// GetMatchType returns CollectionCreateSourceExclusionInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceExclusionInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// GetConditions returns CollectionCreateSourceExclusionInput.Conditions, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceExclusionInput) GetConditions() []CollectionSourceExclusionConditionInput {
+	return v.Conditions
+}
+
+// GetSelections returns CollectionCreateSourceExclusionInput.Selections, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceExclusionInput) GetSelections() []CollectionExclusionProductSelectionInput {
+	return v.Selections
+}
+
+// The input fields for creating inclusion rules for a collection source.
+type CollectionCreateSourceInclusionInput struct {
+	// Whether products must match all or any of the conditions.
+	MatchType *CollectionConditionMatchType `json:"matchType,omitempty"`
+	// The conditions that products must match to be included in the collection.
+	Conditions json.RawMessage `json:"conditions,omitempty"`
+	// The products to explicitly include in the collection.
+	Selections []CollectionInclusionProductSelectionInput `json:"selections,omitempty"`
+}
+
+// GetMatchType returns CollectionCreateSourceInclusionInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceInclusionInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// GetConditions returns CollectionCreateSourceInclusionInput.Conditions, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceInclusionInput) GetConditions() json.RawMessage { return v.Conditions }
+
+// GetSelections returns CollectionCreateSourceInclusionInput.Selections, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceInclusionInput) GetSelections() []CollectionInclusionProductSelectionInput {
+	return v.Selections
+}
+
+// The input fields for adding a source to a collection — provide exactly one field that represents the type of source to create.
+type CollectionCreateSourceTargetInput struct {
+	// Net new conditions-based source (target_type products or variants) to create — must belong to one collection.
+	Source *CollectionCreateConditionsSourceInput `json:"source,omitempty"`
+	// Net new sub-collection source (target_type collections) whose membership comes from one or more referenced collections.
+	SubCollections *CollectionCreateSubCollectionsSourceInput `json:"subCollections,omitempty"`
+	// An existing shareable source to link to the collection.
+	ShareableSource *CollectionShareableSourceInput `json:"shareableSource,omitempty"`
+}
+
+// GetSource returns CollectionCreateSourceTargetInput.Source, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceTargetInput) GetSource() *CollectionCreateConditionsSourceInput {
+	return v.Source
+}
+
+// GetSubCollections returns CollectionCreateSourceTargetInput.SubCollections, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceTargetInput) GetSubCollections() *CollectionCreateSubCollectionsSourceInput {
+	return v.SubCollections
+}
+
+// GetShareableSource returns CollectionCreateSourceTargetInput.ShareableSource, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSourceTargetInput) GetShareableSource() *CollectionShareableSourceInput {
+	return v.ShareableSource
+}
+
+// The input fields required to create a sub-collection source — a source whose membership comes from one or more referenced collections.
+type CollectionCreateSubCollectionsSourceInput struct {
+	// The title of the source.
+	Title string `json:"title"`
+	// An optional description of the source.
+	Description *string `json:"description"`
+	// The global IDs of the sub-collections whose products supply this source.
+	CollectionIds []string `json:"collectionIds"`
+}
+
+// GetTitle returns CollectionCreateSubCollectionsSourceInput.Title, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSubCollectionsSourceInput) GetTitle() string { return v.Title }
+
+// GetDescription returns CollectionCreateSubCollectionsSourceInput.Description, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSubCollectionsSourceInput) GetDescription() *string { return v.Description }
+
+// GetCollectionIds returns CollectionCreateSubCollectionsSourceInput.CollectionIds, and is useful for accessing the field via an interface.
+func (v *CollectionCreateSubCollectionsSourceInput) GetCollectionIds() []string {
+	return v.CollectionIds
+}
+
+// The input fields for selecting specific products to exclude from a collection.
+type CollectionExclusionProductSelectionInput struct {
+	// The ID of the product to exclude from the collection.
+	ProductId string `json:"productId"`
+}
+
+// GetProductId returns CollectionExclusionProductSelectionInput.ProductId, and is useful for accessing the field via an interface.
+func (v *CollectionExclusionProductSelectionInput) GetProductId() string { return v.ProductId }
+
+// CollectionFields includes the GraphQL fields of Collection requested by the fragment CollectionFields.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type CollectionFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A unique string that identifies the collection. If a handle isn't specified when a collection is created, it's automatically generated from the collection's original title, and typically includes words from the title separated by hyphens. For example, a collection that was created with the title `Summer Catalog 2022` might have the handle `summer-catalog-2022`.
+	//
+	// If the title is changed, the handle doesn't automatically change.
+	//
+	// The handle can be used in themes by the Liquid templating language to refer to the collection, but using the ID is preferred because it never changes.
+	Handle string `json:"handle"`
+	// The name of the collection. It's displayed in the Shopify admin and is typically displayed in sales channels, such as an online store.
+	Title string `json:"title"`
+	// The description of the collection, including any HTML tags and formatting. This content is typically displayed to customers, such as on an online store, depending on the theme.
+	DescriptionHtml string `json:"descriptionHtml"`
+	// The order in which the products in the collection are displayed by default in the Shopify admin and in sales channels, such as an online store.
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+	// The suffix of the Liquid template being used to show the collection in an online store. For example, if the value is `custom`, then the collection is using the `collection.custom.liquid` template. If the value is `null`, then the collection is using the default `collection.liquid` template.
+	TemplateSuffix *string `json:"templateSuffix"`
+	// If the default SEO fields for page title and description have been modified, contains the modified information.
+	Seo                                 CollectionFieldsSeoSEO `json:"seo"`
+	PublicationsOfPublishableCollection `json:"-"`
+	// The sources that provide products for this collection. Each source represents a way products are included in the collection, such as through conditions and rules.
+	Sources json.RawMessage `json:"sources"`
+}
+
+// GetId returns CollectionFields.Id, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetId() string { return v.Id }
+
+// GetHandle returns CollectionFields.Handle, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetHandle() string { return v.Handle }
+
+// GetTitle returns CollectionFields.Title, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetTitle() string { return v.Title }
+
+// GetDescriptionHtml returns CollectionFields.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetDescriptionHtml() string { return v.DescriptionHtml }
+
+// GetSortOrder returns CollectionFields.SortOrder, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetSortOrder() CollectionSortOrder { return v.SortOrder }
+
+// GetTemplateSuffix returns CollectionFields.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetSeo returns CollectionFields.Seo, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetSeo() CollectionFieldsSeoSEO { return v.Seo }
+
+// GetSources returns CollectionFields.Sources, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetSources() json.RawMessage { return v.Sources }
+
+// GetResourcePublicationsV2 returns CollectionFields.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
+func (v *CollectionFields) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CollectionFields
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CollectionFields = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableCollection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCollectionFields struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+
+	Sources json.RawMessage `json:"sources"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *CollectionFields) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CollectionFields) __premarshalJSON() (*__premarshalCollectionFields, error) {
+	var retval __premarshalCollectionFields
+
+	retval.Id = v.Id
+	retval.Handle = v.Handle
+	retval.Title = v.Title
+	retval.DescriptionHtml = v.DescriptionHtml
+	retval.SortOrder = v.SortOrder
+	retval.TemplateSuffix = v.TemplateSuffix
+	retval.Seo = v.Seo
+	retval.Sources = v.Sources
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableCollection.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// CollectionFieldsSeoSEO includes the requested fields of the GraphQL type SEO.
+// The GraphQL type's documentation follows.
+//
+// SEO information.
+type CollectionFieldsSeoSEO struct {
+	// SEO Title.
+	Title *string `json:"title"`
+	// SEO Description.
+	Description *string `json:"description"`
+}
+
+// GetTitle returns CollectionFieldsSeoSEO.Title, and is useful for accessing the field via an interface.
+func (v *CollectionFieldsSeoSEO) GetTitle() *string { return v.Title }
+
+// GetDescription returns CollectionFieldsSeoSEO.Description, and is useful for accessing the field via an interface.
+func (v *CollectionFieldsSeoSEO) GetDescription() *string { return v.Description }
+
+// The input fields for selecting specific products to include in a collection.
+type CollectionInclusionProductSelectionInput struct {
+	// The ID of the product to include in the collection.
+	ProductId string `json:"productId"`
+	// The IDs of the product variants to include in the collection.
+	VariantIds []string `json:"variantIds,omitempty"`
+}
+
+// GetProductId returns CollectionInclusionProductSelectionInput.ProductId, and is useful for accessing the field via an interface.
+func (v *CollectionInclusionProductSelectionInput) GetProductId() string { return v.ProductId }
+
+// GetVariantIds returns CollectionInclusionProductSelectionInput.VariantIds, and is useful for accessing the field via an interface.
+func (v *CollectionInclusionProductSelectionInput) GetVariantIds() []string { return v.VariantIds }
+
+// The input fields for linking an existing shareable source to a collection.
+type CollectionShareableSourceInput struct {
+	// The ID of an existing shareable source to link to the collection.
+	SourceId string `json:"sourceId"`
+}
+
+// GetSourceId returns CollectionShareableSourceInput.SourceId, and is useful for accessing the field via an interface.
+func (v *CollectionShareableSourceInput) GetSourceId() string { return v.SourceId }
+
+// Specifies the sort order for the products in the collection.
+type CollectionSortOrder string
+
+const (
+	// Alphabetically, in ascending order (A - Z).
+	CollectionSortOrderAlphaAsc CollectionSortOrder = "ALPHA_ASC"
+	// Alphabetically, in descending order (Z - A).
+	CollectionSortOrderAlphaDesc CollectionSortOrder = "ALPHA_DESC"
+	// By best-selling products.
+	CollectionSortOrderBestSelling CollectionSortOrder = "BEST_SELLING"
+	// By most relevant products.
+	CollectionSortOrderMostRelevant CollectionSortOrder = "MOST_RELEVANT"
+	// By date created, in ascending order (oldest - newest).
+	CollectionSortOrderCreated CollectionSortOrder = "CREATED"
+	// By date created, in descending order (newest - oldest).
+	CollectionSortOrderCreatedDesc CollectionSortOrder = "CREATED_DESC"
+	// In the order set manually by the merchant.
+	CollectionSortOrderManual CollectionSortOrder = "MANUAL"
+	// By price, in ascending order (lowest - highest).
+	CollectionSortOrderPriceAsc CollectionSortOrder = "PRICE_ASC"
+	// By price, in descending order (highest - lowest).
+	CollectionSortOrderPriceDesc CollectionSortOrder = "PRICE_DESC"
+)
+
+var AllCollectionSortOrder = []CollectionSortOrder{
+	CollectionSortOrderAlphaAsc,
+	CollectionSortOrderAlphaDesc,
+	CollectionSortOrderBestSelling,
+	CollectionSortOrderMostRelevant,
+	CollectionSortOrderCreated,
+	CollectionSortOrderCreatedDesc,
+	CollectionSortOrderManual,
+	CollectionSortOrderPriceAsc,
+	CollectionSortOrderPriceDesc,
+}
+
+// The input fields for an exclusion condition based on collections.
+type CollectionSourceExclusionConditionCollectionInput struct {
+	// The collection IDs whose products are excluded.
+	Values []string `json:"values"`
+}
+
+// GetValues returns CollectionSourceExclusionConditionCollectionInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionCollectionInput) GetValues() []string { return v.Values }
+
+// The input fields for a condition that determines which products are excluded from a collection. Exactly one condition type must be provided.
+type CollectionSourceExclusionConditionInput struct {
+	// A condition based on product tags.
+	ProductTag *CollectionSourceExclusionConditionProductTagInput `json:"productTag"`
+	// A condition based on product types.
+	ProductType *CollectionSourceExclusionConditionProductTypeInput `json:"productType"`
+	// A condition based on product vendors.
+	ProductVendor *CollectionSourceExclusionConditionProductVendorInput `json:"productVendor"`
+	// A condition based on product categories.
+	ProductCategory *CollectionSourceExclusionConditionProductCategoryInput `json:"productCategory"`
+	// A condition based on collections.
+	Collection *CollectionSourceExclusionConditionCollectionInput `json:"collection"`
+}
+
+// GetProductTag returns CollectionSourceExclusionConditionInput.ProductTag, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionInput) GetProductTag() *CollectionSourceExclusionConditionProductTagInput {
+	return v.ProductTag
+}
+
+// GetProductType returns CollectionSourceExclusionConditionInput.ProductType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionInput) GetProductType() *CollectionSourceExclusionConditionProductTypeInput {
+	return v.ProductType
+}
+
+// GetProductVendor returns CollectionSourceExclusionConditionInput.ProductVendor, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionInput) GetProductVendor() *CollectionSourceExclusionConditionProductVendorInput {
+	return v.ProductVendor
+}
+
+// GetProductCategory returns CollectionSourceExclusionConditionInput.ProductCategory, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionInput) GetProductCategory() *CollectionSourceExclusionConditionProductCategoryInput {
+	return v.ProductCategory
+}
+
+// GetCollection returns CollectionSourceExclusionConditionInput.Collection, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionInput) GetCollection() *CollectionSourceExclusionConditionCollectionInput {
+	return v.Collection
+}
+
+// The input fields for an exclusion condition based on product categories.
+type CollectionSourceExclusionConditionProductCategoryInput struct {
+	// The relationship between the product category and the condition values.
+	Relation CollectionSourceExclusionConditionProductCategoryRelation `json:"relation"`
+	// The product category values to match against.
+	Values []CollectionSourceExclusionConditionProductCategoryValueInput `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionProductCategoryInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductCategoryInput) GetRelation() CollectionSourceExclusionConditionProductCategoryRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionProductCategoryInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductCategoryInput) GetValues() []CollectionSourceExclusionConditionProductCategoryValueInput {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceExclusionConditionProductCategoryInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductCategoryInput) GetMatchType() CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The relation for comparing product categories in exclusion conditions.
+type CollectionSourceExclusionConditionProductCategoryRelation string
+
+const (
+	// The product category equals the specified value.
+	CollectionSourceExclusionConditionProductCategoryRelationEquals CollectionSourceExclusionConditionProductCategoryRelation = "EQUALS"
+)
+
+var AllCollectionSourceExclusionConditionProductCategoryRelation = []CollectionSourceExclusionConditionProductCategoryRelation{
+	CollectionSourceExclusionConditionProductCategoryRelationEquals,
+}
+
+// The input fields for a product category value in an exclusion condition.
+type CollectionSourceExclusionConditionProductCategoryValueInput struct {
+	// The ID of the product category.
+	CategoryId string `json:"categoryId"`
+	// Whether to include descendants of the product category.
+	IncludeDescendants *bool `json:"includeDescendants"`
+}
+
+// GetCategoryId returns CollectionSourceExclusionConditionProductCategoryValueInput.CategoryId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductCategoryValueInput) GetCategoryId() string {
+	return v.CategoryId
+}
+
+// GetIncludeDescendants returns CollectionSourceExclusionConditionProductCategoryValueInput.IncludeDescendants, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductCategoryValueInput) GetIncludeDescendants() *bool {
+	return v.IncludeDescendants
+}
+
+// The input fields for an exclusion condition based on product tags.
+type CollectionSourceExclusionConditionProductTagInput struct {
+	// The relationship between the product tag and the condition values.
+	Relation CollectionSourceExclusionConditionProductTagRelation `json:"relation"`
+	// The tag values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionProductTagInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductTagInput) GetRelation() CollectionSourceExclusionConditionProductTagRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionProductTagInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductTagInput) GetValues() []string { return v.Values }
+
+// GetMatchType returns CollectionSourceExclusionConditionProductTagInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductTagInput) GetMatchType() CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The relationship between the product tag and the condition values.
+type CollectionSourceExclusionConditionProductTagRelation string
+
+const (
+	// The product is tagged with the specified value.
+	CollectionSourceExclusionConditionProductTagRelationTaggedWith CollectionSourceExclusionConditionProductTagRelation = "TAGGED_WITH"
+)
+
+var AllCollectionSourceExclusionConditionProductTagRelation = []CollectionSourceExclusionConditionProductTagRelation{
+	CollectionSourceExclusionConditionProductTagRelationTaggedWith,
+}
+
+// The input fields for an exclusion condition based on product types.
+type CollectionSourceExclusionConditionProductTypeInput struct {
+	// The relationship between the product type and the condition values.
+	Relation CollectionSourceExclusionConditionProductTypeRelation `json:"relation"`
+	// The product type values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionProductTypeInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductTypeInput) GetRelation() CollectionSourceExclusionConditionProductTypeRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionProductTypeInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductTypeInput) GetValues() []string { return v.Values }
+
+// GetMatchType returns CollectionSourceExclusionConditionProductTypeInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductTypeInput) GetMatchType() CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The relation for comparing product types in exclusion conditions.
+type CollectionSourceExclusionConditionProductTypeRelation string
+
+const (
+	// The product type equals the specified value.
+	CollectionSourceExclusionConditionProductTypeRelationEquals CollectionSourceExclusionConditionProductTypeRelation = "EQUALS"
+	// The product type contains the specified value.
+	CollectionSourceExclusionConditionProductTypeRelationContains CollectionSourceExclusionConditionProductTypeRelation = "CONTAINS"
+)
+
+var AllCollectionSourceExclusionConditionProductTypeRelation = []CollectionSourceExclusionConditionProductTypeRelation{
+	CollectionSourceExclusionConditionProductTypeRelationEquals,
+	CollectionSourceExclusionConditionProductTypeRelationContains,
+}
+
+// The input fields for an exclusion condition based on product vendors.
+type CollectionSourceExclusionConditionProductVendorInput struct {
+	// The relationship between the product vendor and the condition values.
+	Relation CollectionSourceExclusionConditionProductVendorRelation `json:"relation"`
+	// The product vendor values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionProductVendorInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductVendorInput) GetRelation() CollectionSourceExclusionConditionProductVendorRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionProductVendorInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductVendorInput) GetValues() []string { return v.Values }
+
+// GetMatchType returns CollectionSourceExclusionConditionProductVendorInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionProductVendorInput) GetMatchType() CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The relation for comparing product vendors in exclusion conditions.
+type CollectionSourceExclusionConditionProductVendorRelation string
+
+const (
+	// The product vendor equals the specified value.
+	CollectionSourceExclusionConditionProductVendorRelationEquals CollectionSourceExclusionConditionProductVendorRelation = "EQUALS"
+	// The product vendor contains the specified value.
+	CollectionSourceExclusionConditionProductVendorRelationContains CollectionSourceExclusionConditionProductVendorRelation = "CONTAINS"
+)
+
+var AllCollectionSourceExclusionConditionProductVendorRelation = []CollectionSourceExclusionConditionProductVendorRelation{
+	CollectionSourceExclusionConditionProductVendorRelationEquals,
+	CollectionSourceExclusionConditionProductVendorRelationContains,
+}
+
+// The input fields for updating an exclusion condition based on collections.
+type CollectionSourceExclusionConditionUpdateCollectionInput struct {
+	// The collection IDs whose products are excluded.
+	Values []string `json:"values"`
+}
+
+// GetValues returns CollectionSourceExclusionConditionUpdateCollectionInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateCollectionInput) GetValues() []string {
+	return v.Values
+}
+
+// The input fields for updating a condition that determines which products are excluded from a collection. Exactly one condition type must be provided.
+type CollectionSourceExclusionConditionUpdateInput struct {
+	// An update to an exclusion condition based on product tags.
+	ProductTag *CollectionSourceExclusionConditionUpdateProductTagInput `json:"productTag"`
+	// An update to an exclusion condition based on product types.
+	ProductType *CollectionSourceExclusionConditionUpdateProductTypeInput `json:"productType"`
+	// An update to an exclusion condition based on product vendors.
+	ProductVendor *CollectionSourceExclusionConditionUpdateProductVendorInput `json:"productVendor"`
+	// An update to an exclusion condition based on product categories.
+	ProductCategory *CollectionSourceExclusionConditionUpdateProductCategoryInput `json:"productCategory"`
+	// An update to an exclusion condition based on collections.
+	Collection *CollectionSourceExclusionConditionUpdateCollectionInput `json:"collection"`
+}
+
+// GetProductTag returns CollectionSourceExclusionConditionUpdateInput.ProductTag, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateInput) GetProductTag() *CollectionSourceExclusionConditionUpdateProductTagInput {
+	return v.ProductTag
+}
+
+// GetProductType returns CollectionSourceExclusionConditionUpdateInput.ProductType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateInput) GetProductType() *CollectionSourceExclusionConditionUpdateProductTypeInput {
+	return v.ProductType
+}
+
+// GetProductVendor returns CollectionSourceExclusionConditionUpdateInput.ProductVendor, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateInput) GetProductVendor() *CollectionSourceExclusionConditionUpdateProductVendorInput {
+	return v.ProductVendor
+}
+
+// GetProductCategory returns CollectionSourceExclusionConditionUpdateInput.ProductCategory, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateInput) GetProductCategory() *CollectionSourceExclusionConditionUpdateProductCategoryInput {
+	return v.ProductCategory
+}
+
+// GetCollection returns CollectionSourceExclusionConditionUpdateInput.Collection, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateInput) GetCollection() *CollectionSourceExclusionConditionUpdateCollectionInput {
+	return v.Collection
+}
+
+// The input fields for updating an exclusion condition based on product categories.
+type CollectionSourceExclusionConditionUpdateProductCategoryInput struct {
+	// The relationship between the product category and the condition values.
+	Relation *CollectionSourceExclusionConditionProductCategoryRelation `json:"relation"`
+	// The product category values to match against.
+	Values []CollectionSourceExclusionConditionProductCategoryValueInput `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionUpdateProductCategoryInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductCategoryInput) GetRelation() *CollectionSourceExclusionConditionProductCategoryRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionUpdateProductCategoryInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductCategoryInput) GetValues() []CollectionSourceExclusionConditionProductCategoryValueInput {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceExclusionConditionUpdateProductCategoryInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductCategoryInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating an exclusion condition based on product tags.
+type CollectionSourceExclusionConditionUpdateProductTagInput struct {
+	// The relationship between the product tag and the condition values.
+	Relation *CollectionSourceExclusionConditionProductTagRelation `json:"relation"`
+	// The tag values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionUpdateProductTagInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductTagInput) GetRelation() *CollectionSourceExclusionConditionProductTagRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionUpdateProductTagInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductTagInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceExclusionConditionUpdateProductTagInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductTagInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating an exclusion condition based on product types.
+type CollectionSourceExclusionConditionUpdateProductTypeInput struct {
+	// The relationship between the product type and the condition values.
+	Relation *CollectionSourceExclusionConditionProductTypeRelation `json:"relation"`
+	// The product type values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionUpdateProductTypeInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductTypeInput) GetRelation() *CollectionSourceExclusionConditionProductTypeRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionUpdateProductTypeInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductTypeInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceExclusionConditionUpdateProductTypeInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductTypeInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating an exclusion condition based on product vendors.
+type CollectionSourceExclusionConditionUpdateProductVendorInput struct {
+	// The relationship between the product vendor and the condition values.
+	Relation *CollectionSourceExclusionConditionProductVendorRelation `json:"relation"`
+	// The product vendor values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceExclusionConditionUpdateProductVendorInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductVendorInput) GetRelation() *CollectionSourceExclusionConditionProductVendorRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceExclusionConditionUpdateProductVendorInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductVendorInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceExclusionConditionUpdateProductVendorInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceExclusionConditionUpdateProductVendorInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The relation for comparing boolean metafield values.
+type CollectionSourceInclusionConditionMetafieldBooleanRelation string
+
+const (
+	// The metafield value equals the condition value.
+	CollectionSourceInclusionConditionMetafieldBooleanRelationEquals CollectionSourceInclusionConditionMetafieldBooleanRelation = "EQUALS"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldBooleanRelation = []CollectionSourceInclusionConditionMetafieldBooleanRelation{
+	CollectionSourceInclusionConditionMetafieldBooleanRelationEquals,
+}
+
+// The relation for comparing decimal metafield values.
+type CollectionSourceInclusionConditionMetafieldDecimalRelation string
+
+const (
+	// The metafield value equals the specified value.
+	CollectionSourceInclusionConditionMetafieldDecimalRelationEquals CollectionSourceInclusionConditionMetafieldDecimalRelation = "EQUALS"
+	// The metafield value is greater than the specified value.
+	CollectionSourceInclusionConditionMetafieldDecimalRelationGreaterThan CollectionSourceInclusionConditionMetafieldDecimalRelation = "GREATER_THAN"
+	// The metafield value is less than the specified value.
+	CollectionSourceInclusionConditionMetafieldDecimalRelationLessThan CollectionSourceInclusionConditionMetafieldDecimalRelation = "LESS_THAN"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldDecimalRelation = []CollectionSourceInclusionConditionMetafieldDecimalRelation{
+	CollectionSourceInclusionConditionMetafieldDecimalRelationEquals,
+	CollectionSourceInclusionConditionMetafieldDecimalRelationGreaterThan,
+	CollectionSourceInclusionConditionMetafieldDecimalRelationLessThan,
+}
+
+// The relation for comparing integer metafield values.
+type CollectionSourceInclusionConditionMetafieldIntRelation string
+
+const (
+	// The metafield value equals the specified value.
+	CollectionSourceInclusionConditionMetafieldIntRelationEquals CollectionSourceInclusionConditionMetafieldIntRelation = "EQUALS"
+	// The metafield value is greater than the specified value.
+	CollectionSourceInclusionConditionMetafieldIntRelationGreaterThan CollectionSourceInclusionConditionMetafieldIntRelation = "GREATER_THAN"
+	// The metafield value is less than the specified value.
+	CollectionSourceInclusionConditionMetafieldIntRelationLessThan CollectionSourceInclusionConditionMetafieldIntRelation = "LESS_THAN"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldIntRelation = []CollectionSourceInclusionConditionMetafieldIntRelation{
+	CollectionSourceInclusionConditionMetafieldIntRelationEquals,
+	CollectionSourceInclusionConditionMetafieldIntRelationGreaterThan,
+	CollectionSourceInclusionConditionMetafieldIntRelationLessThan,
+}
+
+// The relationship between the metaobject value and the condition values.
+type CollectionSourceInclusionConditionMetafieldMetaobjectListRelation string
+
+const (
+	// Matches if the supplied metaobject value is equal to one or more of the values in the metafield's metaobject list.
+	CollectionSourceInclusionConditionMetafieldMetaobjectListRelationIncludes CollectionSourceInclusionConditionMetafieldMetaobjectListRelation = "INCLUDES"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldMetaobjectListRelation = []CollectionSourceInclusionConditionMetafieldMetaobjectListRelation{
+	CollectionSourceInclusionConditionMetafieldMetaobjectListRelationIncludes,
+}
+
+// The relation for comparing metaobject metafield values.
+type CollectionSourceInclusionConditionMetafieldMetaobjectRelation string
+
+const (
+	// The metaobject value equals the condition value.
+	CollectionSourceInclusionConditionMetafieldMetaobjectRelationEquals CollectionSourceInclusionConditionMetafieldMetaobjectRelation = "EQUALS"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldMetaobjectRelation = []CollectionSourceInclusionConditionMetafieldMetaobjectRelation{
+	CollectionSourceInclusionConditionMetafieldMetaobjectRelationEquals,
+}
+
+// The relationship between the metafield value and the condition values.
+type CollectionSourceInclusionConditionMetafieldStringListRelation string
+
+const (
+	// The metafield value includes the specified value.
+	CollectionSourceInclusionConditionMetafieldStringListRelationIncludes CollectionSourceInclusionConditionMetafieldStringListRelation = "INCLUDES"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldStringListRelation = []CollectionSourceInclusionConditionMetafieldStringListRelation{
+	CollectionSourceInclusionConditionMetafieldStringListRelationIncludes,
+}
+
+// The relationship between the metafield value and the condition values.
+type CollectionSourceInclusionConditionMetafieldStringRelation string
+
+const (
+	// The metafield value equals the specified value.
+	CollectionSourceInclusionConditionMetafieldStringRelationEquals CollectionSourceInclusionConditionMetafieldStringRelation = "EQUALS"
+)
+
+var AllCollectionSourceInclusionConditionMetafieldStringRelation = []CollectionSourceInclusionConditionMetafieldStringRelation{
+	CollectionSourceInclusionConditionMetafieldStringRelationEquals,
+}
+
+// The relation for comparing product category IDs.
+type CollectionSourceInclusionConditionProductCategoryRelation string
+
+const (
+	// The product category ID equals the specified value.
+	CollectionSourceInclusionConditionProductCategoryRelationEquals CollectionSourceInclusionConditionProductCategoryRelation = "EQUALS"
+	// The product category ID does not equal the specified value.
+	CollectionSourceInclusionConditionProductCategoryRelationNotEquals CollectionSourceInclusionConditionProductCategoryRelation = "NOT_EQUALS"
+)
+
+var AllCollectionSourceInclusionConditionProductCategoryRelation = []CollectionSourceInclusionConditionProductCategoryRelation{
+	CollectionSourceInclusionConditionProductCategoryRelationEquals,
+	CollectionSourceInclusionConditionProductCategoryRelationNotEquals,
+}
+
+// The input fields for a product category value in a collection condition.
+type CollectionSourceInclusionConditionProductCategoryValueInput struct {
+	// The ID of the product category.
+	CategoryId string `json:"categoryId"`
+	// Whether to include descendants of the product category.
+	IncludeDescendants bool `json:"includeDescendants"`
+}
+
+// GetCategoryId returns CollectionSourceInclusionConditionProductCategoryValueInput.CategoryId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionProductCategoryValueInput) GetCategoryId() string {
+	return v.CategoryId
+}
+
+// GetIncludeDescendants returns CollectionSourceInclusionConditionProductCategoryValueInput.IncludeDescendants, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionProductCategoryValueInput) GetIncludeDescendants() bool {
+	return v.IncludeDescendants
+}
+
+// The relation for comparing product status.
+type CollectionSourceInclusionConditionProductStatusRelation string
+
+const (
+	// The product status equals the specified value.
+	CollectionSourceInclusionConditionProductStatusRelationEquals CollectionSourceInclusionConditionProductStatusRelation = "EQUALS"
+	// The product status does not equal the specified value.
+	CollectionSourceInclusionConditionProductStatusRelationNotEquals CollectionSourceInclusionConditionProductStatusRelation = "NOT_EQUALS"
+)
+
+var AllCollectionSourceInclusionConditionProductStatusRelation = []CollectionSourceInclusionConditionProductStatusRelation{
+	CollectionSourceInclusionConditionProductStatusRelationEquals,
+	CollectionSourceInclusionConditionProductStatusRelationNotEquals,
+}
+
+// The relationship between the product tag and the condition values.
+type CollectionSourceInclusionConditionProductTagRelation string
+
+const (
+	// The product is tagged with the specified value.
+	CollectionSourceInclusionConditionProductTagRelationTaggedWith CollectionSourceInclusionConditionProductTagRelation = "TAGGED_WITH"
+	// The product is not tagged with the specified value.
+	CollectionSourceInclusionConditionProductTagRelationNotTaggedWith CollectionSourceInclusionConditionProductTagRelation = "NOT_TAGGED_WITH"
+)
+
+var AllCollectionSourceInclusionConditionProductTagRelation = []CollectionSourceInclusionConditionProductTagRelation{
+	CollectionSourceInclusionConditionProductTagRelationTaggedWith,
+	CollectionSourceInclusionConditionProductTagRelationNotTaggedWith,
+}
+
+// The relationship between the product title and the condition values.
+type CollectionSourceInclusionConditionProductTitleRelation string
+
+const (
+	// The product title equals the specified value.
+	CollectionSourceInclusionConditionProductTitleRelationEquals CollectionSourceInclusionConditionProductTitleRelation = "EQUALS"
+	// The product title does not equal the specified value.
+	CollectionSourceInclusionConditionProductTitleRelationNotEquals CollectionSourceInclusionConditionProductTitleRelation = "NOT_EQUALS"
+	// The product title contains the specified value.
+	CollectionSourceInclusionConditionProductTitleRelationContains CollectionSourceInclusionConditionProductTitleRelation = "CONTAINS"
+	// The product title does not contain the specified value.
+	CollectionSourceInclusionConditionProductTitleRelationDoesNotContain CollectionSourceInclusionConditionProductTitleRelation = "DOES_NOT_CONTAIN"
+	// The product title starts with the specified value.
+	CollectionSourceInclusionConditionProductTitleRelationStartsWith CollectionSourceInclusionConditionProductTitleRelation = "STARTS_WITH"
+	// The product title ends with the specified value.
+	CollectionSourceInclusionConditionProductTitleRelationEndsWith CollectionSourceInclusionConditionProductTitleRelation = "ENDS_WITH"
+)
+
+var AllCollectionSourceInclusionConditionProductTitleRelation = []CollectionSourceInclusionConditionProductTitleRelation{
+	CollectionSourceInclusionConditionProductTitleRelationEquals,
+	CollectionSourceInclusionConditionProductTitleRelationNotEquals,
+	CollectionSourceInclusionConditionProductTitleRelationContains,
+	CollectionSourceInclusionConditionProductTitleRelationDoesNotContain,
+	CollectionSourceInclusionConditionProductTitleRelationStartsWith,
+	CollectionSourceInclusionConditionProductTitleRelationEndsWith,
+}
+
+// The relation for comparing product types.
+type CollectionSourceInclusionConditionProductTypeRelation string
+
+const (
+	// The product type equals the specified value.
+	CollectionSourceInclusionConditionProductTypeRelationEquals CollectionSourceInclusionConditionProductTypeRelation = "EQUALS"
+	// The product type does not equal the specified value.
+	CollectionSourceInclusionConditionProductTypeRelationNotEquals CollectionSourceInclusionConditionProductTypeRelation = "NOT_EQUALS"
+	// The product type starts with the specified value.
+	CollectionSourceInclusionConditionProductTypeRelationStartsWith CollectionSourceInclusionConditionProductTypeRelation = "STARTS_WITH"
+	// The product type ends with the specified value.
+	CollectionSourceInclusionConditionProductTypeRelationEndsWith CollectionSourceInclusionConditionProductTypeRelation = "ENDS_WITH"
+	// The product type contains the specified value.
+	CollectionSourceInclusionConditionProductTypeRelationContains CollectionSourceInclusionConditionProductTypeRelation = "CONTAINS"
+	// The product type does not contain the specified value.
+	CollectionSourceInclusionConditionProductTypeRelationDoesNotContain CollectionSourceInclusionConditionProductTypeRelation = "DOES_NOT_CONTAIN"
+)
+
+var AllCollectionSourceInclusionConditionProductTypeRelation = []CollectionSourceInclusionConditionProductTypeRelation{
+	CollectionSourceInclusionConditionProductTypeRelationEquals,
+	CollectionSourceInclusionConditionProductTypeRelationNotEquals,
+	CollectionSourceInclusionConditionProductTypeRelationStartsWith,
+	CollectionSourceInclusionConditionProductTypeRelationEndsWith,
+	CollectionSourceInclusionConditionProductTypeRelationContains,
+	CollectionSourceInclusionConditionProductTypeRelationDoesNotContain,
+}
+
+// The relation for comparing product vendors.
+type CollectionSourceInclusionConditionProductVendorRelation string
+
+const (
+	// The product vendor equals the specified value.
+	CollectionSourceInclusionConditionProductVendorRelationEquals CollectionSourceInclusionConditionProductVendorRelation = "EQUALS"
+	// The product vendor does not equal the specified value.
+	CollectionSourceInclusionConditionProductVendorRelationNotEquals CollectionSourceInclusionConditionProductVendorRelation = "NOT_EQUALS"
+	// The product vendor starts with the specified value.
+	CollectionSourceInclusionConditionProductVendorRelationStartsWith CollectionSourceInclusionConditionProductVendorRelation = "STARTS_WITH"
+	// The product vendor ends with the specified value.
+	CollectionSourceInclusionConditionProductVendorRelationEndsWith CollectionSourceInclusionConditionProductVendorRelation = "ENDS_WITH"
+	// The product vendor contains the specified value.
+	CollectionSourceInclusionConditionProductVendorRelationContains CollectionSourceInclusionConditionProductVendorRelation = "CONTAINS"
+	// The product vendor does not contain the specified value.
+	CollectionSourceInclusionConditionProductVendorRelationDoesNotContain CollectionSourceInclusionConditionProductVendorRelation = "DOES_NOT_CONTAIN"
+)
+
+var AllCollectionSourceInclusionConditionProductVendorRelation = []CollectionSourceInclusionConditionProductVendorRelation{
+	CollectionSourceInclusionConditionProductVendorRelationEquals,
+	CollectionSourceInclusionConditionProductVendorRelationNotEquals,
+	CollectionSourceInclusionConditionProductVendorRelationStartsWith,
+	CollectionSourceInclusionConditionProductVendorRelationEndsWith,
+	CollectionSourceInclusionConditionProductVendorRelationContains,
+	CollectionSourceInclusionConditionProductVendorRelationDoesNotContain,
+}
+
+// The input fields for updating a condition that determines which products are included in a collection. Exactly one condition type must be provided.
+type CollectionSourceInclusionConditionUpdateInput struct {
+	// An update to a condition based on product tags.
+	ProductTag *CollectionSourceInclusionConditionUpdateProductTagInput `json:"productTag"`
+	// An update to a condition based on product titles.
+	ProductTitle *CollectionSourceInclusionConditionUpdateProductTitleInput `json:"productTitle"`
+	// An update to a condition based on product categories.
+	ProductCategory *CollectionSourceInclusionConditionUpdateProductCategoryInput `json:"productCategory"`
+	// An update to a condition based on product types.
+	ProductType *CollectionSourceInclusionConditionUpdateProductTypeInput `json:"productType"`
+	// An update to a condition based on product vendors.
+	ProductVendor *CollectionSourceInclusionConditionUpdateProductVendorInput `json:"productVendor"`
+	// An update to a condition based on product status.
+	ProductStatus *CollectionSourceInclusionConditionUpdateProductStatusInput `json:"productStatus"`
+	// An update to a condition based on variant titles.
+	VariantTitle *CollectionSourceInclusionConditionUpdateVariantTitleInput `json:"variantTitle"`
+	// An update to a condition based on variant prices.
+	VariantPrice *CollectionSourceInclusionConditionUpdateVariantPriceInput `json:"variantPrice"`
+	// An update to a condition based on variant compare at prices.
+	VariantCompareAtPrice *CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput `json:"variantCompareAtPrice"`
+	// An update to a condition based on variant inventory quantities.
+	VariantInventory *CollectionSourceInclusionConditionUpdateVariantInventoryInput `json:"variantInventory"`
+	// An update to a condition based on variant weights.
+	VariantWeight *CollectionSourceInclusionConditionUpdateVariantWeightInput `json:"variantWeight"`
+	// An update to a condition based on boolean metafield values.
+	MetafieldBoolean *CollectionSourceInclusionConditionUpdateMetafieldBooleanInput `json:"metafieldBoolean"`
+	// An update to a condition based on integer metafield values.
+	MetafieldInt *CollectionSourceInclusionConditionUpdateMetafieldIntInput `json:"metafieldInt"`
+	// An update to a condition based on decimal metafield values.
+	MetafieldDecimal *CollectionSourceInclusionConditionUpdateMetafieldDecimalInput `json:"metafieldDecimal"`
+	// An update to a condition based on string metafield values.
+	MetafieldString *CollectionSourceInclusionConditionUpdateMetafieldStringInput `json:"metafieldString"`
+	// An update to a condition based on string list metafield values.
+	MetafieldStringList *CollectionSourceInclusionConditionUpdateMetafieldStringListInput `json:"metafieldStringList"`
+	// An update to a condition based on single metaobject reference metafield values.
+	MetafieldMetaobject *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput `json:"metafieldMetaobject"`
+	// An update to a condition based on metaobject list reference metafield values.
+	MetafieldMetaobjectList *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput `json:"metafieldMetaobjectList"`
+}
+
+// GetProductTag returns CollectionSourceInclusionConditionUpdateInput.ProductTag, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetProductTag() *CollectionSourceInclusionConditionUpdateProductTagInput {
+	return v.ProductTag
+}
+
+// GetProductTitle returns CollectionSourceInclusionConditionUpdateInput.ProductTitle, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetProductTitle() *CollectionSourceInclusionConditionUpdateProductTitleInput {
+	return v.ProductTitle
+}
+
+// GetProductCategory returns CollectionSourceInclusionConditionUpdateInput.ProductCategory, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetProductCategory() *CollectionSourceInclusionConditionUpdateProductCategoryInput {
+	return v.ProductCategory
+}
+
+// GetProductType returns CollectionSourceInclusionConditionUpdateInput.ProductType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetProductType() *CollectionSourceInclusionConditionUpdateProductTypeInput {
+	return v.ProductType
+}
+
+// GetProductVendor returns CollectionSourceInclusionConditionUpdateInput.ProductVendor, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetProductVendor() *CollectionSourceInclusionConditionUpdateProductVendorInput {
+	return v.ProductVendor
+}
+
+// GetProductStatus returns CollectionSourceInclusionConditionUpdateInput.ProductStatus, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetProductStatus() *CollectionSourceInclusionConditionUpdateProductStatusInput {
+	return v.ProductStatus
+}
+
+// GetVariantTitle returns CollectionSourceInclusionConditionUpdateInput.VariantTitle, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetVariantTitle() *CollectionSourceInclusionConditionUpdateVariantTitleInput {
+	return v.VariantTitle
+}
+
+// GetVariantPrice returns CollectionSourceInclusionConditionUpdateInput.VariantPrice, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetVariantPrice() *CollectionSourceInclusionConditionUpdateVariantPriceInput {
+	return v.VariantPrice
+}
+
+// GetVariantCompareAtPrice returns CollectionSourceInclusionConditionUpdateInput.VariantCompareAtPrice, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetVariantCompareAtPrice() *CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput {
+	return v.VariantCompareAtPrice
+}
+
+// GetVariantInventory returns CollectionSourceInclusionConditionUpdateInput.VariantInventory, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetVariantInventory() *CollectionSourceInclusionConditionUpdateVariantInventoryInput {
+	return v.VariantInventory
+}
+
+// GetVariantWeight returns CollectionSourceInclusionConditionUpdateInput.VariantWeight, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetVariantWeight() *CollectionSourceInclusionConditionUpdateVariantWeightInput {
+	return v.VariantWeight
+}
+
+// GetMetafieldBoolean returns CollectionSourceInclusionConditionUpdateInput.MetafieldBoolean, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldBoolean() *CollectionSourceInclusionConditionUpdateMetafieldBooleanInput {
+	return v.MetafieldBoolean
+}
+
+// GetMetafieldInt returns CollectionSourceInclusionConditionUpdateInput.MetafieldInt, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldInt() *CollectionSourceInclusionConditionUpdateMetafieldIntInput {
+	return v.MetafieldInt
+}
+
+// GetMetafieldDecimal returns CollectionSourceInclusionConditionUpdateInput.MetafieldDecimal, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldDecimal() *CollectionSourceInclusionConditionUpdateMetafieldDecimalInput {
+	return v.MetafieldDecimal
+}
+
+// GetMetafieldString returns CollectionSourceInclusionConditionUpdateInput.MetafieldString, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldString() *CollectionSourceInclusionConditionUpdateMetafieldStringInput {
+	return v.MetafieldString
+}
+
+// GetMetafieldStringList returns CollectionSourceInclusionConditionUpdateInput.MetafieldStringList, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldStringList() *CollectionSourceInclusionConditionUpdateMetafieldStringListInput {
+	return v.MetafieldStringList
+}
+
+// GetMetafieldMetaobject returns CollectionSourceInclusionConditionUpdateInput.MetafieldMetaobject, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldMetaobject() *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput {
+	return v.MetafieldMetaobject
+}
+
+// GetMetafieldMetaobjectList returns CollectionSourceInclusionConditionUpdateInput.MetafieldMetaobjectList, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateInput) GetMetafieldMetaobjectList() *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput {
+	return v.MetafieldMetaobjectList
+}
+
+// The input fields for updating a condition based on boolean metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldBooleanInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition value.
+	Relation *CollectionSourceInclusionConditionMetafieldBooleanRelation `json:"relation"`
+	// The boolean value to match against.
+	Value *bool `json:"value"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldBooleanInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldBooleanInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldBooleanInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldBooleanInput) GetRelation() *CollectionSourceInclusionConditionMetafieldBooleanRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateMetafieldBooleanInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldBooleanInput) GetValue() *bool {
+	return v.Value
+}
+
+// The input fields for updating a condition based on decimal metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldDecimalInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition value.
+	Relation *CollectionSourceInclusionConditionMetafieldDecimalRelation `json:"relation"`
+	// The decimal value to match against.
+	Value *string `json:"value"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldDecimalInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldDecimalInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldDecimalInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldDecimalInput) GetRelation() *CollectionSourceInclusionConditionMetafieldDecimalRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateMetafieldDecimalInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldDecimalInput) GetValue() *string {
+	return v.Value
+}
+
+// The input fields for updating a condition based on integer metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldIntInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition value.
+	Relation *CollectionSourceInclusionConditionMetafieldIntRelation `json:"relation"`
+	// The integer value to match against, as a string.
+	Value *string `json:"value"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldIntInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldIntInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldIntInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldIntInput) GetRelation() *CollectionSourceInclusionConditionMetafieldIntRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateMetafieldIntInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldIntInput) GetValue() *string {
+	return v.Value
+}
+
+// The input fields for updating a condition based on single metaobject reference metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition value.
+	Relation *CollectionSourceInclusionConditionMetafieldMetaobjectRelation `json:"relation"`
+	// The metaobject ID to match against.
+	Value *string `json:"value"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput) GetRelation() *CollectionSourceInclusionConditionMetafieldMetaobjectRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput) GetValue() *string {
+	return v.Value
+}
+
+// The input fields for updating a condition based on metaobject list reference metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition values.
+	Relation *CollectionSourceInclusionConditionMetafieldMetaobjectListRelation `json:"relation"`
+	// The metaobject IDs to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput) GetRelation() *CollectionSourceInclusionConditionMetafieldMetaobjectListRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on string metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldStringInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition values.
+	Relation *CollectionSourceInclusionConditionMetafieldStringRelation `json:"relation"`
+	// The string values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldStringInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldStringInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringInput) GetRelation() *CollectionSourceInclusionConditionMetafieldStringRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateMetafieldStringInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateMetafieldStringInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on string list metafield values.
+type CollectionSourceInclusionConditionUpdateMetafieldStringListInput struct {
+	// The ID of the metafield definition.
+	DefinitionId *string `json:"definitionId"`
+	// The relationship between the metafield value and the condition values.
+	Relation *CollectionSourceInclusionConditionMetafieldStringListRelation `json:"relation"`
+	// The string values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetDefinitionId returns CollectionSourceInclusionConditionUpdateMetafieldStringListInput.DefinitionId, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringListInput) GetDefinitionId() *string {
+	return v.DefinitionId
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateMetafieldStringListInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringListInput) GetRelation() *CollectionSourceInclusionConditionMetafieldStringListRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateMetafieldStringListInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringListInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateMetafieldStringListInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateMetafieldStringListInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on product categories.
+type CollectionSourceInclusionConditionUpdateProductCategoryInput struct {
+	// The relationship between the product category and the condition values.
+	Relation *CollectionSourceInclusionConditionProductCategoryRelation `json:"relation"`
+	// The product category values to match against.
+	Values []CollectionSourceInclusionConditionProductCategoryValueInput `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateProductCategoryInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductCategoryInput) GetRelation() *CollectionSourceInclusionConditionProductCategoryRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateProductCategoryInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductCategoryInput) GetValues() []CollectionSourceInclusionConditionProductCategoryValueInput {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateProductCategoryInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductCategoryInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on product status.
+type CollectionSourceInclusionConditionUpdateProductStatusInput struct {
+	// The relationship between the product status and the condition values.
+	Relation *CollectionSourceInclusionConditionProductStatusRelation `json:"relation"`
+	// The product status values to match against.
+	Values []ProductStatus `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateProductStatusInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductStatusInput) GetRelation() *CollectionSourceInclusionConditionProductStatusRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateProductStatusInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductStatusInput) GetValues() []ProductStatus {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateProductStatusInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductStatusInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on product tags.
+type CollectionSourceInclusionConditionUpdateProductTagInput struct {
+	// The relationship between the product tag and the condition values.
+	Relation *CollectionSourceInclusionConditionProductTagRelation `json:"relation"`
+	// The tag values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateProductTagInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTagInput) GetRelation() *CollectionSourceInclusionConditionProductTagRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateProductTagInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTagInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateProductTagInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTagInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on product titles.
+type CollectionSourceInclusionConditionUpdateProductTitleInput struct {
+	// The relationship between the product title and the condition values.
+	Relation *CollectionSourceInclusionConditionProductTitleRelation `json:"relation"`
+	// The title values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateProductTitleInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTitleInput) GetRelation() *CollectionSourceInclusionConditionProductTitleRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateProductTitleInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTitleInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateProductTitleInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTitleInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on product types.
+type CollectionSourceInclusionConditionUpdateProductTypeInput struct {
+	// The relationship between the product type and the condition values.
+	Relation *CollectionSourceInclusionConditionProductTypeRelation `json:"relation"`
+	// The product type values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateProductTypeInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTypeInput) GetRelation() *CollectionSourceInclusionConditionProductTypeRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateProductTypeInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTypeInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateProductTypeInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductTypeInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on product vendors.
+type CollectionSourceInclusionConditionUpdateProductVendorInput struct {
+	// The relationship between the product vendor and the condition values.
+	Relation *CollectionSourceInclusionConditionProductVendorRelation `json:"relation"`
+	// The product vendor values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateProductVendorInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductVendorInput) GetRelation() *CollectionSourceInclusionConditionProductVendorRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateProductVendorInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductVendorInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateProductVendorInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateProductVendorInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on variant compare at prices.
+type CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput struct {
+	// The relationship between the variant compare at price and the condition value.
+	Relation *CollectionSourceInclusionConditionVariantCompareAtPriceRelation `json:"relation"`
+	// The variant compare at price to match against. Required for numeric relations and must be absent for IS_SET or IS_NOT_SET.
+	Value *MoneyInput `json:"value"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput) GetRelation() *CollectionSourceInclusionConditionVariantCompareAtPriceRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput) GetValue() *MoneyInput {
+	return v.Value
+}
+
+// The input fields for updating a condition based on variant inventory quantities.
+type CollectionSourceInclusionConditionUpdateVariantInventoryInput struct {
+	// The relationship between the variant inventory and the condition value.
+	Relation *CollectionSourceInclusionConditionVariantInventoryRelation `json:"relation"`
+	// The variant inventory quantity to match against.
+	Value *int `json:"value"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateVariantInventoryInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantInventoryInput) GetRelation() *CollectionSourceInclusionConditionVariantInventoryRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateVariantInventoryInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantInventoryInput) GetValue() *int {
+	return v.Value
+}
+
+// The input fields for updating a condition based on variant prices.
+type CollectionSourceInclusionConditionUpdateVariantPriceInput struct {
+	// The relationship between the variant price and the condition value.
+	Relation *CollectionSourceInclusionConditionVariantPriceRelation `json:"relation"`
+	// The variant price to match against.
+	Value *MoneyInput `json:"value"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateVariantPriceInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantPriceInput) GetRelation() *CollectionSourceInclusionConditionVariantPriceRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateVariantPriceInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantPriceInput) GetValue() *MoneyInput {
+	return v.Value
+}
+
+// The input fields for updating a condition based on variant titles.
+type CollectionSourceInclusionConditionUpdateVariantTitleInput struct {
+	// The relationship between the variant title and the condition values.
+	Relation *CollectionSourceInclusionConditionVariantTitleRelation `json:"relation"`
+	// The variant title values to match against.
+	Values []string `json:"values"`
+	// Whether to match any or all of the values.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateVariantTitleInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantTitleInput) GetRelation() *CollectionSourceInclusionConditionVariantTitleRelation {
+	return v.Relation
+}
+
+// GetValues returns CollectionSourceInclusionConditionUpdateVariantTitleInput.Values, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantTitleInput) GetValues() []string {
+	return v.Values
+}
+
+// GetMatchType returns CollectionSourceInclusionConditionUpdateVariantTitleInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantTitleInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// The input fields for updating a condition based on variant weights.
+type CollectionSourceInclusionConditionUpdateVariantWeightInput struct {
+	// The relationship between the variant weight and the condition value.
+	Relation *CollectionSourceInclusionConditionVariantWeightRelation `json:"relation"`
+	// The variant weight to match against.
+	Value *WeightInput `json:"value"`
+}
+
+// GetRelation returns CollectionSourceInclusionConditionUpdateVariantWeightInput.Relation, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantWeightInput) GetRelation() *CollectionSourceInclusionConditionVariantWeightRelation {
+	return v.Relation
+}
+
+// GetValue returns CollectionSourceInclusionConditionUpdateVariantWeightInput.Value, and is useful for accessing the field via an interface.
+func (v *CollectionSourceInclusionConditionUpdateVariantWeightInput) GetValue() *WeightInput {
+	return v.Value
+}
+
+// The relation for comparing variant compare at prices.
+type CollectionSourceInclusionConditionVariantCompareAtPriceRelation string
+
+const (
+	// The variant compare at price equals the specified value.
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationEquals CollectionSourceInclusionConditionVariantCompareAtPriceRelation = "EQUALS"
+	// The variant compare at price does not equal the specified value.
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationNotEquals CollectionSourceInclusionConditionVariantCompareAtPriceRelation = "NOT_EQUALS"
+	// The variant compare at price is greater than the specified value.
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationGreaterThan CollectionSourceInclusionConditionVariantCompareAtPriceRelation = "GREATER_THAN"
+	// The variant compare at price is less than the specified value.
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationLessThan CollectionSourceInclusionConditionVariantCompareAtPriceRelation = "LESS_THAN"
+	// The variant has a compare at price set (indicating a price reduction).
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationIsSet CollectionSourceInclusionConditionVariantCompareAtPriceRelation = "IS_SET"
+	// The variant does not have a compare at price set.
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationIsNotSet CollectionSourceInclusionConditionVariantCompareAtPriceRelation = "IS_NOT_SET"
+)
+
+var AllCollectionSourceInclusionConditionVariantCompareAtPriceRelation = []CollectionSourceInclusionConditionVariantCompareAtPriceRelation{
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationEquals,
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationNotEquals,
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationGreaterThan,
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationLessThan,
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationIsSet,
+	CollectionSourceInclusionConditionVariantCompareAtPriceRelationIsNotSet,
+}
+
+// The relation for comparing variant inventory quantities.
+type CollectionSourceInclusionConditionVariantInventoryRelation string
+
+const (
+	// The variant inventory equals the specified value.
+	CollectionSourceInclusionConditionVariantInventoryRelationEquals CollectionSourceInclusionConditionVariantInventoryRelation = "EQUALS"
+	// The variant inventory is greater than the specified value.
+	CollectionSourceInclusionConditionVariantInventoryRelationGreaterThan CollectionSourceInclusionConditionVariantInventoryRelation = "GREATER_THAN"
+	// The variant inventory is less than the specified value.
+	CollectionSourceInclusionConditionVariantInventoryRelationLessThan CollectionSourceInclusionConditionVariantInventoryRelation = "LESS_THAN"
+)
+
+var AllCollectionSourceInclusionConditionVariantInventoryRelation = []CollectionSourceInclusionConditionVariantInventoryRelation{
+	CollectionSourceInclusionConditionVariantInventoryRelationEquals,
+	CollectionSourceInclusionConditionVariantInventoryRelationGreaterThan,
+	CollectionSourceInclusionConditionVariantInventoryRelationLessThan,
+}
+
+// The relation for comparing variant prices.
+type CollectionSourceInclusionConditionVariantPriceRelation string
+
+const (
+	// The variant price equals the specified value.
+	CollectionSourceInclusionConditionVariantPriceRelationEquals CollectionSourceInclusionConditionVariantPriceRelation = "EQUALS"
+	// The variant price does not equal the specified value.
+	CollectionSourceInclusionConditionVariantPriceRelationNotEquals CollectionSourceInclusionConditionVariantPriceRelation = "NOT_EQUALS"
+	// The variant price is greater than the specified value.
+	CollectionSourceInclusionConditionVariantPriceRelationGreaterThan CollectionSourceInclusionConditionVariantPriceRelation = "GREATER_THAN"
+	// The variant price is less than the specified value.
+	CollectionSourceInclusionConditionVariantPriceRelationLessThan CollectionSourceInclusionConditionVariantPriceRelation = "LESS_THAN"
+)
+
+var AllCollectionSourceInclusionConditionVariantPriceRelation = []CollectionSourceInclusionConditionVariantPriceRelation{
+	CollectionSourceInclusionConditionVariantPriceRelationEquals,
+	CollectionSourceInclusionConditionVariantPriceRelationNotEquals,
+	CollectionSourceInclusionConditionVariantPriceRelationGreaterThan,
+	CollectionSourceInclusionConditionVariantPriceRelationLessThan,
+}
+
+// The relation for comparing variant titles.
+type CollectionSourceInclusionConditionVariantTitleRelation string
+
+const (
+	// The variant title equals the specified value.
+	CollectionSourceInclusionConditionVariantTitleRelationEquals CollectionSourceInclusionConditionVariantTitleRelation = "EQUALS"
+	// The variant title does not equal the specified value.
+	CollectionSourceInclusionConditionVariantTitleRelationNotEquals CollectionSourceInclusionConditionVariantTitleRelation = "NOT_EQUALS"
+	// The variant title starts with the specified value.
+	CollectionSourceInclusionConditionVariantTitleRelationStartsWith CollectionSourceInclusionConditionVariantTitleRelation = "STARTS_WITH"
+	// The variant title ends with the specified value.
+	CollectionSourceInclusionConditionVariantTitleRelationEndsWith CollectionSourceInclusionConditionVariantTitleRelation = "ENDS_WITH"
+	// The variant title contains the specified value.
+	CollectionSourceInclusionConditionVariantTitleRelationContains CollectionSourceInclusionConditionVariantTitleRelation = "CONTAINS"
+	// The variant title does not contain the specified value.
+	CollectionSourceInclusionConditionVariantTitleRelationDoesNotContain CollectionSourceInclusionConditionVariantTitleRelation = "DOES_NOT_CONTAIN"
+)
+
+var AllCollectionSourceInclusionConditionVariantTitleRelation = []CollectionSourceInclusionConditionVariantTitleRelation{
+	CollectionSourceInclusionConditionVariantTitleRelationEquals,
+	CollectionSourceInclusionConditionVariantTitleRelationNotEquals,
+	CollectionSourceInclusionConditionVariantTitleRelationStartsWith,
+	CollectionSourceInclusionConditionVariantTitleRelationEndsWith,
+	CollectionSourceInclusionConditionVariantTitleRelationContains,
+	CollectionSourceInclusionConditionVariantTitleRelationDoesNotContain,
+}
+
+// The relation for comparing variant weights.
+type CollectionSourceInclusionConditionVariantWeightRelation string
+
+const (
+	// The variant weight equals the specified value.
+	CollectionSourceInclusionConditionVariantWeightRelationEquals CollectionSourceInclusionConditionVariantWeightRelation = "EQUALS"
+	// The variant weight does not equal the specified value.
+	CollectionSourceInclusionConditionVariantWeightRelationNotEquals CollectionSourceInclusionConditionVariantWeightRelation = "NOT_EQUALS"
+	// The variant weight is greater than the specified value.
+	CollectionSourceInclusionConditionVariantWeightRelationGreaterThan CollectionSourceInclusionConditionVariantWeightRelation = "GREATER_THAN"
+	// The variant weight is less than the specified value.
+	CollectionSourceInclusionConditionVariantWeightRelationLessThan CollectionSourceInclusionConditionVariantWeightRelation = "LESS_THAN"
+)
+
+var AllCollectionSourceInclusionConditionVariantWeightRelation = []CollectionSourceInclusionConditionVariantWeightRelation{
+	CollectionSourceInclusionConditionVariantWeightRelationEquals,
+	CollectionSourceInclusionConditionVariantWeightRelationNotEquals,
+	CollectionSourceInclusionConditionVariantWeightRelationGreaterThan,
+	CollectionSourceInclusionConditionVariantWeightRelationLessThan,
+}
+
+// Conditions that target variants cause either the entire product to be included when satisfied or only the matching variants.
+type CollectionSourceTargetType string
+
+const (
+	// The entire product is included if any variant satisfies the conditions.
+	CollectionSourceTargetTypeProducts CollectionSourceTargetType = "PRODUCTS"
+	// Individual variants are included if they satisfy the conditions.
+	CollectionSourceTargetTypeVariants CollectionSourceTargetType = "VARIANTS"
+)
+
+var AllCollectionSourceTargetType = []CollectionSourceTargetType{
+	CollectionSourceTargetTypeProducts,
+	CollectionSourceTargetTypeVariants,
+}
+
+// The input fields for updating a shareable collection source.
+type CollectionUpdateConditionsSourceInput struct {
+	// The ID of the source to update.
+	Id string `json:"id"`
+	// The title of the source.
+	Title *string `json:"title,omitempty"`
+	// An optional description of the source.
+	Description *string `json:"description,omitempty"`
+	// The inclusion rules for the source.
+	Inclusion *CollectionUpdateSourceInclusionInput `json:"inclusion,omitempty"`
+	// The exclusion rules for the source.
+	Exclusion *CollectionUpdateSourceExclusionInput `json:"exclusion,omitempty"`
+}
+
+// GetId returns CollectionUpdateConditionsSourceInput.Id, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateConditionsSourceInput) GetId() string { return v.Id }
+
+// GetTitle returns CollectionUpdateConditionsSourceInput.Title, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateConditionsSourceInput) GetTitle() *string { return v.Title }
+
+// GetDescription returns CollectionUpdateConditionsSourceInput.Description, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateConditionsSourceInput) GetDescription() *string { return v.Description }
+
+// GetInclusion returns CollectionUpdateConditionsSourceInput.Inclusion, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateConditionsSourceInput) GetInclusion() *CollectionUpdateSourceInclusionInput {
+	return v.Inclusion
+}
+
+// GetExclusion returns CollectionUpdateConditionsSourceInput.Exclusion, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateConditionsSourceInput) GetExclusion() *CollectionUpdateSourceExclusionInput {
+	return v.Exclusion
+}
+
+// The input fields required to update a collection.
+type CollectionUpdateInput struct {
+	// The description of the collection, in HTML format.
+	DescriptionHtml *string `json:"descriptionHtml,omitempty"`
+	// A unique human-friendly string for the collection. Automatically generated from the collection's title.
+	Handle *string `json:"handle,omitempty"`
+	// Specifies the collection to update.
+	Id *string `json:"id"`
+	// The image associated with the collection.
+	Image *ImageInput `json:"image,omitempty"`
+	// The theme template used when viewing the collection in a store.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// The order in which the collection's products are sorted.
+	SortOrder *CollectionSortOrder `json:"sortOrder,omitempty"`
+	// The title of the collection.
+	Title *string `json:"title,omitempty"`
+	// The metafields to associate with the collection.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// SEO information for the collection.
+	Seo *SEOInput `json:"seo,omitempty"`
+	// Indicates whether a redirect is required after a new handle has been provided.
+	// If true, then the old handle is redirected to the new one automatically.
+	RedirectNewHandle *bool `json:"redirectNewHandle,omitempty"`
+	// The IDs of the sources to delete from the collection.
+	SourcesToDelete []string `json:"sourcesToDelete,omitempty"`
+	// The sources to create for the collection.
+	SourcesToCreate []CollectionCreateSourceTargetInput `json:"sourcesToCreate,omitempty"`
+	// The sources to update for the collection.
+	SourcesToUpdate []CollectionUpdateSourceTargetInput `json:"sourcesToUpdate,omitempty"`
+}
+
+// GetDescriptionHtml returns CollectionUpdateInput.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetDescriptionHtml() *string { return v.DescriptionHtml }
+
+// GetHandle returns CollectionUpdateInput.Handle, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetHandle() *string { return v.Handle }
+
+// GetId returns CollectionUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetId() *string { return v.Id }
+
+// GetImage returns CollectionUpdateInput.Image, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetImage() *ImageInput { return v.Image }
+
+// GetTemplateSuffix returns CollectionUpdateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetSortOrder returns CollectionUpdateInput.SortOrder, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetSortOrder() *CollectionSortOrder { return v.SortOrder }
+
+// GetTitle returns CollectionUpdateInput.Title, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetTitle() *string { return v.Title }
+
+// GetMetafields returns CollectionUpdateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetSeo returns CollectionUpdateInput.Seo, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetSeo() *SEOInput { return v.Seo }
+
+// GetRedirectNewHandle returns CollectionUpdateInput.RedirectNewHandle, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetRedirectNewHandle() *bool { return v.RedirectNewHandle }
+
+// GetSourcesToDelete returns CollectionUpdateInput.SourcesToDelete, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetSourcesToDelete() []string { return v.SourcesToDelete }
+
+// GetSourcesToCreate returns CollectionUpdateInput.SourcesToCreate, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetSourcesToCreate() []CollectionCreateSourceTargetInput {
+	return v.SourcesToCreate
+}
+
+// GetSourcesToUpdate returns CollectionUpdateInput.SourcesToUpdate, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateInput) GetSourcesToUpdate() []CollectionUpdateSourceTargetInput {
+	return v.SourcesToUpdate
+}
+
+// The input fields for updating an exclusion condition in a collection source.
+type CollectionUpdateSourceExclusionConditionInput struct {
+	// The ID of the exclusion condition to update.
+	Id string `json:"id"`
+	// The updated exclusion condition.
+	Condition CollectionSourceExclusionConditionUpdateInput `json:"condition"`
+}
+
+// GetId returns CollectionUpdateSourceExclusionConditionInput.Id, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionConditionInput) GetId() string { return v.Id }
+
+// GetCondition returns CollectionUpdateSourceExclusionConditionInput.Condition, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionConditionInput) GetCondition() CollectionSourceExclusionConditionUpdateInput {
+	return v.Condition
+}
+
+// The input fields for updating exclusion rules for a collection source.
+type CollectionUpdateSourceExclusionInput struct {
+	// Whether products must match all or any of the conditions to be excluded.
+	MatchType *CollectionConditionMatchType `json:"matchType"`
+	// The exclusion conditions to create for the source.
+	ConditionsToCreate []CollectionSourceExclusionConditionInput `json:"conditionsToCreate"`
+	// The IDs of the exclusion conditions to delete from the source.
+	ConditionsToDelete []string `json:"conditionsToDelete"`
+	// The exclusion conditions to update for the source.
+	ConditionsToUpdate []CollectionUpdateSourceExclusionConditionInput `json:"conditionsToUpdate"`
+	// The product selections to add to the source.
+	SelectionsToAdd []CollectionExclusionProductSelectionInput `json:"selectionsToAdd"`
+	// The product selections to remove from the source.
+	SelectionsToRemove []CollectionExclusionProductSelectionInput `json:"selectionsToRemove"`
+}
+
+// GetMatchType returns CollectionUpdateSourceExclusionInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// GetConditionsToCreate returns CollectionUpdateSourceExclusionInput.ConditionsToCreate, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionInput) GetConditionsToCreate() []CollectionSourceExclusionConditionInput {
+	return v.ConditionsToCreate
+}
+
+// GetConditionsToDelete returns CollectionUpdateSourceExclusionInput.ConditionsToDelete, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionInput) GetConditionsToDelete() []string {
+	return v.ConditionsToDelete
+}
+
+// GetConditionsToUpdate returns CollectionUpdateSourceExclusionInput.ConditionsToUpdate, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionInput) GetConditionsToUpdate() []CollectionUpdateSourceExclusionConditionInput {
+	return v.ConditionsToUpdate
+}
+
+// GetSelectionsToAdd returns CollectionUpdateSourceExclusionInput.SelectionsToAdd, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionInput) GetSelectionsToAdd() []CollectionExclusionProductSelectionInput {
+	return v.SelectionsToAdd
+}
+
+// GetSelectionsToRemove returns CollectionUpdateSourceExclusionInput.SelectionsToRemove, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceExclusionInput) GetSelectionsToRemove() []CollectionExclusionProductSelectionInput {
+	return v.SelectionsToRemove
+}
+
+// The input fields for updating a condition in a collection source.
+type CollectionUpdateSourceInclusionConditionInput struct {
+	// The ID of the condition to update.
+	Id string `json:"id"`
+	// The updated condition.
+	Condition CollectionSourceInclusionConditionUpdateInput `json:"condition"`
+}
+
+// GetId returns CollectionUpdateSourceInclusionConditionInput.Id, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionConditionInput) GetId() string { return v.Id }
+
+// GetCondition returns CollectionUpdateSourceInclusionConditionInput.Condition, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionConditionInput) GetCondition() CollectionSourceInclusionConditionUpdateInput {
+	return v.Condition
+}
+
+// The input fields for updating inclusion rules for a collection source.
+type CollectionUpdateSourceInclusionInput struct {
+	// Whether products must match all or any of the conditions.
+	MatchType *CollectionConditionMatchType `json:"matchType,omitempty"`
+	// The conditions to create for the source.
+	ConditionsToCreate json.RawMessage `json:"conditionsToCreate,omitempty"`
+	// The IDs of the conditions to delete from the source.
+	ConditionsToDelete []string `json:"conditionsToDelete,omitempty"`
+	// The conditions to update for the source.
+	ConditionsToUpdate []CollectionUpdateSourceInclusionConditionInput `json:"conditionsToUpdate,omitempty"`
+	// The product selections to add to the source.
+	SelectionsToAdd []CollectionInclusionProductSelectionInput `json:"selectionsToAdd,omitempty"`
+	// The product selections to remove from the source. For sources that target variants, omitting variant IDs will remove all for the product.
+	SelectionsToRemove []CollectionInclusionProductSelectionInput `json:"selectionsToRemove,omitempty"`
+}
+
+// GetMatchType returns CollectionUpdateSourceInclusionInput.MatchType, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionInput) GetMatchType() *CollectionConditionMatchType {
+	return v.MatchType
+}
+
+// GetConditionsToCreate returns CollectionUpdateSourceInclusionInput.ConditionsToCreate, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionInput) GetConditionsToCreate() json.RawMessage {
+	return v.ConditionsToCreate
+}
+
+// GetConditionsToDelete returns CollectionUpdateSourceInclusionInput.ConditionsToDelete, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionInput) GetConditionsToDelete() []string {
+	return v.ConditionsToDelete
+}
+
+// GetConditionsToUpdate returns CollectionUpdateSourceInclusionInput.ConditionsToUpdate, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionInput) GetConditionsToUpdate() []CollectionUpdateSourceInclusionConditionInput {
+	return v.ConditionsToUpdate
+}
+
+// GetSelectionsToAdd returns CollectionUpdateSourceInclusionInput.SelectionsToAdd, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionInput) GetSelectionsToAdd() []CollectionInclusionProductSelectionInput {
+	return v.SelectionsToAdd
+}
+
+// GetSelectionsToRemove returns CollectionUpdateSourceInclusionInput.SelectionsToRemove, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceInclusionInput) GetSelectionsToRemove() []CollectionInclusionProductSelectionInput {
+	return v.SelectionsToRemove
+}
+
+// The input fields for updating a collection source - provide the one field that represents the type of source to update.
+type CollectionUpdateSourceTargetInput struct {
+	// An update to a shareable conditions-based source.
+	Condition *CollectionUpdateConditionsSourceInput `json:"condition,omitempty"`
+	// An update to a sub-collection source whose membership comes from one or more referenced collections.
+	SubCollections *CollectionUpdateSubCollectionsSourceInput `json:"subCollections,omitempty"`
+}
+
+// GetCondition returns CollectionUpdateSourceTargetInput.Condition, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceTargetInput) GetCondition() *CollectionUpdateConditionsSourceInput {
+	return v.Condition
+}
+
+// GetSubCollections returns CollectionUpdateSourceTargetInput.SubCollections, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSourceTargetInput) GetSubCollections() *CollectionUpdateSubCollectionsSourceInput {
+	return v.SubCollections
+}
+
+// The input fields for updating a sub-collection source — a source whose membership comes from one or more referenced collections.
+type CollectionUpdateSubCollectionsSourceInput struct {
+	// The ID of the source to update.
+	Id string `json:"id"`
+	// The global IDs of the sub-collections whose products supply this source. When provided, it replaces the source's current referenced collections.
+	CollectionIds []string `json:"collectionIds"`
+	// The title of the source.
+	Title *string `json:"title"`
+	// An optional description of the source.
+	Description *string `json:"description"`
+}
+
+// GetId returns CollectionUpdateSubCollectionsSourceInput.Id, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSubCollectionsSourceInput) GetId() string { return v.Id }
+
+// GetCollectionIds returns CollectionUpdateSubCollectionsSourceInput.CollectionIds, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSubCollectionsSourceInput) GetCollectionIds() []string {
+	return v.CollectionIds
+}
+
+// GetTitle returns CollectionUpdateSubCollectionsSourceInput.Title, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSubCollectionsSourceInput) GetTitle() *string { return v.Title }
+
+// GetDescription returns CollectionUpdateSubCollectionsSourceInput.Description, and is useful for accessing the field via an interface.
+func (v *CollectionUpdateSubCollectionsSourceInput) GetDescription() *string { return v.Description }
+
+// The role of the combined listing.
+type CombinedListingsRole string
+
+const (
+	// The product is the parent of a combined listing.
+	CombinedListingsRoleParent CombinedListingsRole = "PARENT"
+	// The product is the child of a combined listing.
+	CombinedListingsRoleChild CombinedListingsRole = "CHILD"
+)
+
+var AllCombinedListingsRole = []CombinedListingsRole{
+	CombinedListingsRoleParent,
+	CombinedListingsRoleChild,
+}
+
+// Possible comment policies for a blog.
+type CommentPolicy string
+
+const (
+	// Readers can post comments to blog articles without moderation.
+	CommentPolicyAutoPublished CommentPolicy = "AUTO_PUBLISHED"
+	// Readers cannot post comments to blog articles.
+	CommentPolicyClosed CommentPolicy = "CLOSED"
+	// Readers can post comments to blog articles, but comments must be moderated before they appear.
+	CommentPolicyModerated CommentPolicy = "MODERATED"
+)
+
+var AllCommentPolicy = []CommentPolicy{
+	CommentPolicyAutoPublished,
+	CommentPolicyClosed,
+	CommentPolicyModerated,
 }
 
 // Possible error codes that can be returned by `ConsentPolicyError`.
@@ -1218,6 +3505,674 @@ var AllCountryCode = []CountryCode{
 	CountryCodeZz,
 }
 
+// The input fields required to specify a harmonized system code.
+type CountryHarmonizedSystemCodeInput struct {
+	// Country specific harmonized system code.
+	HarmonizedSystemCode string `json:"harmonizedSystemCode"`
+	// The ISO 3166-1 alpha-2 country code for the country that issued the specified harmonized system code. Represents global harmonized system code when set to null.
+	CountryCode *CountryCode `json:"countryCode"`
+}
+
+// GetHarmonizedSystemCode returns CountryHarmonizedSystemCodeInput.HarmonizedSystemCode, and is useful for accessing the field via an interface.
+func (v *CountryHarmonizedSystemCodeInput) GetHarmonizedSystemCode() string {
+	return v.HarmonizedSystemCode
+}
+
+// GetCountryCode returns CountryHarmonizedSystemCodeInput.CountryCode, and is useful for accessing the field via an interface.
+func (v *CountryHarmonizedSystemCodeInput) GetCountryCode() *CountryCode { return v.CountryCode }
+
+// CreateArticleArticleCreateArticleCreatePayload includes the requested fields of the GraphQL type ArticleCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `articleCreate` mutation.
+type CreateArticleArticleCreateArticleCreatePayload struct {
+	// The article that was created.
+	Article *CreateArticleArticleCreateArticleCreatePayloadArticle `json:"article"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError `json:"userErrors"`
+}
+
+// GetArticle returns CreateArticleArticleCreateArticleCreatePayload.Article, and is useful for accessing the field via an interface.
+func (v *CreateArticleArticleCreateArticleCreatePayload) GetArticle() *CreateArticleArticleCreateArticleCreatePayloadArticle {
+	return v.Article
+}
+
+// GetUserErrors returns CreateArticleArticleCreateArticleCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateArticleArticleCreateArticleCreatePayload) GetUserErrors() []CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError {
+	return v.UserErrors
+}
+
+// CreateArticleArticleCreateArticleCreatePayloadArticle includes the requested fields of the GraphQL type Article.
+// The GraphQL type's documentation follows.
+//
+// An article that contains content, author information, and metadata. Articles belong to a [`Blog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Blog) and can include HTML-formatted body text, summary text, and an associated image. Merchants publish articles to share content, drive traffic, and engage customers.
+//
+// Articles can be organized with tags and published immediately or scheduled for future publication using the [`publishedAt`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Article#field-Article.fields.publishedAt) timestamp. The API manages comments on articles when the blog's comment policy enables them.
+type CreateArticleArticleCreateArticleCreatePayloadArticle struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns CreateArticleArticleCreateArticleCreatePayloadArticle.Id, and is useful for accessing the field via an interface.
+func (v *CreateArticleArticleCreateArticleCreatePayloadArticle) GetId() string { return v.Id }
+
+// CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError includes the requested fields of the GraphQL type ArticleCreateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `ArticleCreate`.
+type CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateArticleArticleCreateArticleCreatePayloadUserErrorsArticleCreateUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreateArticleResponse is returned by CreateArticle on success.
+type CreateArticleResponse struct {
+	// Creates an [`Article`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Article). Articles are content pieces that include a title, body text, and author information.
+	//
+	// You can publish the article immediately or schedule it with a specific publish date. You can customize the article's URL handle, apply custom templates for rendering, and add optional fields like [tags](https://shopify.dev/docs/api/admin-graphql/latest/mutations/articleCreate#arguments-article.fields.tags), an [image](https://shopify.dev/docs/api/admin-graphql/latest/mutations/articleCreate#arguments-article.fields.image), and [`Metafield`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metafield) objects.
+	//
+	// The mutation validates article content and ensures proper blog association. Error handling provides specific feedback for content requirements.
+	ArticleCreate *CreateArticleArticleCreateArticleCreatePayload `json:"articleCreate"`
+}
+
+// GetArticleCreate returns CreateArticleResponse.ArticleCreate, and is useful for accessing the field via an interface.
+func (v *CreateArticleResponse) GetArticleCreate() *CreateArticleArticleCreateArticleCreatePayload {
+	return v.ArticleCreate
+}
+
+// CreateBlogBlogCreateBlogCreatePayload includes the requested fields of the GraphQL type BlogCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `blogCreate` mutation.
+type CreateBlogBlogCreateBlogCreatePayload struct {
+	// The blog that was created.
+	Blog *CreateBlogBlogCreateBlogCreatePayloadBlog `json:"blog"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError `json:"userErrors"`
+}
+
+// GetBlog returns CreateBlogBlogCreateBlogCreatePayload.Blog, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayload) GetBlog() *CreateBlogBlogCreateBlogCreatePayloadBlog {
+	return v.Blog
+}
+
+// GetUserErrors returns CreateBlogBlogCreateBlogCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayload) GetUserErrors() []CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError {
+	return v.UserErrors
+}
+
+// CreateBlogBlogCreateBlogCreatePayloadBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type CreateBlogBlogCreateBlogCreatePayloadBlog struct {
+	BlogFields `json:"-"`
+}
+
+// GetId returns CreateBlogBlogCreateBlogCreatePayloadBlog.Id, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) GetId() string { return v.BlogFields.Id }
+
+// GetHandle returns CreateBlogBlogCreateBlogCreatePayloadBlog.Handle, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) GetHandle() string { return v.BlogFields.Handle }
+
+// GetTitle returns CreateBlogBlogCreateBlogCreatePayloadBlog.Title, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) GetTitle() string { return v.BlogFields.Title }
+
+// GetCommentPolicy returns CreateBlogBlogCreateBlogCreatePayloadBlog.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) GetCommentPolicy() CommentPolicy {
+	return v.BlogFields.CommentPolicy
+}
+
+// GetTemplateSuffix returns CreateBlogBlogCreateBlogCreatePayloadBlog.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) GetTemplateSuffix() *string {
+	return v.BlogFields.TemplateSuffix
+}
+
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateBlogBlogCreateBlogCreatePayloadBlog
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateBlogBlogCreateBlogCreatePayloadBlog = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.BlogFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateBlogBlogCreateBlogCreatePayloadBlog struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	CommentPolicy CommentPolicy `json:"commentPolicy"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateBlogBlogCreateBlogCreatePayloadBlog) __premarshalJSON() (*__premarshalCreateBlogBlogCreateBlogCreatePayloadBlog, error) {
+	var retval __premarshalCreateBlogBlogCreateBlogCreatePayloadBlog
+
+	retval.Id = v.BlogFields.Id
+	retval.Handle = v.BlogFields.Handle
+	retval.Title = v.BlogFields.Title
+	retval.CommentPolicy = v.BlogFields.CommentPolicy
+	retval.TemplateSuffix = v.BlogFields.TemplateSuffix
+	return &retval, nil
+}
+
+// CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError includes the requested fields of the GraphQL type BlogCreateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `BlogCreate`.
+type CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateBlogBlogCreateBlogCreatePayloadUserErrorsBlogCreateUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreateBlogResponse is returned by CreateBlog on success.
+type CreateBlogResponse struct {
+	// Creates a new blog within a shop, establishing a container for organizing articles.
+	//
+	// For example, a fitness equipment retailer launching a wellness blog would use this mutation to create the blog, enabling them to publish workout guides and nutrition tips.
+	//
+	// Use the `blogCreate` mutation to:
+	// - Launch new content marketing initiatives
+	// - Create separate blogs for different content themes
+	// - Establish spaces for article organization
+	//
+	// The mutation validates blog settings and establishes the structure for article publishing.
+	BlogCreate *CreateBlogBlogCreateBlogCreatePayload `json:"blogCreate"`
+}
+
+// GetBlogCreate returns CreateBlogResponse.BlogCreate, and is useful for accessing the field via an interface.
+func (v *CreateBlogResponse) GetBlogCreate() *CreateBlogBlogCreateBlogCreatePayload {
+	return v.BlogCreate
+}
+
+// CreateCollectionCollectionCreateCollectionCreatePayload includes the requested fields of the GraphQL type CollectionCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `collectionCreate` mutation.
+type CreateCollectionCollectionCreateCollectionCreatePayload struct {
+	// The collection that has been created.
+	Collection *CreateCollectionCollectionCreateCollectionCreatePayloadCollection `json:"collection"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetCollection returns CreateCollectionCollectionCreateCollectionCreatePayload.Collection, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayload) GetCollection() *CreateCollectionCollectionCreateCollectionCreatePayloadCollection {
+	return v.Collection
+}
+
+// GetUserErrors returns CreateCollectionCollectionCreateCollectionCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayload) GetUserErrors() []CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// CreateCollectionCollectionCreateCollectionCreatePayloadCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type CreateCollectionCollectionCreateCollectionCreatePayloadCollection struct {
+	CollectionFields `json:"-"`
+}
+
+// GetId returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.Id, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetId() string {
+	return v.CollectionFields.Id
+}
+
+// GetHandle returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.Handle, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetHandle() string {
+	return v.CollectionFields.Handle
+}
+
+// GetTitle returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.Title, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetTitle() string {
+	return v.CollectionFields.Title
+}
+
+// GetDescriptionHtml returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetDescriptionHtml() string {
+	return v.CollectionFields.DescriptionHtml
+}
+
+// GetSortOrder returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.SortOrder, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetSortOrder() CollectionSortOrder {
+	return v.CollectionFields.SortOrder
+}
+
+// GetTemplateSuffix returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetTemplateSuffix() *string {
+	return v.CollectionFields.TemplateSuffix
+}
+
+// GetSeo returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.Seo, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetSeo() CollectionFieldsSeoSEO {
+	return v.CollectionFields.Seo
+}
+
+// GetSources returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.Sources, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetSources() json.RawMessage {
+	return v.CollectionFields.Sources
+}
+
+// GetResourcePublicationsV2 returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateCollectionCollectionCreateCollectionCreatePayloadCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateCollectionCollectionCreateCollectionCreatePayloadCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CollectionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateCollectionCollectionCreateCollectionCreatePayloadCollection struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+
+	Sources json.RawMessage `json:"sources"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) __premarshalJSON() (*__premarshalCreateCollectionCollectionCreateCollectionCreatePayloadCollection, error) {
+	var retval __premarshalCreateCollectionCollectionCreateCollectionCreatePayloadCollection
+
+	retval.Id = v.CollectionFields.Id
+	retval.Handle = v.CollectionFields.Handle
+	retval.Title = v.CollectionFields.Title
+	retval.DescriptionHtml = v.CollectionFields.DescriptionHtml
+	retval.SortOrder = v.CollectionFields.SortOrder
+	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
+	retval.Seo = v.CollectionFields.Seo
+	retval.Sources = v.CollectionFields.Sources
+	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreateCollectionResponse is returned by CreateCollection on success.
+type CreateCollectionResponse struct {
+	// Creates a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection)
+	// to group [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) together
+	// in the [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	// For example, an athletics store might create different collections for running attire, shoes, and accessories.
+	//
+	// Use the `collectionCreate` mutation when you need to:
+	//
+	// - Create a new collection for a product launch or campaign
+	// - Organize products by category, season, or promotion
+	// - Automate product grouping using conditions (for example, by tag, type, or price)
+	//
+	// Collections can include products manually and can also include products automatically based on rules, sources,
+	// or conditions.
+	//
+	// **Defining a collection's membership**
+	//
+	// Define membership with `sources` on the `collection` argument
+	// ([`CollectionCreateInput`](https://shopify.dev/docs/api/admin-graphql/latest/input-objects/CollectionCreateInput)).
+	// Each source adds products through `conditions` (such as product tag, title, or metafield—see
+	// [`CollectionSourceInclusionConditionInput`](https://shopify.dev/docs/api/admin-graphql/latest/input-objects/CollectionSourceInclusionConditionInput)
+	// for the full list) and through manual `selections`.
+	//
+	// > Note:
+	// > The `input` argument and its `ruleSet` field are deprecated. Existing integrations should migrate to
+	// `collection` and `sources` — a `ruleSet` rule maps to an equivalent source `condition` (for example, a
+	// tag rule becomes a `productTag` condition). If both `collection` and `input` are provided, `collection`
+	// is used.
+	//
+	// > Note:
+	// > The created collection is unpublished by default. To make it available to customers,
+	// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+	// mutation after creation.
+	//
+	// Learn more about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+	CollectionCreate *CreateCollectionCollectionCreateCollectionCreatePayload `json:"collectionCreate"`
+}
+
+// GetCollectionCreate returns CreateCollectionResponse.CollectionCreate, and is useful for accessing the field via an interface.
+func (v *CreateCollectionResponse) GetCollectionCreate() *CreateCollectionCollectionCreateCollectionCreatePayload {
+	return v.CollectionCreate
+}
+
+// CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayload includes the requested fields of the GraphQL type DiscountAutomaticBasicCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountAutomaticBasicCreate` mutation.
+type CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayload struct {
+	// The automatic discount that was created.
+	AutomaticDiscountNode *CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode `json:"automaticDiscountNode"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetAutomaticDiscountNode returns CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayload.AutomaticDiscountNode, and is useful for accessing the field via an interface.
+func (v *CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayload) GetAutomaticDiscountNode() *CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode {
+	return v.AutomaticDiscountNode
+}
+
+// GetUserErrors returns CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode includes the requested fields of the GraphQL type DiscountAutomaticNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticNode` object enables you to manage [automatic discounts](https://help.shopify.com/manual/discounts/discount-types#automatic-discounts) that are applied when an order meets specific criteria. You can create amount off, free shipping, or buy X get Y automatic discounts. For example, you can offer customers a free shipping discount that applies when conditions are met. Or you can offer customers a buy X get Y discount that's automatically applied when customers spend a specified amount of money, or a specified quantity of products.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode.Id, and is useful for accessing the field via an interface.
+func (v *CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode) GetId() string {
+	return v.Id
+}
+
+// CreateDiscountAutomaticBasicResponse is returned by CreateDiscountAutomaticBasic on success.
+type CreateDiscountAutomaticBasicResponse struct {
+	// Creates an
+	// [amount off discount](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount)
+	// that's automatically applied on a cart and at checkout.
+	//
+	// > Note:
+	// > To create code discounts, use the
+	// [`discountCodeBasicCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountCodeBasicCreate)
+	// mutation.
+	DiscountAutomaticBasicCreate *CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayload `json:"discountAutomaticBasicCreate"`
+}
+
+// GetDiscountAutomaticBasicCreate returns CreateDiscountAutomaticBasicResponse.DiscountAutomaticBasicCreate, and is useful for accessing the field via an interface.
+func (v *CreateDiscountAutomaticBasicResponse) GetDiscountAutomaticBasicCreate() *CreateDiscountAutomaticBasicDiscountAutomaticBasicCreateDiscountAutomaticBasicCreatePayload {
+	return v.DiscountAutomaticBasicCreate
+}
+
+// CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayload includes the requested fields of the GraphQL type DiscountCodeBasicCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountCodeBasicCreate` mutation.
+type CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayload struct {
+	// The discount code that was created.
+	CodeDiscountNode *CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayloadCodeDiscountNodeDiscountCodeNode `json:"codeDiscountNode"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetCodeDiscountNode returns CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayload.CodeDiscountNode, and is useful for accessing the field via an interface.
+func (v *CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayload) GetCodeDiscountNode() *CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayloadCodeDiscountNodeDiscountCodeNode {
+	return v.CodeDiscountNode
+}
+
+// GetUserErrors returns CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayloadCodeDiscountNodeDiscountCodeNode includes the requested fields of the GraphQL type DiscountCodeNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeNode` object enables you to manage [code discounts](https://help.shopify.com/manual/discounts/discount-types#discount-codes) that are applied when customers enter a code at checkout. For example, you can offer discounts where customers have to enter a code to redeem an amount off discount on products, variants, or collections in a store. Or, you can offer discounts where customers have to enter a code to get free shipping. Merchants can create and share discount codes individually with customers.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayloadCodeDiscountNodeDiscountCodeNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayloadCodeDiscountNodeDiscountCodeNode.Id, and is useful for accessing the field via an interface.
+func (v *CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayloadCodeDiscountNodeDiscountCodeNode) GetId() string {
+	return v.Id
+}
+
+// CreateDiscountCodeBasicResponse is returned by CreateDiscountCodeBasic on success.
+type CreateDiscountCodeBasicResponse struct {
+	// Creates an [amount off discount](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount) that's applied on a cart and at checkout when a customer enters a code. Amount off discounts can be a percentage off or a fixed amount off.
+	//
+	// > Note:
+	// > To create discounts that are automatically applied on a cart and at checkout, use the [`discountAutomaticBasicCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountAutomaticBasicCreate) mutation.
+	DiscountCodeBasicCreate *CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayload `json:"discountCodeBasicCreate"`
+}
+
+// GetDiscountCodeBasicCreate returns CreateDiscountCodeBasicResponse.DiscountCodeBasicCreate, and is useful for accessing the field via an interface.
+func (v *CreateDiscountCodeBasicResponse) GetDiscountCodeBasicCreate() *CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayload {
+	return v.DiscountCodeBasicCreate
+}
+
+// CreateFileFileCreateFileCreatePayload includes the requested fields of the GraphQL type FileCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `fileCreate` mutation.
+type CreateFileFileCreateFileCreatePayload struct {
+	// The newly created files.
+	Files json.RawMessage `json:"files"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError `json:"userErrors"`
+}
+
+// GetFiles returns CreateFileFileCreateFileCreatePayload.Files, and is useful for accessing the field via an interface.
+func (v *CreateFileFileCreateFileCreatePayload) GetFiles() json.RawMessage { return v.Files }
+
+// GetUserErrors returns CreateFileFileCreateFileCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateFileFileCreateFileCreatePayload) GetUserErrors() []CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError {
+	return v.UserErrors
+}
+
+// CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError includes the requested fields of the GraphQL type FilesUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that happens during the execution of a Files API query or mutation.
+type CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *FilesErrorCode `json:"code"`
+}
+
+// GetField returns CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError.Code, and is useful for accessing the field via an interface.
+func (v *CreateFileFileCreateFileCreatePayloadUserErrorsFilesUserError) GetCode() *FilesErrorCode {
+	return v.Code
+}
+
+// CreateFileResponse is returned by CreateFile on success.
+type CreateFileResponse struct {
+	// Creates file assets for a store from external URLs or files that were previously uploaded using the
+	// [`stagedUploadsCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/stageduploadscreate)
+	// mutation.
+	//
+	// Use the `fileCreate` mutation to add various types of media and documents to your store. These files are added to the
+	// [**Files** page](https://shopify.com/admin/settings/files) in the Shopify admin and can be referenced by other
+	// resources in your store.
+	//
+	// The `fileCreate` mutation supports multiple file types:
+	//
+	// - **Images**: Product photos, variant images, and general store imagery
+	// - **Videos**: Shopify-hosted videos for product demonstrations and marketing
+	// - **External videos**: YouTube and Vimeo videos for enhanced product experiences
+	// - **3D models**: Interactive 3D representations of products
+	// - **Generic files**: PDFs, documents, and other file types for store resources
+	//
+	// The mutation handles duplicate filenames using configurable resolution modes that automatically append UUIDs,
+	// replace existing files, or raise errors when conflicts occur.
+	//
+	// > Note:
+	// > Files are processed asynchronously. Check the
+	// > [`fileStatus`](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/File#fields-fileStatus)
+	// > field to monitor processing completion. The maximum number of files that can be created in a single batch is 250.
+	//
+	// After creating files, you can make subsequent updates using the following mutations:
+	//
+	// - [`fileUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileUpdate):
+	// Update file properties such as alt text or replace file contents while preserving the same URL.
+	// - [`fileDelete`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileDelete):
+	// Remove files from your store when they are no longer needed.
+	//
+	// To list all files in your store, use the
+	// [`files`](https://shopify.dev/docs/api/admin-graphql/latest/queries/files) query.
+	//
+	// Learn how to manage
+	// [product media and file assets](https://shopify.dev/docs/apps/build/online-store/product-media)
+	// in your app.
+	FileCreate *CreateFileFileCreateFileCreatePayload `json:"fileCreate"`
+}
+
+// GetFileCreate returns CreateFileResponse.FileCreate, and is useful for accessing the field via an interface.
+func (v *CreateFileResponse) GetFileCreate() *CreateFileFileCreateFileCreatePayload {
+	return v.FileCreate
+}
+
 // CreateMarketMarketCreateMarketCreatePayload includes the requested fields of the GraphQL type MarketCreatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -1909,6 +4864,437 @@ type CreateMetaobjectDefinitionResponse struct {
 // GetMetaobjectDefinitionCreate returns CreateMetaobjectDefinitionResponse.MetaobjectDefinitionCreate, and is useful for accessing the field via an interface.
 func (v *CreateMetaobjectDefinitionResponse) GetMetaobjectDefinitionCreate() *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayload {
 	return v.MetaobjectDefinitionCreate
+}
+
+// CreateMetaobjectMetaobjectCreateMetaobjectCreatePayload includes the requested fields of the GraphQL type MetaobjectCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `metaobjectCreate` mutation.
+type CreateMetaobjectMetaobjectCreateMetaobjectCreatePayload struct {
+	// The created metaobject.
+	Metaobject *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject `json:"metaobject"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadUserErrorsMetaobjectUserError `json:"userErrors"`
+}
+
+// GetMetaobject returns CreateMetaobjectMetaobjectCreateMetaobjectCreatePayload.Metaobject, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayload) GetMetaobject() *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject {
+	return v.Metaobject
+}
+
+// GetUserErrors returns CreateMetaobjectMetaobjectCreateMetaobjectCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayload) GetUserErrors() []CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadUserErrorsMetaobjectUserError {
+	return v.UserErrors
+}
+
+// CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject includes the requested fields of the GraphQL type Metaobject.
+// The GraphQL type's documentation follows.
+//
+// An instance of custom structured data defined by a [`MetaobjectDefinition`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectDefinition). [Metaobjects](https://shopify.dev/docs/apps/build/custom-data#what-are-metaobjects) store reusable data that extends beyond Shopify's standard resources, such as product highlights, size charts, or custom content sections.
+//
+// Each metaobject includes fields that match the field types and validation rules specified in its definition, which also determines the metaobject's capabilities, such as storefront visibility, publishing and translation support. [`Metafields`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metafield) can reference metaobjects to connect custom data with [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) objects, [`Collection`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) objects, and other Shopify resources.
+type CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject struct {
+	MetaobjectFields `json:"-"`
+}
+
+// GetId returns CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject.Id, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject) GetId() string {
+	return v.MetaobjectFields.Id
+}
+
+// GetDisplayName returns CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject.DisplayName, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject) GetDisplayName() string {
+	return v.MetaobjectFields.DisplayName
+}
+
+// GetUpdatedAt returns CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject.UpdatedAt, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject) GetUpdatedAt() string {
+	return v.MetaobjectFields.UpdatedAt
+}
+
+// GetFields returns CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject.Fields, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject) GetFields() []MetaobjectFieldsFieldsMetaobjectField {
+	return v.MetaobjectFields.Fields
+}
+
+// GetCapabilities returns CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject.Capabilities, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject) GetCapabilities() MetaobjectFieldsCapabilitiesMetaobjectCapabilityData {
+	return v.MetaobjectFields.Capabilities
+}
+
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MetaobjectFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject struct {
+	Id string `json:"id"`
+
+	DisplayName string `json:"displayName"`
+
+	UpdatedAt string `json:"updatedAt"`
+
+	Fields []MetaobjectFieldsFieldsMetaobjectField `json:"fields"`
+
+	Capabilities MetaobjectFieldsCapabilitiesMetaobjectCapabilityData `json:"capabilities"`
+}
+
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject) __premarshalJSON() (*__premarshalCreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject, error) {
+	var retval __premarshalCreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadMetaobject
+
+	retval.Id = v.MetaobjectFields.Id
+	retval.DisplayName = v.MetaobjectFields.DisplayName
+	retval.UpdatedAt = v.MetaobjectFields.UpdatedAt
+	retval.Fields = v.MetaobjectFields.Fields
+	retval.Capabilities = v.MetaobjectFields.Capabilities
+	return &retval, nil
+}
+
+// CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadUserErrorsMetaobjectUserError includes the requested fields of the GraphQL type MetaobjectUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors encountered while managing metaobject resources.
+type CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadUserErrorsMetaobjectUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *MetaobjectUserErrorCode `json:"code"`
+}
+
+// GetField returns CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadUserErrorsMetaobjectUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadUserErrorsMetaobjectUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadUserErrorsMetaobjectUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadUserErrorsMetaobjectUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadUserErrorsMetaobjectUserError.Code, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayloadUserErrorsMetaobjectUserError) GetCode() *MetaobjectUserErrorCode {
+	return v.Code
+}
+
+// CreateMetaobjectResponse is returned by CreateMetaobject on success.
+type CreateMetaobjectResponse struct {
+	// Creates a metaobject entry based on an existing [`MetaobjectDefinition`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectDefinition). The type must match a definition that already exists in the shop.
+	//
+	// Specify field values using key-value pairs that correspond to the field definitions. The mutation generates a unique handle automatically if you don't provide one. You can also configure capabilities like publishable status to control the metaobject's visibility across channels.
+	//
+	// Learn more about [managing metaobjects](https://shopify.dev/docs/apps/build/custom-data/metaobjects/manage-metaobjects).
+	MetaobjectCreate *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayload `json:"metaobjectCreate"`
+}
+
+// GetMetaobjectCreate returns CreateMetaobjectResponse.MetaobjectCreate, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectResponse) GetMetaobjectCreate() *CreateMetaobjectMetaobjectCreateMetaobjectCreatePayload {
+	return v.MetaobjectCreate
+}
+
+// CreatePagePageCreatePageCreatePayload includes the requested fields of the GraphQL type PageCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `pageCreate` mutation.
+type CreatePagePageCreatePageCreatePayload struct {
+	// The page that was created.
+	Page *CreatePagePageCreatePageCreatePayloadPage `json:"page"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError `json:"userErrors"`
+}
+
+// GetPage returns CreatePagePageCreatePageCreatePayload.Page, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayload) GetPage() *CreatePagePageCreatePageCreatePayloadPage {
+	return v.Page
+}
+
+// GetUserErrors returns CreatePagePageCreatePageCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayload) GetUserErrors() []CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError {
+	return v.UserErrors
+}
+
+// CreatePagePageCreatePageCreatePayloadPage includes the requested fields of the GraphQL type Page.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type CreatePagePageCreatePageCreatePayloadPage struct {
+	PageFields `json:"-"`
+}
+
+// GetId returns CreatePagePageCreatePageCreatePayloadPage.Id, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadPage) GetId() string { return v.PageFields.Id }
+
+// GetHandle returns CreatePagePageCreatePageCreatePayloadPage.Handle, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadPage) GetHandle() string { return v.PageFields.Handle }
+
+// GetTitle returns CreatePagePageCreatePageCreatePayloadPage.Title, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadPage) GetTitle() string { return v.PageFields.Title }
+
+// GetBody returns CreatePagePageCreatePageCreatePayloadPage.Body, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadPage) GetBody() string { return v.PageFields.Body }
+
+// GetIsPublished returns CreatePagePageCreatePageCreatePayloadPage.IsPublished, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadPage) GetIsPublished() bool {
+	return v.PageFields.IsPublished
+}
+
+// GetTemplateSuffix returns CreatePagePageCreatePageCreatePayloadPage.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadPage) GetTemplateSuffix() *string {
+	return v.PageFields.TemplateSuffix
+}
+
+func (v *CreatePagePageCreatePageCreatePayloadPage) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreatePagePageCreatePageCreatePayloadPage
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreatePagePageCreatePageCreatePayloadPage = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreatePagePageCreatePageCreatePayloadPage struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Body string `json:"body"`
+
+	IsPublished bool `json:"isPublished"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *CreatePagePageCreatePageCreatePayloadPage) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreatePagePageCreatePageCreatePayloadPage) __premarshalJSON() (*__premarshalCreatePagePageCreatePageCreatePayloadPage, error) {
+	var retval __premarshalCreatePagePageCreatePageCreatePayloadPage
+
+	retval.Id = v.PageFields.Id
+	retval.Handle = v.PageFields.Handle
+	retval.Title = v.PageFields.Title
+	retval.Body = v.PageFields.Body
+	retval.IsPublished = v.PageFields.IsPublished
+	retval.TemplateSuffix = v.PageFields.TemplateSuffix
+	return &retval, nil
+}
+
+// CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError includes the requested fields of the GraphQL type PageCreateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `PageCreate`.
+type CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreatePagePageCreatePageCreatePayloadUserErrorsPageCreateUserError) GetMessage() string {
+	return v.Message
+}
+
+// CreatePageResponse is returned by CreatePage on success.
+type CreatePageResponse struct {
+	// Creates a [`Page`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page) for the online store.
+	//
+	// Pages contain custom content like "About Us" or "Contact" information that merchants display outside their product catalog. The page requires a [`title`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page#field-Page.fields.title) and can include HTML content, publishing settings, and custom [template suffixes](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page#field-Page.fields.templateSuffix). You can control visibility through the [`isPublished`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page#field-Page.fields.isPublished) flag or schedule publication with a specific date.
+	//
+	// The mutation returns the complete page object upon successful creation or validation errors if the input is invalid.
+	PageCreate *CreatePagePageCreatePageCreatePayload `json:"pageCreate"`
+}
+
+// GetPageCreate returns CreatePageResponse.PageCreate, and is useful for accessing the field via an interface.
+func (v *CreatePageResponse) GetPageCreate() *CreatePagePageCreatePageCreatePayload {
+	return v.PageCreate
+}
+
+// CreateSegmentResponse is returned by CreateSegment on success.
+type CreateSegmentResponse struct {
+	// Creates a segment.
+	SegmentCreate *CreateSegmentSegmentCreateSegmentCreatePayload `json:"segmentCreate"`
+}
+
+// GetSegmentCreate returns CreateSegmentResponse.SegmentCreate, and is useful for accessing the field via an interface.
+func (v *CreateSegmentResponse) GetSegmentCreate() *CreateSegmentSegmentCreateSegmentCreatePayload {
+	return v.SegmentCreate
+}
+
+// CreateSegmentSegmentCreateSegmentCreatePayload includes the requested fields of the GraphQL type SegmentCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `segmentCreate` mutation.
+type CreateSegmentSegmentCreateSegmentCreatePayload struct {
+	// The newly created segment.
+	Segment *CreateSegmentSegmentCreateSegmentCreatePayloadSegment `json:"segment"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetSegment returns CreateSegmentSegmentCreateSegmentCreatePayload.Segment, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayload) GetSegment() *CreateSegmentSegmentCreateSegmentCreatePayloadSegment {
+	return v.Segment
+}
+
+// GetUserErrors returns CreateSegmentSegmentCreateSegmentCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayload) GetUserErrors() []CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// CreateSegmentSegmentCreateSegmentCreatePayloadSegment includes the requested fields of the GraphQL type Segment.
+// The GraphQL type's documentation follows.
+//
+// A group of [customers](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) that meet specific criteria defined through [ShopifyQL query](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference) conditions. Common use cases for segments include customer analytics, targeted marketing campaigns, and automated discount eligibility.
+//
+// The segment's [`query`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-query) field contains ShopifyQL conditions that determine membership, such as purchase history, location, or engagement patterns. Tracks when the segment was created with [`creationDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-creationDate) and when it was last modified with [`lastEditDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-lastEditDate).
+type CreateSegmentSegmentCreateSegmentCreatePayloadSegment struct {
+	SegmentFields `json:"-"`
+}
+
+// GetId returns CreateSegmentSegmentCreateSegmentCreatePayloadSegment.Id, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadSegment) GetId() string {
+	return v.SegmentFields.Id
+}
+
+// GetName returns CreateSegmentSegmentCreateSegmentCreatePayloadSegment.Name, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadSegment) GetName() string {
+	return v.SegmentFields.Name
+}
+
+// GetQuery returns CreateSegmentSegmentCreateSegmentCreatePayloadSegment.Query, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadSegment) GetQuery() string {
+	return v.SegmentFields.Query
+}
+
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadSegment) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateSegmentSegmentCreateSegmentCreatePayloadSegment
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateSegmentSegmentCreateSegmentCreatePayloadSegment = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.SegmentFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateSegmentSegmentCreateSegmentCreatePayloadSegment struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Query string `json:"query"`
+}
+
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadSegment) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadSegment) __premarshalJSON() (*__premarshalCreateSegmentSegmentCreateSegmentCreatePayloadSegment, error) {
+	var retval __premarshalCreateSegmentSegmentCreateSegmentCreatePayloadSegment
+
+	retval.Id = v.SegmentFields.Id
+	retval.Name = v.SegmentFields.Name
+	retval.Query = v.SegmentFields.Query
+	return &retval, nil
+}
+
+// CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
 }
 
 // CreateWebPresenceResponse is returned by CreateWebPresence on success.
@@ -2736,6 +6122,310 @@ func (v *DeactivateLocationResponse) GetLocationDeactivate() *DeactivateLocation
 	return v.LocationDeactivate
 }
 
+// DeleteBlogBlogDeleteBlogDeletePayload includes the requested fields of the GraphQL type BlogDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `blogDelete` mutation.
+type DeleteBlogBlogDeleteBlogDeletePayload struct {
+	// The ID of the deleted blog.
+	DeletedBlogId *string `json:"deletedBlogId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError `json:"userErrors"`
+}
+
+// GetDeletedBlogId returns DeleteBlogBlogDeleteBlogDeletePayload.DeletedBlogId, and is useful for accessing the field via an interface.
+func (v *DeleteBlogBlogDeleteBlogDeletePayload) GetDeletedBlogId() *string { return v.DeletedBlogId }
+
+// GetUserErrors returns DeleteBlogBlogDeleteBlogDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteBlogBlogDeleteBlogDeletePayload) GetUserErrors() []DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError {
+	return v.UserErrors
+}
+
+// DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError includes the requested fields of the GraphQL type BlogDeleteUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `BlogDelete`.
+type DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *BlogDeleteUserErrorCode `json:"code"`
+}
+
+// GetField returns DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError.Code, and is useful for accessing the field via an interface.
+func (v *DeleteBlogBlogDeleteBlogDeletePayloadUserErrorsBlogDeleteUserError) GetCode() *BlogDeleteUserErrorCode {
+	return v.Code
+}
+
+// DeleteBlogResponse is returned by DeleteBlog on success.
+type DeleteBlogResponse struct {
+	// Permanently deletes a blog from a shop. This mutation removes the blog container and its organizational structure.
+	//
+	// For example, when consolidating multiple seasonal blogs into a single year-round content strategy, merchants can use this mutation to remove unused blogs.
+	//
+	// Use the `blogDelete` mutation to:
+	// - Remove unused or outdated blogs
+	// - Consolidate content organization
+	// - Clean up blog structure
+	//
+	// The deletion is permanent and returns the deleted blog's ID for confirmation.
+	BlogDelete *DeleteBlogBlogDeleteBlogDeletePayload `json:"blogDelete"`
+}
+
+// GetBlogDelete returns DeleteBlogResponse.BlogDelete, and is useful for accessing the field via an interface.
+func (v *DeleteBlogResponse) GetBlogDelete() *DeleteBlogBlogDeleteBlogDeletePayload {
+	return v.BlogDelete
+}
+
+// DeleteCollectionCollectionDeleteCollectionDeletePayload includes the requested fields of the GraphQL type CollectionDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `collectionDelete` mutation.
+type DeleteCollectionCollectionDeleteCollectionDeletePayload struct {
+	// The ID of the collection that was deleted. Returns `null` if the collection doesn't exist.
+	DeletedCollectionId *string `json:"deletedCollectionId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetDeletedCollectionId returns DeleteCollectionCollectionDeleteCollectionDeletePayload.DeletedCollectionId, and is useful for accessing the field via an interface.
+func (v *DeleteCollectionCollectionDeleteCollectionDeletePayload) GetDeletedCollectionId() *string {
+	return v.DeletedCollectionId
+}
+
+// GetUserErrors returns DeleteCollectionCollectionDeleteCollectionDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteCollectionCollectionDeleteCollectionDeletePayload) GetUserErrors() []DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteCollectionCollectionDeleteCollectionDeletePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// DeleteCollectionResponse is returned by DeleteCollection on success.
+type DeleteCollectionResponse struct {
+	// Deletes a collection and removes it permanently from the store. This operation cannot be undone and will remove the collection from all sales channels where it was published.
+	//
+	// For example, when merchants discontinue seasonal promotions or reorganize their catalog structure, they can delete outdated collections like "Back to School 2023" to keep their store organized.
+	//
+	// Use `CollectionDelete` to:
+	// - Remove outdated or unused collections from stores
+	// - Clean up collection structures during catalog reorganization
+	// - Implement collection management tools with deletion capabilities
+	//
+	// Products within the deleted collection remain in the store but are no longer grouped under that collection.
+	//
+	// Learn more about [collection management](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection).
+	CollectionDelete *DeleteCollectionCollectionDeleteCollectionDeletePayload `json:"collectionDelete"`
+}
+
+// GetCollectionDelete returns DeleteCollectionResponse.CollectionDelete, and is useful for accessing the field via an interface.
+func (v *DeleteCollectionResponse) GetCollectionDelete() *DeleteCollectionCollectionDeleteCollectionDeletePayload {
+	return v.CollectionDelete
+}
+
+// DeleteDiscountAutomaticDiscountAutomaticDeleteDiscountAutomaticDeletePayload includes the requested fields of the GraphQL type DiscountAutomaticDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountAutomaticDelete` mutation.
+type DeleteDiscountAutomaticDiscountAutomaticDeleteDiscountAutomaticDeletePayload struct {
+	// The ID of the automatic discount that was deleted.
+	DeletedAutomaticDiscountId *string `json:"deletedAutomaticDiscountId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetDeletedAutomaticDiscountId returns DeleteDiscountAutomaticDiscountAutomaticDeleteDiscountAutomaticDeletePayload.DeletedAutomaticDiscountId, and is useful for accessing the field via an interface.
+func (v *DeleteDiscountAutomaticDiscountAutomaticDeleteDiscountAutomaticDeletePayload) GetDeletedAutomaticDiscountId() *string {
+	return v.DeletedAutomaticDiscountId
+}
+
+// GetUserErrors returns DeleteDiscountAutomaticDiscountAutomaticDeleteDiscountAutomaticDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteDiscountAutomaticDiscountAutomaticDeleteDiscountAutomaticDeletePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// DeleteDiscountAutomaticResponse is returned by DeleteDiscountAutomatic on success.
+type DeleteDiscountAutomaticResponse struct {
+	// Deletes an existing automatic discount from the store, permanently removing it from all future order calculations. This mutation provides a clean way to remove promotional campaigns that are no longer needed.
+	//
+	// For example, when a seasonal promotion ends or a flash sale concludes, merchants can use this mutation to ensure the discount no longer applies to new orders while preserving historical order data.
+	//
+	// Use `DiscountAutomaticDelete` to:
+	// - Remove expired promotional campaigns
+	// - Clean up test discounts during development
+	// - Delete automatic discounts that conflict with new promotions
+	// - Maintain a clean discount configuration
+	//
+	// The mutation returns the ID of the deleted discount for confirmation and any validation errors if the deletion cannot be completed. Once deleted, the automatic discount will no longer appear in discount lists or apply to new customer orders.
+	DiscountAutomaticDelete *DeleteDiscountAutomaticDiscountAutomaticDeleteDiscountAutomaticDeletePayload `json:"discountAutomaticDelete"`
+}
+
+// GetDiscountAutomaticDelete returns DeleteDiscountAutomaticResponse.DiscountAutomaticDelete, and is useful for accessing the field via an interface.
+func (v *DeleteDiscountAutomaticResponse) GetDiscountAutomaticDelete() *DeleteDiscountAutomaticDiscountAutomaticDeleteDiscountAutomaticDeletePayload {
+	return v.DiscountAutomaticDelete
+}
+
+// DeleteDiscountCodeDiscountCodeDeleteDiscountCodeDeletePayload includes the requested fields of the GraphQL type DiscountCodeDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountCodeDelete` mutation.
+type DeleteDiscountCodeDiscountCodeDeleteDiscountCodeDeletePayload struct {
+	// The ID of the code discount that was deleted.
+	DeletedCodeDiscountId *string `json:"deletedCodeDiscountId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetDeletedCodeDiscountId returns DeleteDiscountCodeDiscountCodeDeleteDiscountCodeDeletePayload.DeletedCodeDiscountId, and is useful for accessing the field via an interface.
+func (v *DeleteDiscountCodeDiscountCodeDeleteDiscountCodeDeletePayload) GetDeletedCodeDiscountId() *string {
+	return v.DeletedCodeDiscountId
+}
+
+// GetUserErrors returns DeleteDiscountCodeDiscountCodeDeleteDiscountCodeDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteDiscountCodeDiscountCodeDeleteDiscountCodeDeletePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// DeleteDiscountCodeResponse is returned by DeleteDiscountCode on success.
+type DeleteDiscountCodeResponse struct {
+	// Removes a code discount from the store, making it permanently unavailable for customer use. This mutation provides a clean way to eliminate discount codes that are no longer needed or have been replaced.
+	//
+	// For example, when a seasonal promotion ends or a discount code has been compromised, merchants can delete it entirely rather than just deactivating it, ensuring customers cannot attempt to use expired promotional codes.
+	//
+	// Use `DiscountCodeDelete` to:
+	// - persistently remove outdated promotional codes
+	// - Clean up discount code lists after campaigns end
+	// - Eliminate compromised or leaked discount codes
+	// - Maintain organized discount management
+	//
+	// Once deleted, the discount code cannot be recovered and any customer attempts to use it will fail. This differs from deactivation, which preserves the code for potential future reactivation.
+	DiscountCodeDelete *DeleteDiscountCodeDiscountCodeDeleteDiscountCodeDeletePayload `json:"discountCodeDelete"`
+}
+
+// GetDiscountCodeDelete returns DeleteDiscountCodeResponse.DiscountCodeDelete, and is useful for accessing the field via an interface.
+func (v *DeleteDiscountCodeResponse) GetDiscountCodeDelete() *DeleteDiscountCodeDiscountCodeDeleteDiscountCodeDeletePayload {
+	return v.DiscountCodeDelete
+}
+
+// DeleteFileFileDeleteFileDeletePayload includes the requested fields of the GraphQL type FileDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `fileDelete` mutation.
+type DeleteFileFileDeleteFileDeletePayload struct {
+	// The IDs of the deleted files.
+	DeletedFileIds []string `json:"deletedFileIds"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError `json:"userErrors"`
+}
+
+// GetDeletedFileIds returns DeleteFileFileDeleteFileDeletePayload.DeletedFileIds, and is useful for accessing the field via an interface.
+func (v *DeleteFileFileDeleteFileDeletePayload) GetDeletedFileIds() []string { return v.DeletedFileIds }
+
+// GetUserErrors returns DeleteFileFileDeleteFileDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteFileFileDeleteFileDeletePayload) GetUserErrors() []DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError {
+	return v.UserErrors
+}
+
+// DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError includes the requested fields of the GraphQL type FilesUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that happens during the execution of a Files API query or mutation.
+type DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *FilesErrorCode `json:"code"`
+}
+
+// GetField returns DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError.Code, and is useful for accessing the field via an interface.
+func (v *DeleteFileFileDeleteFileDeletePayloadUserErrorsFilesUserError) GetCode() *FilesErrorCode {
+	return v.Code
+}
+
+// DeleteFileResponse is returned by DeleteFile on success.
+type DeleteFileResponse struct {
+	// Deletes file assets that were previously uploaded to your store.
+	//
+	// Use the `fileDelete` mutation to permanently remove media and file assets from your store when they are no longer needed.
+	// This mutation handles the complete removal of files from both your store's file library and any associated references
+	// to products or other resources.
+	//
+	// The `fileDelete` mutation supports removal of multiple file types:
+	//
+	// - **Images**: Product photos, variant images, and general store imagery
+	// - **Videos**: Shopify-hosted videos for product demonstrations and marketing content
+	// - **External Videos**: YouTube and Vimeo videos linked to your products
+	// - **3D models**: Interactive 3D representations of products
+	// - **Generic files**: PDFs, documents, and other file types stored in your
+	// [**Files** page](https://shopify.com/admin/settings/files)
+	//
+	// When you delete files that are referenced by products, the mutation automatically removes those references and
+	// reorders any remaining media to maintain proper positioning. Product file references are database relationships
+	// managed through a media reference system, not just links in product descriptions. The Shopify admin provides a UI
+	// to manage these relationships, and when files are deleted, the system automatically cleans up all references.
+	// Files that are currently being processed by other operations are rejected to prevent conflicts.
+	//
+	// > Caution:
+	// > File deletion is permanent and can't be undone. When you delete a file that's being used in your store,
+	// > it will immediately stop appearing wherever it was displayed. For example, if you delete a product image,
+	// > that product will show a broken image or placeholder on your storefront and in the admin. The same applies
+	// > to any other files linked from themes, blog posts, or pages. Before deleting files, you can use the
+	// > [`files` query](https://shopify.dev/api/admin-graphql/latest/queries/files) to list and review
+	// > your store's file assets.
+	//
+	// Learn how to manage
+	// [product media and file assets](https://shopify.dev/docs/apps/build/online-store/product-media)
+	// in your app.
+	FileDelete *DeleteFileFileDeleteFileDeletePayload `json:"fileDelete"`
+}
+
+// GetFileDelete returns DeleteFileResponse.FileDelete, and is useful for accessing the field via an interface.
+func (v *DeleteFileResponse) GetFileDelete() *DeleteFileFileDeleteFileDeletePayload {
+	return v.FileDelete
+}
+
 // DeleteLocationLocationDeleteLocationDeletePayload includes the requested fields of the GraphQL type LocationDeletePayload.
 // The GraphQL type's documentation follows.
 //
@@ -3000,6 +6690,282 @@ type DeleteMetaobjectDefinitionResponse struct {
 // GetMetaobjectDefinitionDelete returns DeleteMetaobjectDefinitionResponse.MetaobjectDefinitionDelete, and is useful for accessing the field via an interface.
 func (v *DeleteMetaobjectDefinitionResponse) GetMetaobjectDefinitionDelete() *DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload {
 	return v.MetaobjectDefinitionDelete
+}
+
+// DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayload includes the requested fields of the GraphQL type MetaobjectDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `metaobjectDelete` mutation.
+type DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayload struct {
+	// The ID of the deleted metaobject.
+	DeletedId *string `json:"deletedId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayloadUserErrorsMetaobjectUserError `json:"userErrors"`
+}
+
+// GetDeletedId returns DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayload.DeletedId, and is useful for accessing the field via an interface.
+func (v *DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayload) GetDeletedId() *string {
+	return v.DeletedId
+}
+
+// GetUserErrors returns DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayload) GetUserErrors() []DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayloadUserErrorsMetaobjectUserError {
+	return v.UserErrors
+}
+
+// DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayloadUserErrorsMetaobjectUserError includes the requested fields of the GraphQL type MetaobjectUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors encountered while managing metaobject resources.
+type DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayloadUserErrorsMetaobjectUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *MetaobjectUserErrorCode `json:"code"`
+}
+
+// GetField returns DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayloadUserErrorsMetaobjectUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayloadUserErrorsMetaobjectUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayloadUserErrorsMetaobjectUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayloadUserErrorsMetaobjectUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayloadUserErrorsMetaobjectUserError.Code, and is useful for accessing the field via an interface.
+func (v *DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayloadUserErrorsMetaobjectUserError) GetCode() *MetaobjectUserErrorCode {
+	return v.Code
+}
+
+// DeleteMetaobjectResponse is returned by DeleteMetaobject on success.
+type DeleteMetaobjectResponse struct {
+	// Deletes the specified metaobject and its associated metafields.
+	MetaobjectDelete *DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayload `json:"metaobjectDelete"`
+}
+
+// GetMetaobjectDelete returns DeleteMetaobjectResponse.MetaobjectDelete, and is useful for accessing the field via an interface.
+func (v *DeleteMetaobjectResponse) GetMetaobjectDelete() *DeleteMetaobjectMetaobjectDeleteMetaobjectDeletePayload {
+	return v.MetaobjectDelete
+}
+
+// DeletePagePageDeletePageDeletePayload includes the requested fields of the GraphQL type PageDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `pageDelete` mutation.
+type DeletePagePageDeletePageDeletePayload struct {
+	// The ID of the deleted page.
+	DeletedPageId *string `json:"deletedPageId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError `json:"userErrors"`
+}
+
+// GetDeletedPageId returns DeletePagePageDeletePageDeletePayload.DeletedPageId, and is useful for accessing the field via an interface.
+func (v *DeletePagePageDeletePageDeletePayload) GetDeletedPageId() *string { return v.DeletedPageId }
+
+// GetUserErrors returns DeletePagePageDeletePageDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeletePagePageDeletePageDeletePayload) GetUserErrors() []DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError {
+	return v.UserErrors
+}
+
+// DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError includes the requested fields of the GraphQL type PageDeleteUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `PageDelete`.
+type DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *PageDeleteUserErrorCode `json:"code"`
+}
+
+// GetField returns DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError.Code, and is useful for accessing the field via an interface.
+func (v *DeletePagePageDeletePageDeletePayloadUserErrorsPageDeleteUserError) GetCode() *PageDeleteUserErrorCode {
+	return v.Code
+}
+
+// DeletePageResponse is returned by DeletePage on success.
+type DeletePageResponse struct {
+	// Permanently deletes a page from the online store.
+	//
+	// For example, merchants might delete seasonal landing pages after campaigns end, or remove outdated policy pages when terms change.
+	//
+	// Use the `pageDelete` mutation to:
+	// - Remove outdated or unnecessary pages
+	// - Clean up seasonal landing pages
+	// - Delete duplicate pages
+	//
+	// The deletion is permanent and returns the deleted page's ID for confirmation.
+	PageDelete *DeletePagePageDeletePageDeletePayload `json:"pageDelete"`
+}
+
+// GetPageDelete returns DeletePageResponse.PageDelete, and is useful for accessing the field via an interface.
+func (v *DeletePageResponse) GetPageDelete() *DeletePagePageDeletePageDeletePayload {
+	return v.PageDelete
+}
+
+// DeleteProductProductDeleteProductDeletePayload includes the requested fields of the GraphQL type ProductDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `productDelete` mutation.
+type DeleteProductProductDeleteProductDeletePayload struct {
+	// The ID of the deleted product.
+	DeletedProductId *string `json:"deletedProductId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetDeletedProductId returns DeleteProductProductDeleteProductDeletePayload.DeletedProductId, and is useful for accessing the field via an interface.
+func (v *DeleteProductProductDeleteProductDeletePayload) GetDeletedProductId() *string {
+	return v.DeletedProductId
+}
+
+// GetUserErrors returns DeleteProductProductDeleteProductDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteProductProductDeleteProductDeletePayload) GetUserErrors() []DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteProductProductDeleteProductDeletePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// DeleteProductResponse is returned by DeleteProduct on success.
+type DeleteProductResponse struct {
+	// Permanently deletes a product and all its associated data, including variants, media, publications, and inventory items.
+	//
+	// Use the `productDelete` mutation to programmatically remove products from your store when they need to be
+	// permanently deleted from your catalog, such as when removing discontinued items, cleaning up test data, or
+	// synchronizing with external inventory management systems.
+	//
+	// The `productDelete` mutation removes the product from all associated collections,
+	// and removes all associated data for the product, including:
+	//
+	// - All product variants and their inventory items
+	// - Product media (images, videos) that are not referenced by other products
+	// - [Product options](https://shopify.dev/api/admin-graphql/latest/objects/ProductOption) and [option values](https://shopify.dev/api/admin-graphql/latest/objects/ProductOptionValue)
+	// - Product publications across all sales channels
+	// - Product tags and metadata associations
+	//
+	// The `productDelete` mutation also has the following effects on existing orders and transactions:
+	//
+	// - **Draft orders**: Existing draft orders that reference this product will retain the product information as stored data, but the product reference will be removed. Draft orders can still be completed with the stored product details.
+	// - **Completed orders and refunds**: Previously completed orders that included this product aren't affected. The product information in completed orders is preserved for record-keeping, and existing refunds for this product remain valid and processable.
+	//
+	// > Caution:
+	// > Product deletion is irreversible. After a product is deleted, it can't be recovered. Consider archiving
+	// > or unpublishing products instead if you might need to restore them later.
+	//
+	// If you need to delete a large product, such as one that has many
+	// [variants](https://shopify.dev/api/admin-graphql/latest/objects/ProductVariant)
+	// that are active at several
+	// [locations](https://shopify.dev/api/admin-graphql/latest/objects/Location),
+	// you might encounter timeout errors. To avoid these timeout errors, you can set the
+	// [`synchronous`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productDelete#arguments-synchronous)
+	// parameter to `false` to run the deletion asynchronously, which returns a
+	// [`ProductDeleteOperation`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductDeleteOperation)
+	// that you can monitor for completion status.
+	//
+	// If you need more granular control over product cleanup, consider using these alternative mutations:
+	//
+	// - [`productUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productUpdate):
+	// Update the product status to archived or unpublished instead of deleting.
+	// - [`productVariantsBulkDelete`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productVariantsBulkDelete):
+	// Delete specific variants while keeping the product.
+	// - [`productOptionsDelete`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productOptionsDelete):
+	// Delete the choices available for a product, such as size, color, or material.
+	//
+	// Learn more about the [product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model).
+	ProductDelete *DeleteProductProductDeleteProductDeletePayload `json:"productDelete"`
+}
+
+// GetProductDelete returns DeleteProductResponse.ProductDelete, and is useful for accessing the field via an interface.
+func (v *DeleteProductResponse) GetProductDelete() *DeleteProductProductDeleteProductDeletePayload {
+	return v.ProductDelete
+}
+
+// DeleteSegmentResponse is returned by DeleteSegment on success.
+type DeleteSegmentResponse struct {
+	// Deletes a segment.
+	SegmentDelete *DeleteSegmentSegmentDeleteSegmentDeletePayload `json:"segmentDelete"`
+}
+
+// GetSegmentDelete returns DeleteSegmentResponse.SegmentDelete, and is useful for accessing the field via an interface.
+func (v *DeleteSegmentResponse) GetSegmentDelete() *DeleteSegmentSegmentDeleteSegmentDeletePayload {
+	return v.SegmentDelete
+}
+
+// DeleteSegmentSegmentDeleteSegmentDeletePayload includes the requested fields of the GraphQL type SegmentDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `segmentDelete` mutation.
+type DeleteSegmentSegmentDeleteSegmentDeletePayload struct {
+	// ID of the deleted segment.
+	DeletedSegmentId *string `json:"deletedSegmentId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetDeletedSegmentId returns DeleteSegmentSegmentDeleteSegmentDeletePayload.DeletedSegmentId, and is useful for accessing the field via an interface.
+func (v *DeleteSegmentSegmentDeleteSegmentDeletePayload) GetDeletedSegmentId() *string {
+	return v.DeletedSegmentId
+}
+
+// GetUserErrors returns DeleteSegmentSegmentDeleteSegmentDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteSegmentSegmentDeleteSegmentDeletePayload) GetUserErrors() []DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
 }
 
 // DeleteWebPresenceResponse is returned by DeleteWebPresence on success.
@@ -5053,6 +9019,2661 @@ func (v *DisableShopLocaleShopLocaleDisableShopLocaleDisablePayloadUserErrorsUse
 	return v.Message
 }
 
+// The input fields for the value of the discount and how it is applied.
+type DiscountAmountInput struct {
+	// The value of the discount.
+	Amount *string `json:"amount,omitempty"`
+	// If true, then the discount is applied to each of the entitled items. If false, then the amount is split across all of the entitled items.
+	AppliesOnEachItem *bool `json:"appliesOnEachItem,omitempty"`
+}
+
+// GetAmount returns DiscountAmountInput.Amount, and is useful for accessing the field via an interface.
+func (v *DiscountAmountInput) GetAmount() *string { return v.Amount }
+
+// GetAppliesOnEachItem returns DiscountAmountInput.AppliesOnEachItem, and is useful for accessing the field via an interface.
+func (v *DiscountAmountInput) GetAppliesOnEachItem() *bool { return v.AppliesOnEachItem }
+
+// The input fields for creating or updating an
+// [amount off discount](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount)
+// that's automatically applied on a cart and at checkout.
+//
+// During creation the required fields are:
+// - `customerGets`
+// - `startsAt`
+// - `title`
+type DiscountAutomaticBasicInput struct {
+	// The
+	// [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// that you can use in combination with
+	// [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types),
+	// and the product discount tags that determine which product discounts can apply
+	// together on the same cart line.
+	CombinesWith *DiscountCombinesWithInput `json:"combinesWith,omitempty"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title *string `json:"title,omitempty"`
+	// The date and time when the discount becomes active and is available to customers.
+	StartsAt *string `json:"startsAt,omitempty"`
+	// The date and time when the discount expires and is no longer available to customers.
+	// For discounts without a fixed expiration date, specify `null`.
+	EndsAt *string `json:"endsAt,omitempty"`
+	// The context defining which buyers can use the discount.
+	// You can target specific customer IDs, customer segments, or make the discount available to all buyers.
+	// Discounts automatically apply on Point of Sale (POS) for Pro locations when the context is not set to ALL.
+	Context *DiscountContextInput `json:"context,omitempty"`
+	// A list of searchable keywords that are associated with the discount.
+	//
+	// Use these tags on product discounts to determine which other product discounts can
+	// apply to the same cart line when you configure
+	// `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+	//
+	// For example, you can apply a `loyalty` tag to discounts
+	// that are associated with a loyalty program.
+	//
+	// Updating `tags` overwrites any existing tags that were previously added to the discount.
+	// To add new tags without overwriting existing tags, use the
+	// [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// mutation.
+	Tags []string `json:"tags,omitempty"`
+	// The minimum subtotal or quantity of items that are required for the discount to be applied.
+	MinimumRequirement *DiscountMinimumRequirementInput `json:"minimumRequirement,omitempty"`
+	// Information about the qualifying items and their discount.
+	CustomerGets *DiscountCustomerGetsInput `json:"customerGets,omitempty"`
+	// The number of billing cycles for which the discount can be applied,
+	// which is useful for subscription-based discounts. For example, if you set this field
+	// to `3`, then the discount only applies to the first three billing cycles of a
+	// subscription. If you specify `0`, then the discount applies indefinitely.
+	RecurringCycleLimit *int `json:"recurringCycleLimit,omitempty"`
+}
+
+// GetCombinesWith returns DiscountAutomaticBasicInput.CombinesWith, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBasicInput) GetCombinesWith() *DiscountCombinesWithInput {
+	return v.CombinesWith
+}
+
+// GetTitle returns DiscountAutomaticBasicInput.Title, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBasicInput) GetTitle() *string { return v.Title }
+
+// GetStartsAt returns DiscountAutomaticBasicInput.StartsAt, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBasicInput) GetStartsAt() *string { return v.StartsAt }
+
+// GetEndsAt returns DiscountAutomaticBasicInput.EndsAt, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBasicInput) GetEndsAt() *string { return v.EndsAt }
+
+// GetContext returns DiscountAutomaticBasicInput.Context, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBasicInput) GetContext() *DiscountContextInput { return v.Context }
+
+// GetTags returns DiscountAutomaticBasicInput.Tags, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBasicInput) GetTags() []string { return v.Tags }
+
+// GetMinimumRequirement returns DiscountAutomaticBasicInput.MinimumRequirement, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBasicInput) GetMinimumRequirement() *DiscountMinimumRequirementInput {
+	return v.MinimumRequirement
+}
+
+// GetCustomerGets returns DiscountAutomaticBasicInput.CustomerGets, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBasicInput) GetCustomerGets() *DiscountCustomerGetsInput {
+	return v.CustomerGets
+}
+
+// GetRecurringCycleLimit returns DiscountAutomaticBasicInput.RecurringCycleLimit, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBasicInput) GetRecurringCycleLimit() *int { return v.RecurringCycleLimit }
+
+// All buyers are eligible for the discount.
+type DiscountBuyerSelection string
+
+const (
+	// All buyers are eligible for the discount.
+	DiscountBuyerSelectionAll DiscountBuyerSelection = "ALL"
+)
+
+var AllDiscountBuyerSelection = []DiscountBuyerSelection{
+	DiscountBuyerSelectionAll,
+}
+
+// The input fields for creating or updating an [amount off discount](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount) that's applied on a cart and at checkout when a customer enters a code. Amount off discounts can be a percentage off or a fixed amount off.
+//
+// When creating, required fields are:
+// - `code`
+// - `context` (or deprecated `customerSelection`)
+// - `customerGets`
+// - `startsAt`
+// - `title`
+type DiscountCodeBasicInput struct {
+	// The
+	// [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// that you can use in combination with
+	// [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types),
+	// and the product discount tags that determine which product discounts can apply
+	// together on the same cart line.
+	CombinesWith *DiscountCombinesWithInput `json:"combinesWith,omitempty"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title *string `json:"title,omitempty"`
+	// The date and time when the discount becomes active and is available to customers.
+	StartsAt *string `json:"startsAt,omitempty"`
+	// The date and time when the discount expires and is no longer available to customers.
+	// For discounts without a fixed expiration date, specify `null`.
+	EndsAt *string `json:"endsAt,omitempty"`
+	// Whether a customer can only use the discount once.
+	AppliesOncePerCustomer *bool `json:"appliesOncePerCustomer,omitempty"`
+	// The code that customers use to apply the discount.
+	Code *string `json:"code,omitempty"`
+	// The maximum number of times the discount can be redeemed.
+	// For unlimited usage, specify `null`.
+	UsageLimit *int `json:"usageLimit,omitempty"`
+	// The context defining which buyers can use the discount.
+	// You can target specific customer IDs, customer segments, or make the discount available to all buyers.
+	Context *DiscountContextInput `json:"context,omitempty"`
+	// A list of searchable keywords that are associated with the discount.
+	//
+	// Use these tags on product discounts to determine which other product discounts can
+	// apply to the same cart line when you configure
+	// `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+	//
+	// For example, you can apply a `loyalty` tag to discounts
+	// that are associated with a loyalty program.
+	//
+	// Updating `tags` overwrites any existing tags that were previously added to the discount.
+	// To add new tags without overwriting existing tags, use the
+	// [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// mutation.
+	Tags []string `json:"tags,omitempty"`
+	// The minimum subtotal or quantity of items that are required for the discount to be applied.
+	MinimumRequirement *DiscountMinimumRequirementInput `json:"minimumRequirement,omitempty"`
+	// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+	CustomerGets *DiscountCustomerGetsInput `json:"customerGets,omitempty"`
+	// The number of billing cycles for which the discount can be applied, which is useful for subscription-based discounts. For example, if you set this field to `3`, then the discount only applies to the first three billing cycles of a subscription. If you specify `0`, then the discount applies indefinitely.
+	RecurringCycleLimit *int `json:"recurringCycleLimit,omitempty"`
+}
+
+// GetCombinesWith returns DiscountCodeBasicInput.CombinesWith, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBasicInput) GetCombinesWith() *DiscountCombinesWithInput { return v.CombinesWith }
+
+// GetTitle returns DiscountCodeBasicInput.Title, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBasicInput) GetTitle() *string { return v.Title }
+
+// GetStartsAt returns DiscountCodeBasicInput.StartsAt, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBasicInput) GetStartsAt() *string { return v.StartsAt }
+
+// GetEndsAt returns DiscountCodeBasicInput.EndsAt, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBasicInput) GetEndsAt() *string { return v.EndsAt }
+
+// GetAppliesOncePerCustomer returns DiscountCodeBasicInput.AppliesOncePerCustomer, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBasicInput) GetAppliesOncePerCustomer() *bool { return v.AppliesOncePerCustomer }
+
+// GetCode returns DiscountCodeBasicInput.Code, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBasicInput) GetCode() *string { return v.Code }
+
+// GetUsageLimit returns DiscountCodeBasicInput.UsageLimit, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBasicInput) GetUsageLimit() *int { return v.UsageLimit }
+
+// GetContext returns DiscountCodeBasicInput.Context, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBasicInput) GetContext() *DiscountContextInput { return v.Context }
+
+// GetTags returns DiscountCodeBasicInput.Tags, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBasicInput) GetTags() []string { return v.Tags }
+
+// GetMinimumRequirement returns DiscountCodeBasicInput.MinimumRequirement, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBasicInput) GetMinimumRequirement() *DiscountMinimumRequirementInput {
+	return v.MinimumRequirement
+}
+
+// GetCustomerGets returns DiscountCodeBasicInput.CustomerGets, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBasicInput) GetCustomerGets() *DiscountCustomerGetsInput { return v.CustomerGets }
+
+// GetRecurringCycleLimit returns DiscountCodeBasicInput.RecurringCycleLimit, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBasicInput) GetRecurringCycleLimit() *int { return v.RecurringCycleLimit }
+
+// The input fields for collections attached to a discount.
+type DiscountCollectionsInput struct {
+	// Specifies list of collection ids to add.
+	Add []string `json:"add,omitempty"`
+	// Specifies list of collection ids to remove.
+	Remove []string `json:"remove,omitempty"`
+}
+
+// GetAdd returns DiscountCollectionsInput.Add, and is useful for accessing the field via an interface.
+func (v *DiscountCollectionsInput) GetAdd() []string { return v.Add }
+
+// GetRemove returns DiscountCollectionsInput.Remove, and is useful for accessing the field via an interface.
+func (v *DiscountCollectionsInput) GetRemove() []string { return v.Remove }
+
+// DiscountCombinesWithFields includes the GraphQL fields of DiscountCombinesWith requested by the fragment DiscountCombinesWithFields.
+// The GraphQL type's documentation follows.
+//
+// The [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+// that you can use in combination with
+// [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+type DiscountCombinesWithFields struct {
+	// Whether the discount combines with the
+	// [product discount](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// class.
+	ProductDiscounts bool `json:"productDiscounts"`
+	// Whether the discount combines with the
+	// [order discount](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// class.
+	OrderDiscounts bool `json:"orderDiscounts"`
+	// Whether the discount combines with the
+	// [shipping discount](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// class.
+	ShippingDiscounts bool `json:"shippingDiscounts"`
+}
+
+// GetProductDiscounts returns DiscountCombinesWithFields.ProductDiscounts, and is useful for accessing the field via an interface.
+func (v *DiscountCombinesWithFields) GetProductDiscounts() bool { return v.ProductDiscounts }
+
+// GetOrderDiscounts returns DiscountCombinesWithFields.OrderDiscounts, and is useful for accessing the field via an interface.
+func (v *DiscountCombinesWithFields) GetOrderDiscounts() bool { return v.OrderDiscounts }
+
+// GetShippingDiscounts returns DiscountCombinesWithFields.ShippingDiscounts, and is useful for accessing the field via an interface.
+func (v *DiscountCombinesWithFields) GetShippingDiscounts() bool { return v.ShippingDiscounts }
+
+// The input fields to determine which discount classes the discount can combine with.
+type DiscountCombinesWithInput struct {
+	// Whether the discount combines with the
+	// [product discount](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// class.
+	ProductDiscounts *bool `json:"productDiscounts,omitempty"`
+	// Whether the discount combines with the
+	// [order discount](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// class.
+	OrderDiscounts *bool `json:"orderDiscounts,omitempty"`
+	// Whether the discount combines
+	// with the
+	// [shipping discount](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// class.
+	ShippingDiscounts *bool `json:"shippingDiscounts,omitempty"`
+	// Controls which product discounts can apply together on the same cart line. By
+	// default, only one product discount applies per line. Available only on a Shopify
+	// Plus plan and requires the `productDiscounts` field to be set to `true`.
+	//
+	// For discounts to apply together, they must match tags in both directions. Each
+	// discount has two tag sets: the tags that identify the discount, and the tags that
+	// it agrees to apply with. Use the `tags` field on the discount input to set the
+	// discount's own tags. Use this field to set the tags that the discount can apply
+	// with. Two discounts apply together only if each one allows at least one tag that
+	// the other is tagged with. Any number of product discounts can apply to the same
+	// line if this two-way match holds for every pair in the group.
+	//
+	// Example: Discount A is tagged with `LOYALTY` and allows `SEASONAL`, and Discount B
+	// is tagged with `SEASONAL` and allows `LOYALTY`. They apply together. To add a
+	// third discount, it must meet the same mutual-match rule with both A and B.
+	//
+	// Buy X Get Y discounts stack only on the customer-gets products (GY), not the
+	// customer-buys products (BX). See
+	// [Limitations for discount combinations](https://help.shopify.com/manual/discounts/discount-combinations#considerations)
+	// for details.
+	ProductDiscountsWithTagsOnSameCartLine *ProductDiscountsWithTagsOnSameCartLineInput `json:"productDiscountsWithTagsOnSameCartLine,omitempty"`
+}
+
+// GetProductDiscounts returns DiscountCombinesWithInput.ProductDiscounts, and is useful for accessing the field via an interface.
+func (v *DiscountCombinesWithInput) GetProductDiscounts() *bool { return v.ProductDiscounts }
+
+// GetOrderDiscounts returns DiscountCombinesWithInput.OrderDiscounts, and is useful for accessing the field via an interface.
+func (v *DiscountCombinesWithInput) GetOrderDiscounts() *bool { return v.OrderDiscounts }
+
+// GetShippingDiscounts returns DiscountCombinesWithInput.ShippingDiscounts, and is useful for accessing the field via an interface.
+func (v *DiscountCombinesWithInput) GetShippingDiscounts() *bool { return v.ShippingDiscounts }
+
+// GetProductDiscountsWithTagsOnSameCartLine returns DiscountCombinesWithInput.ProductDiscountsWithTagsOnSameCartLine, and is useful for accessing the field via an interface.
+func (v *DiscountCombinesWithInput) GetProductDiscountsWithTagsOnSameCartLine() *ProductDiscountsWithTagsOnSameCartLineInput {
+	return v.ProductDiscountsWithTagsOnSameCartLine
+}
+
+// DiscountContextFields includes the GraphQL fields of DiscountContext requested by the fragment DiscountContextFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to define which buyers can use the discount.
+//
+// DiscountContextFields is implemented by the following types:
+// DiscountContextFieldsDiscountBuyerSelectionAll
+// DiscountContextFieldsDiscountContextUnknown
+// DiscountContextFieldsDiscountCustomerSegments
+// DiscountContextFieldsDiscountCustomers
+// DiscountContextFieldsDiscountMarkets
+type DiscountContextFields interface {
+	implementsGraphQLInterfaceDiscountContextFields()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DiscountContextFieldsDiscountBuyerSelectionAll) implementsGraphQLInterfaceDiscountContextFields() {
+}
+func (v *DiscountContextFieldsDiscountContextUnknown) implementsGraphQLInterfaceDiscountContextFields() {
+}
+func (v *DiscountContextFieldsDiscountCustomerSegments) implementsGraphQLInterfaceDiscountContextFields() {
+}
+func (v *DiscountContextFieldsDiscountCustomers) implementsGraphQLInterfaceDiscountContextFields() {}
+func (v *DiscountContextFieldsDiscountMarkets) implementsGraphQLInterfaceDiscountContextFields()   {}
+
+func __unmarshalDiscountContextFields(b []byte, v *DiscountContextFields) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DiscountBuyerSelectionAll":
+		*v = new(DiscountContextFieldsDiscountBuyerSelectionAll)
+		return json.Unmarshal(b, *v)
+	case "DiscountContextUnknown":
+		*v = new(DiscountContextFieldsDiscountContextUnknown)
+		return json.Unmarshal(b, *v)
+	case "DiscountCustomerSegments":
+		*v = new(DiscountContextFieldsDiscountCustomerSegments)
+		return json.Unmarshal(b, *v)
+	case "DiscountCustomers":
+		*v = new(DiscountContextFieldsDiscountCustomers)
+		return json.Unmarshal(b, *v)
+	case "DiscountMarkets":
+		*v = new(DiscountContextFieldsDiscountMarkets)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DiscountContext.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DiscountContextFields: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDiscountContextFields(v *DiscountContextFields) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DiscountContextFieldsDiscountBuyerSelectionAll:
+		typename = "DiscountBuyerSelectionAll"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountContextFieldsDiscountBuyerSelectionAll
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountContextFieldsDiscountContextUnknown:
+		typename = "DiscountContextUnknown"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountContextFieldsDiscountContextUnknown
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountContextFieldsDiscountCustomerSegments:
+		typename = "DiscountCustomerSegments"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountContextFieldsDiscountCustomerSegments
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountContextFieldsDiscountCustomers:
+		typename = "DiscountCustomers"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountContextFieldsDiscountCustomers
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountContextFieldsDiscountMarkets:
+		typename = "DiscountMarkets"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountContextFieldsDiscountMarkets
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DiscountContextFields: "%T"`, v)
+	}
+}
+
+// DiscountContextFields includes the GraphQL fields of DiscountBuyerSelectionAll requested by the fragment DiscountContextFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to define which buyers can use the discount.
+type DiscountContextFieldsDiscountBuyerSelectionAll struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DiscountContextFieldsDiscountBuyerSelectionAll.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsDiscountBuyerSelectionAll) GetTypename() *string { return v.Typename }
+
+// DiscountContextFields includes the GraphQL fields of DiscountContextUnknown requested by the fragment DiscountContextFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to define which buyers can use the discount.
+type DiscountContextFieldsDiscountContextUnknown struct {
+	Typename *string `json:"__typename"`
+	// The underlying discount context type.
+	ContextType string `json:"contextType"`
+}
+
+// GetTypename returns DiscountContextFieldsDiscountContextUnknown.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsDiscountContextUnknown) GetTypename() *string { return v.Typename }
+
+// GetContextType returns DiscountContextFieldsDiscountContextUnknown.ContextType, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsDiscountContextUnknown) GetContextType() string { return v.ContextType }
+
+// DiscountContextFields includes the GraphQL fields of DiscountCustomerSegments requested by the fragment DiscountContextFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to define which buyers can use the discount.
+type DiscountContextFieldsDiscountCustomerSegments struct {
+	Typename *string `json:"__typename"`
+	// The list of customer segments who are eligible for the discount.
+	Segments []DiscountContextFieldsSegmentsSegment `json:"segments"`
+}
+
+// GetTypename returns DiscountContextFieldsDiscountCustomerSegments.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsDiscountCustomerSegments) GetTypename() *string { return v.Typename }
+
+// GetSegments returns DiscountContextFieldsDiscountCustomerSegments.Segments, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsDiscountCustomerSegments) GetSegments() []DiscountContextFieldsSegmentsSegment {
+	return v.Segments
+}
+
+// DiscountContextFields includes the GraphQL fields of DiscountCustomers requested by the fragment DiscountContextFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to define which buyers can use the discount.
+type DiscountContextFieldsDiscountCustomers struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DiscountContextFieldsDiscountCustomers.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsDiscountCustomers) GetTypename() *string { return v.Typename }
+
+// DiscountContextFields includes the GraphQL fields of DiscountMarkets requested by the fragment DiscountContextFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to define which buyers can use the discount.
+type DiscountContextFieldsDiscountMarkets struct {
+	Typename *string `json:"__typename"`
+	// The list of markets where the discount is available.
+	Markets DiscountContextFieldsMarketsMarketConnection `json:"markets"`
+}
+
+// GetTypename returns DiscountContextFieldsDiscountMarkets.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsDiscountMarkets) GetTypename() *string { return v.Typename }
+
+// GetMarkets returns DiscountContextFieldsDiscountMarkets.Markets, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsDiscountMarkets) GetMarkets() DiscountContextFieldsMarketsMarketConnection {
+	return v.Markets
+}
+
+// DiscountContextFieldsMarketsMarketConnection includes the requested fields of the GraphQL type MarketConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Markets.
+type DiscountContextFieldsMarketsMarketConnection struct {
+	// A list of nodes that are contained in MarketEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []DiscountContextFieldsMarketsMarketConnectionNodesMarket `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo DiscountContextFieldsMarketsMarketConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns DiscountContextFieldsMarketsMarketConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsMarketsMarketConnection) GetNodes() []DiscountContextFieldsMarketsMarketConnectionNodesMarket {
+	return v.Nodes
+}
+
+// GetPageInfo returns DiscountContextFieldsMarketsMarketConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsMarketsMarketConnection) GetPageInfo() DiscountContextFieldsMarketsMarketConnectionPageInfo {
+	return v.PageInfo
+}
+
+// DiscountContextFieldsMarketsMarketConnectionNodesMarket includes the requested fields of the GraphQL type Market.
+// The GraphQL type's documentation follows.
+//
+// A merchant-defined group of buyers identified by conditions such as their
+// region, retail location, or company location. Each market allows configuration
+// of a distinct, localized buyer experience. Customizations include, but are
+// not limited to,
+// [currency](https://shopify.dev/api/admin-graphql/current/mutations/marketCurrencySettingsUpdate),
+// [pricing and product availability](https://shopify.dev/apps/internationalization/product-price-lists),
+// [web presence](https://shopify.dev/api/admin-graphql/current/objects/MarketWebPresence),
+// and content translations.
+type DiscountContextFieldsMarketsMarketConnectionNodesMarket struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns DiscountContextFieldsMarketsMarketConnectionNodesMarket.Id, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsMarketsMarketConnectionNodesMarket) GetId() string { return v.Id }
+
+// DiscountContextFieldsMarketsMarketConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type DiscountContextFieldsMarketsMarketConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+}
+
+// GetHasNextPage returns DiscountContextFieldsMarketsMarketConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsMarketsMarketConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// DiscountContextFieldsSegmentsSegment includes the requested fields of the GraphQL type Segment.
+// The GraphQL type's documentation follows.
+//
+// A group of [customers](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) that meet specific criteria defined through [ShopifyQL query](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference) conditions. Common use cases for segments include customer analytics, targeted marketing campaigns, and automated discount eligibility.
+//
+// The segment's [`query`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-query) field contains ShopifyQL conditions that determine membership, such as purchase history, location, or engagement patterns. Tracks when the segment was created with [`creationDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-creationDate) and when it was last modified with [`lastEditDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-lastEditDate).
+type DiscountContextFieldsSegmentsSegment struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns DiscountContextFieldsSegmentsSegment.Id, and is useful for accessing the field via an interface.
+func (v *DiscountContextFieldsSegmentsSegment) GetId() string { return v.Id }
+
+// The input fields for the buyers who can use this discount.
+type DiscountContextInput struct {
+	// All buyers are eligible for this discount.
+	All *DiscountBuyerSelection `json:"all,omitempty"`
+	// The list of customer IDs to add or remove from the list of customers.
+	Customers *DiscountCustomersInput `json:"customers,omitempty"`
+	// The list of customer segment IDs to add or remove from the list of customer segments.
+	CustomerSegments *DiscountCustomerSegmentsInput `json:"customerSegments,omitempty"`
+	// The list of market IDs to add or remove from the list of markets.
+	Markets *DiscountMarketsInput `json:"markets,omitempty"`
+}
+
+// GetAll returns DiscountContextInput.All, and is useful for accessing the field via an interface.
+func (v *DiscountContextInput) GetAll() *DiscountBuyerSelection { return v.All }
+
+// GetCustomers returns DiscountContextInput.Customers, and is useful for accessing the field via an interface.
+func (v *DiscountContextInput) GetCustomers() *DiscountCustomersInput { return v.Customers }
+
+// GetCustomerSegments returns DiscountContextInput.CustomerSegments, and is useful for accessing the field via an interface.
+func (v *DiscountContextInput) GetCustomerSegments() *DiscountCustomerSegmentsInput {
+	return v.CustomerSegments
+}
+
+// GetMarkets returns DiscountContextInput.Markets, and is useful for accessing the field via an interface.
+func (v *DiscountContextInput) GetMarkets() *DiscountMarketsInput { return v.Markets }
+
+// DiscountCustomerGetsFields includes the GraphQL fields of DiscountCustomerGets requested by the fragment DiscountCustomerGetsFields.
+// The GraphQL type's documentation follows.
+//
+// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+type DiscountCustomerGetsFields struct {
+	// Entitled quantity and the discount value.
+	Value DiscountCustomerGetsFieldsValueDiscountCustomerGetsValue `json:"-"`
+	// The items to which the discount applies.
+	Items DiscountItemsFields `json:"-"`
+}
+
+// GetValue returns DiscountCustomerGetsFields.Value, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFields) GetValue() DiscountCustomerGetsFieldsValueDiscountCustomerGetsValue {
+	return v.Value
+}
+
+// GetItems returns DiscountCustomerGetsFields.Items, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFields) GetItems() DiscountItemsFields { return v.Items }
+
+func (v *DiscountCustomerGetsFields) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DiscountCustomerGetsFields
+		Value json.RawMessage `json:"value"`
+		Items json.RawMessage `json:"items"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DiscountCustomerGetsFields = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Value
+		src := firstPass.Value
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountCustomerGetsFieldsValueDiscountCustomerGetsValue(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountCustomerGetsFields.Value: %w", err)
+			}
+		}
+	}
+
+	{
+		dst := &v.Items
+		src := firstPass.Items
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountItemsFields(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountCustomerGetsFields.Items: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDiscountCustomerGetsFields struct {
+	Value json.RawMessage `json:"value"`
+
+	Items json.RawMessage `json:"items"`
+}
+
+func (v *DiscountCustomerGetsFields) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DiscountCustomerGetsFields) __premarshalJSON() (*__premarshalDiscountCustomerGetsFields, error) {
+	var retval __premarshalDiscountCustomerGetsFields
+
+	{
+
+		dst := &retval.Value
+		src := v.Value
+		var err error
+		*dst, err = __marshalDiscountCustomerGetsFieldsValueDiscountCustomerGetsValue(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountCustomerGetsFields.Value: %w", err)
+		}
+	}
+	{
+
+		dst := &retval.Items
+		src := v.Items
+		var err error
+		*dst, err = __marshalDiscountItemsFields(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountCustomerGetsFields.Items: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// DiscountCustomerGetsFieldsValueDiscountAmount includes the requested fields of the GraphQL type DiscountAmount.
+// The GraphQL type's documentation follows.
+//
+// The fixed amount value of a discount, and whether the amount is applied to each entitled item or spread evenly across the entitled items.
+type DiscountCustomerGetsFieldsValueDiscountAmount struct {
+	Typename *string `json:"__typename"`
+	// The value of the discount.
+	Amount DiscountCustomerGetsFieldsValueDiscountAmountAmountMoneyV2 `json:"amount"`
+	// If true, then the discount is applied to each of the entitled items. If false, then the amount is split across all of the entitled items.
+	AppliesOnEachItem bool `json:"appliesOnEachItem"`
+}
+
+// GetTypename returns DiscountCustomerGetsFieldsValueDiscountAmount.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountAmount) GetTypename() *string { return v.Typename }
+
+// GetAmount returns DiscountCustomerGetsFieldsValueDiscountAmount.Amount, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountAmount) GetAmount() DiscountCustomerGetsFieldsValueDiscountAmountAmountMoneyV2 {
+	return v.Amount
+}
+
+// GetAppliesOnEachItem returns DiscountCustomerGetsFieldsValueDiscountAmount.AppliesOnEachItem, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountAmount) GetAppliesOnEachItem() bool {
+	return v.AppliesOnEachItem
+}
+
+// DiscountCustomerGetsFieldsValueDiscountAmountAmountMoneyV2 includes the requested fields of the GraphQL type MoneyV2.
+// The GraphQL type's documentation follows.
+//
+// A precise monetary value and its associated currency. Combines a decimal amount with a three-letter currency code to express prices, costs, and other financial values throughout the API. For example, 12.99 USD.
+type DiscountCustomerGetsFieldsValueDiscountAmountAmountMoneyV2 struct {
+	// A monetary value in decimal format, allowing for precise representation of cents or fractional
+	// currency. For example, 12.99.
+	Amount string `json:"amount"`
+}
+
+// GetAmount returns DiscountCustomerGetsFieldsValueDiscountAmountAmountMoneyV2.Amount, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountAmountAmountMoneyV2) GetAmount() string {
+	return v.Amount
+}
+
+// DiscountCustomerGetsFieldsValueDiscountCustomerGetsValue includes the requested fields of the GraphQL interface DiscountCustomerGetsValue.
+//
+// DiscountCustomerGetsFieldsValueDiscountCustomerGetsValue is implemented by the following types:
+// DiscountCustomerGetsFieldsValueDiscountAmount
+// DiscountCustomerGetsFieldsValueDiscountOnQuantity
+// DiscountCustomerGetsFieldsValueDiscountPercentage
+// The GraphQL type's documentation follows.
+//
+// The type of the discount value and how it will be applied. For example, it might be a percentage discount on a fixed number of items. Alternatively, it might be a fixed amount evenly distributed across all items or on each individual item. A third example is a percentage discount on all items.
+type DiscountCustomerGetsFieldsValueDiscountCustomerGetsValue interface {
+	implementsGraphQLInterfaceDiscountCustomerGetsFieldsValueDiscountCustomerGetsValue()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DiscountCustomerGetsFieldsValueDiscountAmount) implementsGraphQLInterfaceDiscountCustomerGetsFieldsValueDiscountCustomerGetsValue() {
+}
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantity) implementsGraphQLInterfaceDiscountCustomerGetsFieldsValueDiscountCustomerGetsValue() {
+}
+func (v *DiscountCustomerGetsFieldsValueDiscountPercentage) implementsGraphQLInterfaceDiscountCustomerGetsFieldsValueDiscountCustomerGetsValue() {
+}
+
+func __unmarshalDiscountCustomerGetsFieldsValueDiscountCustomerGetsValue(b []byte, v *DiscountCustomerGetsFieldsValueDiscountCustomerGetsValue) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DiscountAmount":
+		*v = new(DiscountCustomerGetsFieldsValueDiscountAmount)
+		return json.Unmarshal(b, *v)
+	case "DiscountOnQuantity":
+		*v = new(DiscountCustomerGetsFieldsValueDiscountOnQuantity)
+		return json.Unmarshal(b, *v)
+	case "DiscountPercentage":
+		*v = new(DiscountCustomerGetsFieldsValueDiscountPercentage)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DiscountCustomerGetsValue.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DiscountCustomerGetsFieldsValueDiscountCustomerGetsValue: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDiscountCustomerGetsFieldsValueDiscountCustomerGetsValue(v *DiscountCustomerGetsFieldsValueDiscountCustomerGetsValue) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DiscountCustomerGetsFieldsValueDiscountAmount:
+		typename = "DiscountAmount"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountCustomerGetsFieldsValueDiscountAmount
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountCustomerGetsFieldsValueDiscountOnQuantity:
+		typename = "DiscountOnQuantity"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountCustomerGetsFieldsValueDiscountOnQuantity
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountCustomerGetsFieldsValueDiscountPercentage:
+		typename = "DiscountPercentage"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountCustomerGetsFieldsValueDiscountPercentage
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DiscountCustomerGetsFieldsValueDiscountCustomerGetsValue: "%T"`, v)
+	}
+}
+
+// DiscountCustomerGetsFieldsValueDiscountOnQuantity includes the requested fields of the GraphQL type DiscountOnQuantity.
+// The GraphQL type's documentation follows.
+//
+// Defines quantity-based discount rules that specify how many items are eligible for a discount effect. This object enables bulk purchase incentives and tiered pricing strategies.
+//
+// For example, a "Buy 4 candles, get 2 candles 50% off (mix and match)" promotion would specify a quantity threshold of 2 items that will receive a percentage discount effect, encouraging customers to purchase more items to unlock savings.
+//
+// The configuration combines quantity requirements with discount effects, allowing merchants to create sophisticated pricing rules that reward larger purchases and increase average order values.
+type DiscountCustomerGetsFieldsValueDiscountOnQuantity struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DiscountCustomerGetsFieldsValueDiscountOnQuantity.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantity) GetTypename() *string { return v.Typename }
+
+// DiscountCustomerGetsFieldsValueDiscountPercentage includes the requested fields of the GraphQL type DiscountPercentage.
+// The GraphQL type's documentation follows.
+//
+// Creates percentage-based discounts that reduce item prices by a specified percentage amount. This gives merchants a flexible way to offer proportional savings that automatically scale with order value.
+//
+// For example, a "20% off all winter clothing" promotion would use this object to apply consistent percentage savings across different price points.
+//
+// Learn more about [discount types](https://help.shopify.com/manual/discounts/).
+type DiscountCustomerGetsFieldsValueDiscountPercentage struct {
+	Typename *string `json:"__typename"`
+	// The percentage value of the discount.
+	Percentage float64 `json:"percentage"`
+}
+
+// GetTypename returns DiscountCustomerGetsFieldsValueDiscountPercentage.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountPercentage) GetTypename() *string { return v.Typename }
+
+// GetPercentage returns DiscountCustomerGetsFieldsValueDiscountPercentage.Percentage, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountPercentage) GetPercentage() float64 {
+	return v.Percentage
+}
+
+// Specifies the items that will be discounted, the quantity of items that will be discounted, and the value of discount.
+type DiscountCustomerGetsInput struct {
+	// The quantity of items discounted and the discount value.
+	Value *DiscountCustomerGetsValueInput `json:"value,omitempty"`
+	// The IDs of the items that the customer gets. The items can be either collections or products.
+	Items *DiscountItemsInput `json:"items,omitempty"`
+	// Whether the discount applies on regular one-time-purchase items.
+	AppliesOnOneTimePurchase *bool `json:"appliesOnOneTimePurchase,omitempty"`
+	// Whether the discount applies on subscription items.
+	// [Subscriptions](https://shopify.dev/docs/apps/launch/billing/subscription-billing/offer-subscription-discounts)
+	// enable customers to purchase products
+	// on a recurring basis.
+	AppliesOnSubscription *bool `json:"appliesOnSubscription,omitempty"`
+}
+
+// GetValue returns DiscountCustomerGetsInput.Value, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsInput) GetValue() *DiscountCustomerGetsValueInput { return v.Value }
+
+// GetItems returns DiscountCustomerGetsInput.Items, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsInput) GetItems() *DiscountItemsInput { return v.Items }
+
+// GetAppliesOnOneTimePurchase returns DiscountCustomerGetsInput.AppliesOnOneTimePurchase, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsInput) GetAppliesOnOneTimePurchase() *bool {
+	return v.AppliesOnOneTimePurchase
+}
+
+// GetAppliesOnSubscription returns DiscountCustomerGetsInput.AppliesOnSubscription, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsInput) GetAppliesOnSubscription() *bool { return v.AppliesOnSubscription }
+
+// The input fields for the quantity of items discounted and the discount value.
+type DiscountCustomerGetsValueInput struct {
+	// The quantity of the items that are discounted and the discount value.
+	DiscountOnQuantity *DiscountOnQuantityInput `json:"discountOnQuantity,omitempty"`
+	// The percentage value of the discount. Value must be between 0.00 - 1.00.
+	//
+	// Note: BXGY doesn't support percentage.
+	Percentage *float64 `json:"percentage,omitempty"`
+	// The value of the discount.
+	//
+	// Note: BXGY doesn't support discountAmount.
+	DiscountAmount *DiscountAmountInput `json:"discountAmount,omitempty"`
+}
+
+// GetDiscountOnQuantity returns DiscountCustomerGetsValueInput.DiscountOnQuantity, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsValueInput) GetDiscountOnQuantity() *DiscountOnQuantityInput {
+	return v.DiscountOnQuantity
+}
+
+// GetPercentage returns DiscountCustomerGetsValueInput.Percentage, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsValueInput) GetPercentage() *float64 { return v.Percentage }
+
+// GetDiscountAmount returns DiscountCustomerGetsValueInput.DiscountAmount, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsValueInput) GetDiscountAmount() *DiscountAmountInput {
+	return v.DiscountAmount
+}
+
+// The input fields for which customer segments to add to or remove from the discount.
+type DiscountCustomerSegmentsInput struct {
+	// A list of customer segments to add to the current list of customer segments.
+	Add []string `json:"add,omitempty"`
+	// A list of customer segments to remove from the current list of customer segments.
+	Remove []string `json:"remove,omitempty"`
+}
+
+// GetAdd returns DiscountCustomerSegmentsInput.Add, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerSegmentsInput) GetAdd() []string { return v.Add }
+
+// GetRemove returns DiscountCustomerSegmentsInput.Remove, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerSegmentsInput) GetRemove() []string { return v.Remove }
+
+// The input fields for which customers to add to or remove from the discount.
+type DiscountCustomersInput struct {
+	// A list of customers to add to the current list of customers who can use the discount.
+	Add []string `json:"add"`
+	// A list of customers to remove from the current list of customers who can use the discount.
+	Remove []string `json:"remove"`
+}
+
+// GetAdd returns DiscountCustomersInput.Add, and is useful for accessing the field via an interface.
+func (v *DiscountCustomersInput) GetAdd() []string { return v.Add }
+
+// GetRemove returns DiscountCustomersInput.Remove, and is useful for accessing the field via an interface.
+func (v *DiscountCustomersInput) GetRemove() []string { return v.Remove }
+
+// The input fields for how the discount will be applied. Currently, only percentage off is supported.
+type DiscountEffectInput struct {
+	// The percentage value of the discount. Value must be between 0.00 - 1.00.
+	Percentage *float64 `json:"percentage"`
+	// The value of the discount.
+	Amount *string `json:"amount"`
+}
+
+// GetPercentage returns DiscountEffectInput.Percentage, and is useful for accessing the field via an interface.
+func (v *DiscountEffectInput) GetPercentage() *float64 { return v.Percentage }
+
+// GetAmount returns DiscountEffectInput.Amount, and is useful for accessing the field via an interface.
+func (v *DiscountEffectInput) GetAmount() *string { return v.Amount }
+
+// Possible error codes that can be returned by `DiscountUserError`.
+type DiscountErrorCode string
+
+const (
+	// The input value is blank.
+	DiscountErrorCodeBlank DiscountErrorCode = "BLANK"
+	// The input value needs to be blank.
+	DiscountErrorCodePresent DiscountErrorCode = "PRESENT"
+	// The input value should be equal to the value allowed.
+	DiscountErrorCodeEqualTo DiscountErrorCode = "EQUAL_TO"
+	// The input value should be greater than the minimum allowed value.
+	DiscountErrorCodeGreaterThan DiscountErrorCode = "GREATER_THAN"
+	// The input value should be greater than or equal to the minimum value allowed.
+	DiscountErrorCodeGreaterThanOrEqualTo DiscountErrorCode = "GREATER_THAN_OR_EQUAL_TO"
+	// The input value is invalid.
+	DiscountErrorCodeInvalid DiscountErrorCode = "INVALID"
+	// The input value should be less than or equal to the maximum value allowed.
+	DiscountErrorCodeLessThanOrEqualTo DiscountErrorCode = "LESS_THAN_OR_EQUAL_TO"
+	// The input value should be less than the maximum value allowed.
+	DiscountErrorCodeLessThan DiscountErrorCode = "LESS_THAN"
+	// The input value is already taken.
+	DiscountErrorCodeTaken DiscountErrorCode = "TAKEN"
+	// The input value is too long.
+	DiscountErrorCodeTooLong DiscountErrorCode = "TOO_LONG"
+	// The input value is too short.
+	DiscountErrorCodeTooShort DiscountErrorCode = "TOO_SHORT"
+	// Unexpected internal error happened.
+	DiscountErrorCodeInternalError DiscountErrorCode = "INTERNAL_ERROR"
+	// Too many arguments provided.
+	DiscountErrorCodeTooManyArguments DiscountErrorCode = "TOO_MANY_ARGUMENTS"
+	// Missing a required argument.
+	DiscountErrorCodeMissingArgument DiscountErrorCode = "MISSING_ARGUMENT"
+	// The active period overlaps with other automatic discounts. At any given time, only 25 automatic discounts can be active.
+	DiscountErrorCodeActivePeriodOverlap DiscountErrorCode = "ACTIVE_PERIOD_OVERLAP"
+	// The end date should be after the start date.
+	DiscountErrorCodeEndDateBeforeStartDate DiscountErrorCode = "END_DATE_BEFORE_START_DATE"
+	// The value exceeded the maximum allowed value.
+	DiscountErrorCodeExceededMax DiscountErrorCode = "EXCEEDED_MAX"
+	// Specify a minimum subtotal or a quantity, but not both.
+	DiscountErrorCodeMinimumSubtotalAndQuantityRangeBothPresent DiscountErrorCode = "MINIMUM_SUBTOTAL_AND_QUANTITY_RANGE_BOTH_PRESENT"
+	// The value is outside of the allowed range.
+	DiscountErrorCodeValueOutsideRange DiscountErrorCode = "VALUE_OUTSIDE_RANGE"
+	// The attribute selection contains conflicting settings.
+	DiscountErrorCodeConflict DiscountErrorCode = "CONFLICT"
+	// The value is already present through another selection.
+	DiscountErrorCodeImplicitDuplicate DiscountErrorCode = "IMPLICIT_DUPLICATE"
+	// The input value is already present.
+	DiscountErrorCodeDuplicate DiscountErrorCode = "DUPLICATE"
+	// The input value isn't included in the list.
+	DiscountErrorCodeInclusion DiscountErrorCode = "INCLUSION"
+	// The `combinesWith` settings are invalid for the discount class.
+	DiscountErrorCodeInvalidCombinesWithForDiscountClass DiscountErrorCode = "INVALID_COMBINES_WITH_FOR_DISCOUNT_CLASS"
+	// The discountClass is invalid for the price rule.
+	DiscountErrorCodeInvalidDiscountClassForPriceRule DiscountErrorCode = "INVALID_DISCOUNT_CLASS_FOR_PRICE_RULE"
+	// Discounts and condition types are not compatible with each other.
+	DiscountErrorCodeDiscountNotCompatibleWithConditionTypes DiscountErrorCode = "DISCOUNT_NOT_COMPATIBLE_WITH_CONDITION_TYPES"
+	// The active period overlaps with too many other app-provided discounts. There's a limit on the number of app discounts that can be active at any given time.
+	DiscountErrorCodeMaxAppDiscounts DiscountErrorCode = "MAX_APP_DISCOUNTS"
+	// A discount cannot have both appliesOnOneTimePurchase and appliesOnSubscription set to false.
+	DiscountErrorCodeAppliesOnNothing DiscountErrorCode = "APPLIES_ON_NOTHING"
+	// Recurring cycle limit must be a valid integer greater than or equal to 0.
+	DiscountErrorCodeRecurringCycleLimitNotAValidInteger DiscountErrorCode = "RECURRING_CYCLE_LIMIT_NOT_A_VALID_INTEGER"
+	// Recurring cycle limit must be 1 when discount does not apply to subscription items.
+	DiscountErrorCodeMultipleRecurringCycleLimitForNonSubscriptionItems DiscountErrorCode = "MULTIPLE_RECURRING_CYCLE_LIMIT_FOR_NON_SUBSCRIPTION_ITEMS"
+	// Either function ID or function handle must be provided.
+	DiscountErrorCodeMissingFunctionIdentifier DiscountErrorCode = "MISSING_FUNCTION_IDENTIFIER"
+	// Only one of function ID or function handle is allowed.
+	DiscountErrorCodeMultipleFunctionIdentifiers DiscountErrorCode = "MULTIPLE_FUNCTION_IDENTIFIERS"
+	// The tag title exceeds the maximum length of 255 characters.
+	DiscountErrorCodeInvalidTagLength DiscountErrorCode = "INVALID_TAG_LENGTH"
+	// The number of tags exceeds the maximum of 5.
+	DiscountErrorCodeTooManyTags DiscountErrorCode = "TOO_MANY_TAGS"
+	// The number of tags in `productDiscountsWithTagsOnSameCartLine` exceeds the maximum of 10.
+	DiscountErrorCodeTooManyProductDiscountsWithTagsOnSameCartLine DiscountErrorCode = "TOO_MANY_PRODUCT_DISCOUNTS_WITH_TAGS_ON_SAME_CART_LINE"
+	// The `productDiscountsWithTagsOnSameCartLine` field is only valid for discounts with the PRODUCT discount class.
+	DiscountErrorCodeInvalidProductDiscountsWithTagsOnSameCartLineForDiscountClass DiscountErrorCode = "INVALID_PRODUCT_DISCOUNTS_WITH_TAGS_ON_SAME_CART_LINE_FOR_DISCOUNT_CLASS"
+	// The `productDiscountsWithTagsOnSameCartLine` field can only be specified when `productDiscounts` is true.
+	DiscountErrorCodeInvalidProductDiscountsWithTagsOnSameCartLineWithoutProductDiscounts DiscountErrorCode = "INVALID_PRODUCT_DISCOUNTS_WITH_TAGS_ON_SAME_CART_LINE_WITHOUT_PRODUCT_DISCOUNTS"
+	// The `productDiscounts` field can't be set to false when `productDiscountsWithTagsOnSameCartLine` tags exist on the discount.
+	DiscountErrorCodeInvalidProductDiscountsFalseWithExistingTagsOnSameCartLine DiscountErrorCode = "INVALID_PRODUCT_DISCOUNTS_FALSE_WITH_EXISTING_TAGS_ON_SAME_CART_LINE"
+	// The shop's plan does not allow setting `productDiscountsWithTagsOnSameCartLine`.
+	DiscountErrorCodeProductDiscountsWithTagsOnSameCartLineNotEntitled DiscountErrorCode = "PRODUCT_DISCOUNTS_WITH_TAGS_ON_SAME_CART_LINE_NOT_ENTITLED"
+)
+
+var AllDiscountErrorCode = []DiscountErrorCode{
+	DiscountErrorCodeBlank,
+	DiscountErrorCodePresent,
+	DiscountErrorCodeEqualTo,
+	DiscountErrorCodeGreaterThan,
+	DiscountErrorCodeGreaterThanOrEqualTo,
+	DiscountErrorCodeInvalid,
+	DiscountErrorCodeLessThanOrEqualTo,
+	DiscountErrorCodeLessThan,
+	DiscountErrorCodeTaken,
+	DiscountErrorCodeTooLong,
+	DiscountErrorCodeTooShort,
+	DiscountErrorCodeInternalError,
+	DiscountErrorCodeTooManyArguments,
+	DiscountErrorCodeMissingArgument,
+	DiscountErrorCodeActivePeriodOverlap,
+	DiscountErrorCodeEndDateBeforeStartDate,
+	DiscountErrorCodeExceededMax,
+	DiscountErrorCodeMinimumSubtotalAndQuantityRangeBothPresent,
+	DiscountErrorCodeValueOutsideRange,
+	DiscountErrorCodeConflict,
+	DiscountErrorCodeImplicitDuplicate,
+	DiscountErrorCodeDuplicate,
+	DiscountErrorCodeInclusion,
+	DiscountErrorCodeInvalidCombinesWithForDiscountClass,
+	DiscountErrorCodeInvalidDiscountClassForPriceRule,
+	DiscountErrorCodeDiscountNotCompatibleWithConditionTypes,
+	DiscountErrorCodeMaxAppDiscounts,
+	DiscountErrorCodeAppliesOnNothing,
+	DiscountErrorCodeRecurringCycleLimitNotAValidInteger,
+	DiscountErrorCodeMultipleRecurringCycleLimitForNonSubscriptionItems,
+	DiscountErrorCodeMissingFunctionIdentifier,
+	DiscountErrorCodeMultipleFunctionIdentifiers,
+	DiscountErrorCodeInvalidTagLength,
+	DiscountErrorCodeTooManyTags,
+	DiscountErrorCodeTooManyProductDiscountsWithTagsOnSameCartLine,
+	DiscountErrorCodeInvalidProductDiscountsWithTagsOnSameCartLineForDiscountClass,
+	DiscountErrorCodeInvalidProductDiscountsWithTagsOnSameCartLineWithoutProductDiscounts,
+	DiscountErrorCodeInvalidProductDiscountsFalseWithExistingTagsOnSameCartLine,
+	DiscountErrorCodeProductDiscountsWithTagsOnSameCartLineNotEntitled,
+}
+
+// DiscountItemsFields includes the GraphQL fields of DiscountItems requested by the fragment DiscountItemsFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to target the items required for discount eligibility, or the items to which the application of a discount might apply. For example, for a customer to be eligible for a discount, they're required to add an item from a specified collection to their order. Alternatively, a customer might be required to add a specific product or product variant. When using this type to target which items the discount will apply to, the discount might apply to all items on the order, or to specific products and product variants, or items in a given collection.
+//
+// DiscountItemsFields is implemented by the following types:
+// DiscountItemsFieldsAllDiscountItems
+// DiscountItemsFieldsDiscountCollections
+// DiscountItemsFieldsDiscountProducts
+type DiscountItemsFields interface {
+	implementsGraphQLInterfaceDiscountItemsFields()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DiscountItemsFieldsAllDiscountItems) implementsGraphQLInterfaceDiscountItemsFields()    {}
+func (v *DiscountItemsFieldsDiscountCollections) implementsGraphQLInterfaceDiscountItemsFields() {}
+func (v *DiscountItemsFieldsDiscountProducts) implementsGraphQLInterfaceDiscountItemsFields()    {}
+
+func __unmarshalDiscountItemsFields(b []byte, v *DiscountItemsFields) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "AllDiscountItems":
+		*v = new(DiscountItemsFieldsAllDiscountItems)
+		return json.Unmarshal(b, *v)
+	case "DiscountCollections":
+		*v = new(DiscountItemsFieldsDiscountCollections)
+		return json.Unmarshal(b, *v)
+	case "DiscountProducts":
+		*v = new(DiscountItemsFieldsDiscountProducts)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DiscountItems.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DiscountItemsFields: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDiscountItemsFields(v *DiscountItemsFields) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DiscountItemsFieldsAllDiscountItems:
+		typename = "AllDiscountItems"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountItemsFieldsAllDiscountItems
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountItemsFieldsDiscountCollections:
+		typename = "DiscountCollections"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountItemsFieldsDiscountCollections
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountItemsFieldsDiscountProducts:
+		typename = "DiscountProducts"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountItemsFieldsDiscountProducts
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DiscountItemsFields: "%T"`, v)
+	}
+}
+
+// DiscountItemsFields includes the GraphQL fields of AllDiscountItems requested by the fragment DiscountItemsFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to target the items required for discount eligibility, or the items to which the application of a discount might apply. For example, for a customer to be eligible for a discount, they're required to add an item from a specified collection to their order. Alternatively, a customer might be required to add a specific product or product variant. When using this type to target which items the discount will apply to, the discount might apply to all items on the order, or to specific products and product variants, or items in a given collection.
+type DiscountItemsFieldsAllDiscountItems struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DiscountItemsFieldsAllDiscountItems.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsAllDiscountItems) GetTypename() *string { return v.Typename }
+
+// DiscountItemsFieldsCollectionsCollectionConnection includes the requested fields of the GraphQL type CollectionConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Collections.
+type DiscountItemsFieldsCollectionsCollectionConnection struct {
+	// A list of nodes that are contained in CollectionEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []DiscountItemsFieldsCollectionsCollectionConnectionNodesCollection `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo DiscountItemsFieldsCollectionsCollectionConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns DiscountItemsFieldsCollectionsCollectionConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsCollectionsCollectionConnection) GetNodes() []DiscountItemsFieldsCollectionsCollectionConnectionNodesCollection {
+	return v.Nodes
+}
+
+// GetPageInfo returns DiscountItemsFieldsCollectionsCollectionConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsCollectionsCollectionConnection) GetPageInfo() DiscountItemsFieldsCollectionsCollectionConnectionPageInfo {
+	return v.PageInfo
+}
+
+// DiscountItemsFieldsCollectionsCollectionConnectionNodesCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type DiscountItemsFieldsCollectionsCollectionConnectionNodesCollection struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns DiscountItemsFieldsCollectionsCollectionConnectionNodesCollection.Id, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsCollectionsCollectionConnectionNodesCollection) GetId() string {
+	return v.Id
+}
+
+// DiscountItemsFieldsCollectionsCollectionConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type DiscountItemsFieldsCollectionsCollectionConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns DiscountItemsFieldsCollectionsCollectionConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsCollectionsCollectionConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns DiscountItemsFieldsCollectionsCollectionConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsCollectionsCollectionConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// DiscountItemsFields includes the GraphQL fields of DiscountCollections requested by the fragment DiscountItemsFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to target the items required for discount eligibility, or the items to which the application of a discount might apply. For example, for a customer to be eligible for a discount, they're required to add an item from a specified collection to their order. Alternatively, a customer might be required to add a specific product or product variant. When using this type to target which items the discount will apply to, the discount might apply to all items on the order, or to specific products and product variants, or items in a given collection.
+type DiscountItemsFieldsDiscountCollections struct {
+	Typename *string `json:"__typename"`
+	// The list of collections that the discount can have as a prerequisite or the list of collections to which the discount can be applied.
+	Collections DiscountItemsFieldsCollectionsCollectionConnection `json:"collections"`
+}
+
+// GetTypename returns DiscountItemsFieldsDiscountCollections.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsDiscountCollections) GetTypename() *string { return v.Typename }
+
+// GetCollections returns DiscountItemsFieldsDiscountCollections.Collections, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsDiscountCollections) GetCollections() DiscountItemsFieldsCollectionsCollectionConnection {
+	return v.Collections
+}
+
+// DiscountItemsFields includes the GraphQL fields of DiscountProducts requested by the fragment DiscountItemsFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to target the items required for discount eligibility, or the items to which the application of a discount might apply. For example, for a customer to be eligible for a discount, they're required to add an item from a specified collection to their order. Alternatively, a customer might be required to add a specific product or product variant. When using this type to target which items the discount will apply to, the discount might apply to all items on the order, or to specific products and product variants, or items in a given collection.
+type DiscountItemsFieldsDiscountProducts struct {
+	Typename *string `json:"__typename"`
+	// The list of products that the discount can have as a prerequisite or the list of products to which the discount can be applied.
+	Products DiscountItemsFieldsProductsProductConnection `json:"products"`
+	// The list of product variants that the discount can have as a prerequisite or the list of product variants to which the discount can be applied.
+	ProductVariants DiscountItemsFieldsProductVariantsProductVariantConnection `json:"productVariants"`
+}
+
+// GetTypename returns DiscountItemsFieldsDiscountProducts.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsDiscountProducts) GetTypename() *string { return v.Typename }
+
+// GetProducts returns DiscountItemsFieldsDiscountProducts.Products, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsDiscountProducts) GetProducts() DiscountItemsFieldsProductsProductConnection {
+	return v.Products
+}
+
+// GetProductVariants returns DiscountItemsFieldsDiscountProducts.ProductVariants, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsDiscountProducts) GetProductVariants() DiscountItemsFieldsProductVariantsProductVariantConnection {
+	return v.ProductVariants
+}
+
+// DiscountItemsFieldsProductVariantsProductVariantConnection includes the requested fields of the GraphQL type ProductVariantConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ProductVariants.
+type DiscountItemsFieldsProductVariantsProductVariantConnection struct {
+	// A list of nodes that are contained in ProductVariantEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []DiscountItemsFieldsProductVariantsProductVariantConnectionNodesProductVariant `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns DiscountItemsFieldsProductVariantsProductVariantConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsProductVariantsProductVariantConnection) GetNodes() []DiscountItemsFieldsProductVariantsProductVariantConnectionNodesProductVariant {
+	return v.Nodes
+}
+
+// GetPageInfo returns DiscountItemsFieldsProductVariantsProductVariantConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsProductVariantsProductVariantConnection) GetPageInfo() DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo {
+	return v.PageInfo
+}
+
+// DiscountItemsFieldsProductVariantsProductVariantConnectionNodesProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type DiscountItemsFieldsProductVariantsProductVariantConnectionNodesProductVariant struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns DiscountItemsFieldsProductVariantsProductVariantConnectionNodesProductVariant.Id, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsProductVariantsProductVariantConnectionNodesProductVariant) GetId() string {
+	return v.Id
+}
+
+// DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// DiscountItemsFieldsProductsProductConnection includes the requested fields of the GraphQL type ProductConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Products.
+type DiscountItemsFieldsProductsProductConnection struct {
+	// A list of nodes that are contained in ProductEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []DiscountItemsFieldsProductsProductConnectionNodesProduct `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo DiscountItemsFieldsProductsProductConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns DiscountItemsFieldsProductsProductConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsProductsProductConnection) GetNodes() []DiscountItemsFieldsProductsProductConnectionNodesProduct {
+	return v.Nodes
+}
+
+// GetPageInfo returns DiscountItemsFieldsProductsProductConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsProductsProductConnection) GetPageInfo() DiscountItemsFieldsProductsProductConnectionPageInfo {
+	return v.PageInfo
+}
+
+// DiscountItemsFieldsProductsProductConnectionNodesProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type DiscountItemsFieldsProductsProductConnectionNodesProduct struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns DiscountItemsFieldsProductsProductConnectionNodesProduct.Id, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsProductsProductConnectionNodesProduct) GetId() string { return v.Id }
+
+// DiscountItemsFieldsProductsProductConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type DiscountItemsFieldsProductsProductConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns DiscountItemsFieldsProductsProductConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsProductsProductConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns DiscountItemsFieldsProductsProductConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsProductsProductConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// The input fields for the items attached to a discount. You can specify the discount items by product ID or collection ID.
+type DiscountItemsInput struct {
+	// The
+	// [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and
+	// [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant)
+	// that the discount applies to.
+	Products *DiscountProductsInput `json:"products,omitempty"`
+	// The collections that are attached to a discount.
+	Collections *DiscountCollectionsInput `json:"collections,omitempty"`
+	// Whether all items should be selected for the discount. Not supported for Buy X get Y discounts.
+	All *bool `json:"all,omitempty"`
+}
+
+// GetProducts returns DiscountItemsInput.Products, and is useful for accessing the field via an interface.
+func (v *DiscountItemsInput) GetProducts() *DiscountProductsInput { return v.Products }
+
+// GetCollections returns DiscountItemsInput.Collections, and is useful for accessing the field via an interface.
+func (v *DiscountItemsInput) GetCollections() *DiscountCollectionsInput { return v.Collections }
+
+// GetAll returns DiscountItemsInput.All, and is useful for accessing the field via an interface.
+func (v *DiscountItemsInput) GetAll() *bool { return v.All }
+
+// The input fields for the markets where the discount is available.
+type DiscountMarketsInput struct {
+	// The list of market IDs to add.
+	Add []string `json:"add,omitempty"`
+	// The list of market IDs to remove.
+	Remove []string `json:"remove,omitempty"`
+}
+
+// GetAdd returns DiscountMarketsInput.Add, and is useful for accessing the field via an interface.
+func (v *DiscountMarketsInput) GetAdd() []string { return v.Add }
+
+// GetRemove returns DiscountMarketsInput.Remove, and is useful for accessing the field via an interface.
+func (v *DiscountMarketsInput) GetRemove() []string { return v.Remove }
+
+// DiscountMinimumFields includes the GraphQL fields of DiscountMinimumRequirement requested by the fragment DiscountMinimumFields.
+// The GraphQL type's documentation follows.
+//
+// The type of minimum requirement that must be met for the discount to be applied. For example, a customer must spend a minimum subtotal to be eligible for the discount. Alternatively, a customer must purchase a minimum quantity of items to be eligible for the discount.
+//
+// DiscountMinimumFields is implemented by the following types:
+// DiscountMinimumFieldsDiscountMinimumQuantity
+// DiscountMinimumFieldsDiscountMinimumSubtotal
+type DiscountMinimumFields interface {
+	implementsGraphQLInterfaceDiscountMinimumFields()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DiscountMinimumFieldsDiscountMinimumQuantity) implementsGraphQLInterfaceDiscountMinimumFields() {
+}
+func (v *DiscountMinimumFieldsDiscountMinimumSubtotal) implementsGraphQLInterfaceDiscountMinimumFields() {
+}
+
+func __unmarshalDiscountMinimumFields(b []byte, v *DiscountMinimumFields) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DiscountMinimumQuantity":
+		*v = new(DiscountMinimumFieldsDiscountMinimumQuantity)
+		return json.Unmarshal(b, *v)
+	case "DiscountMinimumSubtotal":
+		*v = new(DiscountMinimumFieldsDiscountMinimumSubtotal)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DiscountMinimumRequirement.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DiscountMinimumFields: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDiscountMinimumFields(v *DiscountMinimumFields) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DiscountMinimumFieldsDiscountMinimumQuantity:
+		typename = "DiscountMinimumQuantity"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountMinimumFieldsDiscountMinimumQuantity
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountMinimumFieldsDiscountMinimumSubtotal:
+		typename = "DiscountMinimumSubtotal"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountMinimumFieldsDiscountMinimumSubtotal
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DiscountMinimumFields: "%T"`, v)
+	}
+}
+
+// DiscountMinimumFields includes the GraphQL fields of DiscountMinimumQuantity requested by the fragment DiscountMinimumFields.
+// The GraphQL type's documentation follows.
+//
+// The type of minimum requirement that must be met for the discount to be applied. For example, a customer must spend a minimum subtotal to be eligible for the discount. Alternatively, a customer must purchase a minimum quantity of items to be eligible for the discount.
+type DiscountMinimumFieldsDiscountMinimumQuantity struct {
+	Typename *string `json:"__typename"`
+	// The minimum quantity of items that's required for the discount to be applied.
+	GreaterThanOrEqualToQuantity string `json:"greaterThanOrEqualToQuantity"`
+}
+
+// GetTypename returns DiscountMinimumFieldsDiscountMinimumQuantity.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountMinimumFieldsDiscountMinimumQuantity) GetTypename() *string { return v.Typename }
+
+// GetGreaterThanOrEqualToQuantity returns DiscountMinimumFieldsDiscountMinimumQuantity.GreaterThanOrEqualToQuantity, and is useful for accessing the field via an interface.
+func (v *DiscountMinimumFieldsDiscountMinimumQuantity) GetGreaterThanOrEqualToQuantity() string {
+	return v.GreaterThanOrEqualToQuantity
+}
+
+// DiscountMinimumFields includes the GraphQL fields of DiscountMinimumSubtotal requested by the fragment DiscountMinimumFields.
+// The GraphQL type's documentation follows.
+//
+// The type of minimum requirement that must be met for the discount to be applied. For example, a customer must spend a minimum subtotal to be eligible for the discount. Alternatively, a customer must purchase a minimum quantity of items to be eligible for the discount.
+type DiscountMinimumFieldsDiscountMinimumSubtotal struct {
+	Typename *string `json:"__typename"`
+	// The minimum subtotal that's required for the discount to be applied.
+	GreaterThanOrEqualToSubtotal DiscountMinimumFieldsGreaterThanOrEqualToSubtotalMoneyV2 `json:"greaterThanOrEqualToSubtotal"`
+}
+
+// GetTypename returns DiscountMinimumFieldsDiscountMinimumSubtotal.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountMinimumFieldsDiscountMinimumSubtotal) GetTypename() *string { return v.Typename }
+
+// GetGreaterThanOrEqualToSubtotal returns DiscountMinimumFieldsDiscountMinimumSubtotal.GreaterThanOrEqualToSubtotal, and is useful for accessing the field via an interface.
+func (v *DiscountMinimumFieldsDiscountMinimumSubtotal) GetGreaterThanOrEqualToSubtotal() DiscountMinimumFieldsGreaterThanOrEqualToSubtotalMoneyV2 {
+	return v.GreaterThanOrEqualToSubtotal
+}
+
+// DiscountMinimumFieldsGreaterThanOrEqualToSubtotalMoneyV2 includes the requested fields of the GraphQL type MoneyV2.
+// The GraphQL type's documentation follows.
+//
+// A precise monetary value and its associated currency. Combines a decimal amount with a three-letter currency code to express prices, costs, and other financial values throughout the API. For example, 12.99 USD.
+type DiscountMinimumFieldsGreaterThanOrEqualToSubtotalMoneyV2 struct {
+	// A monetary value in decimal format, allowing for precise representation of cents or fractional
+	// currency. For example, 12.99.
+	Amount string `json:"amount"`
+}
+
+// GetAmount returns DiscountMinimumFieldsGreaterThanOrEqualToSubtotalMoneyV2.Amount, and is useful for accessing the field via an interface.
+func (v *DiscountMinimumFieldsGreaterThanOrEqualToSubtotalMoneyV2) GetAmount() string {
+	return v.Amount
+}
+
+// The input fields for the minimum quantity required for the discount.
+type DiscountMinimumQuantityInput struct {
+	// The minimum quantity of items that's required for the discount to be applied.
+	GreaterThanOrEqualToQuantity *string `json:"greaterThanOrEqualToQuantity"`
+}
+
+// GetGreaterThanOrEqualToQuantity returns DiscountMinimumQuantityInput.GreaterThanOrEqualToQuantity, and is useful for accessing the field via an interface.
+func (v *DiscountMinimumQuantityInput) GetGreaterThanOrEqualToQuantity() *string {
+	return v.GreaterThanOrEqualToQuantity
+}
+
+// The input fields for the minimum quantity or subtotal required for a discount.
+type DiscountMinimumRequirementInput struct {
+	// The minimum required quantity.
+	Quantity *DiscountMinimumQuantityInput `json:"quantity,omitempty"`
+	// The minimum required subtotal.
+	Subtotal *DiscountMinimumSubtotalInput `json:"subtotal,omitempty"`
+}
+
+// GetQuantity returns DiscountMinimumRequirementInput.Quantity, and is useful for accessing the field via an interface.
+func (v *DiscountMinimumRequirementInput) GetQuantity() *DiscountMinimumQuantityInput {
+	return v.Quantity
+}
+
+// GetSubtotal returns DiscountMinimumRequirementInput.Subtotal, and is useful for accessing the field via an interface.
+func (v *DiscountMinimumRequirementInput) GetSubtotal() *DiscountMinimumSubtotalInput {
+	return v.Subtotal
+}
+
+// The input fields for the minimum subtotal required for a discount.
+type DiscountMinimumSubtotalInput struct {
+	// The minimum subtotal that's required for the discount to be applied.
+	GreaterThanOrEqualToSubtotal *string `json:"greaterThanOrEqualToSubtotal"`
+}
+
+// GetGreaterThanOrEqualToSubtotal returns DiscountMinimumSubtotalInput.GreaterThanOrEqualToSubtotal, and is useful for accessing the field via an interface.
+func (v *DiscountMinimumSubtotalInput) GetGreaterThanOrEqualToSubtotal() *string {
+	return v.GreaterThanOrEqualToSubtotal
+}
+
+// Code and automatic basic discounts share the flattened sub-objects, so one mapping reads both.
+type DiscountNodeFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A discount that's applied at checkout or on cart.
+	//
+	//
+	// Discounts can be [automatic or code-based](https://shopify.dev/docs/apps/build/discounts#discount-methods).
+	Discount DiscountNodeFieldsDiscount `json:"-"`
+}
+
+// GetId returns DiscountNodeFields.Id, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFields) GetId() string { return v.Id }
+
+// GetDiscount returns DiscountNodeFields.Discount, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFields) GetDiscount() DiscountNodeFieldsDiscount { return v.Discount }
+
+func (v *DiscountNodeFields) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DiscountNodeFields
+		Discount json.RawMessage `json:"discount"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DiscountNodeFields = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Discount
+		src := firstPass.Discount
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountNodeFieldsDiscount(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFields.Discount: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDiscountNodeFields struct {
+	Id string `json:"id"`
+
+	Discount json.RawMessage `json:"discount"`
+}
+
+func (v *DiscountNodeFields) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DiscountNodeFields) __premarshalJSON() (*__premarshalDiscountNodeFields, error) {
+	var retval __premarshalDiscountNodeFields
+
+	retval.Id = v.Id
+	{
+
+		dst := &retval.Discount
+		src := v.Discount
+		var err error
+		*dst, err = __marshalDiscountNodeFieldsDiscount(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountNodeFields.Discount: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// DiscountNodeFieldsDiscount includes the requested fields of the GraphQL interface Discount.
+//
+// DiscountNodeFieldsDiscount is implemented by the following types:
+// DiscountNodeFieldsDiscountDiscountAutomaticApp
+// DiscountNodeFieldsDiscountDiscountAutomaticBasic
+// DiscountNodeFieldsDiscountDiscountAutomaticBxgy
+// DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping
+// DiscountNodeFieldsDiscountDiscountCodeApp
+// DiscountNodeFieldsDiscountDiscountCodeBasic
+// DiscountNodeFieldsDiscountDiscountCodeBxgy
+// DiscountNodeFieldsDiscountDiscountCodeFreeShipping
+// The GraphQL type's documentation follows.
+//
+// A discount offers promotional value and can be applied by entering a code or automatically when conditions are met. Discounts can provide fixed amounts, percentage reductions, free shipping, or Buy X Get Y (BXGY) benefits on specific products or the entire order. For more complex scenarios, developers can use Function-backed discounts to create custom discount configurations.
+type DiscountNodeFieldsDiscount interface {
+	implementsGraphQLInterfaceDiscountNodeFieldsDiscount()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticApp) implementsGraphQLInterfaceDiscountNodeFieldsDiscount() {
+}
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) implementsGraphQLInterfaceDiscountNodeFieldsDiscount() {
+}
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) implementsGraphQLInterfaceDiscountNodeFieldsDiscount() {
+}
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) implementsGraphQLInterfaceDiscountNodeFieldsDiscount() {
+}
+func (v *DiscountNodeFieldsDiscountDiscountCodeApp) implementsGraphQLInterfaceDiscountNodeFieldsDiscount() {
+}
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) implementsGraphQLInterfaceDiscountNodeFieldsDiscount() {
+}
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) implementsGraphQLInterfaceDiscountNodeFieldsDiscount() {
+}
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) implementsGraphQLInterfaceDiscountNodeFieldsDiscount() {
+}
+
+func __unmarshalDiscountNodeFieldsDiscount(b []byte, v *DiscountNodeFieldsDiscount) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DiscountAutomaticApp":
+		*v = new(DiscountNodeFieldsDiscountDiscountAutomaticApp)
+		return json.Unmarshal(b, *v)
+	case "DiscountAutomaticBasic":
+		*v = new(DiscountNodeFieldsDiscountDiscountAutomaticBasic)
+		return json.Unmarshal(b, *v)
+	case "DiscountAutomaticBxgy":
+		*v = new(DiscountNodeFieldsDiscountDiscountAutomaticBxgy)
+		return json.Unmarshal(b, *v)
+	case "DiscountAutomaticFreeShipping":
+		*v = new(DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeApp":
+		*v = new(DiscountNodeFieldsDiscountDiscountCodeApp)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeBasic":
+		*v = new(DiscountNodeFieldsDiscountDiscountCodeBasic)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeBxgy":
+		*v = new(DiscountNodeFieldsDiscountDiscountCodeBxgy)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeFreeShipping":
+		*v = new(DiscountNodeFieldsDiscountDiscountCodeFreeShipping)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Discount.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DiscountNodeFieldsDiscount: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDiscountNodeFieldsDiscount(v *DiscountNodeFieldsDiscount) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DiscountNodeFieldsDiscountDiscountAutomaticApp:
+		typename = "DiscountAutomaticApp"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountNodeFieldsDiscountDiscountAutomaticApp
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountNodeFieldsDiscountDiscountAutomaticBasic:
+		typename = "DiscountAutomaticBasic"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalDiscountNodeFieldsDiscountDiscountAutomaticBasic
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *DiscountNodeFieldsDiscountDiscountAutomaticBxgy:
+		typename = "DiscountAutomaticBxgy"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountNodeFieldsDiscountDiscountAutomaticBxgy
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping:
+		typename = "DiscountAutomaticFreeShipping"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountNodeFieldsDiscountDiscountCodeApp:
+		typename = "DiscountCodeApp"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountNodeFieldsDiscountDiscountCodeApp
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountNodeFieldsDiscountDiscountCodeBasic:
+		typename = "DiscountCodeBasic"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalDiscountNodeFieldsDiscountDiscountCodeBasic
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *DiscountNodeFieldsDiscountDiscountCodeBxgy:
+		typename = "DiscountCodeBxgy"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountNodeFieldsDiscountDiscountCodeBxgy
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountNodeFieldsDiscountDiscountCodeFreeShipping:
+		typename = "DiscountCodeFreeShipping"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountNodeFieldsDiscountDiscountCodeFreeShipping
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DiscountNodeFieldsDiscount: "%T"`, v)
+	}
+}
+
+// DiscountNodeFieldsDiscountDiscountAutomaticApp includes the requested fields of the GraphQL type DiscountAutomaticApp.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticApp` object stores information about automatic discounts
+// that are managed by an app using
+// [Shopify Functions](https://shopify.dev/docs/apps/build/functions).
+// Use `DiscountAutomaticApp`when you need advanced, custom, or
+// dynamic discount capabilities that aren't supported by
+// [Shopify's native discount types](https://help.shopify.com/manual/discounts/discount-types).
+//
+// Learn more about creating
+// [custom discount functionality](https://shopify.dev/docs/apps/build/discounts/build-discount-function).
+//
+// > Note:
+// > The [`DiscountCodeApp`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeApp)
+// object has similar functionality to the `DiscountAutomaticApp` object, with the exception that `DiscountCodeApp`
+// stores information about discount codes that are managed by an app using Shopify Functions.
+// >
+// > API versions prior to `2025-10` only return automatic discounts with `context` set to `all`, discounts with other values are filtered out.
+type DiscountNodeFieldsDiscountDiscountAutomaticApp struct {
+	Typename *string `json:"__typename"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title string `json:"title"`
+}
+
+// GetTypename returns DiscountNodeFieldsDiscountDiscountAutomaticApp.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticApp) GetTypename() *string { return v.Typename }
+
+// GetTitle returns DiscountNodeFieldsDiscountDiscountAutomaticApp.Title, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticApp) GetTitle() string { return v.Title }
+
+// DiscountNodeFieldsDiscountDiscountAutomaticBasic includes the requested fields of the GraphQL type DiscountAutomaticBasic.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticBasic` object lets you manage
+// [amount off discounts](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount)
+// that are automatically applied on a cart and at checkout. Amount off discounts give customers a
+// fixed value or a percentage off the products in an order, but don't apply to shipping costs.
+//
+// The `DiscountAutomaticBasic` object stores information about automatic amount off discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountCodeBasic`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeBasic)
+// object has similar functionality to the `DiscountAutomaticBasic` object, but customers need to enter a code to
+// receive a discount.
+// >
+// > API versions prior to `2025-10` only return automatic discounts with `context` set to `all`, discounts with other values are filtered out.
+type DiscountNodeFieldsDiscountDiscountAutomaticBasic struct {
+	Typename *string `json:"__typename"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title string `json:"title"`
+	// The date and time when the discount becomes active and is available to customers.
+	StartsAt string `json:"startsAt"`
+	// The date and time when the discount expires and is no longer available to customers.
+	// For discounts without a fixed expiration date, specify `null`.
+	EndsAt *string `json:"endsAt"`
+	// The status of the discount that describes its availability,
+	// expiration, or pending activation.
+	Status DiscountStatus `json:"status"`
+	// The
+	// [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// that you can use in combination with
+	// [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+	CombinesWith DiscountCombinesWithFields `json:"combinesWith"`
+	// The context defining which buyers can use the discount.
+	Context DiscountContextFields `json:"-"`
+	// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+	CustomerGets DiscountCustomerGetsFields `json:"customerGets"`
+	// The minimum subtotal or quantity of items that are required for the discount to be applied.
+	MinimumRequirement *DiscountMinimumFields `json:"-"`
+}
+
+// GetTypename returns DiscountNodeFieldsDiscountDiscountAutomaticBasic.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) GetTypename() *string { return v.Typename }
+
+// GetTitle returns DiscountNodeFieldsDiscountDiscountAutomaticBasic.Title, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) GetTitle() string { return v.Title }
+
+// GetStartsAt returns DiscountNodeFieldsDiscountDiscountAutomaticBasic.StartsAt, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) GetStartsAt() string { return v.StartsAt }
+
+// GetEndsAt returns DiscountNodeFieldsDiscountDiscountAutomaticBasic.EndsAt, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) GetEndsAt() *string { return v.EndsAt }
+
+// GetStatus returns DiscountNodeFieldsDiscountDiscountAutomaticBasic.Status, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) GetStatus() DiscountStatus {
+	return v.Status
+}
+
+// GetCombinesWith returns DiscountNodeFieldsDiscountDiscountAutomaticBasic.CombinesWith, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) GetCombinesWith() DiscountCombinesWithFields {
+	return v.CombinesWith
+}
+
+// GetContext returns DiscountNodeFieldsDiscountDiscountAutomaticBasic.Context, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) GetContext() DiscountContextFields {
+	return v.Context
+}
+
+// GetCustomerGets returns DiscountNodeFieldsDiscountDiscountAutomaticBasic.CustomerGets, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) GetCustomerGets() DiscountCustomerGetsFields {
+	return v.CustomerGets
+}
+
+// GetMinimumRequirement returns DiscountNodeFieldsDiscountDiscountAutomaticBasic.MinimumRequirement, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) GetMinimumRequirement() *DiscountMinimumFields {
+	return v.MinimumRequirement
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DiscountNodeFieldsDiscountDiscountAutomaticBasic
+		Context            json.RawMessage `json:"context"`
+		MinimumRequirement json.RawMessage `json:"minimumRequirement"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DiscountNodeFieldsDiscountDiscountAutomaticBasic = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Context
+		src := firstPass.Context
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountContextFields(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFieldsDiscountDiscountAutomaticBasic.Context: %w", err)
+			}
+		}
+	}
+
+	{
+		dst := &v.MinimumRequirement
+		src := firstPass.MinimumRequirement
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(DiscountMinimumFields)
+			err = __unmarshalDiscountMinimumFields(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFieldsDiscountDiscountAutomaticBasic.MinimumRequirement: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDiscountNodeFieldsDiscountDiscountAutomaticBasic struct {
+	Typename *string `json:"__typename"`
+
+	Title string `json:"title"`
+
+	StartsAt string `json:"startsAt"`
+
+	EndsAt *string `json:"endsAt"`
+
+	Status DiscountStatus `json:"status"`
+
+	CombinesWith DiscountCombinesWithFields `json:"combinesWith"`
+
+	Context json.RawMessage `json:"context"`
+
+	CustomerGets DiscountCustomerGetsFields `json:"customerGets"`
+
+	MinimumRequirement json.RawMessage `json:"minimumRequirement"`
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBasic) __premarshalJSON() (*__premarshalDiscountNodeFieldsDiscountDiscountAutomaticBasic, error) {
+	var retval __premarshalDiscountNodeFieldsDiscountDiscountAutomaticBasic
+
+	retval.Typename = v.Typename
+	retval.Title = v.Title
+	retval.StartsAt = v.StartsAt
+	retval.EndsAt = v.EndsAt
+	retval.Status = v.Status
+	retval.CombinesWith = v.CombinesWith
+	{
+
+		dst := &retval.Context
+		src := v.Context
+		var err error
+		*dst, err = __marshalDiscountContextFields(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountNodeFieldsDiscountDiscountAutomaticBasic.Context: %w", err)
+		}
+	}
+	retval.CustomerGets = v.CustomerGets
+	{
+
+		dst := &retval.MinimumRequirement
+		src := v.MinimumRequirement
+		if src != nil {
+			var err error
+			*dst, err = __marshalDiscountMinimumFields(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal DiscountNodeFieldsDiscountDiscountAutomaticBasic.MinimumRequirement: %w", err)
+			}
+		}
+	}
+	return &retval, nil
+}
+
+// DiscountNodeFieldsDiscountDiscountAutomaticBxgy includes the requested fields of the GraphQL type DiscountAutomaticBxgy.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticBxgy` object lets you manage
+// [buy X get Y discounts (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+// that are automatically applied on a cart and at checkout. BXGY discounts incentivize customers by offering
+// them additional items at a discounted price or for free when they purchase a specified quantity of items.
+//
+// The `DiscountAutomaticBxgy` object stores information about automatic BXGY discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountCodeBxgy`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeBxgy)
+// object has similar functionality to the `DiscountAutomaticBxgy` object, but customers need to enter a code to
+// receive a discount.
+// >
+// > API versions prior to `2025-10` only return automatic discounts with `context` set to `all`, discounts with other values are filtered out.
+type DiscountNodeFieldsDiscountDiscountAutomaticBxgy struct {
+	Typename *string `json:"__typename"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title string `json:"title"`
+}
+
+// GetTypename returns DiscountNodeFieldsDiscountDiscountAutomaticBxgy.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) GetTypename() *string { return v.Typename }
+
+// GetTitle returns DiscountNodeFieldsDiscountDiscountAutomaticBxgy.Title, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) GetTitle() string { return v.Title }
+
+// DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping includes the requested fields of the GraphQL type DiscountAutomaticFreeShipping.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticFreeShipping` object lets you manage
+// [free shipping discounts](https://help.shopify.com/manual/discounts/discount-types/free-shipping)
+// that are automatically applied on a cart and at checkout. Free shipping discounts are promotional deals that
+// merchants offer to customers to waive shipping costs and encourage online purchases.
+//
+// The `DiscountAutomaticFreeShipping` object stores information about automatic free shipping discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountCodeFreeShipping`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeFreeShipping)
+// object has similar functionality to the `DiscountAutomaticFreeShipping` object, but customers need to enter a code to
+// receive a discount.
+// >
+// > API versions prior to `2025-10` only return automatic discounts with `context` set to `all`, discounts with other values are filtered out.
+type DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping struct {
+	Typename *string `json:"__typename"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title string `json:"title"`
+}
+
+// GetTypename returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetTypename() *string {
+	return v.Typename
+}
+
+// GetTitle returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.Title, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetTitle() string { return v.Title }
+
+// DiscountNodeFieldsDiscountDiscountCodeApp includes the requested fields of the GraphQL type DiscountCodeApp.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeApp` object stores information about code discounts
+// that are managed by an app using
+// [Shopify Functions](https://shopify.dev/docs/apps/build/functions).
+// Use `DiscountCodeApp` when you need advanced, custom, or
+// dynamic discount capabilities that aren't supported by
+// [Shopify's native discount types](https://help.shopify.com/manual/discounts/discount-types).
+//
+// Learn more about creating
+// [custom discount functionality](https://shopify.dev/docs/apps/build/discounts/build-discount-function).
+//
+// > Note:
+// > The [`DiscountAutomaticApp`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticApp)
+// object has similar functionality to the `DiscountCodeApp` object, with the exception that `DiscountAutomaticApp`
+// stores information about automatic discounts that are managed by an app using Shopify Functions.
+type DiscountNodeFieldsDiscountDiscountCodeApp struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DiscountNodeFieldsDiscountDiscountCodeApp.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeApp) GetTypename() *string { return v.Typename }
+
+// DiscountNodeFieldsDiscountDiscountCodeBasic includes the requested fields of the GraphQL type DiscountCodeBasic.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeBasic` object lets you manage
+// [amount off discounts](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount)
+// that are applied on a cart and at checkout when a customer enters a code. Amount off discounts give customers a
+// fixed value or a percentage off the products in an order, but don't apply to shipping costs.
+//
+// The `DiscountCodeBasic` object stores information about amount off code discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountAutomaticBasic`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticBasic)
+// object has similar functionality to the `DiscountCodeBasic` object, but discounts are automatically applied,
+// without the need for customers to enter a code.
+type DiscountNodeFieldsDiscountDiscountCodeBasic struct {
+	Typename *string `json:"__typename"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title string `json:"title"`
+	// The date and time when the discount becomes active and is available to customers.
+	StartsAt string `json:"startsAt"`
+	// The date and time when the discount expires and is no longer available to customers.
+	// For discounts without a fixed expiration date, specify `null`.
+	EndsAt *string `json:"endsAt"`
+	// The status of the discount that describes its availability,
+	// expiration, or pending activation.
+	Status DiscountStatus `json:"status"`
+	// The maximum number of times the discount can be redeemed.
+	// For unlimited usage, specify `null`.
+	UsageLimit *int `json:"usageLimit"`
+	// Whether a customer can only use the discount once.
+	AppliesOncePerCustomer bool `json:"appliesOncePerCustomer"`
+	// The number of codes that a customer can use to redeem the discount.
+	CodesCount *DiscountNodeFieldsDiscountDiscountCodeBasicCodesCount `json:"codesCount"`
+	// A list codes that customers can use to redeem the discount.
+	Codes DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnection `json:"codes"`
+	// The
+	// [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// that you can use in combination with
+	// [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+	CombinesWith DiscountCombinesWithFields `json:"combinesWith"`
+	// The context defining which buyers can use the discount.
+	Context DiscountContextFields `json:"-"`
+	// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+	CustomerGets DiscountCustomerGetsFields `json:"customerGets"`
+	// The minimum subtotal or quantity of items that are required for the discount to be applied.
+	MinimumRequirement *DiscountMinimumFields `json:"-"`
+}
+
+// GetTypename returns DiscountNodeFieldsDiscountDiscountCodeBasic.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetTypename() *string { return v.Typename }
+
+// GetTitle returns DiscountNodeFieldsDiscountDiscountCodeBasic.Title, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetTitle() string { return v.Title }
+
+// GetStartsAt returns DiscountNodeFieldsDiscountDiscountCodeBasic.StartsAt, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetStartsAt() string { return v.StartsAt }
+
+// GetEndsAt returns DiscountNodeFieldsDiscountDiscountCodeBasic.EndsAt, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetEndsAt() *string { return v.EndsAt }
+
+// GetStatus returns DiscountNodeFieldsDiscountDiscountCodeBasic.Status, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetStatus() DiscountStatus { return v.Status }
+
+// GetUsageLimit returns DiscountNodeFieldsDiscountDiscountCodeBasic.UsageLimit, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetUsageLimit() *int { return v.UsageLimit }
+
+// GetAppliesOncePerCustomer returns DiscountNodeFieldsDiscountDiscountCodeBasic.AppliesOncePerCustomer, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetAppliesOncePerCustomer() bool {
+	return v.AppliesOncePerCustomer
+}
+
+// GetCodesCount returns DiscountNodeFieldsDiscountDiscountCodeBasic.CodesCount, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetCodesCount() *DiscountNodeFieldsDiscountDiscountCodeBasicCodesCount {
+	return v.CodesCount
+}
+
+// GetCodes returns DiscountNodeFieldsDiscountDiscountCodeBasic.Codes, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetCodes() DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnection {
+	return v.Codes
+}
+
+// GetCombinesWith returns DiscountNodeFieldsDiscountDiscountCodeBasic.CombinesWith, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetCombinesWith() DiscountCombinesWithFields {
+	return v.CombinesWith
+}
+
+// GetContext returns DiscountNodeFieldsDiscountDiscountCodeBasic.Context, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetContext() DiscountContextFields {
+	return v.Context
+}
+
+// GetCustomerGets returns DiscountNodeFieldsDiscountDiscountCodeBasic.CustomerGets, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetCustomerGets() DiscountCustomerGetsFields {
+	return v.CustomerGets
+}
+
+// GetMinimumRequirement returns DiscountNodeFieldsDiscountDiscountCodeBasic.MinimumRequirement, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) GetMinimumRequirement() *DiscountMinimumFields {
+	return v.MinimumRequirement
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DiscountNodeFieldsDiscountDiscountCodeBasic
+		Context            json.RawMessage `json:"context"`
+		MinimumRequirement json.RawMessage `json:"minimumRequirement"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DiscountNodeFieldsDiscountDiscountCodeBasic = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Context
+		src := firstPass.Context
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountContextFields(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFieldsDiscountDiscountCodeBasic.Context: %w", err)
+			}
+		}
+	}
+
+	{
+		dst := &v.MinimumRequirement
+		src := firstPass.MinimumRequirement
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(DiscountMinimumFields)
+			err = __unmarshalDiscountMinimumFields(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFieldsDiscountDiscountCodeBasic.MinimumRequirement: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDiscountNodeFieldsDiscountDiscountCodeBasic struct {
+	Typename *string `json:"__typename"`
+
+	Title string `json:"title"`
+
+	StartsAt string `json:"startsAt"`
+
+	EndsAt *string `json:"endsAt"`
+
+	Status DiscountStatus `json:"status"`
+
+	UsageLimit *int `json:"usageLimit"`
+
+	AppliesOncePerCustomer bool `json:"appliesOncePerCustomer"`
+
+	CodesCount *DiscountNodeFieldsDiscountDiscountCodeBasicCodesCount `json:"codesCount"`
+
+	Codes DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnection `json:"codes"`
+
+	CombinesWith DiscountCombinesWithFields `json:"combinesWith"`
+
+	Context json.RawMessage `json:"context"`
+
+	CustomerGets DiscountCustomerGetsFields `json:"customerGets"`
+
+	MinimumRequirement json.RawMessage `json:"minimumRequirement"`
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasic) __premarshalJSON() (*__premarshalDiscountNodeFieldsDiscountDiscountCodeBasic, error) {
+	var retval __premarshalDiscountNodeFieldsDiscountDiscountCodeBasic
+
+	retval.Typename = v.Typename
+	retval.Title = v.Title
+	retval.StartsAt = v.StartsAt
+	retval.EndsAt = v.EndsAt
+	retval.Status = v.Status
+	retval.UsageLimit = v.UsageLimit
+	retval.AppliesOncePerCustomer = v.AppliesOncePerCustomer
+	retval.CodesCount = v.CodesCount
+	retval.Codes = v.Codes
+	retval.CombinesWith = v.CombinesWith
+	{
+
+		dst := &retval.Context
+		src := v.Context
+		var err error
+		*dst, err = __marshalDiscountContextFields(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountNodeFieldsDiscountDiscountCodeBasic.Context: %w", err)
+		}
+	}
+	retval.CustomerGets = v.CustomerGets
+	{
+
+		dst := &retval.MinimumRequirement
+		src := v.MinimumRequirement
+		if src != nil {
+			var err error
+			*dst, err = __marshalDiscountMinimumFields(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal DiscountNodeFieldsDiscountDiscountCodeBasic.MinimumRequirement: %w", err)
+			}
+		}
+	}
+	return &retval, nil
+}
+
+// DiscountNodeFieldsDiscountDiscountCodeBasicCodesCount includes the requested fields of the GraphQL type Count.
+// The GraphQL type's documentation follows.
+//
+// A numeric count with precision information indicating whether the count is exact or an estimate.
+type DiscountNodeFieldsDiscountDiscountCodeBasicCodesCount struct {
+	// The count of elements.
+	Count int `json:"count"`
+}
+
+// GetCount returns DiscountNodeFieldsDiscountDiscountCodeBasicCodesCount.Count, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasicCodesCount) GetCount() int { return v.Count }
+
+// DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnection includes the requested fields of the GraphQL type DiscountRedeemCodeConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple DiscountRedeemCodes.
+type DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnection struct {
+	// A list of nodes that are contained in DiscountRedeemCodeEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode `json:"nodes"`
+}
+
+// GetNodes returns DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnection) GetNodes() []DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode {
+	return v.Nodes
+}
+
+// DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode includes the requested fields of the GraphQL type DiscountRedeemCode.
+// The GraphQL type's documentation follows.
+//
+// A code that a customer can use at checkout to receive a discount. For example, a customer can use the redeem code 'SUMMER20' at checkout to receive a 20% discount on their entire order.
+type DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode struct {
+	// The code that a customer can use at checkout to receive a discount.
+	Code string `json:"code"`
+}
+
+// GetCode returns DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode.Code, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode) GetCode() string {
+	return v.Code
+}
+
+// DiscountNodeFieldsDiscountDiscountCodeBxgy includes the requested fields of the GraphQL type DiscountCodeBxgy.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeBxgy` object lets you manage
+// [buy X get Y discounts (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+// that are applied on a cart and at checkout when a customer enters a code. BXGY discounts incentivize customers
+// by offering them additional items at a discounted price or for free when they purchase a specified quantity
+// of items.
+//
+// The `DiscountCodeBxgy` object stores information about BXGY code discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountAutomaticBxgy`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticBxgy)
+// object has similar functionality to the `DiscountCodeBxgy` object, but discounts are automatically applied,
+// without the need for customers to enter a code.
+type DiscountNodeFieldsDiscountDiscountCodeBxgy struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DiscountNodeFieldsDiscountDiscountCodeBxgy.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetTypename() *string { return v.Typename }
+
+// DiscountNodeFieldsDiscountDiscountCodeFreeShipping includes the requested fields of the GraphQL type DiscountCodeFreeShipping.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeFreeShipping` object lets you manage
+// [free shipping discounts](https://help.shopify.com/manual/discounts/discount-types/free-shipping)
+// that are applied on a cart and at checkout when a customer enters a code. Free shipping discounts are
+// promotional deals that merchants offer to customers to waive shipping costs and encourage online purchases.
+//
+// The `DiscountCodeFreeShipping` object stores information about free shipping code discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The
+// [`DiscountAutomaticFreeShipping`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticFreeShipping)
+// object has similar functionality to the `DiscountCodeFreeShipping` object, but discounts are automatically applied,
+// without the need for customers to enter a code.
+type DiscountNodeFieldsDiscountDiscountCodeFreeShipping struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetTypename() *string { return v.Typename }
+
+// The input fields for the quantity of items discounted and the discount value.
+type DiscountOnQuantityInput struct {
+	// The quantity of items that are discounted.
+	Quantity *string `json:"quantity"`
+	// The percentage value of the discount.
+	Effect *DiscountEffectInput `json:"effect"`
+}
+
+// GetQuantity returns DiscountOnQuantityInput.Quantity, and is useful for accessing the field via an interface.
+func (v *DiscountOnQuantityInput) GetQuantity() *string { return v.Quantity }
+
+// GetEffect returns DiscountOnQuantityInput.Effect, and is useful for accessing the field via an interface.
+func (v *DiscountOnQuantityInput) GetEffect() *DiscountEffectInput { return v.Effect }
+
+// The input fields for adding and removing
+// [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and
+// [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant)
+// as prerequisites or as eligible items for a discount.
+type DiscountProductsInput struct {
+	// The IDs of the products to add as prerequisites or as eligible items for a discount.
+	ProductsToAdd []string `json:"productsToAdd,omitempty"`
+	// The IDs of the products to remove as prerequisites or as eligible items for a discount.
+	ProductsToRemove []string `json:"productsToRemove,omitempty"`
+	// The IDs of the product variants to add as prerequisites or as eligible items for a discount.
+	ProductVariantsToAdd []string `json:"productVariantsToAdd,omitempty"`
+	// The IDs of the product variants to remove as prerequisites or as eligible items for a discount.
+	ProductVariantsToRemove []string `json:"productVariantsToRemove,omitempty"`
+}
+
+// GetProductsToAdd returns DiscountProductsInput.ProductsToAdd, and is useful for accessing the field via an interface.
+func (v *DiscountProductsInput) GetProductsToAdd() []string { return v.ProductsToAdd }
+
+// GetProductsToRemove returns DiscountProductsInput.ProductsToRemove, and is useful for accessing the field via an interface.
+func (v *DiscountProductsInput) GetProductsToRemove() []string { return v.ProductsToRemove }
+
+// GetProductVariantsToAdd returns DiscountProductsInput.ProductVariantsToAdd, and is useful for accessing the field via an interface.
+func (v *DiscountProductsInput) GetProductVariantsToAdd() []string { return v.ProductVariantsToAdd }
+
+// GetProductVariantsToRemove returns DiscountProductsInput.ProductVariantsToRemove, and is useful for accessing the field via an interface.
+func (v *DiscountProductsInput) GetProductVariantsToRemove() []string {
+	return v.ProductVariantsToRemove
+}
+
+// The status of the discount that describes its availability,
+// expiration, or pending activation.
+type DiscountStatus string
+
+const (
+	// The discount is currently available for use.
+	DiscountStatusActive DiscountStatus = "ACTIVE"
+	// The discount has reached its end date and is no longer valid.
+	DiscountStatusExpired DiscountStatus = "EXPIRED"
+	// The discount is set to become active at a future date.
+	DiscountStatusScheduled DiscountStatus = "SCHEDULED"
+)
+
+var AllDiscountStatus = []DiscountStatus{
+	DiscountStatusActive,
+	DiscountStatusExpired,
+	DiscountStatusScheduled,
+}
+
+// DiscountUserErrorFields includes the GraphQL fields of DiscountUserError requested by the fragment DiscountUserErrorFields.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of a discount mutation.
+type DiscountUserErrorFields struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *DiscountErrorCode `json:"code"`
+	// Extra information about this error.
+	ExtraInfo *string `json:"extraInfo"`
+}
+
+// GetField returns DiscountUserErrorFields.Field, and is useful for accessing the field via an interface.
+func (v *DiscountUserErrorFields) GetField() []string { return v.Field }
+
+// GetMessage returns DiscountUserErrorFields.Message, and is useful for accessing the field via an interface.
+func (v *DiscountUserErrorFields) GetMessage() string { return v.Message }
+
+// GetCode returns DiscountUserErrorFields.Code, and is useful for accessing the field via an interface.
+func (v *DiscountUserErrorFields) GetCode() *DiscountErrorCode { return v.Code }
+
+// GetExtraInfo returns DiscountUserErrorFields.ExtraInfo, and is useful for accessing the field via an interface.
+func (v *DiscountUserErrorFields) GetExtraInfo() *string { return v.ExtraInfo }
+
 // EditLocationLocationEditLocationEditPayload includes the requested fields of the GraphQL type LocationEditPayload.
 // The GraphQL type's documentation follows.
 //
@@ -5346,6 +11967,370 @@ func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadUserErrorsUserEr
 	return v.Message
 }
 
+// The possible content types for a file object.
+type FileContentType string
+
+const (
+	// A Shopify-hosted image.
+	FileContentTypeImage FileContentType = "IMAGE"
+	// A Shopify-hosted generic file.
+	FileContentTypeFile FileContentType = "FILE"
+	// A Shopify-hosted video file. It's recommended to use this type for all video files.
+	FileContentTypeVideo FileContentType = "VIDEO"
+	// An externally hosted video.
+	FileContentTypeExternalVideo FileContentType = "EXTERNAL_VIDEO"
+	// A Shopify-hosted 3D model.
+	FileContentTypeModel3d FileContentType = "MODEL_3D"
+)
+
+var AllFileContentType = []FileContentType{
+	FileContentTypeImage,
+	FileContentTypeFile,
+	FileContentTypeVideo,
+	FileContentTypeExternalVideo,
+	FileContentTypeModel3d,
+}
+
+// The input fields that are required to create a file object.
+type FileCreateInput struct {
+	// The name of the file. If provided, then the file is created with the specified filename.
+	// If not provided, then the filename from the `originalSource` is used.
+	Filename *string `json:"filename,omitempty"`
+	// The file content type. If omitted, then Shopify will attempt to determine the content type during file processing.
+	ContentType *FileContentType `json:"contentType,omitempty"`
+	// The alt text description of the file for screen readers and accessibility.
+	Alt *string `json:"alt,omitempty"`
+	// How to handle if filename is already in use.
+	DuplicateResolutionMode *FileCreateInputDuplicateResolutionMode `json:"duplicateResolutionMode,omitempty"`
+	// The source URL of the file. An external URL can be used for images, generic files, or external videos.
+	// Videos and 3D models require a
+	// [staged upload URL](https://shopify.dev/api/admin-graphql/latest/mutations/stageduploadscreate).
+	OriginalSource string `json:"originalSource"`
+}
+
+// GetFilename returns FileCreateInput.Filename, and is useful for accessing the field via an interface.
+func (v *FileCreateInput) GetFilename() *string { return v.Filename }
+
+// GetContentType returns FileCreateInput.ContentType, and is useful for accessing the field via an interface.
+func (v *FileCreateInput) GetContentType() *FileContentType { return v.ContentType }
+
+// GetAlt returns FileCreateInput.Alt, and is useful for accessing the field via an interface.
+func (v *FileCreateInput) GetAlt() *string { return v.Alt }
+
+// GetDuplicateResolutionMode returns FileCreateInput.DuplicateResolutionMode, and is useful for accessing the field via an interface.
+func (v *FileCreateInput) GetDuplicateResolutionMode() *FileCreateInputDuplicateResolutionMode {
+	return v.DuplicateResolutionMode
+}
+
+// GetOriginalSource returns FileCreateInput.OriginalSource, and is useful for accessing the field via an interface.
+func (v *FileCreateInput) GetOriginalSource() string { return v.OriginalSource }
+
+// The input fields for handling if filename is already in use.
+type FileCreateInputDuplicateResolutionMode string
+
+const (
+	// Append a UUID if filename is already in use.
+	FileCreateInputDuplicateResolutionModeAppendUuid FileCreateInputDuplicateResolutionMode = "APPEND_UUID"
+	// Raise an error if filename is already in use.
+	FileCreateInputDuplicateResolutionModeRaiseError FileCreateInputDuplicateResolutionMode = "RAISE_ERROR"
+	// Replace the existing file if filename is already in use.
+	FileCreateInputDuplicateResolutionModeReplace FileCreateInputDuplicateResolutionMode = "REPLACE"
+)
+
+var AllFileCreateInputDuplicateResolutionMode = []FileCreateInputDuplicateResolutionMode{
+	FileCreateInputDuplicateResolutionModeAppendUuid,
+	FileCreateInputDuplicateResolutionModeRaiseError,
+	FileCreateInputDuplicateResolutionModeReplace,
+}
+
+// The input fields required to create or update a file object.
+type FileSetInput struct {
+	// The name of the file. If provided, then the file is created with the specified filename.
+	// If not provided, then the filename from the `originalSource` is used.
+	Filename *string `json:"filename"`
+	// The file content type. If omitted, then Shopify will attempt to determine the content type during file processing.
+	ContentType *FileContentType `json:"contentType"`
+	// The alt text description of the file for screen readers and accessibility.
+	Alt *string `json:"alt"`
+	// How to handle if filename is already in use.
+	DuplicateResolutionMode *FileCreateInputDuplicateResolutionMode `json:"duplicateResolutionMode"`
+	// The ID of an existing file.
+	Id *string `json:"id"`
+	// The source URL of the file. An external URL can be used for images, generic files, or external videos.
+	// Videos and 3D models require a
+	// [staged upload URL](https://shopify.dev/api/admin-graphql/latest/mutations/stageduploadscreate).
+	OriginalSource *string `json:"originalSource"`
+}
+
+// GetFilename returns FileSetInput.Filename, and is useful for accessing the field via an interface.
+func (v *FileSetInput) GetFilename() *string { return v.Filename }
+
+// GetContentType returns FileSetInput.ContentType, and is useful for accessing the field via an interface.
+func (v *FileSetInput) GetContentType() *FileContentType { return v.ContentType }
+
+// GetAlt returns FileSetInput.Alt, and is useful for accessing the field via an interface.
+func (v *FileSetInput) GetAlt() *string { return v.Alt }
+
+// GetDuplicateResolutionMode returns FileSetInput.DuplicateResolutionMode, and is useful for accessing the field via an interface.
+func (v *FileSetInput) GetDuplicateResolutionMode() *FileCreateInputDuplicateResolutionMode {
+	return v.DuplicateResolutionMode
+}
+
+// GetId returns FileSetInput.Id, and is useful for accessing the field via an interface.
+func (v *FileSetInput) GetId() *string { return v.Id }
+
+// GetOriginalSource returns FileSetInput.OriginalSource, and is useful for accessing the field via an interface.
+func (v *FileSetInput) GetOriginalSource() *string { return v.OriginalSource }
+
+// The input fields that are required to update a file object.
+type FileUpdateInput struct {
+	// The ID of the file to be updated.
+	Id string `json:"id"`
+	// The alt text description of the file for screen readers and accessibility.
+	Alt *string `json:"alt,omitempty"`
+	// The source from which to update a media image or generic file.
+	// This can be an external URL or a
+	// [staged upload URL](https://shopify.dev/api/admin-graphql/latest/mutations/stageduploadscreate).
+	OriginalSource *string `json:"originalSource,omitempty"`
+	// The source from which to update the media preview image.
+	// May be an external URL or a
+	// [staged upload URL](https://shopify.dev/api/admin-graphql/latest/mutations/stageduploadscreate).
+	PreviewImageSource *string `json:"previewImageSource,omitempty"`
+	// The name of the file including its extension.
+	Filename *string `json:"filename,omitempty"`
+	// The IDs of the references to add to the file. Currently only accepts product IDs.
+	ReferencesToAdd []string `json:"referencesToAdd,omitempty"`
+	// The IDs of the references to remove from the file. Currently only accepts product IDs.
+	ReferencesToRemove []string `json:"referencesToRemove,omitempty"`
+}
+
+// GetId returns FileUpdateInput.Id, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetId() string { return v.Id }
+
+// GetAlt returns FileUpdateInput.Alt, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetAlt() *string { return v.Alt }
+
+// GetOriginalSource returns FileUpdateInput.OriginalSource, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetOriginalSource() *string { return v.OriginalSource }
+
+// GetPreviewImageSource returns FileUpdateInput.PreviewImageSource, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetPreviewImageSource() *string { return v.PreviewImageSource }
+
+// GetFilename returns FileUpdateInput.Filename, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetFilename() *string { return v.Filename }
+
+// GetReferencesToAdd returns FileUpdateInput.ReferencesToAdd, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetReferencesToAdd() []string { return v.ReferencesToAdd }
+
+// GetReferencesToRemove returns FileUpdateInput.ReferencesToRemove, and is useful for accessing the field via an interface.
+func (v *FileUpdateInput) GetReferencesToRemove() []string { return v.ReferencesToRemove }
+
+// Possible error codes that can be returned by `FilesUserError`.
+type FilesErrorCode string
+
+const (
+	// The input value is invalid.
+	FilesErrorCodeInvalid FilesErrorCode = "INVALID"
+	// File does not exist.
+	FilesErrorCodeFileDoesNotExist FilesErrorCode = "FILE_DOES_NOT_EXIST"
+	// File has a pending operation.
+	FilesErrorCodeFileLocked FilesErrorCode = "FILE_LOCKED"
+	// Filename update is only supported on Image and GenericFile.
+	FilesErrorCodeUnsupportedMediaTypeForFilenameUpdate FilesErrorCode = "UNSUPPORTED_MEDIA_TYPE_FOR_FILENAME_UPDATE"
+	// Specify one argument: search, IDs, or deleteAll.
+	FilesErrorCodeTooManyArguments FilesErrorCode = "TOO_MANY_ARGUMENTS"
+	// The search term must not be blank.
+	FilesErrorCodeBlankSearch FilesErrorCode = "BLANK_SEARCH"
+	// At least one argument is required.
+	FilesErrorCodeMissingArguments FilesErrorCode = "MISSING_ARGUMENTS"
+	// Search query isn't supported.
+	FilesErrorCodeInvalidQuery FilesErrorCode = "INVALID_QUERY"
+	// One or more associated products are suspended.
+	FilesErrorCodeProductSuspended FilesErrorCode = "PRODUCT_SUSPENDED"
+	// Invalid filename extension.
+	FilesErrorCodeInvalidFilenameExtension FilesErrorCode = "INVALID_FILENAME_EXTENSION"
+	// The provided filename is invalid.
+	FilesErrorCodeInvalidFilename FilesErrorCode = "INVALID_FILENAME"
+	// The provided filename already exists.
+	FilesErrorCodeFilenameAlreadyExists FilesErrorCode = "FILENAME_ALREADY_EXISTS"
+	// The file is not supported on trial accounts that have not validated their email. Either select a plan or verify the shop owner email to upload this file.
+	FilesErrorCodeUnacceptableUnverifiedTrialAsset FilesErrorCode = "UNACCEPTABLE_UNVERIFIED_TRIAL_ASSET"
+	// The file type is not supported.
+	FilesErrorCodeUnacceptableAsset FilesErrorCode = "UNACCEPTABLE_ASSET"
+	// The file is not supported on trial accounts. Select a plan to upload this file.
+	FilesErrorCodeUnacceptableTrialAsset FilesErrorCode = "UNACCEPTABLE_TRIAL_ASSET"
+	// The alt value exceeds the maximum limit of 512 characters.
+	FilesErrorCodeAltValueLimitExceeded FilesErrorCode = "ALT_VALUE_LIMIT_EXCEEDED"
+	// The file is not in the READY state.
+	FilesErrorCodeNonReadyState FilesErrorCode = "NON_READY_STATE"
+	// File cannot be updated in a failed state.
+	FilesErrorCodeInvalidFailedMediaState FilesErrorCode = "INVALID_FAILED_MEDIA_STATE"
+	// Exceeded the limit of non-image media per shop.
+	FilesErrorCodeNonImageMediaPerShopLimitExceeded FilesErrorCode = "NON_IMAGE_MEDIA_PER_SHOP_LIMIT_EXCEEDED"
+	// Cannot create file with custom filename which does not match original source extension.
+	FilesErrorCodeMismatchedFilenameAndOriginalSource FilesErrorCode = "MISMATCHED_FILENAME_AND_ORIGINAL_SOURCE"
+	// Duplicate resolution mode is not supported for this file type.
+	FilesErrorCodeInvalidDuplicateModeForType FilesErrorCode = "INVALID_DUPLICATE_MODE_FOR_TYPE"
+	// Invalid image source url value provided.
+	FilesErrorCodeInvalidImageSourceUrl FilesErrorCode = "INVALID_IMAGE_SOURCE_URL"
+	// Duplicate resolution mode REPLACE cannot be used without specifying filename.
+	FilesErrorCodeMissingFilenameForDuplicateModeReplace FilesErrorCode = "MISSING_FILENAME_FOR_DUPLICATE_MODE_REPLACE"
+	// Exceeded the limit of media per product.
+	FilesErrorCodeProductMediaLimitExceeded FilesErrorCode = "PRODUCT_MEDIA_LIMIT_EXCEEDED"
+	// The file type is not supported for referencing.
+	FilesErrorCodeUnsupportedFileReference FilesErrorCode = "UNSUPPORTED_FILE_REFERENCE"
+	// The target resource does not exist.
+	FilesErrorCodeReferenceTargetDoesNotExist FilesErrorCode = "REFERENCE_TARGET_DOES_NOT_EXIST"
+	// Cannot add more than 10000 references to a file.
+	FilesErrorCodeTooManyFileReference FilesErrorCode = "TOO_MANY_FILE_REFERENCE"
+	// Invalid duplicate resolution mode provided.
+	FilesErrorCodeInvalidDuplicateResolutionMode FilesErrorCode = "INVALID_DUPLICATE_RESOLUTION_MODE"
+	// Media cannot be modified. It is currently being modified by another operation.
+	FilesErrorCodeMediaCannotBeModified FilesErrorCode = "MEDIA_CANNOT_BE_MODIFIED"
+)
+
+var AllFilesErrorCode = []FilesErrorCode{
+	FilesErrorCodeInvalid,
+	FilesErrorCodeFileDoesNotExist,
+	FilesErrorCodeFileLocked,
+	FilesErrorCodeUnsupportedMediaTypeForFilenameUpdate,
+	FilesErrorCodeTooManyArguments,
+	FilesErrorCodeBlankSearch,
+	FilesErrorCodeMissingArguments,
+	FilesErrorCodeInvalidQuery,
+	FilesErrorCodeProductSuspended,
+	FilesErrorCodeInvalidFilenameExtension,
+	FilesErrorCodeInvalidFilename,
+	FilesErrorCodeFilenameAlreadyExists,
+	FilesErrorCodeUnacceptableUnverifiedTrialAsset,
+	FilesErrorCodeUnacceptableAsset,
+	FilesErrorCodeUnacceptableTrialAsset,
+	FilesErrorCodeAltValueLimitExceeded,
+	FilesErrorCodeNonReadyState,
+	FilesErrorCodeInvalidFailedMediaState,
+	FilesErrorCodeNonImageMediaPerShopLimitExceeded,
+	FilesErrorCodeMismatchedFilenameAndOriginalSource,
+	FilesErrorCodeInvalidDuplicateModeForType,
+	FilesErrorCodeInvalidImageSourceUrl,
+	FilesErrorCodeMissingFilenameForDuplicateModeReplace,
+	FilesErrorCodeProductMediaLimitExceeded,
+	FilesErrorCodeUnsupportedFileReference,
+	FilesErrorCodeReferenceTargetDoesNotExist,
+	FilesErrorCodeTooManyFileReference,
+	FilesErrorCodeInvalidDuplicateResolutionMode,
+	FilesErrorCodeMediaCannotBeModified,
+}
+
+// FindBlogsBlogsBlogConnection includes the requested fields of the GraphQL type BlogConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Blogs.
+type FindBlogsBlogsBlogConnection struct {
+	// A list of nodes that are contained in BlogEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []FindBlogsBlogsBlogConnectionNodesBlog `json:"nodes"`
+}
+
+// GetNodes returns FindBlogsBlogsBlogConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *FindBlogsBlogsBlogConnection) GetNodes() []FindBlogsBlogsBlogConnectionNodesBlog {
+	return v.Nodes
+}
+
+// FindBlogsBlogsBlogConnectionNodesBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type FindBlogsBlogsBlogConnectionNodesBlog struct {
+	BlogFields `json:"-"`
+}
+
+// GetId returns FindBlogsBlogsBlogConnectionNodesBlog.Id, and is useful for accessing the field via an interface.
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) GetId() string { return v.BlogFields.Id }
+
+// GetHandle returns FindBlogsBlogsBlogConnectionNodesBlog.Handle, and is useful for accessing the field via an interface.
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) GetHandle() string { return v.BlogFields.Handle }
+
+// GetTitle returns FindBlogsBlogsBlogConnectionNodesBlog.Title, and is useful for accessing the field via an interface.
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) GetTitle() string { return v.BlogFields.Title }
+
+// GetCommentPolicy returns FindBlogsBlogsBlogConnectionNodesBlog.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) GetCommentPolicy() CommentPolicy {
+	return v.BlogFields.CommentPolicy
+}
+
+// GetTemplateSuffix returns FindBlogsBlogsBlogConnectionNodesBlog.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) GetTemplateSuffix() *string {
+	return v.BlogFields.TemplateSuffix
+}
+
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*FindBlogsBlogsBlogConnectionNodesBlog
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.FindBlogsBlogsBlogConnectionNodesBlog = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.BlogFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalFindBlogsBlogsBlogConnectionNodesBlog struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	CommentPolicy CommentPolicy `json:"commentPolicy"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *FindBlogsBlogsBlogConnectionNodesBlog) __premarshalJSON() (*__premarshalFindBlogsBlogsBlogConnectionNodesBlog, error) {
+	var retval __premarshalFindBlogsBlogsBlogConnectionNodesBlog
+
+	retval.Id = v.BlogFields.Id
+	retval.Handle = v.BlogFields.Handle
+	retval.Title = v.BlogFields.Title
+	retval.CommentPolicy = v.BlogFields.CommentPolicy
+	retval.TemplateSuffix = v.BlogFields.TemplateSuffix
+	return &retval, nil
+}
+
+// FindBlogsResponse is returned by FindBlogs on success.
+type FindBlogsResponse struct {
+	// Returns a paginated list of the shop's [`Blog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Blog) objects. Blogs serve as containers for [`Article`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Article) objects and provide content management capabilities for the store's editorial content.
+	//
+	// Supports [cursor-based pagination](https://shopify.dev/docs/api/usage/pagination-graphql) to control the number of blogs returned and their order. Use the [`query`](https://shopify.dev/docs/api/admin-graphql/latest/queries/blogs#arguments-query) argument to filter results by specific criteria.
+	Blogs FindBlogsBlogsBlogConnection `json:"blogs"`
+}
+
+// GetBlogs returns FindBlogsResponse.Blogs, and is useful for accessing the field via an interface.
+func (v *FindBlogsResponse) GetBlogs() FindBlogsBlogsBlogConnection { return v.Blogs }
+
 // FindLocationsLocationsLocationConnection includes the requested fields of the GraphQL type LocationConnection.
 // The GraphQL type's documentation follows.
 //
@@ -5472,6 +12457,122 @@ func (v *FindLocationsResponse) GetLocations() FindLocationsLocationsLocationCon
 	return v.Locations
 }
 
+// FindPagesPagesPageConnection includes the requested fields of the GraphQL type PageConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Pages.
+type FindPagesPagesPageConnection struct {
+	// A list of nodes that are contained in PageEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []FindPagesPagesPageConnectionNodesPage `json:"nodes"`
+}
+
+// GetNodes returns FindPagesPagesPageConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnection) GetNodes() []FindPagesPagesPageConnectionNodesPage {
+	return v.Nodes
+}
+
+// FindPagesPagesPageConnectionNodesPage includes the requested fields of the GraphQL type Page.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type FindPagesPagesPageConnectionNodesPage struct {
+	PageFields `json:"-"`
+}
+
+// GetId returns FindPagesPagesPageConnectionNodesPage.Id, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnectionNodesPage) GetId() string { return v.PageFields.Id }
+
+// GetHandle returns FindPagesPagesPageConnectionNodesPage.Handle, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnectionNodesPage) GetHandle() string { return v.PageFields.Handle }
+
+// GetTitle returns FindPagesPagesPageConnectionNodesPage.Title, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnectionNodesPage) GetTitle() string { return v.PageFields.Title }
+
+// GetBody returns FindPagesPagesPageConnectionNodesPage.Body, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnectionNodesPage) GetBody() string { return v.PageFields.Body }
+
+// GetIsPublished returns FindPagesPagesPageConnectionNodesPage.IsPublished, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnectionNodesPage) GetIsPublished() bool {
+	return v.PageFields.IsPublished
+}
+
+// GetTemplateSuffix returns FindPagesPagesPageConnectionNodesPage.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *FindPagesPagesPageConnectionNodesPage) GetTemplateSuffix() *string {
+	return v.PageFields.TemplateSuffix
+}
+
+func (v *FindPagesPagesPageConnectionNodesPage) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*FindPagesPagesPageConnectionNodesPage
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.FindPagesPagesPageConnectionNodesPage = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalFindPagesPagesPageConnectionNodesPage struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Body string `json:"body"`
+
+	IsPublished bool `json:"isPublished"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *FindPagesPagesPageConnectionNodesPage) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *FindPagesPagesPageConnectionNodesPage) __premarshalJSON() (*__premarshalFindPagesPagesPageConnectionNodesPage, error) {
+	var retval __premarshalFindPagesPagesPageConnectionNodesPage
+
+	retval.Id = v.PageFields.Id
+	retval.Handle = v.PageFields.Handle
+	retval.Title = v.PageFields.Title
+	retval.Body = v.PageFields.Body
+	retval.IsPublished = v.PageFields.IsPublished
+	retval.TemplateSuffix = v.PageFields.TemplateSuffix
+	return &retval, nil
+}
+
+// FindPagesResponse is returned by FindPages on success.
+type FindPagesResponse struct {
+	// A paginated list of pages from the online store. [`Page`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page) objects are content pages that merchants create to provide information to customers, such as "About Us", "Contact", or policy pages.
+	//
+	// The query supports filtering with a [search query](https://shopify.dev/docs/api/usage/search-syntax) and sorting by various criteria. Advanced filtering is available through saved searches using the [`savedSearchId`](https://shopify.dev/docs/api/admin-graphql/latest/queries/pages#arguments-savedSearchId) argument.
+	Pages FindPagesPagesPageConnection `json:"pages"`
+}
+
+// GetPages returns FindPagesResponse.Pages, and is useful for accessing the field via an interface.
+func (v *FindPagesResponse) GetPages() FindPagesPagesPageConnection { return v.Pages }
+
 // The type of a fulfillment service.
 type FulfillmentServiceType string
 
@@ -5489,6 +12590,156 @@ var AllFulfillmentServiceType = []FulfillmentServiceType{
 	FulfillmentServiceTypeManual,
 	FulfillmentServiceTypeThirdParty,
 }
+
+// GetArticleArticle includes the requested fields of the GraphQL type Article.
+// The GraphQL type's documentation follows.
+//
+// An article that contains content, author information, and metadata. Articles belong to a [`Blog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Blog) and can include HTML-formatted body text, summary text, and an associated image. Merchants publish articles to share content, drive traffic, and engage customers.
+//
+// Articles can be organized with tags and published immediately or scheduled for future publication using the [`publishedAt`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Article#field-Article.fields.publishedAt) timestamp. The API manages comments on articles when the blog's comment policy enables them.
+type GetArticleArticle struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns GetArticleArticle.Id, and is useful for accessing the field via an interface.
+func (v *GetArticleArticle) GetId() string { return v.Id }
+
+// GetArticleResponse is returned by GetArticle on success.
+type GetArticleResponse struct {
+	// Returns a `Article` resource by ID.
+	Article *GetArticleArticle `json:"article"`
+}
+
+// GetArticle returns GetArticleResponse.Article, and is useful for accessing the field via an interface.
+func (v *GetArticleResponse) GetArticle() *GetArticleArticle { return v.Article }
+
+// GetBlogArticlesCountBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type GetBlogArticlesCountBlog struct {
+	// Count of articles. Limited to a maximum of 10000 by default.
+	ArticlesCount *GetBlogArticlesCountBlogArticlesCount `json:"articlesCount"`
+}
+
+// GetArticlesCount returns GetBlogArticlesCountBlog.ArticlesCount, and is useful for accessing the field via an interface.
+func (v *GetBlogArticlesCountBlog) GetArticlesCount() *GetBlogArticlesCountBlogArticlesCount {
+	return v.ArticlesCount
+}
+
+// GetBlogArticlesCountBlogArticlesCount includes the requested fields of the GraphQL type Count.
+// The GraphQL type's documentation follows.
+//
+// A numeric count with precision information indicating whether the count is exact or an estimate.
+type GetBlogArticlesCountBlogArticlesCount struct {
+	// The count of elements.
+	Count int `json:"count"`
+}
+
+// GetCount returns GetBlogArticlesCountBlogArticlesCount.Count, and is useful for accessing the field via an interface.
+func (v *GetBlogArticlesCountBlogArticlesCount) GetCount() int { return v.Count }
+
+// GetBlogArticlesCountResponse is returned by GetBlogArticlesCount on success.
+type GetBlogArticlesCountResponse struct {
+	// Returns a `Blog` resource by ID.
+	Blog *GetBlogArticlesCountBlog `json:"blog"`
+}
+
+// GetBlog returns GetBlogArticlesCountResponse.Blog, and is useful for accessing the field via an interface.
+func (v *GetBlogArticlesCountResponse) GetBlog() *GetBlogArticlesCountBlog { return v.Blog }
+
+// GetBlogBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type GetBlogBlog struct {
+	BlogFields `json:"-"`
+}
+
+// GetId returns GetBlogBlog.Id, and is useful for accessing the field via an interface.
+func (v *GetBlogBlog) GetId() string { return v.BlogFields.Id }
+
+// GetHandle returns GetBlogBlog.Handle, and is useful for accessing the field via an interface.
+func (v *GetBlogBlog) GetHandle() string { return v.BlogFields.Handle }
+
+// GetTitle returns GetBlogBlog.Title, and is useful for accessing the field via an interface.
+func (v *GetBlogBlog) GetTitle() string { return v.BlogFields.Title }
+
+// GetCommentPolicy returns GetBlogBlog.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *GetBlogBlog) GetCommentPolicy() CommentPolicy { return v.BlogFields.CommentPolicy }
+
+// GetTemplateSuffix returns GetBlogBlog.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *GetBlogBlog) GetTemplateSuffix() *string { return v.BlogFields.TemplateSuffix }
+
+func (v *GetBlogBlog) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetBlogBlog
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetBlogBlog = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.BlogFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetBlogBlog struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	CommentPolicy CommentPolicy `json:"commentPolicy"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *GetBlogBlog) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetBlogBlog) __premarshalJSON() (*__premarshalGetBlogBlog, error) {
+	var retval __premarshalGetBlogBlog
+
+	retval.Id = v.BlogFields.Id
+	retval.Handle = v.BlogFields.Handle
+	retval.Title = v.BlogFields.Title
+	retval.CommentPolicy = v.BlogFields.CommentPolicy
+	retval.TemplateSuffix = v.BlogFields.TemplateSuffix
+	return &retval, nil
+}
+
+// GetBlogResponse is returned by GetBlog on success.
+type GetBlogResponse struct {
+	// Returns a `Blog` resource by ID.
+	Blog *GetBlogBlog `json:"blog"`
+}
+
+// GetBlog returns GetBlogResponse.Blog, and is useful for accessing the field via an interface.
+func (v *GetBlogResponse) GetBlog() *GetBlogBlog { return v.Blog }
 
 // GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration includes the requested fields of the GraphQL type CheckoutAndAccountsConfiguration.
 // The GraphQL type's documentation follows.
@@ -5580,6 +12831,528 @@ type GetCheckoutAndAccountsConfigurationResponse struct {
 // GetCheckoutAndAccountsConfiguration returns GetCheckoutAndAccountsConfigurationResponse.CheckoutAndAccountsConfiguration, and is useful for accessing the field via an interface.
 func (v *GetCheckoutAndAccountsConfigurationResponse) GetCheckoutAndAccountsConfiguration() *GetCheckoutAndAccountsConfigurationCheckoutAndAccountsConfiguration {
 	return v.CheckoutAndAccountsConfiguration
+}
+
+// GetCollectionByHandleCollectionByIdentifierCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type GetCollectionByHandleCollectionByIdentifierCollection struct {
+	CollectionFields `json:"-"`
+}
+
+// GetId returns GetCollectionByHandleCollectionByIdentifierCollection.Id, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetId() string {
+	return v.CollectionFields.Id
+}
+
+// GetHandle returns GetCollectionByHandleCollectionByIdentifierCollection.Handle, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetHandle() string {
+	return v.CollectionFields.Handle
+}
+
+// GetTitle returns GetCollectionByHandleCollectionByIdentifierCollection.Title, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetTitle() string {
+	return v.CollectionFields.Title
+}
+
+// GetDescriptionHtml returns GetCollectionByHandleCollectionByIdentifierCollection.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetDescriptionHtml() string {
+	return v.CollectionFields.DescriptionHtml
+}
+
+// GetSortOrder returns GetCollectionByHandleCollectionByIdentifierCollection.SortOrder, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetSortOrder() CollectionSortOrder {
+	return v.CollectionFields.SortOrder
+}
+
+// GetTemplateSuffix returns GetCollectionByHandleCollectionByIdentifierCollection.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetTemplateSuffix() *string {
+	return v.CollectionFields.TemplateSuffix
+}
+
+// GetSeo returns GetCollectionByHandleCollectionByIdentifierCollection.Seo, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetSeo() CollectionFieldsSeoSEO {
+	return v.CollectionFields.Seo
+}
+
+// GetSources returns GetCollectionByHandleCollectionByIdentifierCollection.Sources, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetSources() json.RawMessage {
+	return v.CollectionFields.Sources
+}
+
+// GetResourcePublicationsV2 returns GetCollectionByHandleCollectionByIdentifierCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetCollectionByHandleCollectionByIdentifierCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetCollectionByHandleCollectionByIdentifierCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CollectionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetCollectionByHandleCollectionByIdentifierCollection struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+
+	Sources json.RawMessage `json:"sources"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) __premarshalJSON() (*__premarshalGetCollectionByHandleCollectionByIdentifierCollection, error) {
+	var retval __premarshalGetCollectionByHandleCollectionByIdentifierCollection
+
+	retval.Id = v.CollectionFields.Id
+	retval.Handle = v.CollectionFields.Handle
+	retval.Title = v.CollectionFields.Title
+	retval.DescriptionHtml = v.CollectionFields.DescriptionHtml
+	retval.SortOrder = v.CollectionFields.SortOrder
+	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
+	retval.Seo = v.CollectionFields.Seo
+	retval.Sources = v.CollectionFields.Sources
+	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// GetCollectionByHandleResponse is returned by GetCollectionByHandle on success.
+type GetCollectionByHandleResponse struct {
+	// Return a collection by an identifier.
+	CollectionByIdentifier *GetCollectionByHandleCollectionByIdentifierCollection `json:"collectionByIdentifier"`
+}
+
+// GetCollectionByIdentifier returns GetCollectionByHandleResponse.CollectionByIdentifier, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleResponse) GetCollectionByIdentifier() *GetCollectionByHandleCollectionByIdentifierCollection {
+	return v.CollectionByIdentifier
+}
+
+// GetCollectionCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type GetCollectionCollection struct {
+	CollectionFields `json:"-"`
+}
+
+// GetId returns GetCollectionCollection.Id, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetId() string { return v.CollectionFields.Id }
+
+// GetHandle returns GetCollectionCollection.Handle, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetHandle() string { return v.CollectionFields.Handle }
+
+// GetTitle returns GetCollectionCollection.Title, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetTitle() string { return v.CollectionFields.Title }
+
+// GetDescriptionHtml returns GetCollectionCollection.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetDescriptionHtml() string {
+	return v.CollectionFields.DescriptionHtml
+}
+
+// GetSortOrder returns GetCollectionCollection.SortOrder, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetSortOrder() CollectionSortOrder {
+	return v.CollectionFields.SortOrder
+}
+
+// GetTemplateSuffix returns GetCollectionCollection.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetTemplateSuffix() *string {
+	return v.CollectionFields.TemplateSuffix
+}
+
+// GetSeo returns GetCollectionCollection.Seo, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetSeo() CollectionFieldsSeoSEO { return v.CollectionFields.Seo }
+
+// GetSources returns GetCollectionCollection.Sources, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetSources() json.RawMessage { return v.CollectionFields.Sources }
+
+// GetResourcePublicationsV2 returns GetCollectionCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
+func (v *GetCollectionCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetCollectionCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetCollectionCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CollectionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetCollectionCollection struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+
+	Sources json.RawMessage `json:"sources"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *GetCollectionCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetCollectionCollection) __premarshalJSON() (*__premarshalGetCollectionCollection, error) {
+	var retval __premarshalGetCollectionCollection
+
+	retval.Id = v.CollectionFields.Id
+	retval.Handle = v.CollectionFields.Handle
+	retval.Title = v.CollectionFields.Title
+	retval.DescriptionHtml = v.CollectionFields.DescriptionHtml
+	retval.SortOrder = v.CollectionFields.SortOrder
+	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
+	retval.Seo = v.CollectionFields.Seo
+	retval.Sources = v.CollectionFields.Sources
+	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// GetCollectionPublicationsCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type GetCollectionPublicationsCollection struct {
+	// The list of resources that are either published or staged to be published to a
+	// [publication](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	// By default, only publications to `APP` catalog types are returned.
+	// For `Product` and `ProductVariant`, use the `catalogType` argument to retrieve
+	// publications for other catalog types, such as `COMPANY_LOCATION` (B2B) or `MARKET`.
+	// `Collection` only supports publications to `APP` catalog types.
+	ResourcePublicationsV2 GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+// GetResourcePublicationsV2 returns GetCollectionPublicationsCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollection) GetResourcePublicationsV2() GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ResourcePublicationsV2
+}
+
+// GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection includes the requested fields of the GraphQL type ResourcePublicationV2Connection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ResourcePublicationV2s.
+type GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection struct {
+	// A list of nodes that are contained in ResourcePublicationV2Edge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection) GetNodes() []GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2Connection) GetPageInfo() GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 includes the requested fields of the GraphQL type ResourcePublicationV2.
+// The GraphQL type's documentation follows.
+//
+// A resource publication represents information about the publication of a resource.
+// Unlike `ResourcePublication`, an instance of `ResourcePublicationV2` can't be unpublished. It must either be published or scheduled to be published.
+//
+// See [ResourcePublication](/api/admin-graphql/latest/objects/ResourcePublication) for more context.
+type GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 struct {
+	// The publication the resource publication is published to.
+	Publication GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication `json:"publication"`
+}
+
+// GetPublication returns GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2.Publication, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2) GetPublication() GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication {
+	return v.Publication
+}
+
+// GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication includes the requested fields of the GraphQL type Publication.
+// The GraphQL type's documentation follows.
+//
+// A group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) that are published to an app.
+//
+// Each publication manages which products and collections display on its associated [`Channel`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Channel). Merchants can automatically publish products when they're created if [`autoPublish`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.autoPublish) is enabled, or manually control publication through publication records.
+//
+// Publications support scheduled publishing through future publish dates for online store channels, allowing merchants to coordinate product launches and promotional campaigns. The [`catalog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.catalog) field links to pricing and availability rules specific to that publication's context.
+type GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication.Id, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication) GetId() string {
+	return v.Id
+}
+
+// GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsCollectionResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetCollectionPublicationsResponse is returned by GetCollectionPublications on success.
+type GetCollectionPublicationsResponse struct {
+	// Retrieves a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) by its ID.
+	// A collection represents a grouping of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// that merchants can display and sell as a group in their [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	//
+	// Use the `collection` query when you need to:
+	//
+	// - Manage collection publishing across sales channels
+	// - Access collection metadata and SEO information
+	// - Work with collection conditions and product relationships
+	//
+	// A collection determines which products it includes through conditions that automatically include
+	// products that match, and through manual selections of individual products. Each collection has
+	// associated metadata including title, description, handle, image, and
+	// [metafields](https://shopify.dev/docs/apps/build/custom-data/metafields).
+	Collection *GetCollectionPublicationsCollection `json:"collection"`
+}
+
+// GetCollection returns GetCollectionPublicationsResponse.Collection, and is useful for accessing the field via an interface.
+func (v *GetCollectionPublicationsResponse) GetCollection() *GetCollectionPublicationsCollection {
+	return v.Collection
+}
+
+// GetCollectionResponse is returned by GetCollection on success.
+type GetCollectionResponse struct {
+	// Retrieves a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) by its ID.
+	// A collection represents a grouping of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// that merchants can display and sell as a group in their [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	//
+	// Use the `collection` query when you need to:
+	//
+	// - Manage collection publishing across sales channels
+	// - Access collection metadata and SEO information
+	// - Work with collection conditions and product relationships
+	//
+	// A collection determines which products it includes through conditions that automatically include
+	// products that match, and through manual selections of individual products. Each collection has
+	// associated metadata including title, description, handle, image, and
+	// [metafields](https://shopify.dev/docs/apps/build/custom-data/metafields).
+	Collection *GetCollectionCollection `json:"collection"`
+}
+
+// GetCollection returns GetCollectionResponse.Collection, and is useful for accessing the field via an interface.
+func (v *GetCollectionResponse) GetCollection() *GetCollectionCollection { return v.Collection }
+
+// GetCollectionSelectionsCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type GetCollectionSelectionsCollection struct {
+	// The sources that provide products for this collection. Each source represents a way products are included in the collection, such as through conditions and rules.
+	Sources json.RawMessage `json:"sources"`
+}
+
+// GetSources returns GetCollectionSelectionsCollection.Sources, and is useful for accessing the field via an interface.
+func (v *GetCollectionSelectionsCollection) GetSources() json.RawMessage { return v.Sources }
+
+// GetCollectionSelectionsResponse is returned by GetCollectionSelections on success.
+type GetCollectionSelectionsResponse struct {
+	// Retrieves a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) by its ID.
+	// A collection represents a grouping of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// that merchants can display and sell as a group in their [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	//
+	// Use the `collection` query when you need to:
+	//
+	// - Manage collection publishing across sales channels
+	// - Access collection metadata and SEO information
+	// - Work with collection conditions and product relationships
+	//
+	// A collection determines which products it includes through conditions that automatically include
+	// products that match, and through manual selections of individual products. Each collection has
+	// associated metadata including title, description, handle, image, and
+	// [metafields](https://shopify.dev/docs/apps/build/custom-data/metafields).
+	Collection *GetCollectionSelectionsCollection `json:"collection"`
+}
+
+// GetCollection returns GetCollectionSelectionsResponse.Collection, and is useful for accessing the field via an interface.
+func (v *GetCollectionSelectionsResponse) GetCollection() *GetCollectionSelectionsCollection {
+	return v.Collection
 }
 
 // GetConsentPolicyByIDConsentPolicy includes the requested fields of the GraphQL type ConsentPolicy.
@@ -6190,6 +13963,963 @@ type GetDeliveryProfileResponse struct {
 func (v *GetDeliveryProfileResponse) GetDeliveryProfile() *GetDeliveryProfileDeliveryProfile {
 	return v.DeliveryProfile
 }
+
+// GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode includes the requested fields of the GraphQL type DiscountCodeNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeNode` object enables you to manage [code discounts](https://help.shopify.com/manual/discounts/discount-types#discount-codes) that are applied when customers enter a code at checkout. For example, you can offer discounts where customers have to enter a code to redeem an amount off discount on products, variants, or collections in a store. Or, you can offer discounts where customers have to enter a code to get free shipping. Merchants can create and share discount codes individually with customers.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The underlying code discount object.
+	CodeDiscount GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode `json:"-"`
+}
+
+// GetId returns GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode.Id, and is useful for accessing the field via an interface.
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode) GetId() string { return v.Id }
+
+// GetCodeDiscount returns GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode.CodeDiscount, and is useful for accessing the field via an interface.
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode) GetCodeDiscount() GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode {
+	return v.CodeDiscount
+}
+
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode
+		CodeDiscount json.RawMessage `json:"codeDiscount"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.CodeDiscount
+		src := firstPass.CodeDiscount
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalGetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode.CodeDiscount: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalGetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode struct {
+	Id string `json:"id"`
+
+	CodeDiscount json.RawMessage `json:"codeDiscount"`
+}
+
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode) __premarshalJSON() (*__premarshalGetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode, error) {
+	var retval __premarshalGetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode
+
+	retval.Id = v.Id
+	{
+
+		dst := &retval.CodeDiscount
+		src := v.CodeDiscount
+		var err error
+		*dst, err = __marshalGetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode.CodeDiscount: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode includes the requested fields of the GraphQL interface DiscountCode.
+//
+// GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode is implemented by the following types:
+// GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeApp
+// GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBasic
+// GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBxgy
+// GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeFreeShipping
+// The GraphQL type's documentation follows.
+//
+// The type of discount associated with the discount code. For example, the discount code might offer a basic discount of a fixed percentage, or a fixed amount, on specific products or the order. Alternatively, the discount might offer the customer free shipping on their order. A third option is a Buy X, Get Y (BXGY) discount, which offers a customer discounts on select products if they add a specific product to their order.
+type GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode interface {
+	implementsGraphQLInterfaceGetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeApp) implementsGraphQLInterfaceGetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode() {
+}
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBasic) implementsGraphQLInterfaceGetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode() {
+}
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBxgy) implementsGraphQLInterfaceGetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode() {
+}
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeFreeShipping) implementsGraphQLInterfaceGetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode() {
+}
+
+func __unmarshalGetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode(b []byte, v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DiscountCodeApp":
+		*v = new(GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeApp)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeBasic":
+		*v = new(GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBasic)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeBxgy":
+		*v = new(GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBxgy)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeFreeShipping":
+		*v = new(GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeFreeShipping)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DiscountCode.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalGetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode(v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeApp:
+		typename = "DiscountCodeApp"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeApp
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBasic:
+		typename = "DiscountCodeBasic"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBasic
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBxgy:
+		typename = "DiscountCodeBxgy"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBxgy
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeFreeShipping:
+		typename = "DiscountCodeFreeShipping"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeFreeShipping
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCode: "%T"`, v)
+	}
+}
+
+// GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeApp includes the requested fields of the GraphQL type DiscountCodeApp.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeApp` object stores information about code discounts
+// that are managed by an app using
+// [Shopify Functions](https://shopify.dev/docs/apps/build/functions).
+// Use `DiscountCodeApp` when you need advanced, custom, or
+// dynamic discount capabilities that aren't supported by
+// [Shopify's native discount types](https://help.shopify.com/manual/discounts/discount-types).
+//
+// Learn more about creating
+// [custom discount functionality](https://shopify.dev/docs/apps/build/discounts/build-discount-function).
+//
+// > Note:
+// > The [`DiscountAutomaticApp`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticApp)
+// object has similar functionality to the `DiscountCodeApp` object, with the exception that `DiscountAutomaticApp`
+// stores information about automatic discounts that are managed by an app using Shopify Functions.
+type GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeApp struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeApp.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeApp) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBasic includes the requested fields of the GraphQL type DiscountCodeBasic.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeBasic` object lets you manage
+// [amount off discounts](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount)
+// that are applied on a cart and at checkout when a customer enters a code. Amount off discounts give customers a
+// fixed value or a percentage off the products in an order, but don't apply to shipping costs.
+//
+// The `DiscountCodeBasic` object stores information about amount off code discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountAutomaticBasic`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticBasic)
+// object has similar functionality to the `DiscountCodeBasic` object, but discounts are automatically applied,
+// without the need for customers to enter a code.
+type GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBasic struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBasic.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBasic) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBxgy includes the requested fields of the GraphQL type DiscountCodeBxgy.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeBxgy` object lets you manage
+// [buy X get Y discounts (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+// that are applied on a cart and at checkout when a customer enters a code. BXGY discounts incentivize customers
+// by offering them additional items at a discounted price or for free when they purchase a specified quantity
+// of items.
+//
+// The `DiscountCodeBxgy` object stores information about BXGY code discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountAutomaticBxgy`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticBxgy)
+// object has similar functionality to the `DiscountCodeBxgy` object, but discounts are automatically applied,
+// without the need for customers to enter a code.
+type GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBxgy struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBxgy.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeBxgy) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeFreeShipping includes the requested fields of the GraphQL type DiscountCodeFreeShipping.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeFreeShipping` object lets you manage
+// [free shipping discounts](https://help.shopify.com/manual/discounts/discount-types/free-shipping)
+// that are applied on a cart and at checkout when a customer enters a code. Free shipping discounts are
+// promotional deals that merchants offer to customers to waive shipping costs and encourage online purchases.
+//
+// The `DiscountCodeFreeShipping` object stores information about free shipping code discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The
+// [`DiscountAutomaticFreeShipping`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticFreeShipping)
+// object has similar functionality to the `DiscountCodeFreeShipping` object, but discounts are automatically applied,
+// without the need for customers to enter a code.
+type GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeFreeShipping struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeFreeShipping.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNodeCodeDiscountDiscountCodeFreeShipping) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountByCodeResponse is returned by GetDiscountByCode on success.
+type GetDiscountByCodeResponse struct {
+	// Retrieves a [code discount](https://help.shopify.com/manual/discounts/discount-types#discount-codes) by its discount code. The search is case-insensitive, enabling you to find discounts regardless of how customers enter the code.
+	//
+	// Returns a [`DiscountCodeNode`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeNode) that contains the underlying discount details, which could be a basic [amount off discount](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount), a ["Buy X Get Y" (BXGY) discount](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y), a [free shipping discount](https://help.shopify.com/manual/discounts/discount-types/free-shipping), or an [app-provided discount](https://help.shopify.com/manual/discounts/discount-types/discounts-with-apps).
+	//
+	// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts).
+	CodeDiscountNodeByCode *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode `json:"codeDiscountNodeByCode"`
+}
+
+// GetCodeDiscountNodeByCode returns GetDiscountByCodeResponse.CodeDiscountNodeByCode, and is useful for accessing the field via an interface.
+func (v *GetDiscountByCodeResponse) GetCodeDiscountNodeByCode() *GetDiscountByCodeCodeDiscountNodeByCodeDiscountCodeNode {
+	return v.CodeDiscountNodeByCode
+}
+
+// GetDiscountDiscountNode includes the requested fields of the GraphQL type DiscountNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountNode` object enables you to manage [discounts](https://help.shopify.com/manual/discounts), which are applied at checkout or on a cart.
+//
+// Discounts are a way for merchants to promote sales and special offers, or as customer loyalty rewards. Discounts can apply to [orders, products, or shipping](https://shopify.dev/docs/apps/build/discounts#discount-classes), and can be either automatic or code-based. For example, you can offer customers a buy X get Y discount that's automatically applied when purchases meet specific criteria. Or, you can offer discounts where customers have to enter a code to redeem an amount off discount on products, variants, or collections in a store.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related mutations, limitations, and considerations.
+type GetDiscountDiscountNode struct {
+	DiscountNodeFields `json:"-"`
+}
+
+// GetId returns GetDiscountDiscountNode.Id, and is useful for accessing the field via an interface.
+func (v *GetDiscountDiscountNode) GetId() string { return v.DiscountNodeFields.Id }
+
+// GetDiscount returns GetDiscountDiscountNode.Discount, and is useful for accessing the field via an interface.
+func (v *GetDiscountDiscountNode) GetDiscount() DiscountNodeFieldsDiscount {
+	return v.DiscountNodeFields.Discount
+}
+
+func (v *GetDiscountDiscountNode) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDiscountDiscountNode
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDiscountDiscountNode = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.DiscountNodeFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetDiscountDiscountNode struct {
+	Id string `json:"id"`
+
+	Discount json.RawMessage `json:"discount"`
+}
+
+func (v *GetDiscountDiscountNode) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDiscountDiscountNode) __premarshalJSON() (*__premarshalGetDiscountDiscountNode, error) {
+	var retval __premarshalGetDiscountDiscountNode
+
+	retval.Id = v.DiscountNodeFields.Id
+	{
+
+		dst := &retval.Discount
+		src := v.DiscountNodeFields.Discount
+		var err error
+		*dst, err = __marshalDiscountNodeFieldsDiscount(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal GetDiscountDiscountNode.DiscountNodeFields.Discount: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// GetDiscountItemsPageDiscountNode includes the requested fields of the GraphQL type DiscountNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountNode` object enables you to manage [discounts](https://help.shopify.com/manual/discounts), which are applied at checkout or on a cart.
+//
+// Discounts are a way for merchants to promote sales and special offers, or as customer loyalty rewards. Discounts can apply to [orders, products, or shipping](https://shopify.dev/docs/apps/build/discounts#discount-classes), and can be either automatic or code-based. For example, you can offer customers a buy X get Y discount that's automatically applied when purchases meet specific criteria. Or, you can offer discounts where customers have to enter a code to redeem an amount off discount on products, variants, or collections in a store.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related mutations, limitations, and considerations.
+type GetDiscountItemsPageDiscountNode struct {
+	// A discount that's applied at checkout or on cart.
+	//
+	//
+	// Discounts can be [automatic or code-based](https://shopify.dev/docs/apps/build/discounts#discount-methods).
+	Discount GetDiscountItemsPageDiscountNodeDiscount `json:"-"`
+}
+
+// GetDiscount returns GetDiscountItemsPageDiscountNode.Discount, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNode) GetDiscount() GetDiscountItemsPageDiscountNodeDiscount {
+	return v.Discount
+}
+
+func (v *GetDiscountItemsPageDiscountNode) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDiscountItemsPageDiscountNode
+		Discount json.RawMessage `json:"discount"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDiscountItemsPageDiscountNode = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Discount
+		src := firstPass.Discount
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalGetDiscountItemsPageDiscountNodeDiscount(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal GetDiscountItemsPageDiscountNode.Discount: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalGetDiscountItemsPageDiscountNode struct {
+	Discount json.RawMessage `json:"discount"`
+}
+
+func (v *GetDiscountItemsPageDiscountNode) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDiscountItemsPageDiscountNode) __premarshalJSON() (*__premarshalGetDiscountItemsPageDiscountNode, error) {
+	var retval __premarshalGetDiscountItemsPageDiscountNode
+
+	{
+
+		dst := &retval.Discount
+		src := v.Discount
+		var err error
+		*dst, err = __marshalGetDiscountItemsPageDiscountNodeDiscount(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal GetDiscountItemsPageDiscountNode.Discount: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// GetDiscountItemsPageDiscountNodeDiscount includes the requested fields of the GraphQL interface Discount.
+//
+// GetDiscountItemsPageDiscountNodeDiscount is implemented by the following types:
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping
+// The GraphQL type's documentation follows.
+//
+// A discount offers promotional value and can be applied by entering a code or automatically when conditions are met. Discounts can provide fixed amounts, percentage reductions, free shipping, or Buy X Get Y (BXGY) benefits on specific products or the entire order. For more complex scenarios, developers can use Function-backed discounts to create custom discount configurations.
+type GetDiscountItemsPageDiscountNodeDiscount interface {
+	implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+
+func __unmarshalGetDiscountItemsPageDiscountNodeDiscount(b []byte, v *GetDiscountItemsPageDiscountNodeDiscount) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DiscountAutomaticApp":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp)
+		return json.Unmarshal(b, *v)
+	case "DiscountAutomaticBasic":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic)
+		return json.Unmarshal(b, *v)
+	case "DiscountAutomaticBxgy":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy)
+		return json.Unmarshal(b, *v)
+	case "DiscountAutomaticFreeShipping":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeApp":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeBasic":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeBxgy":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeFreeShipping":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Discount.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for GetDiscountItemsPageDiscountNodeDiscount: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalGetDiscountItemsPageDiscountNodeDiscount(v *GetDiscountItemsPageDiscountNodeDiscount) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp:
+		typename = "DiscountAutomaticApp"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic:
+		typename = "DiscountAutomaticBasic"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy:
+		typename = "DiscountAutomaticBxgy"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping:
+		typename = "DiscountAutomaticFreeShipping"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp:
+		typename = "DiscountCodeApp"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic:
+		typename = "DiscountCodeBasic"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy:
+		typename = "DiscountCodeBxgy"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping:
+		typename = "DiscountCodeFreeShipping"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for GetDiscountItemsPageDiscountNodeDiscount: "%T"`, v)
+	}
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp includes the requested fields of the GraphQL type DiscountAutomaticApp.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticApp` object stores information about automatic discounts
+// that are managed by an app using
+// [Shopify Functions](https://shopify.dev/docs/apps/build/functions).
+// Use `DiscountAutomaticApp`when you need advanced, custom, or
+// dynamic discount capabilities that aren't supported by
+// [Shopify's native discount types](https://help.shopify.com/manual/discounts/discount-types).
+//
+// Learn more about creating
+// [custom discount functionality](https://shopify.dev/docs/apps/build/discounts/build-discount-function).
+//
+// > Note:
+// > The [`DiscountCodeApp`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeApp)
+// object has similar functionality to the `DiscountAutomaticApp` object, with the exception that `DiscountCodeApp`
+// stores information about discount codes that are managed by an app using Shopify Functions.
+// >
+// > API versions prior to `2025-10` only return automatic discounts with `context` set to `all`, discounts with other values are filtered out.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic includes the requested fields of the GraphQL type DiscountAutomaticBasic.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticBasic` object lets you manage
+// [amount off discounts](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount)
+// that are automatically applied on a cart and at checkout. Amount off discounts give customers a
+// fixed value or a percentage off the products in an order, but don't apply to shipping costs.
+//
+// The `DiscountAutomaticBasic` object stores information about automatic amount off discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountCodeBasic`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeBasic)
+// object has similar functionality to the `DiscountAutomaticBasic` object, but customers need to enter a code to
+// receive a discount.
+// >
+// > API versions prior to `2025-10` only return automatic discounts with `context` set to `all`, discounts with other values are filtered out.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic struct {
+	Typename *string `json:"__typename"`
+	// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+	CustomerGets GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasicCustomerGetsDiscountCustomerGets `json:"customerGets"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic) GetTypename() *string {
+	return v.Typename
+}
+
+// GetCustomerGets returns GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic.CustomerGets, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic) GetCustomerGets() GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasicCustomerGetsDiscountCustomerGets {
+	return v.CustomerGets
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasicCustomerGetsDiscountCustomerGets includes the requested fields of the GraphQL type DiscountCustomerGets.
+// The GraphQL type's documentation follows.
+//
+// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasicCustomerGetsDiscountCustomerGets struct {
+	// The items to which the discount applies.
+	Items json.RawMessage `json:"items"`
+}
+
+// GetItems returns GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasicCustomerGetsDiscountCustomerGets.Items, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasicCustomerGetsDiscountCustomerGets) GetItems() json.RawMessage {
+	return v.Items
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy includes the requested fields of the GraphQL type DiscountAutomaticBxgy.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticBxgy` object lets you manage
+// [buy X get Y discounts (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+// that are automatically applied on a cart and at checkout. BXGY discounts incentivize customers by offering
+// them additional items at a discounted price or for free when they purchase a specified quantity of items.
+//
+// The `DiscountAutomaticBxgy` object stores information about automatic BXGY discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountCodeBxgy`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeBxgy)
+// object has similar functionality to the `DiscountAutomaticBxgy` object, but customers need to enter a code to
+// receive a discount.
+// >
+// > API versions prior to `2025-10` only return automatic discounts with `context` set to `all`, discounts with other values are filtered out.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping includes the requested fields of the GraphQL type DiscountAutomaticFreeShipping.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticFreeShipping` object lets you manage
+// [free shipping discounts](https://help.shopify.com/manual/discounts/discount-types/free-shipping)
+// that are automatically applied on a cart and at checkout. Free shipping discounts are promotional deals that
+// merchants offer to customers to waive shipping costs and encourage online purchases.
+//
+// The `DiscountAutomaticFreeShipping` object stores information about automatic free shipping discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountCodeFreeShipping`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeFreeShipping)
+// object has similar functionality to the `DiscountAutomaticFreeShipping` object, but customers need to enter a code to
+// receive a discount.
+// >
+// > API versions prior to `2025-10` only return automatic discounts with `context` set to `all`, discounts with other values are filtered out.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp includes the requested fields of the GraphQL type DiscountCodeApp.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeApp` object stores information about code discounts
+// that are managed by an app using
+// [Shopify Functions](https://shopify.dev/docs/apps/build/functions).
+// Use `DiscountCodeApp` when you need advanced, custom, or
+// dynamic discount capabilities that aren't supported by
+// [Shopify's native discount types](https://help.shopify.com/manual/discounts/discount-types).
+//
+// Learn more about creating
+// [custom discount functionality](https://shopify.dev/docs/apps/build/discounts/build-discount-function).
+//
+// > Note:
+// > The [`DiscountAutomaticApp`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticApp)
+// object has similar functionality to the `DiscountCodeApp` object, with the exception that `DiscountAutomaticApp`
+// stores information about automatic discounts that are managed by an app using Shopify Functions.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic includes the requested fields of the GraphQL type DiscountCodeBasic.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeBasic` object lets you manage
+// [amount off discounts](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount)
+// that are applied on a cart and at checkout when a customer enters a code. Amount off discounts give customers a
+// fixed value or a percentage off the products in an order, but don't apply to shipping costs.
+//
+// The `DiscountCodeBasic` object stores information about amount off code discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountAutomaticBasic`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticBasic)
+// object has similar functionality to the `DiscountCodeBasic` object, but discounts are automatically applied,
+// without the need for customers to enter a code.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic struct {
+	Typename *string `json:"__typename"`
+	// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+	CustomerGets GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasicCustomerGetsDiscountCustomerGets `json:"customerGets"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic) GetTypename() *string {
+	return v.Typename
+}
+
+// GetCustomerGets returns GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic.CustomerGets, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic) GetCustomerGets() GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasicCustomerGetsDiscountCustomerGets {
+	return v.CustomerGets
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasicCustomerGetsDiscountCustomerGets includes the requested fields of the GraphQL type DiscountCustomerGets.
+// The GraphQL type's documentation follows.
+//
+// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasicCustomerGetsDiscountCustomerGets struct {
+	// The items to which the discount applies.
+	Items json.RawMessage `json:"items"`
+}
+
+// GetItems returns GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasicCustomerGetsDiscountCustomerGets.Items, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasicCustomerGetsDiscountCustomerGets) GetItems() json.RawMessage {
+	return v.Items
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy includes the requested fields of the GraphQL type DiscountCodeBxgy.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeBxgy` object lets you manage
+// [buy X get Y discounts (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+// that are applied on a cart and at checkout when a customer enters a code. BXGY discounts incentivize customers
+// by offering them additional items at a discounted price or for free when they purchase a specified quantity
+// of items.
+//
+// The `DiscountCodeBxgy` object stores information about BXGY code discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountAutomaticBxgy`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticBxgy)
+// object has similar functionality to the `DiscountCodeBxgy` object, but discounts are automatically applied,
+// without the need for customers to enter a code.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping includes the requested fields of the GraphQL type DiscountCodeFreeShipping.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeFreeShipping` object lets you manage
+// [free shipping discounts](https://help.shopify.com/manual/discounts/discount-types/free-shipping)
+// that are applied on a cart and at checkout when a customer enters a code. Free shipping discounts are
+// promotional deals that merchants offer to customers to waive shipping costs and encourage online purchases.
+//
+// The `DiscountCodeFreeShipping` object stores information about free shipping code discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The
+// [`DiscountAutomaticFreeShipping`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticFreeShipping)
+// object has similar functionality to the `DiscountCodeFreeShipping` object, but discounts are automatically applied,
+// without the need for customers to enter a code.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountItemsPageResponse is returned by GetDiscountItemsPage on success.
+type GetDiscountItemsPageResponse struct {
+	// Returns a `DiscountNode` resource by ID.
+	DiscountNode *GetDiscountItemsPageDiscountNode `json:"discountNode"`
+}
+
+// GetDiscountNode returns GetDiscountItemsPageResponse.DiscountNode, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageResponse) GetDiscountNode() *GetDiscountItemsPageDiscountNode {
+	return v.DiscountNode
+}
+
+// GetDiscountResponse is returned by GetDiscount on success.
+type GetDiscountResponse struct {
+	// Returns a `DiscountNode` resource by ID.
+	DiscountNode *GetDiscountDiscountNode `json:"discountNode"`
+}
+
+// GetDiscountNode returns GetDiscountResponse.DiscountNode, and is useful for accessing the field via an interface.
+func (v *GetDiscountResponse) GetDiscountNode() *GetDiscountDiscountNode { return v.DiscountNode }
+
+// GetFileResponse is returned by GetFile on success.
+type GetFileResponse struct {
+	// Returns a specific node (any object that implements the
+	// [Node](https://shopify.dev/api/admin-graphql/latest/interfaces/Node)
+	// interface) by ID, in accordance with the
+	// [Relay specification](https://relay.dev/docs/guides/graphql-server-specification/#object-identification).
+	// This field is commonly used for refetching an object.
+	Node json.RawMessage `json:"node"`
+}
+
+// GetNode returns GetFileResponse.Node, and is useful for accessing the field via an interface.
+func (v *GetFileResponse) GetNode() json.RawMessage { return v.Node }
 
 // GetFulfillmentServicesResponse is returned by GetFulfillmentServices on success.
 type GetFulfillmentServicesResponse struct {
@@ -6857,6 +15587,108 @@ func (v *GetMetafieldDefinitionResponse) GetMetafieldDefinition() *GetMetafieldD
 	return v.MetafieldDefinition
 }
 
+// GetMetaobjectByHandleMetaobjectByHandleMetaobject includes the requested fields of the GraphQL type Metaobject.
+// The GraphQL type's documentation follows.
+//
+// An instance of custom structured data defined by a [`MetaobjectDefinition`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectDefinition). [Metaobjects](https://shopify.dev/docs/apps/build/custom-data#what-are-metaobjects) store reusable data that extends beyond Shopify's standard resources, such as product highlights, size charts, or custom content sections.
+//
+// Each metaobject includes fields that match the field types and validation rules specified in its definition, which also determines the metaobject's capabilities, such as storefront visibility, publishing and translation support. [`Metafields`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metafield) can reference metaobjects to connect custom data with [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) objects, [`Collection`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) objects, and other Shopify resources.
+type GetMetaobjectByHandleMetaobjectByHandleMetaobject struct {
+	MetaobjectFields `json:"-"`
+}
+
+// GetId returns GetMetaobjectByHandleMetaobjectByHandleMetaobject.Id, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectByHandleMetaobjectByHandleMetaobject) GetId() string {
+	return v.MetaobjectFields.Id
+}
+
+// GetDisplayName returns GetMetaobjectByHandleMetaobjectByHandleMetaobject.DisplayName, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectByHandleMetaobjectByHandleMetaobject) GetDisplayName() string {
+	return v.MetaobjectFields.DisplayName
+}
+
+// GetUpdatedAt returns GetMetaobjectByHandleMetaobjectByHandleMetaobject.UpdatedAt, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectByHandleMetaobjectByHandleMetaobject) GetUpdatedAt() string {
+	return v.MetaobjectFields.UpdatedAt
+}
+
+// GetFields returns GetMetaobjectByHandleMetaobjectByHandleMetaobject.Fields, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectByHandleMetaobjectByHandleMetaobject) GetFields() []MetaobjectFieldsFieldsMetaobjectField {
+	return v.MetaobjectFields.Fields
+}
+
+// GetCapabilities returns GetMetaobjectByHandleMetaobjectByHandleMetaobject.Capabilities, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectByHandleMetaobjectByHandleMetaobject) GetCapabilities() MetaobjectFieldsCapabilitiesMetaobjectCapabilityData {
+	return v.MetaobjectFields.Capabilities
+}
+
+func (v *GetMetaobjectByHandleMetaobjectByHandleMetaobject) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetMetaobjectByHandleMetaobjectByHandleMetaobject
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetMetaobjectByHandleMetaobjectByHandleMetaobject = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MetaobjectFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetMetaobjectByHandleMetaobjectByHandleMetaobject struct {
+	Id string `json:"id"`
+
+	DisplayName string `json:"displayName"`
+
+	UpdatedAt string `json:"updatedAt"`
+
+	Fields []MetaobjectFieldsFieldsMetaobjectField `json:"fields"`
+
+	Capabilities MetaobjectFieldsCapabilitiesMetaobjectCapabilityData `json:"capabilities"`
+}
+
+func (v *GetMetaobjectByHandleMetaobjectByHandleMetaobject) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetMetaobjectByHandleMetaobjectByHandleMetaobject) __premarshalJSON() (*__premarshalGetMetaobjectByHandleMetaobjectByHandleMetaobject, error) {
+	var retval __premarshalGetMetaobjectByHandleMetaobjectByHandleMetaobject
+
+	retval.Id = v.MetaobjectFields.Id
+	retval.DisplayName = v.MetaobjectFields.DisplayName
+	retval.UpdatedAt = v.MetaobjectFields.UpdatedAt
+	retval.Fields = v.MetaobjectFields.Fields
+	retval.Capabilities = v.MetaobjectFields.Capabilities
+	return &retval, nil
+}
+
+// GetMetaobjectByHandleResponse is returned by GetMetaobjectByHandle on success.
+type GetMetaobjectByHandleResponse struct {
+	// Retrieves a [`Metaobject`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metaobject) by its handle and type. Handles are unique identifiers within a metaobject type.
+	MetaobjectByHandle *GetMetaobjectByHandleMetaobjectByHandleMetaobject `json:"metaobjectByHandle"`
+}
+
+// GetMetaobjectByHandle returns GetMetaobjectByHandleResponse.MetaobjectByHandle, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectByHandleResponse) GetMetaobjectByHandle() *GetMetaobjectByHandleMetaobjectByHandleMetaobject {
+	return v.MetaobjectByHandle
+}
+
 // GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition includes the requested fields of the GraphQL type MetaobjectDefinition.
 // The GraphQL type's documentation follows.
 //
@@ -7111,6 +15943,102 @@ func (v *GetMetaobjectDefinitionResponse) GetMetaobjectDefinition() *GetMetaobje
 	return v.MetaobjectDefinition
 }
 
+// GetPagePage includes the requested fields of the GraphQL type Page.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type GetPagePage struct {
+	PageFields `json:"-"`
+}
+
+// GetId returns GetPagePage.Id, and is useful for accessing the field via an interface.
+func (v *GetPagePage) GetId() string { return v.PageFields.Id }
+
+// GetHandle returns GetPagePage.Handle, and is useful for accessing the field via an interface.
+func (v *GetPagePage) GetHandle() string { return v.PageFields.Handle }
+
+// GetTitle returns GetPagePage.Title, and is useful for accessing the field via an interface.
+func (v *GetPagePage) GetTitle() string { return v.PageFields.Title }
+
+// GetBody returns GetPagePage.Body, and is useful for accessing the field via an interface.
+func (v *GetPagePage) GetBody() string { return v.PageFields.Body }
+
+// GetIsPublished returns GetPagePage.IsPublished, and is useful for accessing the field via an interface.
+func (v *GetPagePage) GetIsPublished() bool { return v.PageFields.IsPublished }
+
+// GetTemplateSuffix returns GetPagePage.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *GetPagePage) GetTemplateSuffix() *string { return v.PageFields.TemplateSuffix }
+
+func (v *GetPagePage) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetPagePage
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetPagePage = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetPagePage struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Body string `json:"body"`
+
+	IsPublished bool `json:"isPublished"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *GetPagePage) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetPagePage) __premarshalJSON() (*__premarshalGetPagePage, error) {
+	var retval __premarshalGetPagePage
+
+	retval.Id = v.PageFields.Id
+	retval.Handle = v.PageFields.Handle
+	retval.Title = v.PageFields.Title
+	retval.Body = v.PageFields.Body
+	retval.IsPublished = v.PageFields.IsPublished
+	retval.TemplateSuffix = v.PageFields.TemplateSuffix
+	return &retval, nil
+}
+
+// GetPageResponse is returned by GetPage on success.
+type GetPageResponse struct {
+	// Returns a `Page` resource by ID.
+	Page *GetPagePage `json:"page"`
+}
+
+// GetPage returns GetPageResponse.Page, and is useful for accessing the field via an interface.
+func (v *GetPageResponse) GetPage() *GetPagePage { return v.Page }
+
 // GetPrivacySettingsPrivacySettings includes the requested fields of the GraphQL type PrivacySettings.
 // The GraphQL type's documentation follows.
 //
@@ -7215,6 +16143,999 @@ type GetPrivacySettingsShop struct {
 // GetId returns GetPrivacySettingsShop.Id, and is useful for accessing the field via an interface.
 func (v *GetPrivacySettingsShop) GetId() string { return v.Id }
 
+// GetProductByHandleProductByIdentifierProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductByHandleProductByIdentifierProduct struct {
+	ProductFields `json:"-"`
+}
+
+// GetId returns GetProductByHandleProductByIdentifierProduct.Id, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetId() string { return v.ProductFields.Id }
+
+// GetHandle returns GetProductByHandleProductByIdentifierProduct.Handle, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetHandle() string {
+	return v.ProductFields.Handle
+}
+
+// GetTitle returns GetProductByHandleProductByIdentifierProduct.Title, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetTitle() string {
+	return v.ProductFields.Title
+}
+
+// GetStatus returns GetProductByHandleProductByIdentifierProduct.Status, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetStatus() ProductStatus {
+	return v.ProductFields.Status
+}
+
+// GetDescriptionHtml returns GetProductByHandleProductByIdentifierProduct.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetDescriptionHtml() string {
+	return v.ProductFields.DescriptionHtml
+}
+
+// GetVendor returns GetProductByHandleProductByIdentifierProduct.Vendor, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetVendor() string {
+	return v.ProductFields.Vendor
+}
+
+// GetProductType returns GetProductByHandleProductByIdentifierProduct.ProductType, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetProductType() string {
+	return v.ProductFields.ProductType
+}
+
+// GetCategory returns GetProductByHandleProductByIdentifierProduct.Category, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetCategory() *ProductFieldsCategoryTaxonomyCategory {
+	return v.ProductFields.Category
+}
+
+// GetTags returns GetProductByHandleProductByIdentifierProduct.Tags, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetTags() []string {
+	return v.ProductFields.Tags
+}
+
+// GetSeo returns GetProductByHandleProductByIdentifierProduct.Seo, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetSeo() ProductFieldsSeoSEO {
+	return v.ProductFields.Seo
+}
+
+// GetTemplateSuffix returns GetProductByHandleProductByIdentifierProduct.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetTemplateSuffix() *string {
+	return v.ProductFields.TemplateSuffix
+}
+
+// GetIsGiftCard returns GetProductByHandleProductByIdentifierProduct.IsGiftCard, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetIsGiftCard() bool {
+	return v.ProductFields.IsGiftCard
+}
+
+// GetHasOnlyDefaultVariant returns GetProductByHandleProductByIdentifierProduct.HasOnlyDefaultVariant, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetHasOnlyDefaultVariant() bool {
+	return v.ProductFields.HasOnlyDefaultVariant
+}
+
+// GetMedia returns GetProductByHandleProductByIdentifierProduct.Media, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetMedia() ProductFieldsMediaMediaConnection {
+	return v.ProductFields.Media
+}
+
+// GetOptions returns GetProductByHandleProductByIdentifierProduct.Options, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetOptions() []ProductFieldsOptionsProductOption {
+	return v.ProductFields.Options
+}
+
+// GetVariants returns GetProductByHandleProductByIdentifierProduct.Variants, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetVariants() ProductFieldsVariantsProductVariantConnection {
+	return v.ProductFields.Variants
+}
+
+// GetResourcePublicationsV2 returns GetProductByHandleProductByIdentifierProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
+func (v *GetProductByHandleProductByIdentifierProduct) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetProductByHandleProductByIdentifierProduct
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetProductByHandleProductByIdentifierProduct = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ProductFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetProductByHandleProductByIdentifierProduct struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Status ProductStatus `json:"status"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	Vendor string `json:"vendor"`
+
+	ProductType string `json:"productType"`
+
+	Category *ProductFieldsCategoryTaxonomyCategory `json:"category"`
+
+	Tags []string `json:"tags"`
+
+	Seo ProductFieldsSeoSEO `json:"seo"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	IsGiftCard bool `json:"isGiftCard"`
+
+	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
+
+	Media ProductFieldsMediaMediaConnection `json:"media"`
+
+	Options []ProductFieldsOptionsProductOption `json:"options"`
+
+	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *GetProductByHandleProductByIdentifierProduct) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetProductByHandleProductByIdentifierProduct) __premarshalJSON() (*__premarshalGetProductByHandleProductByIdentifierProduct, error) {
+	var retval __premarshalGetProductByHandleProductByIdentifierProduct
+
+	retval.Id = v.ProductFields.Id
+	retval.Handle = v.ProductFields.Handle
+	retval.Title = v.ProductFields.Title
+	retval.Status = v.ProductFields.Status
+	retval.DescriptionHtml = v.ProductFields.DescriptionHtml
+	retval.Vendor = v.ProductFields.Vendor
+	retval.ProductType = v.ProductFields.ProductType
+	retval.Category = v.ProductFields.Category
+	retval.Tags = v.ProductFields.Tags
+	retval.Seo = v.ProductFields.Seo
+	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
+	retval.IsGiftCard = v.ProductFields.IsGiftCard
+	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
+	retval.Media = v.ProductFields.Media
+	retval.Options = v.ProductFields.Options
+	retval.Variants = v.ProductFields.Variants
+	retval.ResourcePublicationsV2 = v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// GetProductByHandleResponse is returned by GetProductByHandle on success.
+type GetProductByHandleResponse struct {
+	// Return a product by an identifier.
+	ProductByIdentifier *GetProductByHandleProductByIdentifierProduct `json:"productByIdentifier"`
+}
+
+// GetProductByIdentifier returns GetProductByHandleResponse.ProductByIdentifier, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleResponse) GetProductByIdentifier() *GetProductByHandleProductByIdentifierProduct {
+	return v.ProductByIdentifier
+}
+
+// GetProductMediaProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductMediaProduct struct {
+	// The [media](https://shopify.dev/docs/apps/build/online-store/product-media) associated with the product. Valid media are images, 3D models, videos.
+	Media GetProductMediaProductMediaMediaConnection `json:"media"`
+}
+
+// GetMedia returns GetProductMediaProduct.Media, and is useful for accessing the field via an interface.
+func (v *GetProductMediaProduct) GetMedia() GetProductMediaProductMediaMediaConnection {
+	return v.Media
+}
+
+// GetProductMediaProductMediaMediaConnection includes the requested fields of the GraphQL type MediaConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Media.
+type GetProductMediaProductMediaMediaConnection struct {
+	// A list of nodes that are contained in MediaEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []MediaID `json:"-"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetProductMediaProductMediaMediaConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetProductMediaProductMediaMediaConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetProductMediaProductMediaMediaConnection) GetNodes() []MediaID { return v.Nodes }
+
+// GetPageInfo returns GetProductMediaProductMediaMediaConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetProductMediaProductMediaMediaConnection) GetPageInfo() GetProductMediaProductMediaMediaConnectionPageInfo {
+	return v.PageInfo
+}
+
+func (v *GetProductMediaProductMediaMediaConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetProductMediaProductMediaMediaConnection
+		Nodes []json.RawMessage `json:"nodes"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetProductMediaProductMediaMediaConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Nodes
+		src := firstPass.Nodes
+		*dst = make(
+			[]MediaID,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			if len(src) != 0 && string(src) != "null" {
+				err = __unmarshalMediaID(
+					src, dst)
+				if err != nil {
+					return fmt.Errorf(
+						"unable to unmarshal GetProductMediaProductMediaMediaConnection.Nodes: %w", err)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalGetProductMediaProductMediaMediaConnection struct {
+	Nodes []json.RawMessage `json:"nodes"`
+
+	PageInfo GetProductMediaProductMediaMediaConnectionPageInfo `json:"pageInfo"`
+}
+
+func (v *GetProductMediaProductMediaMediaConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetProductMediaProductMediaMediaConnection) __premarshalJSON() (*__premarshalGetProductMediaProductMediaMediaConnection, error) {
+	var retval __premarshalGetProductMediaProductMediaMediaConnection
+
+	{
+
+		dst := &retval.Nodes
+		src := v.Nodes
+		*dst = make(
+			[]json.RawMessage,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			var err error
+			*dst, err = __marshalMediaID(
+				&src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal GetProductMediaProductMediaMediaConnection.Nodes: %w", err)
+			}
+		}
+	}
+	retval.PageInfo = v.PageInfo
+	return &retval, nil
+}
+
+// GetProductMediaProductMediaMediaConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetProductMediaProductMediaMediaConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetProductMediaProductMediaMediaConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetProductMediaProductMediaMediaConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetProductMediaProductMediaMediaConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetProductMediaProductMediaMediaConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetProductMediaResponse is returned by GetProductMedia on success.
+type GetProductMediaResponse struct {
+	// Retrieves a [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) by its ID.
+	// A product is an item that a merchant can sell in their store.
+	//
+	// Use the `product` query when you need to:
+	//
+	// - Access essential product data (for example, title, description, price, images, SEO metadata, and metafields).
+	// - Build product detail pages and manage inventory.
+	// - Handle international sales with localized pricing and content.
+	// - Manage product variants and product options.
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Product *GetProductMediaProduct `json:"product"`
+}
+
+// GetProduct returns GetProductMediaResponse.Product, and is useful for accessing the field via an interface.
+func (v *GetProductMediaResponse) GetProduct() *GetProductMediaProduct { return v.Product }
+
+// GetProductProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductProduct struct {
+	ProductFields `json:"-"`
+}
+
+// GetId returns GetProductProduct.Id, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetId() string { return v.ProductFields.Id }
+
+// GetHandle returns GetProductProduct.Handle, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetHandle() string { return v.ProductFields.Handle }
+
+// GetTitle returns GetProductProduct.Title, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetTitle() string { return v.ProductFields.Title }
+
+// GetStatus returns GetProductProduct.Status, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetStatus() ProductStatus { return v.ProductFields.Status }
+
+// GetDescriptionHtml returns GetProductProduct.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetDescriptionHtml() string { return v.ProductFields.DescriptionHtml }
+
+// GetVendor returns GetProductProduct.Vendor, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetVendor() string { return v.ProductFields.Vendor }
+
+// GetProductType returns GetProductProduct.ProductType, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetProductType() string { return v.ProductFields.ProductType }
+
+// GetCategory returns GetProductProduct.Category, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetCategory() *ProductFieldsCategoryTaxonomyCategory {
+	return v.ProductFields.Category
+}
+
+// GetTags returns GetProductProduct.Tags, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetTags() []string { return v.ProductFields.Tags }
+
+// GetSeo returns GetProductProduct.Seo, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetSeo() ProductFieldsSeoSEO { return v.ProductFields.Seo }
+
+// GetTemplateSuffix returns GetProductProduct.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetTemplateSuffix() *string { return v.ProductFields.TemplateSuffix }
+
+// GetIsGiftCard returns GetProductProduct.IsGiftCard, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetIsGiftCard() bool { return v.ProductFields.IsGiftCard }
+
+// GetHasOnlyDefaultVariant returns GetProductProduct.HasOnlyDefaultVariant, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetHasOnlyDefaultVariant() bool {
+	return v.ProductFields.HasOnlyDefaultVariant
+}
+
+// GetMedia returns GetProductProduct.Media, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetMedia() ProductFieldsMediaMediaConnection {
+	return v.ProductFields.Media
+}
+
+// GetOptions returns GetProductProduct.Options, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetOptions() []ProductFieldsOptionsProductOption {
+	return v.ProductFields.Options
+}
+
+// GetVariants returns GetProductProduct.Variants, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetVariants() ProductFieldsVariantsProductVariantConnection {
+	return v.ProductFields.Variants
+}
+
+// GetResourcePublicationsV2 returns GetProductProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
+func (v *GetProductProduct) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetProductProduct
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetProductProduct = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ProductFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetProductProduct struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Status ProductStatus `json:"status"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	Vendor string `json:"vendor"`
+
+	ProductType string `json:"productType"`
+
+	Category *ProductFieldsCategoryTaxonomyCategory `json:"category"`
+
+	Tags []string `json:"tags"`
+
+	Seo ProductFieldsSeoSEO `json:"seo"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	IsGiftCard bool `json:"isGiftCard"`
+
+	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
+
+	Media ProductFieldsMediaMediaConnection `json:"media"`
+
+	Options []ProductFieldsOptionsProductOption `json:"options"`
+
+	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *GetProductProduct) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetProductProduct) __premarshalJSON() (*__premarshalGetProductProduct, error) {
+	var retval __premarshalGetProductProduct
+
+	retval.Id = v.ProductFields.Id
+	retval.Handle = v.ProductFields.Handle
+	retval.Title = v.ProductFields.Title
+	retval.Status = v.ProductFields.Status
+	retval.DescriptionHtml = v.ProductFields.DescriptionHtml
+	retval.Vendor = v.ProductFields.Vendor
+	retval.ProductType = v.ProductFields.ProductType
+	retval.Category = v.ProductFields.Category
+	retval.Tags = v.ProductFields.Tags
+	retval.Seo = v.ProductFields.Seo
+	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
+	retval.IsGiftCard = v.ProductFields.IsGiftCard
+	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
+	retval.Media = v.ProductFields.Media
+	retval.Options = v.ProductFields.Options
+	retval.Variants = v.ProductFields.Variants
+	retval.ResourcePublicationsV2 = v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// GetProductPublicationsProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductPublicationsProduct struct {
+	// The list of resources that are either published or staged to be published to a
+	// [publication](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	// By default, only publications to `APP` catalog types are returned.
+	// For `Product` and `ProductVariant`, use the `catalogType` argument to retrieve
+	// publications for other catalog types, such as `COMPANY_LOCATION` (B2B) or `MARKET`.
+	// `Collection` only supports publications to `APP` catalog types.
+	ResourcePublicationsV2 GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+// GetResourcePublicationsV2 returns GetProductPublicationsProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProduct) GetResourcePublicationsV2() GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ResourcePublicationsV2
+}
+
+// GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection includes the requested fields of the GraphQL type ResourcePublicationV2Connection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ResourcePublicationV2s.
+type GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection struct {
+	// A list of nodes that are contained in ResourcePublicationV2Edge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection) GetNodes() []GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2Connection) GetPageInfo() GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 includes the requested fields of the GraphQL type ResourcePublicationV2.
+// The GraphQL type's documentation follows.
+//
+// A resource publication represents information about the publication of a resource.
+// Unlike `ResourcePublication`, an instance of `ResourcePublicationV2` can't be unpublished. It must either be published or scheduled to be published.
+//
+// See [ResourcePublication](/api/admin-graphql/latest/objects/ResourcePublication) for more context.
+type GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 struct {
+	// The publication the resource publication is published to.
+	Publication GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication `json:"publication"`
+}
+
+// GetPublication returns GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2.Publication, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2) GetPublication() GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication {
+	return v.Publication
+}
+
+// GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication includes the requested fields of the GraphQL type Publication.
+// The GraphQL type's documentation follows.
+//
+// A group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) that are published to an app.
+//
+// Each publication manages which products and collections display on its associated [`Channel`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Channel). Merchants can automatically publish products when they're created if [`autoPublish`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.autoPublish) is enabled, or manually control publication through publication records.
+//
+// Publications support scheduled publishing through future publish dates for online store channels, allowing merchants to coordinate product launches and promotional campaigns. The [`catalog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.catalog) field links to pricing and availability rules specific to that publication's context.
+type GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication.Id, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication) GetId() string {
+	return v.Id
+}
+
+// GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsProductResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetProductPublicationsResponse is returned by GetProductPublications on success.
+type GetProductPublicationsResponse struct {
+	// Retrieves a [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) by its ID.
+	// A product is an item that a merchant can sell in their store.
+	//
+	// Use the `product` query when you need to:
+	//
+	// - Access essential product data (for example, title, description, price, images, SEO metadata, and metafields).
+	// - Build product detail pages and manage inventory.
+	// - Handle international sales with localized pricing and content.
+	// - Manage product variants and product options.
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Product *GetProductPublicationsProduct `json:"product"`
+}
+
+// GetProduct returns GetProductPublicationsResponse.Product, and is useful for accessing the field via an interface.
+func (v *GetProductPublicationsResponse) GetProduct() *GetProductPublicationsProduct {
+	return v.Product
+}
+
+// GetProductResponse is returned by GetProduct on success.
+type GetProductResponse struct {
+	// Retrieves a [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) by its ID.
+	// A product is an item that a merchant can sell in their store.
+	//
+	// Use the `product` query when you need to:
+	//
+	// - Access essential product data (for example, title, description, price, images, SEO metadata, and metafields).
+	// - Build product detail pages and manage inventory.
+	// - Handle international sales with localized pricing and content.
+	// - Manage product variants and product options.
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Product *GetProductProduct `json:"product"`
+}
+
+// GetProduct returns GetProductResponse.Product, and is useful for accessing the field via an interface.
+func (v *GetProductResponse) GetProduct() *GetProductProduct { return v.Product }
+
+// GetProductVariantsProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductVariantsProduct struct {
+	// A list of [variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) associated with the product.
+	// If querying a single product at the root, you can fetch up to 2048 variants.
+	Variants GetProductVariantsProductVariantsProductVariantConnection `json:"variants"`
+}
+
+// GetVariants returns GetProductVariantsProduct.Variants, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProduct) GetVariants() GetProductVariantsProductVariantsProductVariantConnection {
+	return v.Variants
+}
+
+// GetProductVariantsProductVariantsProductVariantConnection includes the requested fields of the GraphQL type ProductVariantConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ProductVariants.
+type GetProductVariantsProductVariantsProductVariantConnection struct {
+	// A list of nodes that are contained in ProductVariantEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetProductVariantsProductVariantsProductVariantConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetProductVariantsProductVariantsProductVariantConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnection) GetNodes() []GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetProductVariantsProductVariantsProductVariantConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnection) GetPageInfo() GetProductVariantsProductVariantsProductVariantConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant struct {
+	VariantFields `json:"-"`
+}
+
+// GetId returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.Id, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetId() string {
+	return v.VariantFields.Id
+}
+
+// GetPrice returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.Price, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetPrice() string {
+	return v.VariantFields.Price
+}
+
+// GetCompareAtPrice returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.CompareAtPrice, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetCompareAtPrice() *string {
+	return v.VariantFields.CompareAtPrice
+}
+
+// GetSku returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.Sku, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetSku() *string {
+	return v.VariantFields.Sku
+}
+
+// GetBarcodes returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.Barcodes, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetBarcodes() VariantFieldsBarcodesProductVariantBarcodeConnection {
+	return v.VariantFields.Barcodes
+}
+
+// GetInventoryPolicy returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.InventoryPolicy, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetInventoryPolicy() ProductVariantInventoryPolicy {
+	return v.VariantFields.InventoryPolicy
+}
+
+// GetTaxable returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.Taxable, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetTaxable() bool {
+	return v.VariantFields.Taxable
+}
+
+// GetSelectedOptions returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.SelectedOptions, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetSelectedOptions() []VariantFieldsSelectedOptionsSelectedOption {
+	return v.VariantFields.SelectedOptions
+}
+
+// GetInventoryItem returns GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant.InventoryItem, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) GetInventoryItem() VariantFieldsInventoryItem {
+	return v.VariantFields.InventoryItem
+}
+
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.VariantFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant struct {
+	Id string `json:"id"`
+
+	Price string `json:"price"`
+
+	CompareAtPrice *string `json:"compareAtPrice"`
+
+	Sku *string `json:"sku"`
+
+	Barcodes VariantFieldsBarcodesProductVariantBarcodeConnection `json:"barcodes"`
+
+	InventoryPolicy ProductVariantInventoryPolicy `json:"inventoryPolicy"`
+
+	Taxable bool `json:"taxable"`
+
+	SelectedOptions []VariantFieldsSelectedOptionsSelectedOption `json:"selectedOptions"`
+
+	InventoryItem VariantFieldsInventoryItem `json:"inventoryItem"`
+}
+
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant) __premarshalJSON() (*__premarshalGetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant, error) {
+	var retval __premarshalGetProductVariantsProductVariantsProductVariantConnectionNodesProductVariant
+
+	retval.Id = v.VariantFields.Id
+	retval.Price = v.VariantFields.Price
+	retval.CompareAtPrice = v.VariantFields.CompareAtPrice
+	retval.Sku = v.VariantFields.Sku
+	retval.Barcodes = v.VariantFields.Barcodes
+	retval.InventoryPolicy = v.VariantFields.InventoryPolicy
+	retval.Taxable = v.VariantFields.Taxable
+	retval.SelectedOptions = v.VariantFields.SelectedOptions
+	retval.InventoryItem = v.VariantFields.InventoryItem
+	return &retval, nil
+}
+
+// GetProductVariantsProductVariantsProductVariantConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetProductVariantsProductVariantsProductVariantConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetProductVariantsProductVariantsProductVariantConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetProductVariantsProductVariantsProductVariantConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsProductVariantsProductVariantConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetProductVariantsResponse is returned by GetProductVariants on success.
+type GetProductVariantsResponse struct {
+	// Retrieves a [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) by its ID.
+	// A product is an item that a merchant can sell in their store.
+	//
+	// Use the `product` query when you need to:
+	//
+	// - Access essential product data (for example, title, description, price, images, SEO metadata, and metafields).
+	// - Build product detail pages and manage inventory.
+	// - Handle international sales with localized pricing and content.
+	// - Manage product variants and product options.
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Product *GetProductVariantsProduct `json:"product"`
+}
+
+// GetProduct returns GetProductVariantsResponse.Product, and is useful for accessing the field via an interface.
+func (v *GetProductVariantsResponse) GetProduct() *GetProductVariantsProduct { return v.Product }
+
+// GetSegmentResponse is returned by GetSegment on success.
+type GetSegmentResponse struct {
+	// Retrieves a customer [`Segment`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment) by ID. Segments are dynamic groups of customers that meet specific criteria defined through [ShopifyQL queries](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference).
+	//
+	// Use segments for targeted marketing campaigns, analyzing customer behavior, or creating personalized experiences. Each segment includes its name, creation date, and the query that defines which [`Customer`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) objects belong to it.
+	Segment *GetSegmentSegment `json:"segment"`
+}
+
+// GetSegment returns GetSegmentResponse.Segment, and is useful for accessing the field via an interface.
+func (v *GetSegmentResponse) GetSegment() *GetSegmentSegment { return v.Segment }
+
+// GetSegmentSegment includes the requested fields of the GraphQL type Segment.
+// The GraphQL type's documentation follows.
+//
+// A group of [customers](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) that meet specific criteria defined through [ShopifyQL query](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference) conditions. Common use cases for segments include customer analytics, targeted marketing campaigns, and automated discount eligibility.
+//
+// The segment's [`query`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-query) field contains ShopifyQL conditions that determine membership, such as purchase history, location, or engagement patterns. Tracks when the segment was created with [`creationDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-creationDate) and when it was last modified with [`lastEditDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-lastEditDate).
+type GetSegmentSegment struct {
+	SegmentFields `json:"-"`
+}
+
+// GetId returns GetSegmentSegment.Id, and is useful for accessing the field via an interface.
+func (v *GetSegmentSegment) GetId() string { return v.SegmentFields.Id }
+
+// GetName returns GetSegmentSegment.Name, and is useful for accessing the field via an interface.
+func (v *GetSegmentSegment) GetName() string { return v.SegmentFields.Name }
+
+// GetQuery returns GetSegmentSegment.Query, and is useful for accessing the field via an interface.
+func (v *GetSegmentSegment) GetQuery() string { return v.SegmentFields.Query }
+
+func (v *GetSegmentSegment) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetSegmentSegment
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetSegmentSegment = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.SegmentFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetSegmentSegment struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Query string `json:"query"`
+}
+
+func (v *GetSegmentSegment) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetSegmentSegment) __premarshalJSON() (*__premarshalGetSegmentSegment, error) {
+	var retval __premarshalGetSegmentSegment
+
+	retval.Id = v.SegmentFields.Id
+	retval.Name = v.SegmentFields.Name
+	retval.Query = v.SegmentFields.Query
+	return &retval, nil
+}
+
 // GetShopResponse is returned by GetShop on success.
 type GetShopResponse struct {
 	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
@@ -7313,6 +17234,25 @@ type GetWebPresenceResponse struct {
 // GetNode returns GetWebPresenceResponse.Node, and is useful for accessing the field via an interface.
 func (v *GetWebPresenceResponse) GetNode() json.RawMessage { return v.Node }
 
+// The input fields for an image.
+type ImageInput struct {
+	// A globally-unique ID.
+	Id *string `json:"id"`
+	// A word or phrase to share the nature or contents of an image.
+	AltText *string `json:"altText"`
+	// The URL of the image. May be a staged upload URL.
+	Src *string `json:"src"`
+}
+
+// GetId returns ImageInput.Id, and is useful for accessing the field via an interface.
+func (v *ImageInput) GetId() *string { return v.Id }
+
+// GetAltText returns ImageInput.AltText, and is useful for accessing the field via an interface.
+func (v *ImageInput) GetAltText() *string { return v.AltText }
+
+// GetSrc returns ImageInput.Src, and is useful for accessing the field via an interface.
+func (v *ImageInput) GetSrc() *string { return v.Src }
+
 // Answers the question if prices include duties and / or taxes.
 type InclusiveDutiesPricingStrategy string
 
@@ -7345,6 +17285,226 @@ var AllInclusiveTaxPricingStrategy = []InclusiveTaxPricingStrategy{
 	InclusiveTaxPricingStrategyIncludesTaxesInPrice,
 	InclusiveTaxPricingStrategyIncludesTaxesInPriceBasedOnCountry,
 }
+
+// The input fields for an inventory item.
+type InventoryItemInput struct {
+	// The SKU (stock keeping unit) of the inventory item.
+	Sku *string `json:"sku,omitempty"`
+	// Unit cost associated with the inventory item, the currency is the shop's default currency.
+	Cost *string `json:"cost,omitempty"`
+	// Whether the inventory item is tracked.
+	Tracked *bool `json:"tracked,omitempty"`
+	// The country where the item was manufactured or produced, specified using the standard two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code.
+	CountryCodeOfOrigin *CountryCode `json:"countryCodeOfOrigin,omitempty"`
+	// The harmonized system code of the inventory item. This must be a number between 6 and 13 digits.
+	HarmonizedSystemCode *string `json:"harmonizedSystemCode,omitempty"`
+	// List of country-specific harmonized system codes.
+	CountryHarmonizedSystemCodes []CountryHarmonizedSystemCodeInput `json:"countryHarmonizedSystemCodes,omitempty"`
+	// The province where the item was manufactured or produced, specified using the standard two-letter [ISO 3166-2 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-2) province code.
+	ProvinceCodeOfOrigin *string `json:"provinceCodeOfOrigin,omitempty"`
+	// The measurements of an inventory item.
+	Measurement *InventoryItemMeasurementInput `json:"measurement,omitempty"`
+	// Whether the inventory item needs to be physically shipped to the customer. Items that require shipping are physical products, while digital goods and services typically don't require shipping and can be fulfilled electronically.
+	RequiresShipping *bool `json:"requiresShipping,omitempty"`
+}
+
+// GetSku returns InventoryItemInput.Sku, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetSku() *string { return v.Sku }
+
+// GetCost returns InventoryItemInput.Cost, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetCost() *string { return v.Cost }
+
+// GetTracked returns InventoryItemInput.Tracked, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetTracked() *bool { return v.Tracked }
+
+// GetCountryCodeOfOrigin returns InventoryItemInput.CountryCodeOfOrigin, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetCountryCodeOfOrigin() *CountryCode { return v.CountryCodeOfOrigin }
+
+// GetHarmonizedSystemCode returns InventoryItemInput.HarmonizedSystemCode, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetHarmonizedSystemCode() *string { return v.HarmonizedSystemCode }
+
+// GetCountryHarmonizedSystemCodes returns InventoryItemInput.CountryHarmonizedSystemCodes, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetCountryHarmonizedSystemCodes() []CountryHarmonizedSystemCodeInput {
+	return v.CountryHarmonizedSystemCodes
+}
+
+// GetProvinceCodeOfOrigin returns InventoryItemInput.ProvinceCodeOfOrigin, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetProvinceCodeOfOrigin() *string { return v.ProvinceCodeOfOrigin }
+
+// GetMeasurement returns InventoryItemInput.Measurement, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetMeasurement() *InventoryItemMeasurementInput { return v.Measurement }
+
+// GetRequiresShipping returns InventoryItemInput.RequiresShipping, and is useful for accessing the field via an interface.
+func (v *InventoryItemInput) GetRequiresShipping() *bool { return v.RequiresShipping }
+
+// The input fields for an inventory item measurement.
+type InventoryItemMeasurementInput struct {
+	// The weight of the inventory item.
+	Weight *WeightInput `json:"weight,omitempty"`
+	// Shipping package associated with inventory item.
+	ShippingPackageId *string `json:"shippingPackageId,omitempty"`
+}
+
+// GetWeight returns InventoryItemMeasurementInput.Weight, and is useful for accessing the field via an interface.
+func (v *InventoryItemMeasurementInput) GetWeight() *WeightInput { return v.Weight }
+
+// GetShippingPackageId returns InventoryItemMeasurementInput.ShippingPackageId, and is useful for accessing the field via an interface.
+func (v *InventoryItemMeasurementInput) GetShippingPackageId() *string { return v.ShippingPackageId }
+
+// The input fields required to link a product option to a metafield.
+type LinkedMetafieldCreateInput struct {
+	// The namespace of the metafield this option is linked to.
+	Namespace string `json:"namespace"`
+	// The key of the metafield this option is linked to.
+	Key string `json:"key"`
+	// Values associated with the option.
+	Values []string `json:"values"`
+}
+
+// GetNamespace returns LinkedMetafieldCreateInput.Namespace, and is useful for accessing the field via an interface.
+func (v *LinkedMetafieldCreateInput) GetNamespace() string { return v.Namespace }
+
+// GetKey returns LinkedMetafieldCreateInput.Key, and is useful for accessing the field via an interface.
+func (v *LinkedMetafieldCreateInput) GetKey() string { return v.Key }
+
+// GetValues returns LinkedMetafieldCreateInput.Values, and is useful for accessing the field via an interface.
+func (v *LinkedMetafieldCreateInput) GetValues() []string { return v.Values }
+
+// ListBlogsBlogsBlogConnection includes the requested fields of the GraphQL type BlogConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Blogs.
+type ListBlogsBlogsBlogConnection struct {
+	// A list of nodes that are contained in BlogEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListBlogsBlogsBlogConnectionNodesBlog `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListBlogsBlogsBlogConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListBlogsBlogsBlogConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnection) GetNodes() []ListBlogsBlogsBlogConnectionNodesBlog {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListBlogsBlogsBlogConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnection) GetPageInfo() ListBlogsBlogsBlogConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListBlogsBlogsBlogConnectionNodesBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type ListBlogsBlogsBlogConnectionNodesBlog struct {
+	BlogFields `json:"-"`
+}
+
+// GetId returns ListBlogsBlogsBlogConnectionNodesBlog.Id, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) GetId() string { return v.BlogFields.Id }
+
+// GetHandle returns ListBlogsBlogsBlogConnectionNodesBlog.Handle, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) GetHandle() string { return v.BlogFields.Handle }
+
+// GetTitle returns ListBlogsBlogsBlogConnectionNodesBlog.Title, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) GetTitle() string { return v.BlogFields.Title }
+
+// GetCommentPolicy returns ListBlogsBlogsBlogConnectionNodesBlog.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) GetCommentPolicy() CommentPolicy {
+	return v.BlogFields.CommentPolicy
+}
+
+// GetTemplateSuffix returns ListBlogsBlogsBlogConnectionNodesBlog.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) GetTemplateSuffix() *string {
+	return v.BlogFields.TemplateSuffix
+}
+
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListBlogsBlogsBlogConnectionNodesBlog
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListBlogsBlogsBlogConnectionNodesBlog = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.BlogFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListBlogsBlogsBlogConnectionNodesBlog struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	CommentPolicy CommentPolicy `json:"commentPolicy"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListBlogsBlogsBlogConnectionNodesBlog) __premarshalJSON() (*__premarshalListBlogsBlogsBlogConnectionNodesBlog, error) {
+	var retval __premarshalListBlogsBlogsBlogConnectionNodesBlog
+
+	retval.Id = v.BlogFields.Id
+	retval.Handle = v.BlogFields.Handle
+	retval.Title = v.BlogFields.Title
+	retval.CommentPolicy = v.BlogFields.CommentPolicy
+	retval.TemplateSuffix = v.BlogFields.TemplateSuffix
+	return &retval, nil
+}
+
+// ListBlogsBlogsBlogConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListBlogsBlogsBlogConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListBlogsBlogsBlogConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ListBlogsBlogsBlogConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListBlogsBlogsBlogConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
+
+// ListBlogsResponse is returned by ListBlogs on success.
+type ListBlogsResponse struct {
+	// Returns a paginated list of the shop's [`Blog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Blog) objects. Blogs serve as containers for [`Article`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Article) objects and provide content management capabilities for the store's editorial content.
+	//
+	// Supports [cursor-based pagination](https://shopify.dev/docs/api/usage/pagination-graphql) to control the number of blogs returned and their order. Use the [`query`](https://shopify.dev/docs/api/admin-graphql/latest/queries/blogs#arguments-query) argument to filter results by specific criteria.
+	Blogs ListBlogsBlogsBlogConnection `json:"blogs"`
+}
+
+// GetBlogs returns ListBlogsResponse.Blogs, and is useful for accessing the field via an interface.
+func (v *ListBlogsResponse) GetBlogs() ListBlogsBlogsBlogConnection { return v.Blogs }
 
 // ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection includes the requested fields of the GraphQL type CheckoutAndAccountsConfigurationConnection.
 // The GraphQL type's documentation follows.
@@ -7480,6 +17640,231 @@ type ListCheckoutAndAccountsConfigurationsResponse struct {
 // GetCheckoutAndAccountsConfigurations returns ListCheckoutAndAccountsConfigurationsResponse.CheckoutAndAccountsConfigurations, and is useful for accessing the field via an interface.
 func (v *ListCheckoutAndAccountsConfigurationsResponse) GetCheckoutAndAccountsConfigurations() *ListCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationsCheckoutAndAccountsConfigurationConnection {
 	return v.CheckoutAndAccountsConfigurations
+}
+
+// ListCollectionsCollectionsCollectionConnection includes the requested fields of the GraphQL type CollectionConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Collections.
+type ListCollectionsCollectionsCollectionConnection struct {
+	// A list of nodes that are contained in CollectionEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListCollectionsCollectionsCollectionConnectionNodesCollection `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListCollectionsCollectionsCollectionConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListCollectionsCollectionsCollectionConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnection) GetNodes() []ListCollectionsCollectionsCollectionConnectionNodesCollection {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListCollectionsCollectionsCollectionConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnection) GetPageInfo() ListCollectionsCollectionsCollectionConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListCollectionsCollectionsCollectionConnectionNodesCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type ListCollectionsCollectionsCollectionConnectionNodesCollection struct {
+	CollectionFields `json:"-"`
+}
+
+// GetId returns ListCollectionsCollectionsCollectionConnectionNodesCollection.Id, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetId() string {
+	return v.CollectionFields.Id
+}
+
+// GetHandle returns ListCollectionsCollectionsCollectionConnectionNodesCollection.Handle, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetHandle() string {
+	return v.CollectionFields.Handle
+}
+
+// GetTitle returns ListCollectionsCollectionsCollectionConnectionNodesCollection.Title, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetTitle() string {
+	return v.CollectionFields.Title
+}
+
+// GetDescriptionHtml returns ListCollectionsCollectionsCollectionConnectionNodesCollection.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetDescriptionHtml() string {
+	return v.CollectionFields.DescriptionHtml
+}
+
+// GetSortOrder returns ListCollectionsCollectionsCollectionConnectionNodesCollection.SortOrder, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetSortOrder() CollectionSortOrder {
+	return v.CollectionFields.SortOrder
+}
+
+// GetTemplateSuffix returns ListCollectionsCollectionsCollectionConnectionNodesCollection.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetTemplateSuffix() *string {
+	return v.CollectionFields.TemplateSuffix
+}
+
+// GetSeo returns ListCollectionsCollectionsCollectionConnectionNodesCollection.Seo, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetSeo() CollectionFieldsSeoSEO {
+	return v.CollectionFields.Seo
+}
+
+// GetSources returns ListCollectionsCollectionsCollectionConnectionNodesCollection.Sources, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetSources() json.RawMessage {
+	return v.CollectionFields.Sources
+}
+
+// GetResourcePublicationsV2 returns ListCollectionsCollectionsCollectionConnectionNodesCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListCollectionsCollectionsCollectionConnectionNodesCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListCollectionsCollectionsCollectionConnectionNodesCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CollectionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListCollectionsCollectionsCollectionConnectionNodesCollection struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+
+	Sources json.RawMessage `json:"sources"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) __premarshalJSON() (*__premarshalListCollectionsCollectionsCollectionConnectionNodesCollection, error) {
+	var retval __premarshalListCollectionsCollectionsCollectionConnectionNodesCollection
+
+	retval.Id = v.CollectionFields.Id
+	retval.Handle = v.CollectionFields.Handle
+	retval.Title = v.CollectionFields.Title
+	retval.DescriptionHtml = v.CollectionFields.DescriptionHtml
+	retval.SortOrder = v.CollectionFields.SortOrder
+	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
+	retval.Seo = v.CollectionFields.Seo
+	retval.Sources = v.CollectionFields.Sources
+	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// ListCollectionsCollectionsCollectionConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListCollectionsCollectionsCollectionConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListCollectionsCollectionsCollectionConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ListCollectionsCollectionsCollectionConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// ListCollectionsResponse is returned by ListCollections on success.
+type ListCollectionsResponse struct {
+	// Retrieves a list of [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection)
+	// in a store. Collections are groups of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// that merchants can organize for display in their [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	// For example, an athletics store might create different collections for running attire, shoes, and accessories.
+	//
+	// Use the `collections` query when you need to:
+	//
+	// - Build a browsing interface for a store's product groupings.
+	// - Create collection searching, sorting, and filtering experiences (for example, by title, type, or published status).
+	// - Sync collection data with external systems.
+	//
+	// The `collections` query supports [pagination](https://shopify.dev/docs/api/usage/pagination-graphql)
+	// for large catalogs and [saved searches](https://shopify.dev/docs/api/admin-graphql/latest/queries/collections#arguments-savedSearchId)
+	// for frequently used collection queries.
+	//
+	// The `collections` query returns collections with their associated metadata, including:
+	//
+	// - Basic collection information (title, description, handle, and type)
+	// - Collection image and SEO metadata
+	// - Product count and product relationships
+	// - Collection rules or conditions
+	// - Publishing status and publication details
+	// - Metafields and custom attributes
+	//
+	// Learn more about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+	Collections ListCollectionsCollectionsCollectionConnection `json:"collections"`
+}
+
+// GetCollections returns ListCollectionsResponse.Collections, and is useful for accessing the field via an interface.
+func (v *ListCollectionsResponse) GetCollections() ListCollectionsCollectionsCollectionConnection {
+	return v.Collections
 }
 
 // ListConsentPoliciesConsentPolicy includes the requested fields of the GraphQL type ConsentPolicy.
@@ -7664,6 +18049,205 @@ type ListDeliveryProfilesResponse struct {
 func (v *ListDeliveryProfilesResponse) GetDeliveryProfiles() ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection {
 	return v.DeliveryProfiles
 }
+
+// ListDiscountsDiscountNodesDiscountNodeConnection includes the requested fields of the GraphQL type DiscountNodeConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple DiscountNodes.
+type ListDiscountsDiscountNodesDiscountNodeConnection struct {
+	// A list of nodes that are contained in DiscountNodeEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListDiscountsDiscountNodesDiscountNodeConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListDiscountsDiscountNodesDiscountNodeConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListDiscountsDiscountNodesDiscountNodeConnection) GetNodes() []ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListDiscountsDiscountNodesDiscountNodeConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListDiscountsDiscountNodesDiscountNodeConnection) GetPageInfo() ListDiscountsDiscountNodesDiscountNodeConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode includes the requested fields of the GraphQL type DiscountNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountNode` object enables you to manage [discounts](https://help.shopify.com/manual/discounts), which are applied at checkout or on a cart.
+//
+// Discounts are a way for merchants to promote sales and special offers, or as customer loyalty rewards. Discounts can apply to [orders, products, or shipping](https://shopify.dev/docs/apps/build/discounts#discount-classes), and can be either automatic or code-based. For example, you can offer customers a buy X get Y discount that's automatically applied when purchases meet specific criteria. Or, you can offer discounts where customers have to enter a code to redeem an amount off discount on products, variants, or collections in a store.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related mutations, limitations, and considerations.
+type ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode struct {
+	DiscountNodeFields `json:"-"`
+}
+
+// GetId returns ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode.Id, and is useful for accessing the field via an interface.
+func (v *ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode) GetId() string {
+	return v.DiscountNodeFields.Id
+}
+
+// GetDiscount returns ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode.Discount, and is useful for accessing the field via an interface.
+func (v *ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode) GetDiscount() DiscountNodeFieldsDiscount {
+	return v.DiscountNodeFields.Discount
+}
+
+func (v *ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.DiscountNodeFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode struct {
+	Id string `json:"id"`
+
+	Discount json.RawMessage `json:"discount"`
+}
+
+func (v *ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode) __premarshalJSON() (*__premarshalListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode, error) {
+	var retval __premarshalListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode
+
+	retval.Id = v.DiscountNodeFields.Id
+	{
+
+		dst := &retval.Discount
+		src := v.DiscountNodeFields.Discount
+		var err error
+		*dst, err = __marshalDiscountNodeFieldsDiscount(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal ListDiscountsDiscountNodesDiscountNodeConnectionNodesDiscountNode.DiscountNodeFields.Discount: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// ListDiscountsDiscountNodesDiscountNodeConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListDiscountsDiscountNodesDiscountNodeConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListDiscountsDiscountNodesDiscountNodeConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListDiscountsDiscountNodesDiscountNodeConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ListDiscountsDiscountNodesDiscountNodeConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListDiscountsDiscountNodesDiscountNodeConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// ListDiscountsResponse is returned by ListDiscounts on success.
+type ListDiscountsResponse struct {
+	// Returns a list of discounts.
+	DiscountNodes ListDiscountsDiscountNodesDiscountNodeConnection `json:"discountNodes"`
+}
+
+// GetDiscountNodes returns ListDiscountsResponse.DiscountNodes, and is useful for accessing the field via an interface.
+func (v *ListDiscountsResponse) GetDiscountNodes() ListDiscountsDiscountNodesDiscountNodeConnection {
+	return v.DiscountNodes
+}
+
+// ListFilesFilesFileConnection includes the requested fields of the GraphQL type FileConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Files.
+type ListFilesFilesFileConnection struct {
+	// A list of nodes that are contained in FileEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes json.RawMessage `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListFilesFilesFileConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListFilesFilesFileConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListFilesFilesFileConnection) GetNodes() json.RawMessage { return v.Nodes }
+
+// GetPageInfo returns ListFilesFilesFileConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListFilesFilesFileConnection) GetPageInfo() ListFilesFilesFileConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListFilesFilesFileConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListFilesFilesFileConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListFilesFilesFileConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListFilesFilesFileConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ListFilesFilesFileConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListFilesFilesFileConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
+
+// ListFilesResponse is returned by ListFiles on success.
+type ListFilesResponse struct {
+	// Retrieves a paginated list of files that have been uploaded to a Shopify store. Files represent digital assets
+	// that merchants can upload to their store for various purposes including product images, marketing materials,
+	// documents, and brand assets.
+	//
+	// Use the `files` query to retrieve information associated with the following workflows:
+	//
+	// - [Managing product media and images](https://shopify.dev/docs/apps/build/online-store/product-media)
+	// - [Theme development and asset management](https://shopify.dev/docs/storefronts/themes/store/success/brand-assets)
+	// - Brand asset management and [checkout branding](https://shopify.dev/docs/apps/build/checkout/styling/add-favicon)
+	//
+	// Files can include multiple [content types](https://shopify.dev/docs/api/admin-graphql/latest/enums/FileContentType),
+	// such as images, videos, 3D models, and generic files. Each file has
+	// properties like dimensions, file size, alt text for accessibility, and upload status. Files can be filtered
+	// by [media type](https://shopify.dev/docs/api/admin-graphql/latest/enums/MediaContentType) and can be associated with
+	// [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product),
+	// [themes](https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreTheme),
+	// and other store resources.
+	Files ListFilesFilesFileConnection `json:"files"`
+}
+
+// GetFiles returns ListFilesResponse.Files, and is useful for accessing the field via an interface.
+func (v *ListFilesResponse) GetFiles() ListFilesFilesFileConnection { return v.Files }
 
 // ListLocationsLocationsLocationConnection includes the requested fields of the GraphQL type LocationConnection.
 // The GraphQL type's documentation follows.
@@ -8244,6 +18828,411 @@ func (v *ListMetaobjectDefinitionsResponse) GetMetaobjectDefinitions() ListMetao
 	return v.MetaobjectDefinitions
 }
 
+// ListPagesPagesPageConnection includes the requested fields of the GraphQL type PageConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Pages.
+type ListPagesPagesPageConnection struct {
+	// A list of nodes that are contained in PageEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListPagesPagesPageConnectionNodesPage `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListPagesPagesPageConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListPagesPagesPageConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnection) GetNodes() []ListPagesPagesPageConnectionNodesPage {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListPagesPagesPageConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnection) GetPageInfo() ListPagesPagesPageConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListPagesPagesPageConnectionNodesPage includes the requested fields of the GraphQL type Page.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type ListPagesPagesPageConnectionNodesPage struct {
+	PageFields `json:"-"`
+}
+
+// GetId returns ListPagesPagesPageConnectionNodesPage.Id, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionNodesPage) GetId() string { return v.PageFields.Id }
+
+// GetHandle returns ListPagesPagesPageConnectionNodesPage.Handle, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionNodesPage) GetHandle() string { return v.PageFields.Handle }
+
+// GetTitle returns ListPagesPagesPageConnectionNodesPage.Title, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionNodesPage) GetTitle() string { return v.PageFields.Title }
+
+// GetBody returns ListPagesPagesPageConnectionNodesPage.Body, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionNodesPage) GetBody() string { return v.PageFields.Body }
+
+// GetIsPublished returns ListPagesPagesPageConnectionNodesPage.IsPublished, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionNodesPage) GetIsPublished() bool {
+	return v.PageFields.IsPublished
+}
+
+// GetTemplateSuffix returns ListPagesPagesPageConnectionNodesPage.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionNodesPage) GetTemplateSuffix() *string {
+	return v.PageFields.TemplateSuffix
+}
+
+func (v *ListPagesPagesPageConnectionNodesPage) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListPagesPagesPageConnectionNodesPage
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListPagesPagesPageConnectionNodesPage = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListPagesPagesPageConnectionNodesPage struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Body string `json:"body"`
+
+	IsPublished bool `json:"isPublished"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *ListPagesPagesPageConnectionNodesPage) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListPagesPagesPageConnectionNodesPage) __premarshalJSON() (*__premarshalListPagesPagesPageConnectionNodesPage, error) {
+	var retval __premarshalListPagesPagesPageConnectionNodesPage
+
+	retval.Id = v.PageFields.Id
+	retval.Handle = v.PageFields.Handle
+	retval.Title = v.PageFields.Title
+	retval.Body = v.PageFields.Body
+	retval.IsPublished = v.PageFields.IsPublished
+	retval.TemplateSuffix = v.PageFields.TemplateSuffix
+	return &retval, nil
+}
+
+// ListPagesPagesPageConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListPagesPagesPageConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListPagesPagesPageConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ListPagesPagesPageConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListPagesPagesPageConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
+
+// ListPagesResponse is returned by ListPages on success.
+type ListPagesResponse struct {
+	// A paginated list of pages from the online store. [`Page`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Page) objects are content pages that merchants create to provide information to customers, such as "About Us", "Contact", or policy pages.
+	//
+	// The query supports filtering with a [search query](https://shopify.dev/docs/api/usage/search-syntax) and sorting by various criteria. Advanced filtering is available through saved searches using the [`savedSearchId`](https://shopify.dev/docs/api/admin-graphql/latest/queries/pages#arguments-savedSearchId) argument.
+	Pages ListPagesPagesPageConnection `json:"pages"`
+}
+
+// GetPages returns ListPagesResponse.Pages, and is useful for accessing the field via an interface.
+func (v *ListPagesResponse) GetPages() ListPagesPagesPageConnection { return v.Pages }
+
+// ListProductsProductsProductConnection includes the requested fields of the GraphQL type ProductConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Products.
+type ListProductsProductsProductConnection struct {
+	// A list of nodes that are contained in ProductEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListProductsProductsProductConnectionNodesProduct `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListProductsProductsProductConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListProductsProductsProductConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnection) GetNodes() []ListProductsProductsProductConnectionNodesProduct {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListProductsProductsProductConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnection) GetPageInfo() ListProductsProductsProductConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListProductsProductsProductConnectionNodesProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type ListProductsProductsProductConnectionNodesProduct struct {
+	ProductFields `json:"-"`
+}
+
+// GetId returns ListProductsProductsProductConnectionNodesProduct.Id, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetId() string { return v.ProductFields.Id }
+
+// GetHandle returns ListProductsProductsProductConnectionNodesProduct.Handle, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetHandle() string {
+	return v.ProductFields.Handle
+}
+
+// GetTitle returns ListProductsProductsProductConnectionNodesProduct.Title, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetTitle() string {
+	return v.ProductFields.Title
+}
+
+// GetStatus returns ListProductsProductsProductConnectionNodesProduct.Status, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetStatus() ProductStatus {
+	return v.ProductFields.Status
+}
+
+// GetDescriptionHtml returns ListProductsProductsProductConnectionNodesProduct.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetDescriptionHtml() string {
+	return v.ProductFields.DescriptionHtml
+}
+
+// GetVendor returns ListProductsProductsProductConnectionNodesProduct.Vendor, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetVendor() string {
+	return v.ProductFields.Vendor
+}
+
+// GetProductType returns ListProductsProductsProductConnectionNodesProduct.ProductType, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetProductType() string {
+	return v.ProductFields.ProductType
+}
+
+// GetCategory returns ListProductsProductsProductConnectionNodesProduct.Category, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetCategory() *ProductFieldsCategoryTaxonomyCategory {
+	return v.ProductFields.Category
+}
+
+// GetTags returns ListProductsProductsProductConnectionNodesProduct.Tags, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetTags() []string {
+	return v.ProductFields.Tags
+}
+
+// GetSeo returns ListProductsProductsProductConnectionNodesProduct.Seo, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetSeo() ProductFieldsSeoSEO {
+	return v.ProductFields.Seo
+}
+
+// GetTemplateSuffix returns ListProductsProductsProductConnectionNodesProduct.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetTemplateSuffix() *string {
+	return v.ProductFields.TemplateSuffix
+}
+
+// GetIsGiftCard returns ListProductsProductsProductConnectionNodesProduct.IsGiftCard, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetIsGiftCard() bool {
+	return v.ProductFields.IsGiftCard
+}
+
+// GetHasOnlyDefaultVariant returns ListProductsProductsProductConnectionNodesProduct.HasOnlyDefaultVariant, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetHasOnlyDefaultVariant() bool {
+	return v.ProductFields.HasOnlyDefaultVariant
+}
+
+// GetMedia returns ListProductsProductsProductConnectionNodesProduct.Media, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetMedia() ProductFieldsMediaMediaConnection {
+	return v.ProductFields.Media
+}
+
+// GetOptions returns ListProductsProductsProductConnectionNodesProduct.Options, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetOptions() []ProductFieldsOptionsProductOption {
+	return v.ProductFields.Options
+}
+
+// GetVariants returns ListProductsProductsProductConnectionNodesProduct.Variants, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetVariants() ProductFieldsVariantsProductVariantConnection {
+	return v.ProductFields.Variants
+}
+
+// GetResourcePublicationsV2 returns ListProductsProductsProductConnectionNodesProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
+func (v *ListProductsProductsProductConnectionNodesProduct) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListProductsProductsProductConnectionNodesProduct
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListProductsProductsProductConnectionNodesProduct = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ProductFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListProductsProductsProductConnectionNodesProduct struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Status ProductStatus `json:"status"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	Vendor string `json:"vendor"`
+
+	ProductType string `json:"productType"`
+
+	Category *ProductFieldsCategoryTaxonomyCategory `json:"category"`
+
+	Tags []string `json:"tags"`
+
+	Seo ProductFieldsSeoSEO `json:"seo"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	IsGiftCard bool `json:"isGiftCard"`
+
+	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
+
+	Media ProductFieldsMediaMediaConnection `json:"media"`
+
+	Options []ProductFieldsOptionsProductOption `json:"options"`
+
+	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *ListProductsProductsProductConnectionNodesProduct) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListProductsProductsProductConnectionNodesProduct) __premarshalJSON() (*__premarshalListProductsProductsProductConnectionNodesProduct, error) {
+	var retval __premarshalListProductsProductsProductConnectionNodesProduct
+
+	retval.Id = v.ProductFields.Id
+	retval.Handle = v.ProductFields.Handle
+	retval.Title = v.ProductFields.Title
+	retval.Status = v.ProductFields.Status
+	retval.DescriptionHtml = v.ProductFields.DescriptionHtml
+	retval.Vendor = v.ProductFields.Vendor
+	retval.ProductType = v.ProductFields.ProductType
+	retval.Category = v.ProductFields.Category
+	retval.Tags = v.ProductFields.Tags
+	retval.Seo = v.ProductFields.Seo
+	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
+	retval.IsGiftCard = v.ProductFields.IsGiftCard
+	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
+	retval.Media = v.ProductFields.Media
+	retval.Options = v.ProductFields.Options
+	retval.Variants = v.ProductFields.Variants
+	retval.ResourcePublicationsV2 = v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// ListProductsProductsProductConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListProductsProductsProductConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListProductsProductsProductConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ListProductsProductsProductConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
+
+// ListProductsResponse is returned by ListProducts on success.
+type ListProductsResponse struct {
+	// Retrieves a list of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// in a store. Products are the items that merchants can sell in their store.
+	//
+	// Use the `products` query when you need to:
+	//
+	// - Build a browsing interface for a product catalog.
+	// - Create product [searching](https://shopify.dev/docs/api/usage/search-syntax), [sorting](https://shopify.dev/docs/api/admin-graphql/latest/queries/products#arguments-sortKey), and [filtering](https://shopify.dev/docs/api/admin-graphql/latest/queries/products#arguments-query) experiences.
+	// - Implement product recommendations.
+	// - Sync product data with external systems.
+	//
+	// The `products` query supports [pagination](https://shopify.dev/docs/api/usage/pagination-graphql)
+	// to handle large product catalogs and [saved searches](https://shopify.dev/docs/api/admin-graphql/latest/queries/products#arguments-savedSearchId)
+	// for frequently used product queries.
+	//
+	// The `products` query returns products with their associated metadata, including:
+	//
+	// - Basic product information (for example, title, description, vendor, and type)
+	// - Product options and product variants, with their prices and inventory
+	// - Media attachments (for example, images and videos)
+	// - SEO metadata
+	// - Product categories and tags
+	// - Product availability and publishing statuses
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Products ListProductsProductsProductConnection `json:"products"`
+}
+
+// GetProducts returns ListProductsResponse.Products, and is useful for accessing the field via an interface.
+func (v *ListProductsResponse) GetProducts() ListProductsProductsProductConnection { return v.Products }
+
 // ListPublicationsPublicationsPublicationConnection includes the requested fields of the GraphQL type PublicationConnection.
 // The GraphQL type's documentation follows.
 //
@@ -8578,6 +19567,130 @@ type ListPublicationsResponse struct {
 func (v *ListPublicationsResponse) GetPublications() ListPublicationsPublicationsPublicationConnection {
 	return v.Publications
 }
+
+// ListSegmentsResponse is returned by ListSegments on success.
+type ListSegmentsResponse struct {
+	// Returns a paginated list of [`Segment`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment) objects for the shop. Segments are dynamic groups of customers that meet specific criteria defined through [ShopifyQL queries](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference). You can filter segments by search query and sort them by creation date or other criteria.
+	//
+	// The query supports standard [pagination](https://shopify.dev/docs/api/usage/pagination-graphql) arguments and returns a [`SegmentConnection`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SegmentConnection) containing segment details including names, creation dates, and the query definitions that determine segment membership.
+	Segments ListSegmentsSegmentsSegmentConnection `json:"segments"`
+}
+
+// GetSegments returns ListSegmentsResponse.Segments, and is useful for accessing the field via an interface.
+func (v *ListSegmentsResponse) GetSegments() ListSegmentsSegmentsSegmentConnection { return v.Segments }
+
+// ListSegmentsSegmentsSegmentConnection includes the requested fields of the GraphQL type SegmentConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Segments.
+type ListSegmentsSegmentsSegmentConnection struct {
+	// A list of nodes that are contained in SegmentEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListSegmentsSegmentsSegmentConnectionNodesSegment `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListSegmentsSegmentsSegmentConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListSegmentsSegmentsSegmentConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListSegmentsSegmentsSegmentConnection) GetNodes() []ListSegmentsSegmentsSegmentConnectionNodesSegment {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListSegmentsSegmentsSegmentConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListSegmentsSegmentsSegmentConnection) GetPageInfo() ListSegmentsSegmentsSegmentConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListSegmentsSegmentsSegmentConnectionNodesSegment includes the requested fields of the GraphQL type Segment.
+// The GraphQL type's documentation follows.
+//
+// A group of [customers](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) that meet specific criteria defined through [ShopifyQL query](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference) conditions. Common use cases for segments include customer analytics, targeted marketing campaigns, and automated discount eligibility.
+//
+// The segment's [`query`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-query) field contains ShopifyQL conditions that determine membership, such as purchase history, location, or engagement patterns. Tracks when the segment was created with [`creationDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-creationDate) and when it was last modified with [`lastEditDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-lastEditDate).
+type ListSegmentsSegmentsSegmentConnectionNodesSegment struct {
+	SegmentFields `json:"-"`
+}
+
+// GetId returns ListSegmentsSegmentsSegmentConnectionNodesSegment.Id, and is useful for accessing the field via an interface.
+func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) GetId() string { return v.SegmentFields.Id }
+
+// GetName returns ListSegmentsSegmentsSegmentConnectionNodesSegment.Name, and is useful for accessing the field via an interface.
+func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) GetName() string {
+	return v.SegmentFields.Name
+}
+
+// GetQuery returns ListSegmentsSegmentsSegmentConnectionNodesSegment.Query, and is useful for accessing the field via an interface.
+func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) GetQuery() string {
+	return v.SegmentFields.Query
+}
+
+func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListSegmentsSegmentsSegmentConnectionNodesSegment
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListSegmentsSegmentsSegmentConnectionNodesSegment = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.SegmentFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListSegmentsSegmentsSegmentConnectionNodesSegment struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Query string `json:"query"`
+}
+
+func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListSegmentsSegmentsSegmentConnectionNodesSegment) __premarshalJSON() (*__premarshalListSegmentsSegmentsSegmentConnectionNodesSegment, error) {
+	var retval __premarshalListSegmentsSegmentsSegmentConnectionNodesSegment
+
+	retval.Id = v.SegmentFields.Id
+	retval.Name = v.SegmentFields.Name
+	retval.Query = v.SegmentFields.Query
+	return &retval, nil
+}
+
+// ListSegmentsSegmentsSegmentConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListSegmentsSegmentsSegmentConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListSegmentsSegmentsSegmentConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListSegmentsSegmentsSegmentConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ListSegmentsSegmentsSegmentConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListSegmentsSegmentsSegmentConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
 
 // ListShopLocalesResponse is returned by ListShopLocales on success.
 type ListShopLocalesResponse struct {
@@ -10297,6 +21410,142 @@ var AllMarketUserErrorCode = []MarketUserErrorCode{
 	MarketUserErrorCodeGlobalEPricingStrategyNotPermitted,
 }
 
+// Every Media type (MediaImage, Video, Model3d, ExternalVideo) is a File, so the GID is a file ID.
+//
+// MediaID is implemented by the following types:
+// MediaIDExternalVideo
+// MediaIDMediaImage
+// MediaIDModel3d
+// MediaIDVideo
+type MediaID interface {
+	implementsGraphQLInterfaceMediaID()
+	// GetId returns the interface-field "id" from its implementation.
+	// The GraphQL interface field's documentation follows.
+	//
+	// A globally-unique ID.
+	GetId() string
+}
+
+func (v *MediaIDExternalVideo) implementsGraphQLInterfaceMediaID() {}
+func (v *MediaIDMediaImage) implementsGraphQLInterfaceMediaID()    {}
+func (v *MediaIDModel3d) implementsGraphQLInterfaceMediaID()       {}
+func (v *MediaIDVideo) implementsGraphQLInterfaceMediaID()         {}
+
+func __unmarshalMediaID(b []byte, v *MediaID) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "ExternalVideo":
+		*v = new(MediaIDExternalVideo)
+		return json.Unmarshal(b, *v)
+	case "MediaImage":
+		*v = new(MediaIDMediaImage)
+		return json.Unmarshal(b, *v)
+	case "Model3d":
+		*v = new(MediaIDModel3d)
+		return json.Unmarshal(b, *v)
+	case "Video":
+		*v = new(MediaIDVideo)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Media.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for MediaID: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalMediaID(v *MediaID) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *MediaIDExternalVideo:
+		typename = "ExternalVideo"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*MediaIDExternalVideo
+		}{typename, v}
+		return json.Marshal(result)
+	case *MediaIDMediaImage:
+		typename = "MediaImage"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*MediaIDMediaImage
+		}{typename, v}
+		return json.Marshal(result)
+	case *MediaIDModel3d:
+		typename = "Model3d"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*MediaIDModel3d
+		}{typename, v}
+		return json.Marshal(result)
+	case *MediaIDVideo:
+		typename = "Video"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*MediaIDVideo
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for MediaID: "%T"`, v)
+	}
+}
+
+// Every Media type (MediaImage, Video, Model3d, ExternalVideo) is a File, so the GID is a file ID.
+type MediaIDExternalVideo struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns MediaIDExternalVideo.Id, and is useful for accessing the field via an interface.
+func (v *MediaIDExternalVideo) GetId() string { return v.Id }
+
+// Every Media type (MediaImage, Video, Model3d, ExternalVideo) is a File, so the GID is a file ID.
+type MediaIDMediaImage struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns MediaIDMediaImage.Id, and is useful for accessing the field via an interface.
+func (v *MediaIDMediaImage) GetId() string { return v.Id }
+
+// Every Media type (MediaImage, Video, Model3d, ExternalVideo) is a File, so the GID is a file ID.
+type MediaIDModel3d struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns MediaIDModel3d.Id, and is useful for accessing the field via an interface.
+func (v *MediaIDModel3d) GetId() string { return v.Id }
+
+// Every Media type (MediaImage, Video, Model3d, ExternalVideo) is a File, so the GID is a file ID.
+type MediaIDVideo struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns MediaIDVideo.Id, and is useful for accessing the field via an interface.
+func (v *MediaIDVideo) GetId() string { return v.Id }
+
 // MenuFields includes the GraphQL fields of Menu requested by the fragment MenuFields.
 // The GraphQL type's documentation follows.
 //
@@ -11705,6 +22954,44 @@ func (v *MetaobjectCapabilityCreateInput) GetOnlineStore() *MetaobjectCapability
 	return v.OnlineStore
 }
 
+// The input fields for metaobject capabilities.
+type MetaobjectCapabilityDataInput struct {
+	// Publishable capability input.
+	Publishable *MetaobjectCapabilityDataPublishableInput `json:"publishable"`
+	// Online Store capability input.
+	OnlineStore *MetaobjectCapabilityDataOnlineStoreInput `json:"onlineStore,omitempty"`
+}
+
+// GetPublishable returns MetaobjectCapabilityDataInput.Publishable, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityDataInput) GetPublishable() *MetaobjectCapabilityDataPublishableInput {
+	return v.Publishable
+}
+
+// GetOnlineStore returns MetaobjectCapabilityDataInput.OnlineStore, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityDataInput) GetOnlineStore() *MetaobjectCapabilityDataOnlineStoreInput {
+	return v.OnlineStore
+}
+
+// The input fields for the Online Store capability to control renderability on the Online Store.
+type MetaobjectCapabilityDataOnlineStoreInput struct {
+	// The theme template used when viewing the metaobject in a store.
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+// GetTemplateSuffix returns MetaobjectCapabilityDataOnlineStoreInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityDataOnlineStoreInput) GetTemplateSuffix() *string {
+	return v.TemplateSuffix
+}
+
+// The input fields for publishable capability to adjust visibility on channels.
+type MetaobjectCapabilityDataPublishableInput struct {
+	// The visibility status of this metaobject across all channels.
+	Status MetaobjectStatus `json:"status"`
+}
+
+// GetStatus returns MetaobjectCapabilityDataPublishableInput.Status, and is useful for accessing the field via an interface.
+func (v *MetaobjectCapabilityDataPublishableInput) GetStatus() MetaobjectStatus { return v.Status }
+
 // The input fields of the Online Store capability.
 type MetaobjectCapabilityDefinitionDataOnlineStoreInput struct {
 	// The URL handle for accessing pages of this metaobject type in the Online Store.
@@ -11822,6 +23109,37 @@ func (v *MetaobjectCapabilityUpdateInput) GetRenderable() *MetaobjectCapabilityR
 func (v *MetaobjectCapabilityUpdateInput) GetOnlineStore() *MetaobjectCapabilityOnlineStoreInput {
 	return v.OnlineStore
 }
+
+// The input fields for creating a metaobject.
+type MetaobjectCreateInput struct {
+	// The type of the metaobject. Must match an existing metaobject definition type.
+	Type string `json:"type"`
+	// A unique handle for the metaobject. This value is auto-generated when omitted.
+	Handle *string `json:"handle,omitempty"`
+	// Values for fields. These are mapped by key to fields of the metaobject definition.
+	Fields []MetaobjectFieldInput `json:"fields,omitempty"`
+	// Capabilities for the metaobject.
+	Capabilities *MetaobjectCapabilityDataInput `json:"capabilities"`
+	// The field values for the metaobject as a JSON object, keyed by field definition key. Cannot be used in conjunction with `fields`.
+	Values *json.RawMessage `json:"values,omitempty"`
+}
+
+// GetType returns MetaobjectCreateInput.Type, and is useful for accessing the field via an interface.
+func (v *MetaobjectCreateInput) GetType() string { return v.Type }
+
+// GetHandle returns MetaobjectCreateInput.Handle, and is useful for accessing the field via an interface.
+func (v *MetaobjectCreateInput) GetHandle() *string { return v.Handle }
+
+// GetFields returns MetaobjectCreateInput.Fields, and is useful for accessing the field via an interface.
+func (v *MetaobjectCreateInput) GetFields() []MetaobjectFieldInput { return v.Fields }
+
+// GetCapabilities returns MetaobjectCreateInput.Capabilities, and is useful for accessing the field via an interface.
+func (v *MetaobjectCreateInput) GetCapabilities() *MetaobjectCapabilityDataInput {
+	return v.Capabilities
+}
+
+// GetValues returns MetaobjectCreateInput.Values, and is useful for accessing the field via an interface.
+func (v *MetaobjectCreateInput) GetValues() *json.RawMessage { return v.Values }
 
 // Metaobject access permissions for the Customer Account API.
 type MetaobjectCustomerAccountAccess string
@@ -12310,6 +23628,116 @@ func (v *MetaobjectFieldDefinitionUpdateInput) GetCapabilities() *MetaobjectFiel
 	return v.Capabilities
 }
 
+// The input fields for a metaobject field value.
+type MetaobjectFieldInput struct {
+	// The key of the field.
+	Key string `json:"key"`
+	// The value of the field.
+	Value string `json:"value"`
+}
+
+// GetKey returns MetaobjectFieldInput.Key, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldInput) GetKey() string { return v.Key }
+
+// GetValue returns MetaobjectFieldInput.Value, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldInput) GetValue() string { return v.Value }
+
+// MetaobjectFields includes the GraphQL fields of Metaobject requested by the fragment MetaobjectFields.
+// The GraphQL type's documentation follows.
+//
+// An instance of custom structured data defined by a [`MetaobjectDefinition`](https://shopify.dev/docs/api/admin-graphql/latest/objects/MetaobjectDefinition). [Metaobjects](https://shopify.dev/docs/apps/build/custom-data#what-are-metaobjects) store reusable data that extends beyond Shopify's standard resources, such as product highlights, size charts, or custom content sections.
+//
+// Each metaobject includes fields that match the field types and validation rules specified in its definition, which also determines the metaobject's capabilities, such as storefront visibility, publishing and translation support. [`Metafields`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metafield) can reference metaobjects to connect custom data with [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) objects, [`Collection`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) objects, and other Shopify resources.
+type MetaobjectFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The preferred display name field value of the metaobject.
+	DisplayName string `json:"displayName"`
+	// When the object was last updated.
+	UpdatedAt string `json:"updatedAt"`
+	// All ordered fields of the metaobject with their definitions and values.
+	Fields []MetaobjectFieldsFieldsMetaobjectField `json:"fields"`
+	// Metaobject capabilities for this Metaobject.
+	Capabilities MetaobjectFieldsCapabilitiesMetaobjectCapabilityData `json:"capabilities"`
+}
+
+// GetId returns MetaobjectFields.Id, and is useful for accessing the field via an interface.
+func (v *MetaobjectFields) GetId() string { return v.Id }
+
+// GetDisplayName returns MetaobjectFields.DisplayName, and is useful for accessing the field via an interface.
+func (v *MetaobjectFields) GetDisplayName() string { return v.DisplayName }
+
+// GetUpdatedAt returns MetaobjectFields.UpdatedAt, and is useful for accessing the field via an interface.
+func (v *MetaobjectFields) GetUpdatedAt() string { return v.UpdatedAt }
+
+// GetFields returns MetaobjectFields.Fields, and is useful for accessing the field via an interface.
+func (v *MetaobjectFields) GetFields() []MetaobjectFieldsFieldsMetaobjectField { return v.Fields }
+
+// GetCapabilities returns MetaobjectFields.Capabilities, and is useful for accessing the field via an interface.
+func (v *MetaobjectFields) GetCapabilities() MetaobjectFieldsCapabilitiesMetaobjectCapabilityData {
+	return v.Capabilities
+}
+
+// MetaobjectFieldsCapabilitiesMetaobjectCapabilityData includes the requested fields of the GraphQL type MetaobjectCapabilityData.
+// The GraphQL type's documentation follows.
+//
+// Provides the capabilities of a metaobject.
+type MetaobjectFieldsCapabilitiesMetaobjectCapabilityData struct {
+	// The publishable capability for this metaobject.
+	Publishable *MetaobjectFieldsCapabilitiesMetaobjectCapabilityDataPublishable `json:"publishable"`
+}
+
+// GetPublishable returns MetaobjectFieldsCapabilitiesMetaobjectCapabilityData.Publishable, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldsCapabilitiesMetaobjectCapabilityData) GetPublishable() *MetaobjectFieldsCapabilitiesMetaobjectCapabilityDataPublishable {
+	return v.Publishable
+}
+
+// MetaobjectFieldsCapabilitiesMetaobjectCapabilityDataPublishable includes the requested fields of the GraphQL type MetaobjectCapabilityDataPublishable.
+// The GraphQL type's documentation follows.
+//
+// The publishable capability for the parent metaobject.
+type MetaobjectFieldsCapabilitiesMetaobjectCapabilityDataPublishable struct {
+	// The visibility status of this metaobject across all channels.
+	Status MetaobjectStatus `json:"status"`
+}
+
+// GetStatus returns MetaobjectFieldsCapabilitiesMetaobjectCapabilityDataPublishable.Status, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldsCapabilitiesMetaobjectCapabilityDataPublishable) GetStatus() MetaobjectStatus {
+	return v.Status
+}
+
+// MetaobjectFieldsFieldsMetaobjectField includes the requested fields of the GraphQL type MetaobjectField.
+// The GraphQL type's documentation follows.
+//
+// Provides a field definition and the data value assigned to it.
+type MetaobjectFieldsFieldsMetaobjectField struct {
+	// The object key of this field.
+	Key string `json:"key"`
+	// The assigned field value, always stored as a string regardless of the field type.
+	Value *string `json:"value"`
+}
+
+// GetKey returns MetaobjectFieldsFieldsMetaobjectField.Key, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldsFieldsMetaobjectField) GetKey() string { return v.Key }
+
+// GetValue returns MetaobjectFieldsFieldsMetaobjectField.Value, and is useful for accessing the field via an interface.
+func (v *MetaobjectFieldsFieldsMetaobjectField) GetValue() *string { return v.Value }
+
+// Defines visibility status for metaobjects.
+type MetaobjectStatus string
+
+const (
+	// The metaobjects is an internal record.
+	MetaobjectStatusDraft MetaobjectStatus = "DRAFT"
+	// The metaobjects is active for public use.
+	MetaobjectStatusActive MetaobjectStatus = "ACTIVE"
+)
+
+var AllMetaobjectStatus = []MetaobjectStatus{
+	MetaobjectStatusDraft,
+	MetaobjectStatusActive,
+}
+
 // Metaobject access permissions for the Storefront API.
 type MetaobjectStorefrontAccess string
 
@@ -12325,6 +23753,117 @@ var AllMetaobjectStorefrontAccess = []MetaobjectStorefrontAccess{
 	MetaobjectStorefrontAccessPublicRead,
 }
 
+// Possible error codes that can be returned by `MetaobjectUserError`.
+type MetaobjectUserErrorCode string
+
+const (
+	// The input value is invalid.
+	MetaobjectUserErrorCodeInvalid MetaobjectUserErrorCode = "INVALID"
+	// The input value isn't included in the list.
+	MetaobjectUserErrorCodeInclusion MetaobjectUserErrorCode = "INCLUSION"
+	// The input value is already taken.
+	MetaobjectUserErrorCodeTaken MetaobjectUserErrorCode = "TAKEN"
+	// The input value is too long.
+	MetaobjectUserErrorCodeTooLong MetaobjectUserErrorCode = "TOO_LONG"
+	// The input value is too short.
+	MetaobjectUserErrorCodeTooShort MetaobjectUserErrorCode = "TOO_SHORT"
+	// The input value needs to be blank.
+	MetaobjectUserErrorCodePresent MetaobjectUserErrorCode = "PRESENT"
+	// The input value is blank.
+	MetaobjectUserErrorCodeBlank MetaobjectUserErrorCode = "BLANK"
+	// The metafield type is invalid.
+	MetaobjectUserErrorCodeInvalidType MetaobjectUserErrorCode = "INVALID_TYPE"
+	// The value is invalid for the metafield type or the definition options.
+	MetaobjectUserErrorCodeInvalidValue MetaobjectUserErrorCode = "INVALID_VALUE"
+	// The value for the metafield definition option was invalid.
+	MetaobjectUserErrorCodeInvalidOption MetaobjectUserErrorCode = "INVALID_OPTION"
+	// Duplicate inputs were provided for this field key.
+	MetaobjectUserErrorCodeDuplicateFieldInput MetaobjectUserErrorCode = "DUPLICATE_FIELD_INPUT"
+	// No metaobject definition found for this type.
+	MetaobjectUserErrorCodeUndefinedObjectType MetaobjectUserErrorCode = "UNDEFINED_OBJECT_TYPE"
+	// No field definition found for this key.
+	MetaobjectUserErrorCodeUndefinedObjectField MetaobjectUserErrorCode = "UNDEFINED_OBJECT_FIELD"
+	// The specified field key is already in use.
+	MetaobjectUserErrorCodeObjectFieldTaken MetaobjectUserErrorCode = "OBJECT_FIELD_TAKEN"
+	// Missing required fields were found for this object.
+	MetaobjectUserErrorCodeObjectFieldRequired MetaobjectUserErrorCode = "OBJECT_FIELD_REQUIRED"
+	// The requested record couldn't be found.
+	MetaobjectUserErrorCodeRecordNotFound MetaobjectUserErrorCode = "RECORD_NOT_FOUND"
+	// An unexpected error occurred.
+	MetaobjectUserErrorCodeInternalError MetaobjectUserErrorCode = "INTERNAL_ERROR"
+	// The maximum number of metaobjects definitions has been exceeded.
+	MetaobjectUserErrorCodeMaxDefinitionsExceeded MetaobjectUserErrorCode = "MAX_DEFINITIONS_EXCEEDED"
+	// The maximum number of metaobjects per shop has been exceeded.
+	MetaobjectUserErrorCodeMaxObjectsExceeded MetaobjectUserErrorCode = "MAX_OBJECTS_EXCEEDED"
+	// The maximum number of input metaobjects has been exceeded.
+	MetaobjectUserErrorCodeInputLimitExceeded MetaobjectUserErrorCode = "INPUT_LIMIT_EXCEEDED"
+	// The targeted object cannot be modified.
+	MetaobjectUserErrorCodeImmutable MetaobjectUserErrorCode = "IMMUTABLE"
+	// Not authorized.
+	MetaobjectUserErrorCodeNotAuthorized MetaobjectUserErrorCode = "NOT_AUTHORIZED"
+	// The provided name is reserved for system use.
+	MetaobjectUserErrorCodeReservedName MetaobjectUserErrorCode = "RESERVED_NAME"
+	// The display name cannot be the same when using the metaobject as a product option.
+	MetaobjectUserErrorCodeDisplayNameConflict MetaobjectUserErrorCode = "DISPLAY_NAME_CONFLICT"
+	// Admin access can only be specified on metaobject definitions that have an app-reserved type.
+	MetaobjectUserErrorCodeAdminAccessInputNotAllowed MetaobjectUserErrorCode = "ADMIN_ACCESS_INPUT_NOT_ALLOWED"
+	// Definition is managed by app configuration and cannot be modified through the API.
+	MetaobjectUserErrorCodeAppConfigManaged MetaobjectUserErrorCode = "APP_CONFIG_MANAGED"
+	// Definition is required by an installed app and cannot be deleted.
+	MetaobjectUserErrorCodeStandardMetaobjectDefinitionDependentOnApp MetaobjectUserErrorCode = "STANDARD_METAOBJECT_DEFINITION_DEPENDENT_ON_APP"
+	// The capability you are using is not enabled.
+	MetaobjectUserErrorCodeCapabilityNotEnabled MetaobjectUserErrorCode = "CAPABILITY_NOT_ENABLED"
+	// The Online Store URL handle is already taken.
+	MetaobjectUserErrorCodeUrlHandleTaken MetaobjectUserErrorCode = "URL_HANDLE_TAKEN"
+	// The Online Store URL handle is invalid.
+	MetaobjectUserErrorCodeUrlHandleInvalid MetaobjectUserErrorCode = "URL_HANDLE_INVALID"
+	// The Online Store URL handle cannot be blank.
+	MetaobjectUserErrorCodeUrlHandleBlank MetaobjectUserErrorCode = "URL_HANDLE_BLANK"
+	// Renderable data input is referencing an invalid field.
+	MetaobjectUserErrorCodeFieldTypeInvalid MetaobjectUserErrorCode = "FIELD_TYPE_INVALID"
+	// The input is missing required keys.
+	MetaobjectUserErrorCodeMissingRequiredKeys MetaobjectUserErrorCode = "MISSING_REQUIRED_KEYS"
+	// The action cannot be completed because associated metaobjects are referenced by another resource.
+	MetaobjectUserErrorCodeReferenceExistsError MetaobjectUserErrorCode = "REFERENCE_EXISTS_ERROR"
+)
+
+var AllMetaobjectUserErrorCode = []MetaobjectUserErrorCode{
+	MetaobjectUserErrorCodeInvalid,
+	MetaobjectUserErrorCodeInclusion,
+	MetaobjectUserErrorCodeTaken,
+	MetaobjectUserErrorCodeTooLong,
+	MetaobjectUserErrorCodeTooShort,
+	MetaobjectUserErrorCodePresent,
+	MetaobjectUserErrorCodeBlank,
+	MetaobjectUserErrorCodeInvalidType,
+	MetaobjectUserErrorCodeInvalidValue,
+	MetaobjectUserErrorCodeInvalidOption,
+	MetaobjectUserErrorCodeDuplicateFieldInput,
+	MetaobjectUserErrorCodeUndefinedObjectType,
+	MetaobjectUserErrorCodeUndefinedObjectField,
+	MetaobjectUserErrorCodeObjectFieldTaken,
+	MetaobjectUserErrorCodeObjectFieldRequired,
+	MetaobjectUserErrorCodeRecordNotFound,
+	MetaobjectUserErrorCodeInternalError,
+	MetaobjectUserErrorCodeMaxDefinitionsExceeded,
+	MetaobjectUserErrorCodeMaxObjectsExceeded,
+	MetaobjectUserErrorCodeInputLimitExceeded,
+	MetaobjectUserErrorCodeImmutable,
+	MetaobjectUserErrorCodeNotAuthorized,
+	MetaobjectUserErrorCodeReservedName,
+	MetaobjectUserErrorCodeDisplayNameConflict,
+	MetaobjectUserErrorCodeAdminAccessInputNotAllowed,
+	MetaobjectUserErrorCodeAppConfigManaged,
+	MetaobjectUserErrorCodeStandardMetaobjectDefinitionDependentOnApp,
+	MetaobjectUserErrorCodeCapabilityNotEnabled,
+	MetaobjectUserErrorCodeUrlHandleTaken,
+	MetaobjectUserErrorCodeUrlHandleInvalid,
+	MetaobjectUserErrorCodeUrlHandleBlank,
+	MetaobjectUserErrorCodeFieldTypeInvalid,
+	MetaobjectUserErrorCodeMissingRequiredKeys,
+	MetaobjectUserErrorCodeReferenceExistsError,
+}
+
 // The input fields for a monetary value with currency.
 type MoneyInput struct {
 	// Decimal money amount.
@@ -12338,6 +23877,189 @@ func (v *MoneyInput) GetAmount() string { return v.Amount }
 
 // GetCurrencyCode returns MoneyInput.CurrencyCode, and is useful for accessing the field via an interface.
 func (v *MoneyInput) GetCurrencyCode() CurrencyCode { return v.CurrencyCode }
+
+// The input fields for creating or updating a product option.
+type OptionSetInput struct {
+	// Specifies the product option to update.
+	Id *string `json:"id,omitempty"`
+	// Name of the option.
+	Name *string `json:"name,omitempty"`
+	// Position of the option.
+	Position *int `json:"position,omitempty"`
+	// Value associated with an option.
+	Values []OptionValueSetInput `json:"values,omitempty"`
+	// Specifies the metafield the option is linked to.
+	LinkedMetafield *LinkedMetafieldCreateInput `json:"linkedMetafield,omitempty"`
+}
+
+// GetId returns OptionSetInput.Id, and is useful for accessing the field via an interface.
+func (v *OptionSetInput) GetId() *string { return v.Id }
+
+// GetName returns OptionSetInput.Name, and is useful for accessing the field via an interface.
+func (v *OptionSetInput) GetName() *string { return v.Name }
+
+// GetPosition returns OptionSetInput.Position, and is useful for accessing the field via an interface.
+func (v *OptionSetInput) GetPosition() *int { return v.Position }
+
+// GetValues returns OptionSetInput.Values, and is useful for accessing the field via an interface.
+func (v *OptionSetInput) GetValues() []OptionValueSetInput { return v.Values }
+
+// GetLinkedMetafield returns OptionSetInput.LinkedMetafield, and is useful for accessing the field via an interface.
+func (v *OptionSetInput) GetLinkedMetafield() *LinkedMetafieldCreateInput { return v.LinkedMetafield }
+
+// The input fields for creating or updating a product option value.
+type OptionValueSetInput struct {
+	// Specifies the product option value.
+	Id *string `json:"id,omitempty"`
+	// Value associated with an option.
+	Name *string `json:"name,omitempty"`
+}
+
+// GetId returns OptionValueSetInput.Id, and is useful for accessing the field via an interface.
+func (v *OptionValueSetInput) GetId() *string { return v.Id }
+
+// GetName returns OptionValueSetInput.Name, and is useful for accessing the field via an interface.
+func (v *OptionValueSetInput) GetName() *string { return v.Name }
+
+// The input fields to create a page.
+type PageCreateInput struct {
+	// A unique, human-friendly string for the page. If no handle is specified, a handle will be generated automatically from the page title.
+	// In themes, the Liquid templating language refers to a page by its handle.
+	Handle *string `json:"handle,omitempty"`
+	// The text content of the page, complete with HTML markup.
+	Body *string `json:"body,omitempty"`
+	// Whether or not the page should be visible. Defaults to `true` if no publish date is specified.
+	IsPublished *bool `json:"isPublished,omitempty"`
+	// The date and time (ISO 8601 format) when the page should become visible.
+	PublishDate *string `json:"publishDate,omitempty"`
+	// The suffix of the template that's used to render the page.
+	// If the value is an empty string or `null`, then the default page template is used.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// The input fields to create or update a metafield.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// The title of the page.
+	Title string `json:"title"`
+}
+
+// GetHandle returns PageCreateInput.Handle, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetHandle() *string { return v.Handle }
+
+// GetBody returns PageCreateInput.Body, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetBody() *string { return v.Body }
+
+// GetIsPublished returns PageCreateInput.IsPublished, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetIsPublished() *bool { return v.IsPublished }
+
+// GetPublishDate returns PageCreateInput.PublishDate, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetPublishDate() *string { return v.PublishDate }
+
+// GetTemplateSuffix returns PageCreateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetMetafields returns PageCreateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetTitle returns PageCreateInput.Title, and is useful for accessing the field via an interface.
+func (v *PageCreateInput) GetTitle() string { return v.Title }
+
+// Possible error codes that can be returned by `PageDeleteUserError`.
+type PageDeleteUserErrorCode string
+
+const (
+	// The record with the ID used as the input value couldn't be found.
+	PageDeleteUserErrorCodeNotFound PageDeleteUserErrorCode = "NOT_FOUND"
+)
+
+var AllPageDeleteUserErrorCode = []PageDeleteUserErrorCode{
+	PageDeleteUserErrorCodeNotFound,
+}
+
+// PageFields includes the GraphQL fields of Page requested by the fragment PageFields.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type PageFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A unique, human-friendly string for the page.
+	// In themes, the Liquid templating language refers to a page by its handle.
+	Handle string `json:"handle"`
+	// Title of the page.
+	Title string `json:"title"`
+	// The text content of the page, complete with HTML markup.
+	Body string `json:"body"`
+	// Whether or not the page is visible.
+	IsPublished bool `json:"isPublished"`
+	// The suffix of the template that's used to render the page.
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+// GetId returns PageFields.Id, and is useful for accessing the field via an interface.
+func (v *PageFields) GetId() string { return v.Id }
+
+// GetHandle returns PageFields.Handle, and is useful for accessing the field via an interface.
+func (v *PageFields) GetHandle() string { return v.Handle }
+
+// GetTitle returns PageFields.Title, and is useful for accessing the field via an interface.
+func (v *PageFields) GetTitle() string { return v.Title }
+
+// GetBody returns PageFields.Body, and is useful for accessing the field via an interface.
+func (v *PageFields) GetBody() string { return v.Body }
+
+// GetIsPublished returns PageFields.IsPublished, and is useful for accessing the field via an interface.
+func (v *PageFields) GetIsPublished() bool { return v.IsPublished }
+
+// GetTemplateSuffix returns PageFields.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *PageFields) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// The input fields to update a page.
+type PageUpdateInput struct {
+	// A unique, human-friendly string for the page. If no handle is specified, a handle will be generated automatically from the page title.
+	// In themes, the Liquid templating language refers to a page by its handle.
+	Handle *string `json:"handle,omitempty"`
+	// The text content of the page, complete with HTML markup.
+	Body *string `json:"body,omitempty"`
+	// Whether or not the page should be visible. Defaults to `true` if no publish date is specified.
+	IsPublished *bool `json:"isPublished,omitempty"`
+	// The date and time (ISO 8601 format) when the page should become visible.
+	PublishDate *string `json:"publishDate,omitempty"`
+	// The suffix of the template that's used to render the page.
+	// If the value is an empty string or `null`, then the default page template is used.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// The input fields to create or update a metafield.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// The title of the page.
+	Title *string `json:"title,omitempty"`
+	// Whether a redirect is required after a new handle has been provided.
+	// If `true`, then the old handle is redirected to the new one automatically.
+	RedirectNewHandle *bool `json:"redirectNewHandle,omitempty"`
+}
+
+// GetHandle returns PageUpdateInput.Handle, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetHandle() *string { return v.Handle }
+
+// GetBody returns PageUpdateInput.Body, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetBody() *string { return v.Body }
+
+// GetIsPublished returns PageUpdateInput.IsPublished, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetIsPublished() *bool { return v.IsPublished }
+
+// GetPublishDate returns PageUpdateInput.PublishDate, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetPublishDate() *string { return v.PublishDate }
+
+// GetTemplateSuffix returns PageUpdateInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetMetafields returns PageUpdateInput.Metafields, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetTitle returns PageUpdateInput.Title, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetTitle() *string { return v.Title }
+
+// GetRedirectNewHandle returns PageUpdateInput.RedirectNewHandle, and is useful for accessing the field via an interface.
+func (v *PageUpdateInput) GetRedirectNewHandle() *bool { return v.RedirectNewHandle }
 
 // A country code from the `ISO 3166` standard. e.g. `CA` for Canada.
 type PrivacyCountryCode string
@@ -13143,6 +24865,2225 @@ var AllPrivacyFeaturesEnum = []PrivacyFeaturesEnum{
 	PrivacyFeaturesEnumPrivacyPolicy,
 }
 
+// The input fields to claim ownership for Product features such as Bundles.
+type ProductClaimOwnershipInput struct {
+	// Claiming ownership of bundles lets the app render a custom UI for the bundles' card on the
+	// products details page in the Shopify admin.
+	//
+	// Bundle ownership can only be claimed when creating the product. If you create `ProductVariantComponents`
+	// in any of its product variants, then the bundle ownership is automatically assigned to the app making the call.
+	//
+	// [Learn more](https://shopify.dev/docs/apps/selling-strategies/bundles/product-config).
+	Bundles *bool `json:"bundles"`
+}
+
+// GetBundles returns ProductClaimOwnershipInput.Bundles, and is useful for accessing the field via an interface.
+func (v *ProductClaimOwnershipInput) GetBundles() *bool { return v.Bundles }
+
+// Controls which product discounts can apply together on the same cart line. By
+// default, only one product discount applies per line. Available only on a Shopify
+// Plus plan.
+//
+// For discounts to apply together, they must match tags in both directions. Each
+// discount has two tag sets: the tags that identify the discount, and the tags that
+// it agrees to apply with. Use the `tags` field on the discount input to set the
+// discount's own tags. Use this input object to set the tags that the discount can
+// apply with. Two discounts apply together only if each one allows at least one tag
+// that the other is tagged with. Any number of product discounts can apply to the
+// same line if this two-way match holds for every pair in the group.
+//
+// Example: Discount A is tagged with `LOYALTY` and allows `SEASONAL`, and Discount B
+// is tagged with `SEASONAL` and allows `LOYALTY`. They apply together. To add a
+// third discount, it must meet the same mutual-match rule with both A and B.
+//
+// Buy X Get Y discounts stack only on the customer-gets products (GY), not the
+// customer-buys products (BX). See
+// [Limitations for discount combinations](https://help.shopify.com/manual/discounts/discount-combinations#considerations)
+// for details.
+type ProductDiscountsWithTagsOnSameCartLineInput struct {
+	// The tags to add to this discount's combination list. This field doesn't add
+	// tags to the discount itself. To change the tags on the discount, use the
+	// discount input's `tags` field or the
+	// [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// and [`tagsRemove`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsremove)
+	// mutations.
+	//
+	// If another product discount has a matching tag and also allows at least one
+	// tag on this discount, then both discounts can apply to the same cart line.
+	Add []string `json:"add"`
+	// The tags to remove from this discount's combination list. This field doesn't
+	// remove tags from the discount itself. To change the tags on the discount, use
+	// the discount input's `tags` field or the
+	// [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// and [`tagsRemove`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsremove)
+	// mutations.
+	//
+	// If this discount and another product discount still match tags in both
+	// directions after the removal, then both discounts can still apply to the same
+	// cart line.
+	Remove []string `json:"remove"`
+}
+
+// GetAdd returns ProductDiscountsWithTagsOnSameCartLineInput.Add, and is useful for accessing the field via an interface.
+func (v *ProductDiscountsWithTagsOnSameCartLineInput) GetAdd() []string { return v.Add }
+
+// GetRemove returns ProductDiscountsWithTagsOnSameCartLineInput.Remove, and is useful for accessing the field via an interface.
+func (v *ProductDiscountsWithTagsOnSameCartLineInput) GetRemove() []string { return v.Remove }
+
+// ProductFields includes the GraphQL fields of Product requested by the fragment ProductFields.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type ProductFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A unique, human-readable string of the product's title. A handle can contain letters, hyphens (`-`), and numbers, but no spaces.
+	// The handle is used in the online store URL for the product.
+	Handle string `json:"handle"`
+	// The name for the product that displays to customers. The title is used to construct the product's handle.
+	// For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
+	Title string `json:"title"`
+	// The [product status](https://help.shopify.com/manual/products/details/product-details-page#product-status),
+	// which controls visibility across all sales channels.
+	Status ProductStatus `json:"status"`
+	// The description of the product, with
+	// HTML tags. For example, the description might include
+	// bold `<strong></strong>` and italic `<i></i>` text.
+	DescriptionHtml string `json:"descriptionHtml"`
+	// The name of the product's vendor.
+	Vendor string `json:"vendor"`
+	// The [product type](https://help.shopify.com/manual/products/details/product-type)
+	// that merchants define.
+	ProductType string `json:"productType"`
+	// The category of a product
+	// from [Shopify's Standard Product Taxonomy](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17).
+	Category *ProductFieldsCategoryTaxonomyCategory `json:"category"`
+	// A comma-separated list of searchable keywords that are
+	// associated with the product. For example, a merchant might apply the `sports`
+	// and `summer` tags to products that are associated with sportwear for summer.
+	//
+	// Updating `tags` overwrites
+	// any existing tags that were previously added to the product. To add new tags without overwriting
+	// existing tags, use the [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// mutation.
+	Tags []string `json:"tags"`
+	// The [SEO title and description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
+	// that are associated with a product.
+	Seo ProductFieldsSeoSEO `json:"seo"`
+	// The [theme template](https://shopify.dev/docs/storefronts/themes/architecture/templates) that's used when customers view the product in a store.
+	TemplateSuffix *string `json:"templateSuffix"`
+	// Whether the product is a gift card.
+	IsGiftCard bool `json:"isGiftCard"`
+	// Whether the product has only a single variant with the default option and value.
+	HasOnlyDefaultVariant            bool `json:"hasOnlyDefaultVariant"`
+	PublicationsOfPublishableProduct `json:"-"`
+	// The [media](https://shopify.dev/docs/apps/build/online-store/product-media) associated with the product. Valid media are images, 3D models, videos.
+	Media ProductFieldsMediaMediaConnection `json:"media"`
+	// A list of product options. The limit is defined by the
+	// [shop's resource limits for product options](https://shopify.dev/docs/api/admin-graphql/latest/objects/Shop#field-resourcelimits) (`Shop.resourceLimits.maxProductOptions`).
+	Options []ProductFieldsOptionsProductOption `json:"options"`
+	// A list of [variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) associated with the product.
+	// If querying a single product at the root, you can fetch up to 2048 variants.
+	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
+}
+
+// GetId returns ProductFields.Id, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetId() string { return v.Id }
+
+// GetHandle returns ProductFields.Handle, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetHandle() string { return v.Handle }
+
+// GetTitle returns ProductFields.Title, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetTitle() string { return v.Title }
+
+// GetStatus returns ProductFields.Status, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetStatus() ProductStatus { return v.Status }
+
+// GetDescriptionHtml returns ProductFields.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetDescriptionHtml() string { return v.DescriptionHtml }
+
+// GetVendor returns ProductFields.Vendor, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetVendor() string { return v.Vendor }
+
+// GetProductType returns ProductFields.ProductType, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetProductType() string { return v.ProductType }
+
+// GetCategory returns ProductFields.Category, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetCategory() *ProductFieldsCategoryTaxonomyCategory { return v.Category }
+
+// GetTags returns ProductFields.Tags, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetTags() []string { return v.Tags }
+
+// GetSeo returns ProductFields.Seo, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetSeo() ProductFieldsSeoSEO { return v.Seo }
+
+// GetTemplateSuffix returns ProductFields.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetIsGiftCard returns ProductFields.IsGiftCard, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetIsGiftCard() bool { return v.IsGiftCard }
+
+// GetHasOnlyDefaultVariant returns ProductFields.HasOnlyDefaultVariant, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetHasOnlyDefaultVariant() bool { return v.HasOnlyDefaultVariant }
+
+// GetMedia returns ProductFields.Media, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetMedia() ProductFieldsMediaMediaConnection { return v.Media }
+
+// GetOptions returns ProductFields.Options, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetOptions() []ProductFieldsOptionsProductOption { return v.Options }
+
+// GetVariants returns ProductFields.Variants, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetVariants() ProductFieldsVariantsProductVariantConnection {
+	return v.Variants
+}
+
+// GetResourcePublicationsV2 returns ProductFields.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
+func (v *ProductFields) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ProductFields
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ProductFields = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableProduct)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalProductFields struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Status ProductStatus `json:"status"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	Vendor string `json:"vendor"`
+
+	ProductType string `json:"productType"`
+
+	Category *ProductFieldsCategoryTaxonomyCategory `json:"category"`
+
+	Tags []string `json:"tags"`
+
+	Seo ProductFieldsSeoSEO `json:"seo"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	IsGiftCard bool `json:"isGiftCard"`
+
+	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
+
+	Media ProductFieldsMediaMediaConnection `json:"media"`
+
+	Options []ProductFieldsOptionsProductOption `json:"options"`
+
+	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *ProductFields) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ProductFields) __premarshalJSON() (*__premarshalProductFields, error) {
+	var retval __premarshalProductFields
+
+	retval.Id = v.Id
+	retval.Handle = v.Handle
+	retval.Title = v.Title
+	retval.Status = v.Status
+	retval.DescriptionHtml = v.DescriptionHtml
+	retval.Vendor = v.Vendor
+	retval.ProductType = v.ProductType
+	retval.Category = v.Category
+	retval.Tags = v.Tags
+	retval.Seo = v.Seo
+	retval.TemplateSuffix = v.TemplateSuffix
+	retval.IsGiftCard = v.IsGiftCard
+	retval.HasOnlyDefaultVariant = v.HasOnlyDefaultVariant
+	retval.Media = v.Media
+	retval.Options = v.Options
+	retval.Variants = v.Variants
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableProduct.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// ProductFieldsCategoryTaxonomyCategory includes the requested fields of the GraphQL type TaxonomyCategory.
+// The GraphQL type's documentation follows.
+//
+// A product category within Shopify's [standardized product taxonomy](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17). Provides hierarchical organization through parent-child relationships, with each category tracking its ancestors, children, and level in the taxonomy tree.
+//
+// Categories include attributes specific to their product type and navigation properties like whether they're root, leaf, or archived categories. The taxonomy enables consistent product classification across Shopify and integrated marketplaces.
+type ProductFieldsCategoryTaxonomyCategory struct {
+	// The globally-unique ID of the TaxonomyCategory.
+	Id string `json:"id"`
+}
+
+// GetId returns ProductFieldsCategoryTaxonomyCategory.Id, and is useful for accessing the field via an interface.
+func (v *ProductFieldsCategoryTaxonomyCategory) GetId() string { return v.Id }
+
+// ProductFieldsMediaMediaConnection includes the requested fields of the GraphQL type MediaConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Media.
+type ProductFieldsMediaMediaConnection struct {
+	// A list of nodes that are contained in MediaEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []MediaID `json:"-"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ProductFieldsMediaMediaConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ProductFieldsMediaMediaConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ProductFieldsMediaMediaConnection) GetNodes() []MediaID { return v.Nodes }
+
+// GetPageInfo returns ProductFieldsMediaMediaConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ProductFieldsMediaMediaConnection) GetPageInfo() ProductFieldsMediaMediaConnectionPageInfo {
+	return v.PageInfo
+}
+
+func (v *ProductFieldsMediaMediaConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ProductFieldsMediaMediaConnection
+		Nodes []json.RawMessage `json:"nodes"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ProductFieldsMediaMediaConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Nodes
+		src := firstPass.Nodes
+		*dst = make(
+			[]MediaID,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			if len(src) != 0 && string(src) != "null" {
+				err = __unmarshalMediaID(
+					src, dst)
+				if err != nil {
+					return fmt.Errorf(
+						"unable to unmarshal ProductFieldsMediaMediaConnection.Nodes: %w", err)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalProductFieldsMediaMediaConnection struct {
+	Nodes []json.RawMessage `json:"nodes"`
+
+	PageInfo ProductFieldsMediaMediaConnectionPageInfo `json:"pageInfo"`
+}
+
+func (v *ProductFieldsMediaMediaConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ProductFieldsMediaMediaConnection) __premarshalJSON() (*__premarshalProductFieldsMediaMediaConnection, error) {
+	var retval __premarshalProductFieldsMediaMediaConnection
+
+	{
+
+		dst := &retval.Nodes
+		src := v.Nodes
+		*dst = make(
+			[]json.RawMessage,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			var err error
+			*dst, err = __marshalMediaID(
+				&src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal ProductFieldsMediaMediaConnection.Nodes: %w", err)
+			}
+		}
+	}
+	retval.PageInfo = v.PageInfo
+	return &retval, nil
+}
+
+// ProductFieldsMediaMediaConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ProductFieldsMediaMediaConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ProductFieldsMediaMediaConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ProductFieldsMediaMediaConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ProductFieldsMediaMediaConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ProductFieldsMediaMediaConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
+
+// ProductFieldsOptionsProductOption includes the requested fields of the GraphQL type ProductOption.
+// The GraphQL type's documentation follows.
+//
+// A product attribute that customers can choose from, such as "Size", "Color", or "Material". [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) objects use options to define the different variations available for purchase. Each option has a name and a set of possible values that combine to create [`ProductVariant`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) objects.
+//
+// The option includes its display position, associated values, and optional [`LinkedMetafield`](https://shopify.dev/docs/api/admin-graphql/latest/objects/LinkedMetafield) for structured data. Options support translations for international selling and track which [`ProductOptionValue`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOptionValue) objects that variants actively use versus unused values that exist without associated variants.
+type ProductFieldsOptionsProductOption struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The product option’s name.
+	Name string `json:"name"`
+	// The metafield identifier linked to this option.
+	LinkedMetafield *ProductFieldsOptionsProductOptionLinkedMetafield `json:"linkedMetafield"`
+	// Similar to values, option_values returns all the corresponding option value objects to the product option, including values not assigned to any variants.
+	OptionValues []ProductFieldsOptionsProductOptionOptionValuesProductOptionValue `json:"optionValues"`
+}
+
+// GetId returns ProductFieldsOptionsProductOption.Id, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOption) GetId() string { return v.Id }
+
+// GetName returns ProductFieldsOptionsProductOption.Name, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOption) GetName() string { return v.Name }
+
+// GetLinkedMetafield returns ProductFieldsOptionsProductOption.LinkedMetafield, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOption) GetLinkedMetafield() *ProductFieldsOptionsProductOptionLinkedMetafield {
+	return v.LinkedMetafield
+}
+
+// GetOptionValues returns ProductFieldsOptionsProductOption.OptionValues, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOption) GetOptionValues() []ProductFieldsOptionsProductOptionOptionValuesProductOptionValue {
+	return v.OptionValues
+}
+
+// ProductFieldsOptionsProductOptionLinkedMetafield includes the requested fields of the GraphQL type LinkedMetafield.
+// The GraphQL type's documentation follows.
+//
+// The identifier for the metafield linked to this option.
+//
+// This API is currently in early access. See [Metafield-linked product options](https://shopify.dev/docs/api/admin/migrate/new-product-model/metafield-linked) for more details.
+type ProductFieldsOptionsProductOptionLinkedMetafield struct {
+	// Namespace of the metafield the option is linked to.
+	Namespace *string `json:"namespace"`
+	// Key of the metafield the option is linked to.
+	Key *string `json:"key"`
+}
+
+// GetNamespace returns ProductFieldsOptionsProductOptionLinkedMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOptionLinkedMetafield) GetNamespace() *string { return v.Namespace }
+
+// GetKey returns ProductFieldsOptionsProductOptionLinkedMetafield.Key, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOptionLinkedMetafield) GetKey() *string { return v.Key }
+
+// ProductFieldsOptionsProductOptionOptionValuesProductOptionValue includes the requested fields of the GraphQL type ProductOptionValue.
+// The GraphQL type's documentation follows.
+//
+// A specific value for a [`ProductOption`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption), such as "Red" or "Blue" for a "Color" option. Each value can be assigned to [`ProductVariant`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) objects to create different versions of a [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product).
+//
+// The value tracks whether any variants currently use it through the [`hasVariants`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOptionValue#field-hasVariants) field. Values can include visual representations through swatches that display colors or images. When linked to a [`Metafield`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metafield), the [`linkedMetafieldValue`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOptionValue#field-linkedMetafieldValue) provides additional structured data for the option value.
+type ProductFieldsOptionsProductOptionOptionValuesProductOptionValue struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The name of the product option value.
+	Name string `json:"name"`
+}
+
+// GetId returns ProductFieldsOptionsProductOptionOptionValuesProductOptionValue.Id, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOptionOptionValuesProductOptionValue) GetId() string { return v.Id }
+
+// GetName returns ProductFieldsOptionsProductOptionOptionValuesProductOptionValue.Name, and is useful for accessing the field via an interface.
+func (v *ProductFieldsOptionsProductOptionOptionValuesProductOptionValue) GetName() string {
+	return v.Name
+}
+
+// ProductFieldsSeoSEO includes the requested fields of the GraphQL type SEO.
+// The GraphQL type's documentation follows.
+//
+// SEO information.
+type ProductFieldsSeoSEO struct {
+	// SEO Title.
+	Title *string `json:"title"`
+	// SEO Description.
+	Description *string `json:"description"`
+}
+
+// GetTitle returns ProductFieldsSeoSEO.Title, and is useful for accessing the field via an interface.
+func (v *ProductFieldsSeoSEO) GetTitle() *string { return v.Title }
+
+// GetDescription returns ProductFieldsSeoSEO.Description, and is useful for accessing the field via an interface.
+func (v *ProductFieldsSeoSEO) GetDescription() *string { return v.Description }
+
+// ProductFieldsVariantsProductVariantConnection includes the requested fields of the GraphQL type ProductVariantConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ProductVariants.
+type ProductFieldsVariantsProductVariantConnection struct {
+	// A list of nodes that are contained in ProductVariantEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ProductFieldsVariantsProductVariantConnectionNodesProductVariant `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ProductFieldsVariantsProductVariantConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ProductFieldsVariantsProductVariantConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnection) GetNodes() []ProductFieldsVariantsProductVariantConnectionNodesProductVariant {
+	return v.Nodes
+}
+
+// GetPageInfo returns ProductFieldsVariantsProductVariantConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnection) GetPageInfo() ProductFieldsVariantsProductVariantConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ProductFieldsVariantsProductVariantConnectionNodesProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type ProductFieldsVariantsProductVariantConnectionNodesProductVariant struct {
+	VariantFields `json:"-"`
+}
+
+// GetId returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.Id, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetId() string {
+	return v.VariantFields.Id
+}
+
+// GetPrice returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.Price, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetPrice() string {
+	return v.VariantFields.Price
+}
+
+// GetCompareAtPrice returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.CompareAtPrice, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetCompareAtPrice() *string {
+	return v.VariantFields.CompareAtPrice
+}
+
+// GetSku returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.Sku, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetSku() *string {
+	return v.VariantFields.Sku
+}
+
+// GetBarcodes returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.Barcodes, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetBarcodes() VariantFieldsBarcodesProductVariantBarcodeConnection {
+	return v.VariantFields.Barcodes
+}
+
+// GetInventoryPolicy returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.InventoryPolicy, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetInventoryPolicy() ProductVariantInventoryPolicy {
+	return v.VariantFields.InventoryPolicy
+}
+
+// GetTaxable returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.Taxable, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetTaxable() bool {
+	return v.VariantFields.Taxable
+}
+
+// GetSelectedOptions returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.SelectedOptions, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetSelectedOptions() []VariantFieldsSelectedOptionsSelectedOption {
+	return v.VariantFields.SelectedOptions
+}
+
+// GetInventoryItem returns ProductFieldsVariantsProductVariantConnectionNodesProductVariant.InventoryItem, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) GetInventoryItem() VariantFieldsInventoryItem {
+	return v.VariantFields.InventoryItem
+}
+
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ProductFieldsVariantsProductVariantConnectionNodesProductVariant
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ProductFieldsVariantsProductVariantConnectionNodesProductVariant = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.VariantFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalProductFieldsVariantsProductVariantConnectionNodesProductVariant struct {
+	Id string `json:"id"`
+
+	Price string `json:"price"`
+
+	CompareAtPrice *string `json:"compareAtPrice"`
+
+	Sku *string `json:"sku"`
+
+	Barcodes VariantFieldsBarcodesProductVariantBarcodeConnection `json:"barcodes"`
+
+	InventoryPolicy ProductVariantInventoryPolicy `json:"inventoryPolicy"`
+
+	Taxable bool `json:"taxable"`
+
+	SelectedOptions []VariantFieldsSelectedOptionsSelectedOption `json:"selectedOptions"`
+
+	InventoryItem VariantFieldsInventoryItem `json:"inventoryItem"`
+}
+
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ProductFieldsVariantsProductVariantConnectionNodesProductVariant) __premarshalJSON() (*__premarshalProductFieldsVariantsProductVariantConnectionNodesProductVariant, error) {
+	var retval __premarshalProductFieldsVariantsProductVariantConnectionNodesProductVariant
+
+	retval.Id = v.VariantFields.Id
+	retval.Price = v.VariantFields.Price
+	retval.CompareAtPrice = v.VariantFields.CompareAtPrice
+	retval.Sku = v.VariantFields.Sku
+	retval.Barcodes = v.VariantFields.Barcodes
+	retval.InventoryPolicy = v.VariantFields.InventoryPolicy
+	retval.Taxable = v.VariantFields.Taxable
+	retval.SelectedOptions = v.VariantFields.SelectedOptions
+	retval.InventoryItem = v.VariantFields.InventoryItem
+	return &retval, nil
+}
+
+// ProductFieldsVariantsProductVariantConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ProductFieldsVariantsProductVariantConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ProductFieldsVariantsProductVariantConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ProductFieldsVariantsProductVariantConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ProductFieldsVariantsProductVariantConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// The input fields required to identify a resource.
+type ProductSetIdentifiers struct {
+	// ID of product to update.
+	Id *string `json:"id,omitempty"`
+	// Handle of product to upsert.
+	Handle *string `json:"handle,omitempty"`
+	// Custom ID of product to upsert.
+	CustomId *UniqueMetafieldValueInput `json:"customId,omitempty"`
+}
+
+// GetId returns ProductSetIdentifiers.Id, and is useful for accessing the field via an interface.
+func (v *ProductSetIdentifiers) GetId() *string { return v.Id }
+
+// GetHandle returns ProductSetIdentifiers.Handle, and is useful for accessing the field via an interface.
+func (v *ProductSetIdentifiers) GetHandle() *string { return v.Handle }
+
+// GetCustomId returns ProductSetIdentifiers.CustomId, and is useful for accessing the field via an interface.
+func (v *ProductSetIdentifiers) GetCustomId() *UniqueMetafieldValueInput { return v.CustomId }
+
+// The input fields required to create or update a product via ProductSet mutation.
+type ProductSetInput struct {
+	// The description of the product, with HTML tags.
+	// For example, the description might include bold `<strong></strong>` and italic `<i></i>` text.
+	DescriptionHtml *string `json:"descriptionHtml,omitempty"`
+	// A unique, human-readable string that's used to identify the product in URLs. A handle can contain letters, hyphens (`-`), and numbers, but no spaces.
+	// If no handle is explicitly provided, then the title is used to construct the product's handle.
+	// For example, if a product is titled "Black Sunglasses" and no handle is provided, then the handle `black-sunglasses` is generated (unless that handle
+	// is already taken, in which case a suffix is added to make the handle unique).
+	Handle *string `json:"handle,omitempty"`
+	// The [SEO title and description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
+	// that are associated with a product.
+	Seo *SEOInput `json:"seo,omitempty"`
+	// The [product type](https://help.shopify.com/manual/products/details/product-type)
+	// that merchants define.
+	ProductType *string `json:"productType,omitempty"`
+	// A list of searchable keywords that are
+	// associated with the product. For example, a merchant might apply the `sports`
+	// and `summer` tags to products that are associated with sportwear for summer.
+	//
+	// Updating `tags` overwrites any existing tags that were previously added to the product.
+	// To add new tags without overwriting existing tags, use the
+	// [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// mutation.
+	Tags json.RawMessage `json:"tags,omitempty"`
+	// The [theme template](https://shopify.dev/docs/storefronts/themes/architecture/templates) that's used when customers view a product in a store.
+	TemplateSuffix *string `json:"templateSuffix,omitempty"`
+	// The [theme template](https://shopify.dev/docs/storefronts/themes/architecture/templates) that's used when customers view a gift card in a store.
+	GiftCardTemplateSuffix *string `json:"giftCardTemplateSuffix,omitempty"`
+	// The name for the product that displays to customers. If no handle is explicitly provided, then the title is used to construct the product's handle.
+	// For example, if a product is titled "Black Sunglasses" and no handle is provided, then the handle `black-sunglasses` is generated.
+	Title *string `json:"title,omitempty"`
+	// The name of the product's vendor.
+	Vendor *string `json:"vendor,omitempty"`
+	// The ID of the [category](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17)
+	// that's associated with the product.
+	Category *string `json:"category,omitempty"`
+	// Whether the product is a gift card.
+	GiftCard *bool `json:"giftCard,omitempty"`
+	// Whether a redirect is required after a new handle has been provided.
+	// If `true`, then the old handle is redirected to the new one automatically.
+	RedirectNewHandle *bool `json:"redirectNewHandle,omitempty"`
+	// The status of the product.
+	Status *ProductStatus `json:"status,omitempty"`
+	// The IDs of collections that this product will be a member of.
+	Collections []string `json:"collections,omitempty"`
+	// The metafields to associate with this product.
+	//
+	// Complexity cost: 0.4 per metafield.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// The files to associate with the product.
+	//
+	// Complexity cost: 1.9 per file.
+	Files json.RawMessage `json:"files,omitempty"`
+	// List of custom product options and option values (maximum of 3 per product).
+	ProductOptions []OptionSetInput `json:"productOptions,omitempty"`
+	// A list of variants associated with the product.
+	//
+	// Complexity cost: 0.2 per variant.
+	Variants []ProductVariantSetInput `json:"variants,omitempty"`
+	// Whether the product can only be purchased with a selling plan (subscription). Products that are sold exclusively on subscription can only be created on online stores. If set to `true` on an already existing product, then the product will be marked unavailable on channels that don't support subscriptions.
+	RequiresSellingPlan *bool `json:"requiresSellingPlan,omitempty"`
+	// The input field to enable an app to provide additional product features.
+	// For example, you can specify
+	// [`bundles: true`](https://shopify.dev/docs/api/admin-graphql/latest/input-objects/ProductClaimOwnershipInput#field-bundles)
+	// in the `claimOwnership` field to let an app add a
+	// [product configuration extension](https://shopify.dev/docs/apps/build/product-merchandising/bundles/product-configuration-extension/add-merchant-config-ui).
+	ClaimOwnership *ProductClaimOwnershipInput `json:"claimOwnership,omitempty"`
+	// The role of the product in a product grouping. It can only be set during creation.
+	CombinedListingRole *CombinedListingsRole `json:"combinedListingRole,omitempty"`
+}
+
+// GetDescriptionHtml returns ProductSetInput.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetDescriptionHtml() *string { return v.DescriptionHtml }
+
+// GetHandle returns ProductSetInput.Handle, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetHandle() *string { return v.Handle }
+
+// GetSeo returns ProductSetInput.Seo, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetSeo() *SEOInput { return v.Seo }
+
+// GetProductType returns ProductSetInput.ProductType, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetProductType() *string { return v.ProductType }
+
+// GetTags returns ProductSetInput.Tags, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetTags() json.RawMessage { return v.Tags }
+
+// GetTemplateSuffix returns ProductSetInput.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetTemplateSuffix() *string { return v.TemplateSuffix }
+
+// GetGiftCardTemplateSuffix returns ProductSetInput.GiftCardTemplateSuffix, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetGiftCardTemplateSuffix() *string { return v.GiftCardTemplateSuffix }
+
+// GetTitle returns ProductSetInput.Title, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetTitle() *string { return v.Title }
+
+// GetVendor returns ProductSetInput.Vendor, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetVendor() *string { return v.Vendor }
+
+// GetCategory returns ProductSetInput.Category, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetCategory() *string { return v.Category }
+
+// GetGiftCard returns ProductSetInput.GiftCard, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetGiftCard() *bool { return v.GiftCard }
+
+// GetRedirectNewHandle returns ProductSetInput.RedirectNewHandle, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetRedirectNewHandle() *bool { return v.RedirectNewHandle }
+
+// GetStatus returns ProductSetInput.Status, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetStatus() *ProductStatus { return v.Status }
+
+// GetCollections returns ProductSetInput.Collections, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetCollections() []string { return v.Collections }
+
+// GetMetafields returns ProductSetInput.Metafields, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetFiles returns ProductSetInput.Files, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetFiles() json.RawMessage { return v.Files }
+
+// GetProductOptions returns ProductSetInput.ProductOptions, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetProductOptions() []OptionSetInput { return v.ProductOptions }
+
+// GetVariants returns ProductSetInput.Variants, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetVariants() []ProductVariantSetInput { return v.Variants }
+
+// GetRequiresSellingPlan returns ProductSetInput.RequiresSellingPlan, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetRequiresSellingPlan() *bool { return v.RequiresSellingPlan }
+
+// GetClaimOwnership returns ProductSetInput.ClaimOwnership, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetClaimOwnership() *ProductClaimOwnershipInput { return v.ClaimOwnership }
+
+// GetCombinedListingRole returns ProductSetInput.CombinedListingRole, and is useful for accessing the field via an interface.
+func (v *ProductSetInput) GetCombinedListingRole() *CombinedListingsRole {
+	return v.CombinedListingRole
+}
+
+// The input fields required to set inventory quantities using `productSet` mutation.
+type ProductSetInventoryInput struct {
+	// The ID of the location of the inventory quantity being set.
+	LocationId string `json:"locationId"`
+	// The name of the inventory quantity being set. Must be one of `available` or `on_hand`.
+	Name string `json:"name"`
+	// The values to which each quantities will be set.
+	Quantity int `json:"quantity"`
+}
+
+// GetLocationId returns ProductSetInventoryInput.LocationId, and is useful for accessing the field via an interface.
+func (v *ProductSetInventoryInput) GetLocationId() string { return v.LocationId }
+
+// GetName returns ProductSetInventoryInput.Name, and is useful for accessing the field via an interface.
+func (v *ProductSetInventoryInput) GetName() string { return v.Name }
+
+// GetQuantity returns ProductSetInventoryInput.Quantity, and is useful for accessing the field via an interface.
+func (v *ProductSetInventoryInput) GetQuantity() int { return v.Quantity }
+
+// Possible error codes that can be returned by `ProductSetUserError`.
+type ProductSetUserErrorCode string
+
+const (
+	// The id field is not allowed if identifier is provided.
+	ProductSetUserErrorCodeIdNotAllowed ProductSetUserErrorCode = "ID_NOT_ALLOWED"
+	// The input field corresponding to the identifier is required.
+	ProductSetUserErrorCodeMissingFieldRequired ProductSetUserErrorCode = "MISSING_FIELD_REQUIRED"
+	// The identifier value does not match the value of the corresponding field in the input.
+	ProductSetUserErrorCodeInputMismatch ProductSetUserErrorCode = "INPUT_MISMATCH"
+	// Resource matching the identifier was not found.
+	ProductSetUserErrorCodeNotFound ProductSetUserErrorCode = "NOT_FOUND"
+	// The input argument `metafields` (if present) must contain the `customId` value.
+	ProductSetUserErrorCodeMetafieldMismatch ProductSetUserErrorCode = "METAFIELD_MISMATCH"
+	// Something went wrong, please try again.
+	ProductSetUserErrorCodeGenericError ProductSetUserErrorCode = "GENERIC_ERROR"
+	// Metafield is not valid.
+	ProductSetUserErrorCodeInvalidMetafield ProductSetUserErrorCode = "INVALID_METAFIELD"
+	// Product variant is not valid.
+	ProductSetUserErrorCodeInvalidVariant ProductSetUserErrorCode = "INVALID_VARIANT"
+	// Product does not exist.
+	ProductSetUserErrorCodeProductDoesNotExist ProductSetUserErrorCode = "PRODUCT_DOES_NOT_EXIST"
+	// Product is suspended.
+	ProductSetUserErrorCodeProductSuspended ProductSetUserErrorCode = "PRODUCT_SUSPENDED"
+	// Product variant does not exist.
+	ProductSetUserErrorCodeProductVariantDoesNotExist ProductSetUserErrorCode = "PRODUCT_VARIANT_DOES_NOT_EXIST"
+	// Option does not exist.
+	ProductSetUserErrorCodeOptionDoesNotExist ProductSetUserErrorCode = "OPTION_DOES_NOT_EXIST"
+	// Option value does not exist.
+	ProductSetUserErrorCodeOptionValueDoesNotExist ProductSetUserErrorCode = "OPTION_VALUE_DOES_NOT_EXIST"
+	// Options over limit.
+	ProductSetUserErrorCodeOptionsOverLimit ProductSetUserErrorCode = "OPTIONS_OVER_LIMIT"
+	// Option values over limit.
+	ProductSetUserErrorCodeOptionValuesOverLimit ProductSetUserErrorCode = "OPTION_VALUES_OVER_LIMIT"
+	// Each option must have at least one option value specified.
+	ProductSetUserErrorCodeOptionValuesMissing ProductSetUserErrorCode = "OPTION_VALUES_MISSING"
+	// Duplicated option name.
+	ProductSetUserErrorCodeDuplicatedOptionName ProductSetUserErrorCode = "DUPLICATED_OPTION_NAME"
+	// Duplicated option value.
+	ProductSetUserErrorCodeDuplicatedOptionValue ProductSetUserErrorCode = "DUPLICATED_OPTION_VALUE"
+	// Number of product variants exceeds shop limit.
+	ProductSetUserErrorCodeVariantsOverLimit ProductSetUserErrorCode = "VARIANTS_OVER_LIMIT"
+	// Must specify product options when updating variants.
+	ProductSetUserErrorCodeProductOptionsInputMissing ProductSetUserErrorCode = "PRODUCT_OPTIONS_INPUT_MISSING"
+	// Must specify variants when updating options.
+	ProductSetUserErrorCodeVariantsInputMissing ProductSetUserErrorCode = "VARIANTS_INPUT_MISSING"
+	// Gift card products can only be created after they have been activated.
+	ProductSetUserErrorCodeGiftCardsNotActivated ProductSetUserErrorCode = "GIFT_CARDS_NOT_ACTIVATED"
+	// The product gift_card attribute cannot be changed after creation.
+	ProductSetUserErrorCodeGiftCardAttributeCannotBeChanged ProductSetUserErrorCode = "GIFT_CARD_ATTRIBUTE_CANNOT_BE_CHANGED"
+	// Product is not valid.
+	ProductSetUserErrorCodeInvalidProduct ProductSetUserErrorCode = "INVALID_PRODUCT"
+	// Input is not valid.
+	ProductSetUserErrorCodeInvalidInput ProductSetUserErrorCode = "INVALID_INPUT"
+	// Error processing request in the background job.
+	ProductSetUserErrorCodeJobError ProductSetUserErrorCode = "JOB_ERROR"
+	// The metafield violates a capability restriction.
+	ProductSetUserErrorCodeCapabilityViolation ProductSetUserErrorCode = "CAPABILITY_VIOLATION"
+	// An option cannot have both metafield linked and nonlinked option values.
+	ProductSetUserErrorCodeCannotCombineLinkedAndNonlinkedOptionValues ProductSetUserErrorCode = "CANNOT_COMBINE_LINKED_AND_NONLINKED_OPTION_VALUES"
+	// Invalid metafield value for linked option.
+	ProductSetUserErrorCodeInvalidMetafieldValueForLinkedOption ProductSetUserErrorCode = "INVALID_METAFIELD_VALUE_FOR_LINKED_OPTION"
+	// Cannot link multiple options to the same metafield.
+	ProductSetUserErrorCodeDuplicateLinkedOption ProductSetUserErrorCode = "DUPLICATE_LINKED_OPTION"
+	// Duplicated metafield value for linked option.
+	ProductSetUserErrorCodeDuplicatedMetafieldValue ProductSetUserErrorCode = "DUPLICATED_METAFIELD_VALUE"
+	// Linked options are currently not supported for this shop.
+	ProductSetUserErrorCodeLinkedOptionsNotSupportedForShop ProductSetUserErrorCode = "LINKED_OPTIONS_NOT_SUPPORTED_FOR_SHOP"
+	// No valid metafield definition found for linked option.
+	ProductSetUserErrorCodeLinkedMetafieldDefinitionNotFound ProductSetUserErrorCode = "LINKED_METAFIELD_DEFINITION_NOT_FOUND"
+	// Duplicated value.
+	ProductSetUserErrorCodeDuplicatedValue ProductSetUserErrorCode = "DUPLICATED_VALUE"
+	// Handle already in use. Please provide a new handle.
+	ProductSetUserErrorCodeHandleNotUnique ProductSetUserErrorCode = "HANDLE_NOT_UNIQUE"
+	// Cannot provide both 'barcode' and 'barcodes' for the same variant.
+	ProductSetUserErrorCodeIncompatibleBarcodeFields ProductSetUserErrorCode = "INCOMPATIBLE_BARCODE_FIELDS"
+	// Barcode value cannot be blank.
+	ProductSetUserErrorCodeBlankBarcodeValue ProductSetUserErrorCode = "BLANK_BARCODE_VALUE"
+	// Can only specify a maximum of 20 barcodes per variant.
+	ProductSetUserErrorCodeTooManyBarcodes ProductSetUserErrorCode = "TOO_MANY_BARCODES"
+	// Barcode value is too long.
+	ProductSetUserErrorCodeBarcodeValueTooLong ProductSetUserErrorCode = "BARCODE_VALUE_TOO_LONG"
+	// Duplicate barcode value within the same variant.
+	ProductSetUserErrorCodeDuplicateBarcodeValue ProductSetUserErrorCode = "DUPLICATE_BARCODE_VALUE"
+	// Barcode type is not supported. Allowed barcode types are: upc, ean, isbn, gtin, asin, ns-pid.
+	ProductSetUserErrorCodeInvalidBarcodeType ProductSetUserErrorCode = "INVALID_BARCODE_TYPE"
+	// Barcode value contains invalid spaces or hyphens for its type.
+	ProductSetUserErrorCodeInvalidBarcodeSeparators ProductSetUserErrorCode = "INVALID_BARCODE_SEPARATORS"
+	// Barcode value has an invalid length for its type.
+	ProductSetUserErrorCodeInvalidBarcodeLength ProductSetUserErrorCode = "INVALID_BARCODE_LENGTH"
+	// Barcode value has an invalid prefix for its type.
+	ProductSetUserErrorCodeInvalidBarcodePrefix ProductSetUserErrorCode = "INVALID_BARCODE_PREFIX"
+	// Barcode value contains invalid characters for its type.
+	ProductSetUserErrorCodeInvalidBarcodeCharacters ProductSetUserErrorCode = "INVALID_BARCODE_CHARACTERS"
+	// Barcode checksum validation failed.
+	ProductSetUserErrorCodeBarcodeChecksumValidationFailed ProductSetUserErrorCode = "BARCODE_CHECKSUM_VALIDATION_FAILED"
+	// Inventory quantity input exceeds the limit of 50000. Consider using separate `inventorySetQuantities` mutations.
+	ProductSetUserErrorCodeInventoryQuantitiesLimitExceeded ProductSetUserErrorCode = "INVENTORY_QUANTITIES_LIMIT_EXCEEDED"
+)
+
+var AllProductSetUserErrorCode = []ProductSetUserErrorCode{
+	ProductSetUserErrorCodeIdNotAllowed,
+	ProductSetUserErrorCodeMissingFieldRequired,
+	ProductSetUserErrorCodeInputMismatch,
+	ProductSetUserErrorCodeNotFound,
+	ProductSetUserErrorCodeMetafieldMismatch,
+	ProductSetUserErrorCodeGenericError,
+	ProductSetUserErrorCodeInvalidMetafield,
+	ProductSetUserErrorCodeInvalidVariant,
+	ProductSetUserErrorCodeProductDoesNotExist,
+	ProductSetUserErrorCodeProductSuspended,
+	ProductSetUserErrorCodeProductVariantDoesNotExist,
+	ProductSetUserErrorCodeOptionDoesNotExist,
+	ProductSetUserErrorCodeOptionValueDoesNotExist,
+	ProductSetUserErrorCodeOptionsOverLimit,
+	ProductSetUserErrorCodeOptionValuesOverLimit,
+	ProductSetUserErrorCodeOptionValuesMissing,
+	ProductSetUserErrorCodeDuplicatedOptionName,
+	ProductSetUserErrorCodeDuplicatedOptionValue,
+	ProductSetUserErrorCodeVariantsOverLimit,
+	ProductSetUserErrorCodeProductOptionsInputMissing,
+	ProductSetUserErrorCodeVariantsInputMissing,
+	ProductSetUserErrorCodeGiftCardsNotActivated,
+	ProductSetUserErrorCodeGiftCardAttributeCannotBeChanged,
+	ProductSetUserErrorCodeInvalidProduct,
+	ProductSetUserErrorCodeInvalidInput,
+	ProductSetUserErrorCodeJobError,
+	ProductSetUserErrorCodeCapabilityViolation,
+	ProductSetUserErrorCodeCannotCombineLinkedAndNonlinkedOptionValues,
+	ProductSetUserErrorCodeInvalidMetafieldValueForLinkedOption,
+	ProductSetUserErrorCodeDuplicateLinkedOption,
+	ProductSetUserErrorCodeDuplicatedMetafieldValue,
+	ProductSetUserErrorCodeLinkedOptionsNotSupportedForShop,
+	ProductSetUserErrorCodeLinkedMetafieldDefinitionNotFound,
+	ProductSetUserErrorCodeDuplicatedValue,
+	ProductSetUserErrorCodeHandleNotUnique,
+	ProductSetUserErrorCodeIncompatibleBarcodeFields,
+	ProductSetUserErrorCodeBlankBarcodeValue,
+	ProductSetUserErrorCodeTooManyBarcodes,
+	ProductSetUserErrorCodeBarcodeValueTooLong,
+	ProductSetUserErrorCodeDuplicateBarcodeValue,
+	ProductSetUserErrorCodeInvalidBarcodeType,
+	ProductSetUserErrorCodeInvalidBarcodeSeparators,
+	ProductSetUserErrorCodeInvalidBarcodeLength,
+	ProductSetUserErrorCodeInvalidBarcodePrefix,
+	ProductSetUserErrorCodeInvalidBarcodeCharacters,
+	ProductSetUserErrorCodeBarcodeChecksumValidationFailed,
+	ProductSetUserErrorCodeInventoryQuantitiesLimitExceeded,
+}
+
+// The possible product statuses.
+type ProductStatus string
+
+const (
+	// The product is ready to sell and can be published to sales channels and apps. Products with an active status aren't automatically published to sales channels, such as the online store, or apps. By default, existing products are set to active.
+	ProductStatusActive ProductStatus = "ACTIVE"
+	// The product is no longer being sold and isn't available to customers on sales channels and apps.
+	ProductStatusArchived ProductStatus = "ARCHIVED"
+	// The product isn't ready to sell and is unavailable to customers on sales channels and apps. By default, duplicated and unarchived products are set to draft.
+	ProductStatusDraft ProductStatus = "DRAFT"
+	// The product is active but you need a direct link to view it. The product doesn't show up in search, collections, or product recommendations. It will be returned in Storefront API and Liquid only when referenced individually by handle, id, or metafield reference.This status is only visible from 2025-10 and up, is translated to active in older versions and can't be changed from unlisted in older versions.
+	ProductStatusUnlisted ProductStatus = "UNLISTED"
+)
+
+var AllProductStatus = []ProductStatus{
+	ProductStatusActive,
+	ProductStatusArchived,
+	ProductStatusDraft,
+	ProductStatusUnlisted,
+}
+
+// The valid values for the inventory policy of a product variant once it is out of stock.
+type ProductVariantInventoryPolicy string
+
+const (
+	// Customers can't buy this product variant after it's out of stock.
+	ProductVariantInventoryPolicyDeny ProductVariantInventoryPolicy = "DENY"
+	// Customers can buy this product variant after it's out of stock.
+	ProductVariantInventoryPolicyContinue ProductVariantInventoryPolicy = "CONTINUE"
+)
+
+var AllProductVariantInventoryPolicy = []ProductVariantInventoryPolicy{
+	ProductVariantInventoryPolicyDeny,
+	ProductVariantInventoryPolicyContinue,
+}
+
+// The input fields for specifying a product variant to create or update.
+type ProductVariantSetInput struct {
+	// Specifies the product variant to update or create a new variant if absent.
+	Id *string `json:"id,omitempty"`
+	// The custom properties that a shop owner uses to define product variants.
+	OptionValues []VariantOptionValueInput `json:"optionValues"`
+	// The price of the variant.
+	Price *string `json:"price,omitempty"`
+	// The SKU for the variant. Case-sensitive string.
+	Sku *string `json:"sku,omitempty"`
+	// The barcodes to associate with the product variant. Replaces the entire barcode set. A variant
+	// accepts up to 20 barcodes, and a given
+	// variant input can't set both `barcode` and `barcodes`. Refer to the
+	// [`ProductVariantBarcode`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariantBarcode)
+	// object for how these barcodes are returned.
+	//
+	// Complexity cost: 0.0114 per barcode.
+	Barcodes json.RawMessage `json:"barcodes,omitempty"`
+	// The order of the product variant in the list of product variants. The first position in the list is 1.
+	Position *int `json:"position,omitempty"`
+	// The file to associate with the variant.
+	//
+	// Complexity cost: 0.6 per variant file.
+	//
+	// Any file specified here must also be specified in the `files` input for the product.
+	File *FileSetInput `json:"file,omitempty"`
+	// Additional customizable information about the product variant.
+	//
+	// Complexity cost: 0.4 per variant metafield.
+	Metafields []MetafieldInput `json:"metafields,omitempty"`
+	// Indicates whether the product variant is created as published or unpublished. This option is only available for new product variants.
+	Published *bool `json:"published,omitempty"`
+	// The compare-at price of the variant.
+	CompareAtPrice *string `json:"compareAtPrice,omitempty"`
+	// Whether a product variant requires components. The default value is `false`.
+	// If `true`, then the product variant can only be purchased as a parent bundle with components and it will be omitted
+	// from channels that don't support bundles.
+	RequiresComponents *bool `json:"requiresComponents,omitempty"`
+	// Whether customers are allowed to place an order for the product variant when it's out of stock. Defaults to `DENY`.
+	InventoryPolicy *ProductVariantInventoryPolicy `json:"inventoryPolicy,omitempty"`
+	// The inventory quantities at each location where the variant is stocked.
+	// If you're updating an existing variant, then you can only update the
+	// quantities at locations where the variant is already stocked.
+	//
+	// The total number of inventory quantities across all variants in the mutation can't exceed 50000.
+	InventoryQuantities []ProductSetInventoryInput `json:"inventoryQuantities,omitempty"`
+	// The inventory item associated with the variant, used for unit cost.
+	InventoryItem *InventoryItemInput `json:"inventoryItem,omitempty"`
+	// Whether the variant is taxable.
+	Taxable *bool `json:"taxable,omitempty"`
+	// The tax code associated with the variant.
+	TaxCode *string `json:"taxCode,omitempty"`
+	// The unit price measurement for the product variant.
+	UnitPriceMeasurement *UnitPriceMeasurementInput `json:"unitPriceMeasurement,omitempty"`
+	// Whether or not unit price should be shown for this product variant.
+	ShowUnitPrice *bool `json:"showUnitPrice,omitempty"`
+}
+
+// GetId returns ProductVariantSetInput.Id, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetId() *string { return v.Id }
+
+// GetOptionValues returns ProductVariantSetInput.OptionValues, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetOptionValues() []VariantOptionValueInput { return v.OptionValues }
+
+// GetPrice returns ProductVariantSetInput.Price, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetPrice() *string { return v.Price }
+
+// GetSku returns ProductVariantSetInput.Sku, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetSku() *string { return v.Sku }
+
+// GetBarcodes returns ProductVariantSetInput.Barcodes, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetBarcodes() json.RawMessage { return v.Barcodes }
+
+// GetPosition returns ProductVariantSetInput.Position, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetPosition() *int { return v.Position }
+
+// GetFile returns ProductVariantSetInput.File, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetFile() *FileSetInput { return v.File }
+
+// GetMetafields returns ProductVariantSetInput.Metafields, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetMetafields() []MetafieldInput { return v.Metafields }
+
+// GetPublished returns ProductVariantSetInput.Published, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetPublished() *bool { return v.Published }
+
+// GetCompareAtPrice returns ProductVariantSetInput.CompareAtPrice, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetCompareAtPrice() *string { return v.CompareAtPrice }
+
+// GetRequiresComponents returns ProductVariantSetInput.RequiresComponents, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetRequiresComponents() *bool { return v.RequiresComponents }
+
+// GetInventoryPolicy returns ProductVariantSetInput.InventoryPolicy, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetInventoryPolicy() *ProductVariantInventoryPolicy {
+	return v.InventoryPolicy
+}
+
+// GetInventoryQuantities returns ProductVariantSetInput.InventoryQuantities, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetInventoryQuantities() []ProductSetInventoryInput {
+	return v.InventoryQuantities
+}
+
+// GetInventoryItem returns ProductVariantSetInput.InventoryItem, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetInventoryItem() *InventoryItemInput { return v.InventoryItem }
+
+// GetTaxable returns ProductVariantSetInput.Taxable, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetTaxable() *bool { return v.Taxable }
+
+// GetTaxCode returns ProductVariantSetInput.TaxCode, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetTaxCode() *string { return v.TaxCode }
+
+// GetUnitPriceMeasurement returns ProductVariantSetInput.UnitPriceMeasurement, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetUnitPriceMeasurement() *UnitPriceMeasurementInput {
+	return v.UnitPriceMeasurement
+}
+
+// GetShowUnitPrice returns ProductVariantSetInput.ShowUnitPrice, and is useful for accessing the field via an interface.
+func (v *ProductVariantSetInput) GetShowUnitPrice() *bool { return v.ShowUnitPrice }
+
+// The input fields required to publish a resource.
+type PublicationInput struct {
+	// ID of the publication.
+	PublicationId *string `json:"publicationId"`
+	// The date and time that the resource was published. Setting this to a date in the future will schedule the resource to be published. Only online store channels support future publishing. This field has no effect if you include it in the `publishableUnpublish` mutation.
+	PublishDate *string `json:"publishDate,omitempty"`
+}
+
+// GetPublicationId returns PublicationInput.PublicationId, and is useful for accessing the field via an interface.
+func (v *PublicationInput) GetPublicationId() *string { return v.PublicationId }
+
+// GetPublishDate returns PublicationInput.PublishDate, and is useful for accessing the field via an interface.
+func (v *PublicationInput) GetPublishDate() *string { return v.PublishDate }
+
+// Membership, not isPublished: a draft product lists its publications too. Only APP catalog publications are returned (design §9k.3).
+// 10 per resource keeps product and collection list pages under the cost limit; the rest is paged by GetPublishablePublications.
+//
+// PublicationsOfPublishable is implemented by the following types:
+// PublicationsOfPublishableCollection
+// PublicationsOfPublishableProduct
+// PublicationsOfPublishableProductVariant
+type PublicationsOfPublishable interface {
+	implementsGraphQLInterfacePublicationsOfPublishable()
+	// GetResourcePublicationsV2 returns the interface-field "resourcePublicationsV2" from its implementation.
+	// The GraphQL interface field's documentation follows.
+	//
+	// The list of resources that are either published or staged to be published to a
+	// [publication](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	// By default, only publications to `APP` catalog types are returned.
+	// For `Product` and `ProductVariant`, use the `catalogType` argument to retrieve
+	// publications for other catalog types, such as `COMPANY_LOCATION` (B2B) or `MARKET`.
+	// `Collection` only supports publications to `APP` catalog types.
+	GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection
+}
+
+func (v *PublicationsOfPublishableCollection) implementsGraphQLInterfacePublicationsOfPublishable() {}
+func (v *PublicationsOfPublishableProduct) implementsGraphQLInterfacePublicationsOfPublishable()    {}
+func (v *PublicationsOfPublishableProductVariant) implementsGraphQLInterfacePublicationsOfPublishable() {
+}
+
+func __unmarshalPublicationsOfPublishable(b []byte, v *PublicationsOfPublishable) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "Collection":
+		*v = new(PublicationsOfPublishableCollection)
+		return json.Unmarshal(b, *v)
+	case "Product":
+		*v = new(PublicationsOfPublishableProduct)
+		return json.Unmarshal(b, *v)
+	case "ProductVariant":
+		*v = new(PublicationsOfPublishableProductVariant)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Publishable.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for PublicationsOfPublishable: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalPublicationsOfPublishable(v *PublicationsOfPublishable) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *PublicationsOfPublishableCollection:
+		typename = "Collection"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*PublicationsOfPublishableCollection
+		}{typename, v}
+		return json.Marshal(result)
+	case *PublicationsOfPublishableProduct:
+		typename = "Product"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*PublicationsOfPublishableProduct
+		}{typename, v}
+		return json.Marshal(result)
+	case *PublicationsOfPublishableProductVariant:
+		typename = "ProductVariant"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*PublicationsOfPublishableProductVariant
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for PublicationsOfPublishable: "%T"`, v)
+	}
+}
+
+// Membership, not isPublished: a draft product lists its publications too. Only APP catalog publications are returned (design §9k.3).
+// 10 per resource keeps product and collection list pages under the cost limit; the rest is paged by GetPublishablePublications.
+type PublicationsOfPublishableCollection struct {
+	// The list of resources that are either published or staged to be published to a
+	// [publication](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	// By default, only publications to `APP` catalog types are returned.
+	// For `Product` and `ProductVariant`, use the `catalogType` argument to retrieve
+	// publications for other catalog types, such as `COMPANY_LOCATION` (B2B) or `MARKET`.
+	// `Collection` only supports publications to `APP` catalog types.
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+// GetResourcePublicationsV2 returns PublicationsOfPublishableCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ResourcePublicationsV2
+}
+
+// Membership, not isPublished: a draft product lists its publications too. Only APP catalog publications are returned (design §9k.3).
+// 10 per resource keeps product and collection list pages under the cost limit; the rest is paged by GetPublishablePublications.
+type PublicationsOfPublishableProduct struct {
+	// The list of resources that are either published or staged to be published to a
+	// [publication](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	// By default, only publications to `APP` catalog types are returned.
+	// For `Product` and `ProductVariant`, use the `catalogType` argument to retrieve
+	// publications for other catalog types, such as `COMPANY_LOCATION` (B2B) or `MARKET`.
+	// `Collection` only supports publications to `APP` catalog types.
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+// GetResourcePublicationsV2 returns PublicationsOfPublishableProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ResourcePublicationsV2
+}
+
+// Membership, not isPublished: a draft product lists its publications too. Only APP catalog publications are returned (design §9k.3).
+// 10 per resource keeps product and collection list pages under the cost limit; the rest is paged by GetPublishablePublications.
+type PublicationsOfPublishableProductVariant struct {
+	// The list of resources that are either published or staged to be published to a
+	// [publication](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	// By default, only publications to `APP` catalog types are returned.
+	// For `Product` and `ProductVariant`, use the `catalogType` argument to retrieve
+	// publications for other catalog types, such as `COMPANY_LOCATION` (B2B) or `MARKET`.
+	// `Collection` only supports publications to `APP` catalog types.
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+// GetResourcePublicationsV2 returns PublicationsOfPublishableProductVariant.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableProductVariant) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ResourcePublicationsV2
+}
+
+// PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection includes the requested fields of the GraphQL type ResourcePublicationV2Connection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ResourcePublicationV2s.
+type PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection struct {
+	// A list of nodes that are contained in ResourcePublicationV2Edge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection.Nodes, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection) GetNodes() []PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 {
+	return v.Nodes
+}
+
+// GetPageInfo returns PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection.PageInfo, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection) GetPageInfo() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo {
+	return v.PageInfo
+}
+
+// PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 includes the requested fields of the GraphQL type ResourcePublicationV2.
+// The GraphQL type's documentation follows.
+//
+// A resource publication represents information about the publication of a resource.
+// Unlike `ResourcePublication`, an instance of `ResourcePublicationV2` can't be unpublished. It must either be published or scheduled to be published.
+//
+// See [ResourcePublication](/api/admin-graphql/latest/objects/ResourcePublication) for more context.
+type PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2 struct {
+	// The publication the resource publication is published to.
+	Publication PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication `json:"publication"`
+}
+
+// GetPublication returns PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2.Publication, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2) GetPublication() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication {
+	return v.Publication
+}
+
+// PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication includes the requested fields of the GraphQL type Publication.
+// The GraphQL type's documentation follows.
+//
+// A group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) and [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) that are published to an app.
+//
+// Each publication manages which products and collections display on its associated [`Channel`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Channel). Merchants can automatically publish products when they're created if [`autoPublish`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.autoPublish) is enabled, or manually control publication through publication records.
+//
+// Publications support scheduled publishing through future publish dates for online store channels, allowing merchants to coordinate product launches and promotional campaigns. The [`catalog`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication#field-Publication.fields.catalog) field links to pricing and availability rules specific to that publication's context.
+type PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication.Id, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionNodesResourcePublicationV2Publication) GetId() string {
+	return v.Id
+}
+
+// PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2ConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// PublishPublishablePublishablePublishPublishablePublishPayload includes the requested fields of the GraphQL type PublishablePublishPayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `publishablePublish` mutation.
+type PublishPublishablePublishablePublishPublishablePublishPayload struct {
+	// Resource that has been published.
+	Publishable *PublishPublishablePublishablePublishPublishablePublishPayloadPublishable `json:"-"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetPublishable returns PublishPublishablePublishablePublishPublishablePublishPayload.Publishable, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayload) GetPublishable() *PublishPublishablePublishablePublishPublishablePublishPayloadPublishable {
+	return v.Publishable
+}
+
+// GetUserErrors returns PublishPublishablePublishablePublishPublishablePublishPayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayload) GetUserErrors() []PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayload) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*PublishPublishablePublishablePublishPublishablePublishPayload
+		Publishable json.RawMessage `json:"publishable"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.PublishPublishablePublishablePublishPublishablePublishPayload = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Publishable
+		src := firstPass.Publishable
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(PublishPublishablePublishablePublishPublishablePublishPayloadPublishable)
+			err = __unmarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishable(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal PublishPublishablePublishablePublishPublishablePublishPayload.Publishable: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalPublishPublishablePublishablePublishPublishablePublishPayload struct {
+	Publishable json.RawMessage `json:"publishable"`
+
+	UserErrors []PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError `json:"userErrors"`
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayload) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayload) __premarshalJSON() (*__premarshalPublishPublishablePublishablePublishPublishablePublishPayload, error) {
+	var retval __premarshalPublishPublishablePublishablePublishPublishablePublishPayload
+
+	{
+
+		dst := &retval.Publishable
+		src := v.Publishable
+		if src != nil {
+			var err error
+			*dst, err = __marshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishable(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal PublishPublishablePublishablePublishPublishablePublishPayload.Publishable: %w", err)
+			}
+		}
+	}
+	retval.UserErrors = v.UserErrors
+	return &retval, nil
+}
+
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishable includes the requested fields of the GraphQL interface Publishable.
+//
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishable is implemented by the following types:
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant
+// The GraphQL type's documentation follows.
+//
+// Represents a resource that can be published to a channel.
+// A publishable resource can be either a Product or Collection.
+type PublishPublishablePublishablePublishPublishablePublishPayloadPublishable interface {
+	implementsGraphQLInterfacePublishPublishablePublishablePublishPublishablePublishPayloadPublishable()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+	PublicationsOfPublishable
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection) implementsGraphQLInterfacePublishPublishablePublishablePublishPublishablePublishPayloadPublishable() {
+}
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct) implementsGraphQLInterfacePublishPublishablePublishablePublishPublishablePublishPayloadPublishable() {
+}
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant) implementsGraphQLInterfacePublishPublishablePublishablePublishPublishablePublishPayloadPublishable() {
+}
+
+func __unmarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishable(b []byte, v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishable) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "Collection":
+		*v = new(PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection)
+		return json.Unmarshal(b, *v)
+	case "Product":
+		*v = new(PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct)
+		return json.Unmarshal(b, *v)
+	case "ProductVariant":
+		*v = new(PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Publishable.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for PublishPublishablePublishablePublishPublishablePublishPayloadPublishable: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishable(v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishable) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection:
+		typename = "Collection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct:
+		typename = "Product"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant:
+		typename = "ProductVariant"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for PublishPublishablePublishablePublishPublishablePublishPayloadPublishable: "%T"`, v)
+	}
+}
+
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection struct {
+	Typename                            *string `json:"__typename"`
+	PublicationsOfPublishableCollection `json:"-"`
+}
+
+// GetTypename returns PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection.Typename, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection) GetTypename() *string {
+	return v.Typename
+}
+
+// GetResourcePublicationsV2 returns PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableCollection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection struct {
+	Typename *string `json:"__typename"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection) __premarshalJSON() (*__premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection, error) {
+	var retval __premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableCollection
+
+	retval.Typename = v.Typename
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableCollection.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct struct {
+	Typename                         *string `json:"__typename"`
+	PublicationsOfPublishableProduct `json:"-"`
+}
+
+// GetTypename returns PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct.Typename, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct) GetTypename() *string {
+	return v.Typename
+}
+
+// GetResourcePublicationsV2 returns PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableProduct)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct struct {
+	Typename *string `json:"__typename"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct) __premarshalJSON() (*__premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct, error) {
+	var retval __premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProduct
+
+	retval.Typename = v.Typename
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableProduct.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant struct {
+	Typename                                *string `json:"__typename"`
+	PublicationsOfPublishableProductVariant `json:"-"`
+}
+
+// GetTypename returns PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant.Typename, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant) GetTypename() *string {
+	return v.Typename
+}
+
+// GetResourcePublicationsV2 returns PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableProductVariant.ResourcePublicationsV2
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableProductVariant)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant struct {
+	Typename *string `json:"__typename"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant) __premarshalJSON() (*__premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant, error) {
+	var retval __premarshalPublishPublishablePublishablePublishPublishablePublishPayloadPublishableProductVariant
+
+	retval.Typename = v.Typename
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableProductVariant.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *PublishPublishablePublishablePublishPublishablePublishPayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// PublishPublishableResponse is returned by PublishPublishable on success.
+type PublishPublishableResponse struct {
+	// Publishes a resource, such as a [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) or [`Collection`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection), to one or more [publications](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication).
+	//
+	// For products to be visible in a channel, they must have an active [`ProductStatus`](https://shopify.dev/docs/api/admin-graphql/latest/enums/ProductStatus). Products sold exclusively on subscription (`requiresSellingPlan: true`) can only be published to online stores.
+	//
+	// You can schedule future publication by providing a publish date. Only online store channels support [scheduled publishing](https://shopify.dev/docs/apps/build/sales-channels/scheduled-product-publishing).
+	PublishablePublish *PublishPublishablePublishablePublishPublishablePublishPayload `json:"publishablePublish"`
+}
+
+// GetPublishablePublish returns PublishPublishableResponse.PublishablePublish, and is useful for accessing the field via an interface.
+func (v *PublishPublishableResponse) GetPublishablePublish() *PublishPublishablePublishablePublishPublishablePublishPayload {
+	return v.PublishablePublish
+}
+
+// The input fields for SEO information.
+type SEOInput struct {
+	// SEO title of the product.
+	Title *string `json:"title,omitempty"`
+	// SEO description of the product.
+	Description *string `json:"description,omitempty"`
+}
+
+// GetTitle returns SEOInput.Title, and is useful for accessing the field via an interface.
+func (v *SEOInput) GetTitle() *string { return v.Title }
+
+// GetDescription returns SEOInput.Description, and is useful for accessing the field via an interface.
+func (v *SEOInput) GetDescription() *string { return v.Description }
+
+// SegmentFields includes the GraphQL fields of Segment requested by the fragment SegmentFields.
+// The GraphQL type's documentation follows.
+//
+// A group of [customers](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) that meet specific criteria defined through [ShopifyQL query](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference) conditions. Common use cases for segments include customer analytics, targeted marketing campaigns, and automated discount eligibility.
+//
+// The segment's [`query`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-query) field contains ShopifyQL conditions that determine membership, such as purchase history, location, or engagement patterns. Tracks when the segment was created with [`creationDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-creationDate) and when it was last modified with [`lastEditDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-lastEditDate).
+type SegmentFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The name of the segment.
+	Name string `json:"name"`
+	// A precise definition of the segment. The definition is composed of a combination of conditions on facts about customers.
+	Query string `json:"query"`
+}
+
+// GetId returns SegmentFields.Id, and is useful for accessing the field via an interface.
+func (v *SegmentFields) GetId() string { return v.Id }
+
+// GetName returns SegmentFields.Name, and is useful for accessing the field via an interface.
+func (v *SegmentFields) GetName() string { return v.Name }
+
+// GetQuery returns SegmentFields.Query, and is useful for accessing the field via an interface.
+func (v *SegmentFields) GetQuery() string { return v.Query }
+
+// SetProductProductSetProductSetPayload includes the requested fields of the GraphQL type ProductSetPayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `productSet` mutation.
+type SetProductProductSetProductSetPayload struct {
+	// The product object.
+	Product *SetProductProductSetProductSetPayloadProduct `json:"product"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []SetProductProductSetProductSetPayloadUserErrorsProductSetUserError `json:"userErrors"`
+}
+
+// GetProduct returns SetProductProductSetProductSetPayload.Product, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayload) GetProduct() *SetProductProductSetProductSetPayloadProduct {
+	return v.Product
+}
+
+// GetUserErrors returns SetProductProductSetProductSetPayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayload) GetUserErrors() []SetProductProductSetProductSetPayloadUserErrorsProductSetUserError {
+	return v.UserErrors
+}
+
+// SetProductProductSetProductSetPayloadProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type SetProductProductSetProductSetPayloadProduct struct {
+	ProductFields `json:"-"`
+}
+
+// GetId returns SetProductProductSetProductSetPayloadProduct.Id, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetId() string { return v.ProductFields.Id }
+
+// GetHandle returns SetProductProductSetProductSetPayloadProduct.Handle, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetHandle() string {
+	return v.ProductFields.Handle
+}
+
+// GetTitle returns SetProductProductSetProductSetPayloadProduct.Title, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetTitle() string {
+	return v.ProductFields.Title
+}
+
+// GetStatus returns SetProductProductSetProductSetPayloadProduct.Status, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetStatus() ProductStatus {
+	return v.ProductFields.Status
+}
+
+// GetDescriptionHtml returns SetProductProductSetProductSetPayloadProduct.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetDescriptionHtml() string {
+	return v.ProductFields.DescriptionHtml
+}
+
+// GetVendor returns SetProductProductSetProductSetPayloadProduct.Vendor, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetVendor() string {
+	return v.ProductFields.Vendor
+}
+
+// GetProductType returns SetProductProductSetProductSetPayloadProduct.ProductType, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetProductType() string {
+	return v.ProductFields.ProductType
+}
+
+// GetCategory returns SetProductProductSetProductSetPayloadProduct.Category, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetCategory() *ProductFieldsCategoryTaxonomyCategory {
+	return v.ProductFields.Category
+}
+
+// GetTags returns SetProductProductSetProductSetPayloadProduct.Tags, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetTags() []string {
+	return v.ProductFields.Tags
+}
+
+// GetSeo returns SetProductProductSetProductSetPayloadProduct.Seo, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetSeo() ProductFieldsSeoSEO {
+	return v.ProductFields.Seo
+}
+
+// GetTemplateSuffix returns SetProductProductSetProductSetPayloadProduct.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetTemplateSuffix() *string {
+	return v.ProductFields.TemplateSuffix
+}
+
+// GetIsGiftCard returns SetProductProductSetProductSetPayloadProduct.IsGiftCard, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetIsGiftCard() bool {
+	return v.ProductFields.IsGiftCard
+}
+
+// GetHasOnlyDefaultVariant returns SetProductProductSetProductSetPayloadProduct.HasOnlyDefaultVariant, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetHasOnlyDefaultVariant() bool {
+	return v.ProductFields.HasOnlyDefaultVariant
+}
+
+// GetMedia returns SetProductProductSetProductSetPayloadProduct.Media, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetMedia() ProductFieldsMediaMediaConnection {
+	return v.ProductFields.Media
+}
+
+// GetOptions returns SetProductProductSetProductSetPayloadProduct.Options, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetOptions() []ProductFieldsOptionsProductOption {
+	return v.ProductFields.Options
+}
+
+// GetVariants returns SetProductProductSetProductSetPayloadProduct.Variants, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetVariants() ProductFieldsVariantsProductVariantConnection {
+	return v.ProductFields.Variants
+}
+
+// GetResourcePublicationsV2 returns SetProductProductSetProductSetPayloadProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
+func (v *SetProductProductSetProductSetPayloadProduct) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*SetProductProductSetProductSetPayloadProduct
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.SetProductProductSetProductSetPayloadProduct = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.ProductFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalSetProductProductSetProductSetPayloadProduct struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Status ProductStatus `json:"status"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	Vendor string `json:"vendor"`
+
+	ProductType string `json:"productType"`
+
+	Category *ProductFieldsCategoryTaxonomyCategory `json:"category"`
+
+	Tags []string `json:"tags"`
+
+	Seo ProductFieldsSeoSEO `json:"seo"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	IsGiftCard bool `json:"isGiftCard"`
+
+	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
+
+	Media ProductFieldsMediaMediaConnection `json:"media"`
+
+	Options []ProductFieldsOptionsProductOption `json:"options"`
+
+	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *SetProductProductSetProductSetPayloadProduct) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *SetProductProductSetProductSetPayloadProduct) __premarshalJSON() (*__premarshalSetProductProductSetProductSetPayloadProduct, error) {
+	var retval __premarshalSetProductProductSetProductSetPayloadProduct
+
+	retval.Id = v.ProductFields.Id
+	retval.Handle = v.ProductFields.Handle
+	retval.Title = v.ProductFields.Title
+	retval.Status = v.ProductFields.Status
+	retval.DescriptionHtml = v.ProductFields.DescriptionHtml
+	retval.Vendor = v.ProductFields.Vendor
+	retval.ProductType = v.ProductFields.ProductType
+	retval.Category = v.ProductFields.Category
+	retval.Tags = v.ProductFields.Tags
+	retval.Seo = v.ProductFields.Seo
+	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
+	retval.IsGiftCard = v.ProductFields.IsGiftCard
+	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
+	retval.Media = v.ProductFields.Media
+	retval.Options = v.ProductFields.Options
+	retval.Variants = v.ProductFields.Variants
+	retval.ResourcePublicationsV2 = v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// SetProductProductSetProductSetPayloadUserErrorsProductSetUserError includes the requested fields of the GraphQL type ProductSetUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors for ProductSet mutation.
+type SetProductProductSetProductSetPayloadUserErrorsProductSetUserError struct {
+	// The error code.
+	Code *ProductSetUserErrorCode `json:"code"`
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetCode returns SetProductProductSetProductSetPayloadUserErrorsProductSetUserError.Code, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadUserErrorsProductSetUserError) GetCode() *ProductSetUserErrorCode {
+	return v.Code
+}
+
+// GetField returns SetProductProductSetProductSetPayloadUserErrorsProductSetUserError.Field, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadUserErrorsProductSetUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns SetProductProductSetProductSetPayloadUserErrorsProductSetUserError.Message, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadUserErrorsProductSetUserError) GetMessage() string {
+	return v.Message
+}
+
+// SetProductResponse is returned by SetProduct on success.
+type SetProductResponse struct {
+	// Performs multiple operations to create or update products in a single request.
+	//
+	// Use the `productSet` mutation to sync information from an external data source into Shopify, manage large
+	// product catalogs, and perform batch updates. The mutation is helpful for bulk product management, including price
+	// adjustments, inventory updates, and product lifecycle management.
+	//
+	// The behavior of `productSet` depends on the type of field it's modifying:
+	//
+	// - **For list fields**: Creates new entries, updates existing entries, and deletes existing entries
+	// that aren't included in the mutation's input. Common examples of list fields include
+	// [`collections`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productSet#arguments-input.fields.collections),
+	// [`metafields`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productSet#arguments-input.fields.metafields),
+	// and [`variants`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productSet#arguments-input.fields.variants).
+	//
+	// - **For all other field types**: Updates only the included fields. Any omitted fields will remain unchanged.
+	//
+	// > Note:
+	// > By default, stores have a limit of 2048 product variants for each product.
+	//
+	// You can run `productSet` in one of the following modes:
+	//
+	// - **Synchronously**: Returns the updated product in the response.
+	// - **Asynchronously**: Returns a [`ProductSetOperation`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductSetOperation) object.
+	// Use the [`productOperation`](https://shopify.dev/api/admin-graphql/latest/queries/productOperation) query to check the status of the operation and
+	// retrieve details of the updated product and its product variants.
+	//
+	// If you need to only manage product variants, then use one of the following mutations:
+	//
+	// - [`productVariantsBulkCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productVariantsBulkCreate)
+	// - [`productVariantsBulkUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productVariantsBulkUpdate)
+	// - [`productVariantsBulkDelete`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productVariantsBulkDelete)
+	//
+	// If you need to only manage product options, then use one of the following mutations:
+	//
+	// - [`productOptionsCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productOptionsCreate)
+	// - [`productOptionUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productOptionUpdate)
+	// - [`productOptionsReorder`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productOptionsReorder)
+	// - [`productOptionsDelete`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productOptionsDelete)
+	//
+	// Learn more about [syncing product data from an external source](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/sync-data).
+	ProductSet *SetProductProductSetProductSetPayload `json:"productSet"`
+}
+
+// GetProductSet returns SetProductResponse.ProductSet, and is useful for accessing the field via an interface.
+func (v *SetProductResponse) GetProductSet() *SetProductProductSetProductSetPayload {
+	return v.ProductSet
+}
+
 // The input fields for creating a market's shipping configuration.
 type ShippingConfigurationCreateInput struct {
 	// Whether shipping is enabled for this market. When false, customers in this market won't see shipping options at checkout.
@@ -13321,6 +27262,762 @@ var AllShopPolicyType = []ShopPolicyType{
 	ShopPolicyTypeContactInformation,
 }
 
+// The input fields that identify a unique valued metafield.
+type UniqueMetafieldValueInput struct {
+	// The container the metafield belongs to. If omitted, the app-reserved namespace will be used.
+	Namespace *string `json:"namespace"`
+	// The key for the metafield.
+	Key string `json:"key"`
+	// The value of the metafield.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns UniqueMetafieldValueInput.Namespace, and is useful for accessing the field via an interface.
+func (v *UniqueMetafieldValueInput) GetNamespace() *string { return v.Namespace }
+
+// GetKey returns UniqueMetafieldValueInput.Key, and is useful for accessing the field via an interface.
+func (v *UniqueMetafieldValueInput) GetKey() string { return v.Key }
+
+// GetValue returns UniqueMetafieldValueInput.Value, and is useful for accessing the field via an interface.
+func (v *UniqueMetafieldValueInput) GetValue() string { return v.Value }
+
+// The input fields for the measurement used to calculate a unit price for a product variant (e.g. $9.99 / 100ml).
+type UnitPriceMeasurementInput struct {
+	// The quantity value for the unit price measurement.
+	QuantityValue *float64 `json:"quantityValue"`
+	// The quantity unit for the unit price measurement.
+	QuantityUnit *UnitPriceMeasurementMeasuredUnit `json:"quantityUnit"`
+	// The reference value for the unit price measurement.
+	ReferenceValue *int `json:"referenceValue"`
+	// The reference unit for the unit price measurement.
+	ReferenceUnit *UnitPriceMeasurementMeasuredUnit `json:"referenceUnit"`
+}
+
+// GetQuantityValue returns UnitPriceMeasurementInput.QuantityValue, and is useful for accessing the field via an interface.
+func (v *UnitPriceMeasurementInput) GetQuantityValue() *float64 { return v.QuantityValue }
+
+// GetQuantityUnit returns UnitPriceMeasurementInput.QuantityUnit, and is useful for accessing the field via an interface.
+func (v *UnitPriceMeasurementInput) GetQuantityUnit() *UnitPriceMeasurementMeasuredUnit {
+	return v.QuantityUnit
+}
+
+// GetReferenceValue returns UnitPriceMeasurementInput.ReferenceValue, and is useful for accessing the field via an interface.
+func (v *UnitPriceMeasurementInput) GetReferenceValue() *int { return v.ReferenceValue }
+
+// GetReferenceUnit returns UnitPriceMeasurementInput.ReferenceUnit, and is useful for accessing the field via an interface.
+func (v *UnitPriceMeasurementInput) GetReferenceUnit() *UnitPriceMeasurementMeasuredUnit {
+	return v.ReferenceUnit
+}
+
+// The valid units of measurement for a unit price measurement.
+type UnitPriceMeasurementMeasuredUnit string
+
+const (
+	// 1000 milliliters equals 1 liter.
+	UnitPriceMeasurementMeasuredUnitMl UnitPriceMeasurementMeasuredUnit = "ML"
+	// 100 centiliters equals 1 liter.
+	UnitPriceMeasurementMeasuredUnitCl UnitPriceMeasurementMeasuredUnit = "CL"
+	// Metric system unit of volume.
+	UnitPriceMeasurementMeasuredUnitL UnitPriceMeasurementMeasuredUnit = "L"
+	// 1 cubic meter equals 1000 liters.
+	UnitPriceMeasurementMeasuredUnitM3 UnitPriceMeasurementMeasuredUnit = "M3"
+	// Imperial system unit of volume (U.S. customary unit).
+	UnitPriceMeasurementMeasuredUnitFloz UnitPriceMeasurementMeasuredUnit = "FLOZ"
+	// 1 pint equals 16 fluid ounces (U.S. customary unit).
+	UnitPriceMeasurementMeasuredUnitPt UnitPriceMeasurementMeasuredUnit = "PT"
+	// 1 quart equals 32 fluid ounces (U.S. customary unit).
+	UnitPriceMeasurementMeasuredUnitQt UnitPriceMeasurementMeasuredUnit = "QT"
+	// 1 gallon equals 128 fluid ounces (U.S. customary unit).
+	UnitPriceMeasurementMeasuredUnitGal UnitPriceMeasurementMeasuredUnit = "GAL"
+	// 1000 milligrams equals 1 gram.
+	UnitPriceMeasurementMeasuredUnitMg UnitPriceMeasurementMeasuredUnit = "MG"
+	// Metric system unit of weight.
+	UnitPriceMeasurementMeasuredUnitG UnitPriceMeasurementMeasuredUnit = "G"
+	// 1 kilogram equals 1000 grams.
+	UnitPriceMeasurementMeasuredUnitKg UnitPriceMeasurementMeasuredUnit = "KG"
+	// 16 ounces equals 1 pound.
+	UnitPriceMeasurementMeasuredUnitOz UnitPriceMeasurementMeasuredUnit = "OZ"
+	// Imperial system unit of weight.
+	UnitPriceMeasurementMeasuredUnitLb UnitPriceMeasurementMeasuredUnit = "LB"
+	// 1000 millimeters equals 1 meter.
+	UnitPriceMeasurementMeasuredUnitMm UnitPriceMeasurementMeasuredUnit = "MM"
+	// 100 centimeters equals 1 meter.
+	UnitPriceMeasurementMeasuredUnitCm UnitPriceMeasurementMeasuredUnit = "CM"
+	// Metric system unit of length.
+	UnitPriceMeasurementMeasuredUnitM UnitPriceMeasurementMeasuredUnit = "M"
+	// Imperial system unit of length.
+	UnitPriceMeasurementMeasuredUnitIn UnitPriceMeasurementMeasuredUnit = "IN"
+	// 1 foot equals 12 inches.
+	UnitPriceMeasurementMeasuredUnitFt UnitPriceMeasurementMeasuredUnit = "FT"
+	// 1 yard equals 36 inches.
+	UnitPriceMeasurementMeasuredUnitYd UnitPriceMeasurementMeasuredUnit = "YD"
+	// Metric system unit of area.
+	UnitPriceMeasurementMeasuredUnitM2 UnitPriceMeasurementMeasuredUnit = "M2"
+	// Imperial system unit of area.
+	UnitPriceMeasurementMeasuredUnitFt2 UnitPriceMeasurementMeasuredUnit = "FT2"
+	// 1 item, a unit of count.
+	UnitPriceMeasurementMeasuredUnitItem UnitPriceMeasurementMeasuredUnit = "ITEM"
+	// The unit of measurement is unknown. Upgrade to the latest version of the API to resolve this unit.
+	UnitPriceMeasurementMeasuredUnitUnknown UnitPriceMeasurementMeasuredUnit = "UNKNOWN"
+)
+
+var AllUnitPriceMeasurementMeasuredUnit = []UnitPriceMeasurementMeasuredUnit{
+	UnitPriceMeasurementMeasuredUnitMl,
+	UnitPriceMeasurementMeasuredUnitCl,
+	UnitPriceMeasurementMeasuredUnitL,
+	UnitPriceMeasurementMeasuredUnitM3,
+	UnitPriceMeasurementMeasuredUnitFloz,
+	UnitPriceMeasurementMeasuredUnitPt,
+	UnitPriceMeasurementMeasuredUnitQt,
+	UnitPriceMeasurementMeasuredUnitGal,
+	UnitPriceMeasurementMeasuredUnitMg,
+	UnitPriceMeasurementMeasuredUnitG,
+	UnitPriceMeasurementMeasuredUnitKg,
+	UnitPriceMeasurementMeasuredUnitOz,
+	UnitPriceMeasurementMeasuredUnitLb,
+	UnitPriceMeasurementMeasuredUnitMm,
+	UnitPriceMeasurementMeasuredUnitCm,
+	UnitPriceMeasurementMeasuredUnitM,
+	UnitPriceMeasurementMeasuredUnitIn,
+	UnitPriceMeasurementMeasuredUnitFt,
+	UnitPriceMeasurementMeasuredUnitYd,
+	UnitPriceMeasurementMeasuredUnitM2,
+	UnitPriceMeasurementMeasuredUnitFt2,
+	UnitPriceMeasurementMeasuredUnitItem,
+	UnitPriceMeasurementMeasuredUnitUnknown,
+}
+
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload includes the requested fields of the GraphQL type PublishableUnpublishPayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `publishableUnpublish` mutation.
+type UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload struct {
+	// Resource that has been unpublished.
+	Publishable *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable `json:"-"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetPublishable returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload.Publishable, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload) GetPublishable() *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable {
+	return v.Publishable
+}
+
+// GetUserErrors returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload) GetUserErrors() []UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload
+		Publishable json.RawMessage `json:"publishable"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Publishable
+		src := firstPass.Publishable
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable)
+			err = __unmarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload.Publishable: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayload struct {
+	Publishable json.RawMessage `json:"publishable"`
+
+	UserErrors []UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError `json:"userErrors"`
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload) __premarshalJSON() (*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayload, error) {
+	var retval __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayload
+
+	{
+
+		dst := &retval.Publishable
+		src := v.Publishable
+		if src != nil {
+			var err error
+			*dst, err = __marshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload.Publishable: %w", err)
+			}
+		}
+	}
+	retval.UserErrors = v.UserErrors
+	return &retval, nil
+}
+
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable includes the requested fields of the GraphQL interface Publishable.
+//
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable is implemented by the following types:
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant
+// The GraphQL type's documentation follows.
+//
+// Represents a resource that can be published to a channel.
+// A publishable resource can be either a Product or Collection.
+type UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable interface {
+	implementsGraphQLInterfaceUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+	PublicationsOfPublishable
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection) implementsGraphQLInterfaceUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable() {
+}
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct) implementsGraphQLInterfaceUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable() {
+}
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant) implementsGraphQLInterfaceUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable() {
+}
+
+func __unmarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable(b []byte, v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "Collection":
+		*v = new(UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection)
+		return json.Unmarshal(b, *v)
+	case "Product":
+		*v = new(UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct)
+		return json.Unmarshal(b, *v)
+	case "ProductVariant":
+		*v = new(UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Publishable.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable(v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection:
+		typename = "Collection"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct:
+		typename = "Product"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant:
+		typename = "ProductVariant"
+
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
+		result := struct {
+			TypeName string `json:"__typename"`
+			*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant
+		}{typename, premarshaled}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishable: "%T"`, v)
+	}
+}
+
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection struct {
+	Typename                            *string `json:"__typename"`
+	PublicationsOfPublishableCollection `json:"-"`
+}
+
+// GetTypename returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection.Typename, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection) GetTypename() *string {
+	return v.Typename
+}
+
+// GetResourcePublicationsV2 returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableCollection)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection struct {
+	Typename *string `json:"__typename"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection) __premarshalJSON() (*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection, error) {
+	var retval __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableCollection
+
+	retval.Typename = v.Typename
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableCollection.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct struct {
+	Typename                         *string `json:"__typename"`
+	PublicationsOfPublishableProduct `json:"-"`
+}
+
+// GetTypename returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct.Typename, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct) GetTypename() *string {
+	return v.Typename
+}
+
+// GetResourcePublicationsV2 returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableProduct.ResourcePublicationsV2
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableProduct)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct struct {
+	Typename *string `json:"__typename"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct) __premarshalJSON() (*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct, error) {
+	var retval __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProduct
+
+	retval.Typename = v.Typename
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableProduct.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant struct {
+	Typename                                *string `json:"__typename"`
+	PublicationsOfPublishableProductVariant `json:"-"`
+}
+
+// GetTypename returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant.Typename, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant) GetTypename() *string {
+	return v.Typename
+}
+
+// GetResourcePublicationsV2 returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.PublicationsOfPublishableProductVariant.ResourcePublicationsV2
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PublicationsOfPublishableProductVariant)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant struct {
+	Typename *string `json:"__typename"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant) __premarshalJSON() (*__premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant, error) {
+	var retval __premarshalUnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadPublishableProductVariant
+
+	retval.Typename = v.Typename
+	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableProductVariant.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// UnpublishPublishableResponse is returned by UnpublishPublishable on success.
+type UnpublishPublishableResponse struct {
+	// Unpublishes a resource, such as a [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) or [`Collection`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection), from one or more [publications](https://shopify.dev/docs/api/admin-graphql/latest/objects/Publication). The resource remains in your store but becomes unavailable to customers.
+	//
+	// For products to be visible in a channel, they must have an active [`ProductStatus`](https://shopify.dev/docs/api/admin-graphql/latest/enums/ProductStatus).
+	PublishableUnpublish *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload `json:"publishableUnpublish"`
+}
+
+// GetPublishableUnpublish returns UnpublishPublishableResponse.PublishableUnpublish, and is useful for accessing the field via an interface.
+func (v *UnpublishPublishableResponse) GetPublishableUnpublish() *UnpublishPublishablePublishableUnpublishPublishableUnpublishPayload {
+	return v.PublishableUnpublish
+}
+
+// UpdateBlogBlogUpdateBlogUpdatePayload includes the requested fields of the GraphQL type BlogUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `blogUpdate` mutation.
+type UpdateBlogBlogUpdateBlogUpdatePayload struct {
+	// The blog that was updated.
+	Blog *UpdateBlogBlogUpdateBlogUpdatePayloadBlog `json:"blog"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError `json:"userErrors"`
+}
+
+// GetBlog returns UpdateBlogBlogUpdateBlogUpdatePayload.Blog, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayload) GetBlog() *UpdateBlogBlogUpdateBlogUpdatePayloadBlog {
+	return v.Blog
+}
+
+// GetUserErrors returns UpdateBlogBlogUpdateBlogUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayload) GetUserErrors() []UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError {
+	return v.UserErrors
+}
+
+// UpdateBlogBlogUpdateBlogUpdatePayloadBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type UpdateBlogBlogUpdateBlogUpdatePayloadBlog struct {
+	BlogFields `json:"-"`
+}
+
+// GetId returns UpdateBlogBlogUpdateBlogUpdatePayloadBlog.Id, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) GetId() string { return v.BlogFields.Id }
+
+// GetHandle returns UpdateBlogBlogUpdateBlogUpdatePayloadBlog.Handle, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) GetHandle() string { return v.BlogFields.Handle }
+
+// GetTitle returns UpdateBlogBlogUpdateBlogUpdatePayloadBlog.Title, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) GetTitle() string { return v.BlogFields.Title }
+
+// GetCommentPolicy returns UpdateBlogBlogUpdateBlogUpdatePayloadBlog.CommentPolicy, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) GetCommentPolicy() CommentPolicy {
+	return v.BlogFields.CommentPolicy
+}
+
+// GetTemplateSuffix returns UpdateBlogBlogUpdateBlogUpdatePayloadBlog.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) GetTemplateSuffix() *string {
+	return v.BlogFields.TemplateSuffix
+}
+
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateBlogBlogUpdateBlogUpdatePayloadBlog
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateBlogBlogUpdateBlogUpdatePayloadBlog = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.BlogFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateBlogBlogUpdateBlogUpdatePayloadBlog struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	CommentPolicy CommentPolicy `json:"commentPolicy"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadBlog) __premarshalJSON() (*__premarshalUpdateBlogBlogUpdateBlogUpdatePayloadBlog, error) {
+	var retval __premarshalUpdateBlogBlogUpdateBlogUpdatePayloadBlog
+
+	retval.Id = v.BlogFields.Id
+	retval.Handle = v.BlogFields.Handle
+	retval.Title = v.BlogFields.Title
+	retval.CommentPolicy = v.BlogFields.CommentPolicy
+	retval.TemplateSuffix = v.BlogFields.TemplateSuffix
+	return &retval, nil
+}
+
+// UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError includes the requested fields of the GraphQL type BlogUpdateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `BlogUpdate`.
+type UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateBlogBlogUpdateBlogUpdatePayloadUserErrorsBlogUpdateUserError) GetMessage() string {
+	return v.Message
+}
+
+// UpdateBlogResponse is returned by UpdateBlog on success.
+type UpdateBlogResponse struct {
+	// Updates an existing blog's configuration and settings. This mutation allows merchants to modify blog properties to keep their content strategy current.
+	//
+	// For example, a merchant might update their blog's title from "Company News" to "Sustainability Stories" when shifting their content focus, or modify the handle to improve URL structure.
+	//
+	// Use the `blogUpdate` mutation to:
+	// - Change blog titles for rebranding
+	// - Modify blog handles for better URLs
+	// - Adjust comment settings and moderation preferences
+	//
+	// The mutation returns the updated blog with any validation errors.
+	BlogUpdate *UpdateBlogBlogUpdateBlogUpdatePayload `json:"blogUpdate"`
+}
+
+// GetBlogUpdate returns UpdateBlogResponse.BlogUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateBlogResponse) GetBlogUpdate() *UpdateBlogBlogUpdateBlogUpdatePayload {
+	return v.BlogUpdate
+}
+
 // UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload includes the requested fields of the GraphQL type CheckoutAndAccountsConfigurationUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -13467,6 +28164,226 @@ type UpdateCheckoutAndAccountsConfigurationResponse struct {
 // GetCheckoutAndAccountsConfigurationUpdate returns UpdateCheckoutAndAccountsConfigurationResponse.CheckoutAndAccountsConfigurationUpdate, and is useful for accessing the field via an interface.
 func (v *UpdateCheckoutAndAccountsConfigurationResponse) GetCheckoutAndAccountsConfigurationUpdate() *UpdateCheckoutAndAccountsConfigurationCheckoutAndAccountsConfigurationUpdateCheckoutAndAccountsConfigurationUpdatePayload {
 	return v.CheckoutAndAccountsConfigurationUpdate
+}
+
+// UpdateCollectionCollectionUpdateCollectionUpdatePayload includes the requested fields of the GraphQL type CollectionUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `collectionUpdate` mutation.
+type UpdateCollectionCollectionUpdateCollectionUpdatePayload struct {
+	// The updated collection.
+	Collection *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection `json:"collection"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetCollection returns UpdateCollectionCollectionUpdateCollectionUpdatePayload.Collection, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayload) GetCollection() *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection {
+	return v.Collection
+}
+
+// GetUserErrors returns UpdateCollectionCollectionUpdateCollectionUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayload) GetUserErrors() []UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection struct {
+	CollectionFields `json:"-"`
+}
+
+// GetId returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.Id, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetId() string {
+	return v.CollectionFields.Id
+}
+
+// GetHandle returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.Handle, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetHandle() string {
+	return v.CollectionFields.Handle
+}
+
+// GetTitle returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.Title, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetTitle() string {
+	return v.CollectionFields.Title
+}
+
+// GetDescriptionHtml returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.DescriptionHtml, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetDescriptionHtml() string {
+	return v.CollectionFields.DescriptionHtml
+}
+
+// GetSortOrder returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.SortOrder, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetSortOrder() CollectionSortOrder {
+	return v.CollectionFields.SortOrder
+}
+
+// GetTemplateSuffix returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetTemplateSuffix() *string {
+	return v.CollectionFields.TemplateSuffix
+}
+
+// GetSeo returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.Seo, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetSeo() CollectionFieldsSeoSEO {
+	return v.CollectionFields.Seo
+}
+
+// GetSources returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.Sources, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetSources() json.RawMessage {
+	return v.CollectionFields.Sources
+}
+
+// GetResourcePublicationsV2 returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.ResourcePublicationsV2, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetResourcePublicationsV2() PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection {
+	return v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+}
+
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.CollectionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	DescriptionHtml string `json:"descriptionHtml"`
+
+	SortOrder CollectionSortOrder `json:"sortOrder"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+
+	Sources json.RawMessage `json:"sources"`
+
+	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
+}
+
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) __premarshalJSON() (*__premarshalUpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection, error) {
+	var retval __premarshalUpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection
+
+	retval.Id = v.CollectionFields.Id
+	retval.Handle = v.CollectionFields.Handle
+	retval.Title = v.CollectionFields.Title
+	retval.DescriptionHtml = v.CollectionFields.DescriptionHtml
+	retval.SortOrder = v.CollectionFields.SortOrder
+	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
+	retval.Seo = v.CollectionFields.Seo
+	retval.Sources = v.CollectionFields.Sources
+	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
+	return &retval, nil
+}
+
+// UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// UpdateCollectionResponse is returned by UpdateCollection on success.
+type UpdateCollectionResponse struct {
+	// Updates a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection),
+	// modifying its properties, products, or publication settings. Collections help organize
+	// [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) together
+	// in the [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	//
+	// Use the `collectionUpdate` mutation to programmatically modify collections in scenarios such as:
+	//
+	// - Updating collection details, like title, description, or image
+	// - Modifying SEO metadata for better search visibility
+	// - Changing which products are included in a collection by updating its rules, sources, or conditions
+	// - Updating custom data using [metafields](https://shopify.dev/docs/apps/build/custom-data/metafields)
+	//
+	// Collections can include products manually and can also include products automatically based on rules, sources,
+	// or conditions. When product membership is updated through rules, sources, or conditions, the operation might
+	// be processed asynchronously. In these cases, the mutation returns a [`job`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Job) object
+	// that you can use to track the progress of the update.
+	//
+	// To publish or unpublish collections to specific sales channels, use the dedicated
+	// [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish) and
+	// [`publishableUnpublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishableUnpublish) mutations.
+	//
+	// Learn more about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+	CollectionUpdate *UpdateCollectionCollectionUpdateCollectionUpdatePayload `json:"collectionUpdate"`
+}
+
+// GetCollectionUpdate returns UpdateCollectionResponse.CollectionUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionResponse) GetCollectionUpdate() *UpdateCollectionCollectionUpdateCollectionUpdatePayload {
+	return v.CollectionUpdate
 }
 
 // UpdateConsentPolicyConsentPolicyUpdateConsentPolicyUpdatePayload includes the requested fields of the GraphQL type ConsentPolicyUpdatePayload.
@@ -13694,6 +28611,204 @@ type UpdateDeliveryProfileResponse struct {
 // GetDeliveryProfileUpdate returns UpdateDeliveryProfileResponse.DeliveryProfileUpdate, and is useful for accessing the field via an interface.
 func (v *UpdateDeliveryProfileResponse) GetDeliveryProfileUpdate() *UpdateDeliveryProfileDeliveryProfileUpdateDeliveryProfileUpdatePayload {
 	return v.DeliveryProfileUpdate
+}
+
+// UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayload includes the requested fields of the GraphQL type DiscountAutomaticBasicUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountAutomaticBasicUpdate` mutation.
+type UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayload struct {
+	// The automatic discount that was updated.
+	AutomaticDiscountNode *UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode `json:"automaticDiscountNode"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetAutomaticDiscountNode returns UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayload.AutomaticDiscountNode, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayload) GetAutomaticDiscountNode() *UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode {
+	return v.AutomaticDiscountNode
+}
+
+// GetUserErrors returns UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode includes the requested fields of the GraphQL type DiscountAutomaticNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticNode` object enables you to manage [automatic discounts](https://help.shopify.com/manual/discounts/discount-types#automatic-discounts) that are applied when an order meets specific criteria. You can create amount off, free shipping, or buy X get Y automatic discounts. For example, you can offer customers a free shipping discount that applies when conditions are met. Or you can offer customers a buy X get Y discount that's automatically applied when customers spend a specified amount of money, or a specified quantity of products.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode.Id, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode) GetId() string {
+	return v.Id
+}
+
+// UpdateDiscountAutomaticBasicResponse is returned by UpdateDiscountAutomaticBasic on success.
+type UpdateDiscountAutomaticBasicResponse struct {
+	// Updates an existing
+	// [amount off discount](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount)
+	// that's automatically applied on a cart and at checkout.
+	//
+	// > Note:
+	// > To update code discounts, use the
+	// [`discountCodeBasicUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountCodeBasicUpdate)
+	// mutation instead.
+	DiscountAutomaticBasicUpdate *UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayload `json:"discountAutomaticBasicUpdate"`
+}
+
+// GetDiscountAutomaticBasicUpdate returns UpdateDiscountAutomaticBasicResponse.DiscountAutomaticBasicUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountAutomaticBasicResponse) GetDiscountAutomaticBasicUpdate() *UpdateDiscountAutomaticBasicDiscountAutomaticBasicUpdateDiscountAutomaticBasicUpdatePayload {
+	return v.DiscountAutomaticBasicUpdate
+}
+
+// UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayload includes the requested fields of the GraphQL type DiscountCodeBasicUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountCodeBasicUpdate` mutation.
+type UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayload struct {
+	// The discount code that was updated.
+	CodeDiscountNode *UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayloadCodeDiscountNodeDiscountCodeNode `json:"codeDiscountNode"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetCodeDiscountNode returns UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayload.CodeDiscountNode, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayload) GetCodeDiscountNode() *UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayloadCodeDiscountNodeDiscountCodeNode {
+	return v.CodeDiscountNode
+}
+
+// GetUserErrors returns UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayloadCodeDiscountNodeDiscountCodeNode includes the requested fields of the GraphQL type DiscountCodeNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeNode` object enables you to manage [code discounts](https://help.shopify.com/manual/discounts/discount-types#discount-codes) that are applied when customers enter a code at checkout. For example, you can offer discounts where customers have to enter a code to redeem an amount off discount on products, variants, or collections in a store. Or, you can offer discounts where customers have to enter a code to get free shipping. Merchants can create and share discount codes individually with customers.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayloadCodeDiscountNodeDiscountCodeNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayloadCodeDiscountNodeDiscountCodeNode.Id, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayloadCodeDiscountNodeDiscountCodeNode) GetId() string {
+	return v.Id
+}
+
+// UpdateDiscountCodeBasicResponse is returned by UpdateDiscountCodeBasic on success.
+type UpdateDiscountCodeBasicResponse struct {
+	// Updates an [amount off discount](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount) that's applied on a cart and at checkout when a customer enters a code. Amount off discounts can be a percentage off or a fixed amount off.
+	//
+	// > Note:
+	// > To update discounts that are automatically applied on a cart and at checkout, use the [`discountAutomaticBasicUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountAutomaticBasicUpdate) mutation.
+	DiscountCodeBasicUpdate *UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayload `json:"discountCodeBasicUpdate"`
+}
+
+// GetDiscountCodeBasicUpdate returns UpdateDiscountCodeBasicResponse.DiscountCodeBasicUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountCodeBasicResponse) GetDiscountCodeBasicUpdate() *UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayload {
+	return v.DiscountCodeBasicUpdate
+}
+
+// UpdateFileFileUpdateFileUpdatePayload includes the requested fields of the GraphQL type FileUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `fileUpdate` mutation.
+type UpdateFileFileUpdateFileUpdatePayload struct {
+	// The list of updated files.
+	Files json.RawMessage `json:"files"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError `json:"userErrors"`
+}
+
+// GetFiles returns UpdateFileFileUpdateFileUpdatePayload.Files, and is useful for accessing the field via an interface.
+func (v *UpdateFileFileUpdateFileUpdatePayload) GetFiles() json.RawMessage { return v.Files }
+
+// GetUserErrors returns UpdateFileFileUpdateFileUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateFileFileUpdateFileUpdatePayload) GetUserErrors() []UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError {
+	return v.UserErrors
+}
+
+// UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError includes the requested fields of the GraphQL type FilesUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that happens during the execution of a Files API query or mutation.
+type UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *FilesErrorCode `json:"code"`
+}
+
+// GetField returns UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError.Code, and is useful for accessing the field via an interface.
+func (v *UpdateFileFileUpdateFileUpdatePayloadUserErrorsFilesUserError) GetCode() *FilesErrorCode {
+	return v.Code
+}
+
+// UpdateFileResponse is returned by UpdateFile on success.
+type UpdateFileResponse struct {
+	// Updates properties, content, and metadata associated with an existing file asset that has already been uploaded to Shopify.
+	//
+	// Use the `fileUpdate` mutation to modify various aspects of files already stored in your store.
+	// Files can be updated individually or in batches.
+	//
+	// The `fileUpdate` mutation supports updating multiple file properties:
+	//
+	// - **Alt text**: Update accessibility descriptions for images and other media.
+	// - **File content**: Replace image or generic file content while maintaining the same URL.
+	// - **Filename**: Modify file names (extension must match the original).
+	// - **Product references**: Add or remove associations between files and products. Removing file-product associations
+	// deletes the file from the product's media gallery and clears the image from any product variants that were using it.
+	//
+	// The mutation handles different file types with specific capabilities:
+	//
+	// - **Images**: Update preview images, original source, filename, and alt text.
+	// - **Generic files**: Update original source, filename, and alt text.
+	// - **Videos and 3D models**: Update alt text and product references.
+	//
+	// > Note:
+	// > Files must be in `ready` state before they can be updated. The mutation includes file locking to prevent
+	// > conflicts during updates. You can't simultaneously update both `originalSource` and `previewImageSource`.
+	//
+	// After updating files, you can use related mutations for additional file management:
+	//
+	// - [`fileCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileCreate):
+	// Create new file assets from external URLs or staged uploads.
+	// - [`fileDelete`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileDelete):
+	// Remove files from your store when they are no longer needed.
+	//
+	// Learn how to manage
+	// [product media and file assets](https://shopify.dev/docs/apps/build/online-store/product-media)
+	// in your app.
+	FileUpdate *UpdateFileFileUpdateFileUpdatePayload `json:"fileUpdate"`
+}
+
+// GetFileUpdate returns UpdateFileResponse.FileUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateFileResponse) GetFileUpdate() *UpdateFileFileUpdateFileUpdatePayload {
+	return v.FileUpdate
 }
 
 // UpdateMarketMarketUpdateMarketUpdatePayload includes the requested fields of the GraphQL type MarketUpdatePayload.
@@ -14387,6 +29502,288 @@ func (v *UpdateMetaobjectDefinitionResponse) GetMetaobjectDefinitionUpdate() *Up
 	return v.MetaobjectDefinitionUpdate
 }
 
+// UpdatePagePageUpdatePageUpdatePayload includes the requested fields of the GraphQL type PageUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `pageUpdate` mutation.
+type UpdatePagePageUpdatePageUpdatePayload struct {
+	// The page that was updated.
+	Page *UpdatePagePageUpdatePageUpdatePayloadPage `json:"page"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError `json:"userErrors"`
+}
+
+// GetPage returns UpdatePagePageUpdatePageUpdatePayload.Page, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayload) GetPage() *UpdatePagePageUpdatePageUpdatePayloadPage {
+	return v.Page
+}
+
+// GetUserErrors returns UpdatePagePageUpdatePageUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayload) GetUserErrors() []UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError {
+	return v.UserErrors
+}
+
+// UpdatePagePageUpdatePageUpdatePayloadPage includes the requested fields of the GraphQL type Page.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type UpdatePagePageUpdatePageUpdatePayloadPage struct {
+	PageFields `json:"-"`
+}
+
+// GetId returns UpdatePagePageUpdatePageUpdatePayloadPage.Id, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) GetId() string { return v.PageFields.Id }
+
+// GetHandle returns UpdatePagePageUpdatePageUpdatePayloadPage.Handle, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) GetHandle() string { return v.PageFields.Handle }
+
+// GetTitle returns UpdatePagePageUpdatePageUpdatePayloadPage.Title, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) GetTitle() string { return v.PageFields.Title }
+
+// GetBody returns UpdatePagePageUpdatePageUpdatePayloadPage.Body, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) GetBody() string { return v.PageFields.Body }
+
+// GetIsPublished returns UpdatePagePageUpdatePageUpdatePayloadPage.IsPublished, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) GetIsPublished() bool {
+	return v.PageFields.IsPublished
+}
+
+// GetTemplateSuffix returns UpdatePagePageUpdatePageUpdatePayloadPage.TemplateSuffix, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) GetTemplateSuffix() *string {
+	return v.PageFields.TemplateSuffix
+}
+
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdatePagePageUpdatePageUpdatePayloadPage
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdatePagePageUpdatePageUpdatePayloadPage = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.PageFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdatePagePageUpdatePageUpdatePayloadPage struct {
+	Id string `json:"id"`
+
+	Handle string `json:"handle"`
+
+	Title string `json:"title"`
+
+	Body string `json:"body"`
+
+	IsPublished bool `json:"isPublished"`
+
+	TemplateSuffix *string `json:"templateSuffix"`
+}
+
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdatePagePageUpdatePageUpdatePayloadPage) __premarshalJSON() (*__premarshalUpdatePagePageUpdatePageUpdatePayloadPage, error) {
+	var retval __premarshalUpdatePagePageUpdatePageUpdatePayloadPage
+
+	retval.Id = v.PageFields.Id
+	retval.Handle = v.PageFields.Handle
+	retval.Title = v.PageFields.Title
+	retval.Body = v.PageFields.Body
+	retval.IsPublished = v.PageFields.IsPublished
+	retval.TemplateSuffix = v.PageFields.TemplateSuffix
+	return &retval, nil
+}
+
+// UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError includes the requested fields of the GraphQL type PageUpdateUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `PageUpdate`.
+type UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdatePagePageUpdatePageUpdatePayloadUserErrorsPageUpdateUserError) GetMessage() string {
+	return v.Message
+}
+
+// UpdatePageResponse is returned by UpdatePage on success.
+type UpdatePageResponse struct {
+	// Updates an existing page's content and settings.
+	//
+	// For example, merchants can update their "Shipping Policy" page when rates change, or refresh their "About Us" page with new team information.
+	//
+	// Use the `pageUpdate` mutation to:
+	// - Update page content and titles
+	// - Modify publication status
+	// - Change page handles for URL structure
+	// - Adjust template settings
+	//
+	// The mutation supports partial updates, allowing specific changes while preserving other page properties.
+	PageUpdate *UpdatePagePageUpdatePageUpdatePayload `json:"pageUpdate"`
+}
+
+// GetPageUpdate returns UpdatePageResponse.PageUpdate, and is useful for accessing the field via an interface.
+func (v *UpdatePageResponse) GetPageUpdate() *UpdatePagePageUpdatePageUpdatePayload {
+	return v.PageUpdate
+}
+
+// UpdateSegmentResponse is returned by UpdateSegment on success.
+type UpdateSegmentResponse struct {
+	// Updates a segment.
+	SegmentUpdate *UpdateSegmentSegmentUpdateSegmentUpdatePayload `json:"segmentUpdate"`
+}
+
+// GetSegmentUpdate returns UpdateSegmentResponse.SegmentUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentResponse) GetSegmentUpdate() *UpdateSegmentSegmentUpdateSegmentUpdatePayload {
+	return v.SegmentUpdate
+}
+
+// UpdateSegmentSegmentUpdateSegmentUpdatePayload includes the requested fields of the GraphQL type SegmentUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `segmentUpdate` mutation.
+type UpdateSegmentSegmentUpdateSegmentUpdatePayload struct {
+	// The updated segment.
+	Segment *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment `json:"segment"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetSegment returns UpdateSegmentSegmentUpdateSegmentUpdatePayload.Segment, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayload) GetSegment() *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment {
+	return v.Segment
+}
+
+// GetUserErrors returns UpdateSegmentSegmentUpdateSegmentUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayload) GetUserErrors() []UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment includes the requested fields of the GraphQL type Segment.
+// The GraphQL type's documentation follows.
+//
+// A group of [customers](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) that meet specific criteria defined through [ShopifyQL query](https://shopify.dev/docs/api/shopifyql/segment-query-language-reference) conditions. Common use cases for segments include customer analytics, targeted marketing campaigns, and automated discount eligibility.
+//
+// The segment's [`query`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-query) field contains ShopifyQL conditions that determine membership, such as purchase history, location, or engagement patterns. Tracks when the segment was created with [`creationDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-creationDate) and when it was last modified with [`lastEditDate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Segment#field-lastEditDate).
+type UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment struct {
+	SegmentFields `json:"-"`
+}
+
+// GetId returns UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment.Id, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment) GetId() string {
+	return v.SegmentFields.Id
+}
+
+// GetName returns UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment.Name, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment) GetName() string {
+	return v.SegmentFields.Name
+}
+
+// GetQuery returns UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment.Query, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment) GetQuery() string {
+	return v.SegmentFields.Query
+}
+
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.SegmentFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment struct {
+	Id string `json:"id"`
+
+	Name string `json:"name"`
+
+	Query string `json:"query"`
+}
+
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment) __premarshalJSON() (*__premarshalUpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment, error) {
+	var retval __premarshalUpdateSegmentSegmentUpdateSegmentUpdatePayloadSegment
+
+	retval.Id = v.SegmentFields.Id
+	retval.Name = v.SegmentFields.Name
+	retval.Query = v.SegmentFields.Query
+	return &retval, nil
+}
+
+// UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateSegmentSegmentUpdateSegmentUpdatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
 // UpdateShopLocaleResponse is returned by UpdateShopLocale on success.
 type UpdateShopLocaleResponse struct {
 	// Updates a locale for a shop.
@@ -14838,6 +30235,220 @@ func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMa
 	return &retval, nil
 }
 
+// TODO(verify): whether reading inventoryItem needs read_inventory; every scope is granted on the dev store.
+type VariantFields struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// The price of the product variant in the default shop currency.
+	Price string `json:"price"`
+	// The compare-at price of the variant in the default shop currency.
+	CompareAtPrice *string `json:"compareAtPrice"`
+	// A case-sensitive identifier for the product variant in the shop.
+	// Required in order to connect to a fulfillment service.
+	Sku *string `json:"sku"`
+	// The barcodes associated with the product variant.
+	//
+	// A variant supports up to 20 barcodes, each of
+	// which can have a
+	// [type](https://shopify.dev/docs/api/admin-graphql/latest/enums/BarcodeType).
+	// Barcode types are validated against their respective format standards.
+	Barcodes VariantFieldsBarcodesProductVariantBarcodeConnection `json:"barcodes"`
+	// Whether customers are allowed to place an order for the product variant when it's out of stock.
+	InventoryPolicy ProductVariantInventoryPolicy `json:"inventoryPolicy"`
+	// Whether a tax is charged when the product variant is sold.
+	Taxable bool `json:"taxable"`
+	// List of product options applied to the variant.
+	SelectedOptions []VariantFieldsSelectedOptionsSelectedOption `json:"selectedOptions"`
+	// The inventory item, which is used to query for inventory information.
+	InventoryItem VariantFieldsInventoryItem `json:"inventoryItem"`
+}
+
+// GetId returns VariantFields.Id, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetId() string { return v.Id }
+
+// GetPrice returns VariantFields.Price, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetPrice() string { return v.Price }
+
+// GetCompareAtPrice returns VariantFields.CompareAtPrice, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetCompareAtPrice() *string { return v.CompareAtPrice }
+
+// GetSku returns VariantFields.Sku, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetSku() *string { return v.Sku }
+
+// GetBarcodes returns VariantFields.Barcodes, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetBarcodes() VariantFieldsBarcodesProductVariantBarcodeConnection {
+	return v.Barcodes
+}
+
+// GetInventoryPolicy returns VariantFields.InventoryPolicy, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetInventoryPolicy() ProductVariantInventoryPolicy { return v.InventoryPolicy }
+
+// GetTaxable returns VariantFields.Taxable, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetTaxable() bool { return v.Taxable }
+
+// GetSelectedOptions returns VariantFields.SelectedOptions, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetSelectedOptions() []VariantFieldsSelectedOptionsSelectedOption {
+	return v.SelectedOptions
+}
+
+// GetInventoryItem returns VariantFields.InventoryItem, and is useful for accessing the field via an interface.
+func (v *VariantFields) GetInventoryItem() VariantFieldsInventoryItem { return v.InventoryItem }
+
+// VariantFieldsBarcodesProductVariantBarcodeConnection includes the requested fields of the GraphQL type ProductVariantBarcodeConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ProductVariantBarcodes.
+type VariantFieldsBarcodesProductVariantBarcodeConnection struct {
+	// A list of nodes that are contained in ProductVariantBarcodeEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode `json:"nodes"`
+}
+
+// GetNodes returns VariantFieldsBarcodesProductVariantBarcodeConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *VariantFieldsBarcodesProductVariantBarcodeConnection) GetNodes() []VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode {
+	return v.Nodes
+}
+
+// VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode includes the requested fields of the GraphQL type ProductVariantBarcode.
+// The GraphQL type's documentation follows.
+//
+// A barcode associated with a product variant.
+//
+// A variant supports up to 20 barcodes, each of
+// which can have a
+// [type](https://shopify.dev/docs/api/admin-graphql/latest/enums/BarcodeType).
+// Barcode types are validated against their respective format standards.
+type VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode struct {
+	// The value of the barcode. For example, `9780262033848`. Maximum length: 255 characters.
+	Value string `json:"value"`
+	// The associated standard that the barcode conforms to. Barcode types are validated against their
+	// respective format standards. A `null` format denotes no type provided on write and the value is
+	// stored as entered.
+	Type *BarcodeType `json:"type"`
+}
+
+// GetValue returns VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode.Value, and is useful for accessing the field via an interface.
+func (v *VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode) GetValue() string {
+	return v.Value
+}
+
+// GetType returns VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode.Type, and is useful for accessing the field via an interface.
+func (v *VariantFieldsBarcodesProductVariantBarcodeConnectionNodesProductVariantBarcode) GetType() *BarcodeType {
+	return v.Type
+}
+
+// VariantFieldsInventoryItem includes the requested fields of the GraphQL type InventoryItem.
+// The GraphQL type's documentation follows.
+//
+// An inventory item represents the inventory for a [product variant](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant). It holds the stock keeping unit (SKU), whether quantities are tracked, shipping requirements, and customs information.
+//
+// Use the [`inventoryLevels`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem#field-InventoryItem.fields.inventoryLevels) field to get the [inventory level](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryLevel) for each location that stocks the item, and the level's [`quantities`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryLevel#field-InventoryLevel.fields.quantities) field to read its inventory quantities by name. Quantity names represent the [inventory states](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps#inventory-states) that merchants use to track inventory.
+//
+// Learn more about [inventory object relationships](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps/manage-quantities-states#inventory-object-relationships).
+type VariantFieldsInventoryItem struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// Whether inventory levels are tracked for the item.
+	Tracked bool `json:"tracked"`
+	// Whether a customer needs to provide a shipping address when placing an order containing the inventory item.
+	RequiresShipping bool `json:"requiresShipping"`
+	// The packaging dimensions of the inventory item.
+	Measurement VariantFieldsInventoryItemMeasurement `json:"measurement"`
+}
+
+// GetId returns VariantFieldsInventoryItem.Id, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItem) GetId() string { return v.Id }
+
+// GetTracked returns VariantFieldsInventoryItem.Tracked, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItem) GetTracked() bool { return v.Tracked }
+
+// GetRequiresShipping returns VariantFieldsInventoryItem.RequiresShipping, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItem) GetRequiresShipping() bool { return v.RequiresShipping }
+
+// GetMeasurement returns VariantFieldsInventoryItem.Measurement, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItem) GetMeasurement() VariantFieldsInventoryItemMeasurement {
+	return v.Measurement
+}
+
+// VariantFieldsInventoryItemMeasurement includes the requested fields of the GraphQL type InventoryItemMeasurement.
+// The GraphQL type's documentation follows.
+//
+// Weight information for an [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem) when packaged. Provides the weight specification used for inventory management and shipping calculations. Learn more about [managing inventory](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps).
+type VariantFieldsInventoryItemMeasurement struct {
+	// The weight of the inventory item.
+	Weight *VariantFieldsInventoryItemMeasurementWeight `json:"weight"`
+}
+
+// GetWeight returns VariantFieldsInventoryItemMeasurement.Weight, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItemMeasurement) GetWeight() *VariantFieldsInventoryItemMeasurementWeight {
+	return v.Weight
+}
+
+// VariantFieldsInventoryItemMeasurementWeight includes the requested fields of the GraphQL type Weight.
+// The GraphQL type's documentation follows.
+//
+// A weight measurement with its numeric value and unit. Used throughout the API, for example in shipping calculations, delivery conditions, order line items, and inventory measurements.
+//
+// The weight combines a decimal value with a standard unit of measurement to ensure consistent weight handling across different regional systems.
+type VariantFieldsInventoryItemMeasurementWeight struct {
+	// The weight value using the unit system specified with `unit`.
+	Value float64 `json:"value"`
+	// The unit of measurement for `value`.
+	Unit WeightUnit `json:"unit"`
+}
+
+// GetValue returns VariantFieldsInventoryItemMeasurementWeight.Value, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItemMeasurementWeight) GetValue() float64 { return v.Value }
+
+// GetUnit returns VariantFieldsInventoryItemMeasurementWeight.Unit, and is useful for accessing the field via an interface.
+func (v *VariantFieldsInventoryItemMeasurementWeight) GetUnit() WeightUnit { return v.Unit }
+
+// VariantFieldsSelectedOptionsSelectedOption includes the requested fields of the GraphQL type SelectedOption.
+// The GraphQL type's documentation follows.
+//
+// Properties used by customers to select a product variant.
+// Products can have multiple options, like different sizes or colors.
+type VariantFieldsSelectedOptionsSelectedOption struct {
+	// The product option’s name.
+	Name string `json:"name"`
+	// The product option’s value.
+	Value string `json:"value"`
+}
+
+// GetName returns VariantFieldsSelectedOptionsSelectedOption.Name, and is useful for accessing the field via an interface.
+func (v *VariantFieldsSelectedOptionsSelectedOption) GetName() string { return v.Name }
+
+// GetValue returns VariantFieldsSelectedOptionsSelectedOption.Value, and is useful for accessing the field via an interface.
+func (v *VariantFieldsSelectedOptionsSelectedOption) GetValue() string { return v.Value }
+
+// The input fields required to create or modify a product variant's option value.
+type VariantOptionValueInput struct {
+	// Specifies the product option value by ID.
+	Id *string `json:"id,omitempty"`
+	// Specifies the product option value by name.
+	Name *string `json:"name,omitempty"`
+	// Metafield value associated with an option.
+	LinkedMetafieldValue *string `json:"linkedMetafieldValue,omitempty"`
+	// Specifies the product option by ID.
+	OptionId *string `json:"optionId,omitempty"`
+	// Specifies the product option by name.
+	OptionName *string `json:"optionName,omitempty"`
+}
+
+// GetId returns VariantOptionValueInput.Id, and is useful for accessing the field via an interface.
+func (v *VariantOptionValueInput) GetId() *string { return v.Id }
+
+// GetName returns VariantOptionValueInput.Name, and is useful for accessing the field via an interface.
+func (v *VariantOptionValueInput) GetName() *string { return v.Name }
+
+// GetLinkedMetafieldValue returns VariantOptionValueInput.LinkedMetafieldValue, and is useful for accessing the field via an interface.
+func (v *VariantOptionValueInput) GetLinkedMetafieldValue() *string { return v.LinkedMetafieldValue }
+
+// GetOptionId returns VariantOptionValueInput.OptionId, and is useful for accessing the field via an interface.
+func (v *VariantOptionValueInput) GetOptionId() *string { return v.OptionId }
+
+// GetOptionName returns VariantOptionValueInput.OptionName, and is useful for accessing the field via an interface.
+func (v *VariantOptionValueInput) GetOptionName() *string { return v.OptionName }
+
 // The input fields used to create a web presence.
 type WebPresenceCreateInput struct {
 	// The web presence's domain ID. This field must be `null` if the `subfolderSuffix` isn't `null`.
@@ -15060,6 +30671,54 @@ type __AddLocationInput struct {
 // GetInput returns __AddLocationInput.Input, and is useful for accessing the field via an interface.
 func (v *__AddLocationInput) GetInput() LocationAddInput { return v.Input }
 
+// __CreateArticleInput is used internally by genqlient
+type __CreateArticleInput struct {
+	Article ArticleCreateInput `json:"article"`
+}
+
+// GetArticle returns __CreateArticleInput.Article, and is useful for accessing the field via an interface.
+func (v *__CreateArticleInput) GetArticle() ArticleCreateInput { return v.Article }
+
+// __CreateBlogInput is used internally by genqlient
+type __CreateBlogInput struct {
+	Blog BlogCreateInput `json:"blog"`
+}
+
+// GetBlog returns __CreateBlogInput.Blog, and is useful for accessing the field via an interface.
+func (v *__CreateBlogInput) GetBlog() BlogCreateInput { return v.Blog }
+
+// __CreateCollectionInput is used internally by genqlient
+type __CreateCollectionInput struct {
+	Collection CollectionCreateInput `json:"collection"`
+}
+
+// GetCollection returns __CreateCollectionInput.Collection, and is useful for accessing the field via an interface.
+func (v *__CreateCollectionInput) GetCollection() CollectionCreateInput { return v.Collection }
+
+// __CreateDiscountAutomaticBasicInput is used internally by genqlient
+type __CreateDiscountAutomaticBasicInput struct {
+	Input DiscountAutomaticBasicInput `json:"input"`
+}
+
+// GetInput returns __CreateDiscountAutomaticBasicInput.Input, and is useful for accessing the field via an interface.
+func (v *__CreateDiscountAutomaticBasicInput) GetInput() DiscountAutomaticBasicInput { return v.Input }
+
+// __CreateDiscountCodeBasicInput is used internally by genqlient
+type __CreateDiscountCodeBasicInput struct {
+	Input DiscountCodeBasicInput `json:"input"`
+}
+
+// GetInput returns __CreateDiscountCodeBasicInput.Input, and is useful for accessing the field via an interface.
+func (v *__CreateDiscountCodeBasicInput) GetInput() DiscountCodeBasicInput { return v.Input }
+
+// __CreateFileInput is used internally by genqlient
+type __CreateFileInput struct {
+	Files []FileCreateInput `json:"files"`
+}
+
+// GetFiles returns __CreateFileInput.Files, and is useful for accessing the field via an interface.
+func (v *__CreateFileInput) GetFiles() []FileCreateInput { return v.Files }
+
 // __CreateMarketInput is used internally by genqlient
 type __CreateMarketInput struct {
 	Input MarketCreateInput `json:"input"`
@@ -15104,6 +30763,34 @@ func (v *__CreateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinition
 	return v.Definition
 }
 
+// __CreateMetaobjectInput is used internally by genqlient
+type __CreateMetaobjectInput struct {
+	Metaobject MetaobjectCreateInput `json:"metaobject"`
+}
+
+// GetMetaobject returns __CreateMetaobjectInput.Metaobject, and is useful for accessing the field via an interface.
+func (v *__CreateMetaobjectInput) GetMetaobject() MetaobjectCreateInput { return v.Metaobject }
+
+// __CreatePageInput is used internally by genqlient
+type __CreatePageInput struct {
+	Page PageCreateInput `json:"page"`
+}
+
+// GetPage returns __CreatePageInput.Page, and is useful for accessing the field via an interface.
+func (v *__CreatePageInput) GetPage() PageCreateInput { return v.Page }
+
+// __CreateSegmentInput is used internally by genqlient
+type __CreateSegmentInput struct {
+	Name  string `json:"name"`
+	Query string `json:"query"`
+}
+
+// GetName returns __CreateSegmentInput.Name, and is useful for accessing the field via an interface.
+func (v *__CreateSegmentInput) GetName() string { return v.Name }
+
+// GetQuery returns __CreateSegmentInput.Query, and is useful for accessing the field via an interface.
+func (v *__CreateSegmentInput) GetQuery() string { return v.Query }
+
 // __CreateWebPresenceInput is used internally by genqlient
 type __CreateWebPresenceInput struct {
 	Input WebPresenceCreateInput `json:"input"`
@@ -15123,6 +30810,46 @@ func (v *__DeactivateLocationInput) GetLocationId() string { return v.LocationId
 
 // GetIdempotencyKey returns __DeactivateLocationInput.IdempotencyKey, and is useful for accessing the field via an interface.
 func (v *__DeactivateLocationInput) GetIdempotencyKey() string { return v.IdempotencyKey }
+
+// __DeleteBlogInput is used internally by genqlient
+type __DeleteBlogInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteBlogInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteBlogInput) GetId() string { return v.Id }
+
+// __DeleteCollectionInput is used internally by genqlient
+type __DeleteCollectionInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteCollectionInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteCollectionInput) GetId() string { return v.Id }
+
+// __DeleteDiscountAutomaticInput is used internally by genqlient
+type __DeleteDiscountAutomaticInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteDiscountAutomaticInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteDiscountAutomaticInput) GetId() string { return v.Id }
+
+// __DeleteDiscountCodeInput is used internally by genqlient
+type __DeleteDiscountCodeInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteDiscountCodeInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteDiscountCodeInput) GetId() string { return v.Id }
+
+// __DeleteFileInput is used internally by genqlient
+type __DeleteFileInput struct {
+	Ids []string `json:"ids"`
+}
+
+// GetIds returns __DeleteFileInput.Ids, and is useful for accessing the field via an interface.
+func (v *__DeleteFileInput) GetIds() []string { return v.Ids }
 
 // __DeleteLocationInput is used internally by genqlient
 type __DeleteLocationInput struct {
@@ -15170,6 +30897,38 @@ type __DeleteMetaobjectDefinitionInput struct {
 // GetId returns __DeleteMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteMetaobjectDefinitionInput) GetId() string { return v.Id }
 
+// __DeleteMetaobjectInput is used internally by genqlient
+type __DeleteMetaobjectInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteMetaobjectInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteMetaobjectInput) GetId() string { return v.Id }
+
+// __DeletePageInput is used internally by genqlient
+type __DeletePageInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeletePageInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeletePageInput) GetId() string { return v.Id }
+
+// __DeleteProductInput is used internally by genqlient
+type __DeleteProductInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteProductInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteProductInput) GetId() string { return v.Id }
+
+// __DeleteSegmentInput is used internally by genqlient
+type __DeleteSegmentInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteSegmentInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteSegmentInput) GetId() string { return v.Id }
+
 // __DeleteWebPresenceInput is used internally by genqlient
 type __DeleteWebPresenceInput struct {
 	Id string `json:"id"`
@@ -15214,6 +30973,14 @@ type __EnableShopLocaleInput struct {
 // GetLocale returns __EnableShopLocaleInput.Locale, and is useful for accessing the field via an interface.
 func (v *__EnableShopLocaleInput) GetLocale() string { return v.Locale }
 
+// __FindBlogsInput is used internally by genqlient
+type __FindBlogsInput struct {
+	Query string `json:"query"`
+}
+
+// GetQuery returns __FindBlogsInput.Query, and is useful for accessing the field via an interface.
+func (v *__FindBlogsInput) GetQuery() string { return v.Query }
+
 // __FindLocationsInput is used internally by genqlient
 type __FindLocationsInput struct {
 	Query string `json:"query"`
@@ -15222,6 +30989,38 @@ type __FindLocationsInput struct {
 // GetQuery returns __FindLocationsInput.Query, and is useful for accessing the field via an interface.
 func (v *__FindLocationsInput) GetQuery() string { return v.Query }
 
+// __FindPagesInput is used internally by genqlient
+type __FindPagesInput struct {
+	Query string `json:"query"`
+}
+
+// GetQuery returns __FindPagesInput.Query, and is useful for accessing the field via an interface.
+func (v *__FindPagesInput) GetQuery() string { return v.Query }
+
+// __GetArticleInput is used internally by genqlient
+type __GetArticleInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetArticleInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetArticleInput) GetId() string { return v.Id }
+
+// __GetBlogArticlesCountInput is used internally by genqlient
+type __GetBlogArticlesCountInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetBlogArticlesCountInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetBlogArticlesCountInput) GetId() string { return v.Id }
+
+// __GetBlogInput is used internally by genqlient
+type __GetBlogInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetBlogInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetBlogInput) GetId() string { return v.Id }
+
 // __GetCheckoutAndAccountsConfigurationInput is used internally by genqlient
 type __GetCheckoutAndAccountsConfigurationInput struct {
 	Id string `json:"id"`
@@ -15229,6 +31028,46 @@ type __GetCheckoutAndAccountsConfigurationInput struct {
 
 // GetId returns __GetCheckoutAndAccountsConfigurationInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetCheckoutAndAccountsConfigurationInput) GetId() string { return v.Id }
+
+// __GetCollectionByHandleInput is used internally by genqlient
+type __GetCollectionByHandleInput struct {
+	Handle string `json:"handle"`
+}
+
+// GetHandle returns __GetCollectionByHandleInput.Handle, and is useful for accessing the field via an interface.
+func (v *__GetCollectionByHandleInput) GetHandle() string { return v.Handle }
+
+// __GetCollectionInput is used internally by genqlient
+type __GetCollectionInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetCollectionInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetCollectionInput) GetId() string { return v.Id }
+
+// __GetCollectionPublicationsInput is used internally by genqlient
+type __GetCollectionPublicationsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetCollectionPublicationsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetCollectionPublicationsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetCollectionPublicationsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetCollectionPublicationsInput) GetAfter() *string { return v.After }
+
+// __GetCollectionSelectionsInput is used internally by genqlient
+type __GetCollectionSelectionsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetCollectionSelectionsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetCollectionSelectionsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetCollectionSelectionsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetCollectionSelectionsInput) GetAfter() *string { return v.After }
 
 // __GetConsentPolicyByIDInput is used internally by genqlient
 type __GetConsentPolicyByIDInput struct {
@@ -15257,6 +31096,50 @@ type __GetDeliveryProfileInput struct {
 
 // GetId returns __GetDeliveryProfileInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetDeliveryProfileInput) GetId() string { return v.Id }
+
+// __GetDiscountByCodeInput is used internally by genqlient
+type __GetDiscountByCodeInput struct {
+	Code string `json:"code"`
+}
+
+// GetCode returns __GetDiscountByCodeInput.Code, and is useful for accessing the field via an interface.
+func (v *__GetDiscountByCodeInput) GetCode() string { return v.Code }
+
+// __GetDiscountInput is used internally by genqlient
+type __GetDiscountInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetDiscountInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetDiscountInput) GetId() string { return v.Id }
+
+// __GetDiscountItemsPageInput is used internally by genqlient
+type __GetDiscountItemsPageInput struct {
+	Id          string  `json:"id"`
+	Products    *string `json:"products"`
+	Variants    *string `json:"variants"`
+	Collections *string `json:"collections"`
+}
+
+// GetId returns __GetDiscountItemsPageInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetDiscountItemsPageInput) GetId() string { return v.Id }
+
+// GetProducts returns __GetDiscountItemsPageInput.Products, and is useful for accessing the field via an interface.
+func (v *__GetDiscountItemsPageInput) GetProducts() *string { return v.Products }
+
+// GetVariants returns __GetDiscountItemsPageInput.Variants, and is useful for accessing the field via an interface.
+func (v *__GetDiscountItemsPageInput) GetVariants() *string { return v.Variants }
+
+// GetCollections returns __GetDiscountItemsPageInput.Collections, and is useful for accessing the field via an interface.
+func (v *__GetDiscountItemsPageInput) GetCollections() *string { return v.Collections }
+
+// __GetFileInput is used internally by genqlient
+type __GetFileInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetFileInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetFileInput) GetId() string { return v.Id }
 
 // __GetLocationInput is used internally by genqlient
 type __GetLocationInput struct {
@@ -15300,6 +31183,18 @@ func (v *__GetMetafieldDefinitionInput) GetIdentifier() MetafieldDefinitionIdent
 	return v.Identifier
 }
 
+// __GetMetaobjectByHandleInput is used internally by genqlient
+type __GetMetaobjectByHandleInput struct {
+	ObjectType string `json:"objectType"`
+	Handle     string `json:"handle"`
+}
+
+// GetObjectType returns __GetMetaobjectByHandleInput.ObjectType, and is useful for accessing the field via an interface.
+func (v *__GetMetaobjectByHandleInput) GetObjectType() string { return v.ObjectType }
+
+// GetHandle returns __GetMetaobjectByHandleInput.Handle, and is useful for accessing the field via an interface.
+func (v *__GetMetaobjectByHandleInput) GetHandle() string { return v.Handle }
+
 // __GetMetaobjectDefinitionByTypeInput is used internally by genqlient
 type __GetMetaobjectDefinitionByTypeInput struct {
 	DefinitionType string `json:"definitionType"`
@@ -15316,6 +31211,74 @@ type __GetMetaobjectDefinitionInput struct {
 // GetId returns __GetMetaobjectDefinitionInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetMetaobjectDefinitionInput) GetId() string { return v.Id }
 
+// __GetPageInput is used internally by genqlient
+type __GetPageInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetPageInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetPageInput) GetId() string { return v.Id }
+
+// __GetProductByHandleInput is used internally by genqlient
+type __GetProductByHandleInput struct {
+	Handle string `json:"handle"`
+}
+
+// GetHandle returns __GetProductByHandleInput.Handle, and is useful for accessing the field via an interface.
+func (v *__GetProductByHandleInput) GetHandle() string { return v.Handle }
+
+// __GetProductInput is used internally by genqlient
+type __GetProductInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetProductInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetProductInput) GetId() string { return v.Id }
+
+// __GetProductMediaInput is used internally by genqlient
+type __GetProductMediaInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetProductMediaInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetProductMediaInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetProductMediaInput.After, and is useful for accessing the field via an interface.
+func (v *__GetProductMediaInput) GetAfter() *string { return v.After }
+
+// __GetProductPublicationsInput is used internally by genqlient
+type __GetProductPublicationsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetProductPublicationsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetProductPublicationsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetProductPublicationsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetProductPublicationsInput) GetAfter() *string { return v.After }
+
+// __GetProductVariantsInput is used internally by genqlient
+type __GetProductVariantsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetProductVariantsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetProductVariantsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetProductVariantsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetProductVariantsInput) GetAfter() *string { return v.After }
+
+// __GetSegmentInput is used internally by genqlient
+type __GetSegmentInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetSegmentInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetSegmentInput) GetId() string { return v.Id }
+
 // __GetWebPresenceInput is used internally by genqlient
 type __GetWebPresenceInput struct {
 	Id string `json:"id"`
@@ -15323,6 +31286,14 @@ type __GetWebPresenceInput struct {
 
 // GetId returns __GetWebPresenceInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetWebPresenceInput) GetId() string { return v.Id }
+
+// __ListBlogsInput is used internally by genqlient
+type __ListBlogsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListBlogsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListBlogsInput) GetAfter() *string { return v.After }
 
 // __ListCheckoutAndAccountsConfigurationsInput is used internally by genqlient
 type __ListCheckoutAndAccountsConfigurationsInput struct {
@@ -15336,6 +31307,14 @@ func (v *__ListCheckoutAndAccountsConfigurationsInput) GetQuery() *string { retu
 // GetAfter returns __ListCheckoutAndAccountsConfigurationsInput.After, and is useful for accessing the field via an interface.
 func (v *__ListCheckoutAndAccountsConfigurationsInput) GetAfter() *string { return v.After }
 
+// __ListCollectionsInput is used internally by genqlient
+type __ListCollectionsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListCollectionsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListCollectionsInput) GetAfter() *string { return v.After }
+
 // __ListDeliveryProfilesInput is used internally by genqlient
 type __ListDeliveryProfilesInput struct {
 	After *string `json:"after"`
@@ -15343,6 +31322,30 @@ type __ListDeliveryProfilesInput struct {
 
 // GetAfter returns __ListDeliveryProfilesInput.After, and is useful for accessing the field via an interface.
 func (v *__ListDeliveryProfilesInput) GetAfter() *string { return v.After }
+
+// __ListDiscountsInput is used internally by genqlient
+type __ListDiscountsInput struct {
+	After *string `json:"after"`
+	Query *string `json:"query"`
+}
+
+// GetAfter returns __ListDiscountsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListDiscountsInput) GetAfter() *string { return v.After }
+
+// GetQuery returns __ListDiscountsInput.Query, and is useful for accessing the field via an interface.
+func (v *__ListDiscountsInput) GetQuery() *string { return v.Query }
+
+// __ListFilesInput is used internally by genqlient
+type __ListFilesInput struct {
+	After *string `json:"after"`
+	Query *string `json:"query"`
+}
+
+// GetAfter returns __ListFilesInput.After, and is useful for accessing the field via an interface.
+func (v *__ListFilesInput) GetAfter() *string { return v.After }
+
+// GetQuery returns __ListFilesInput.Query, and is useful for accessing the field via an interface.
+func (v *__ListFilesInput) GetQuery() *string { return v.Query }
 
 // __ListLocationsInput is used internally by genqlient
 type __ListLocationsInput struct {
@@ -15392,6 +31395,22 @@ type __ListMetaobjectDefinitionsInput struct {
 // GetAfter returns __ListMetaobjectDefinitionsInput.After, and is useful for accessing the field via an interface.
 func (v *__ListMetaobjectDefinitionsInput) GetAfter() *string { return v.After }
 
+// __ListPagesInput is used internally by genqlient
+type __ListPagesInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListPagesInput.After, and is useful for accessing the field via an interface.
+func (v *__ListPagesInput) GetAfter() *string { return v.After }
+
+// __ListProductsInput is used internally by genqlient
+type __ListProductsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListProductsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListProductsInput) GetAfter() *string { return v.After }
+
 // __ListPublicationsInput is used internally by genqlient
 type __ListPublicationsInput struct {
 	After *string `json:"after"`
@@ -15400,6 +31419,14 @@ type __ListPublicationsInput struct {
 // GetAfter returns __ListPublicationsInput.After, and is useful for accessing the field via an interface.
 func (v *__ListPublicationsInput) GetAfter() *string { return v.After }
 
+// __ListSegmentsInput is used internally by genqlient
+type __ListSegmentsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListSegmentsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListSegmentsInput) GetAfter() *string { return v.After }
+
 // __ListWebPresencesInput is used internally by genqlient
 type __ListWebPresencesInput struct {
 	After *string `json:"after"`
@@ -15407,6 +31434,54 @@ type __ListWebPresencesInput struct {
 
 // GetAfter returns __ListWebPresencesInput.After, and is useful for accessing the field via an interface.
 func (v *__ListWebPresencesInput) GetAfter() *string { return v.After }
+
+// __PublishPublishableInput is used internally by genqlient
+type __PublishPublishableInput struct {
+	Id    string             `json:"id"`
+	Input []PublicationInput `json:"input"`
+}
+
+// GetId returns __PublishPublishableInput.Id, and is useful for accessing the field via an interface.
+func (v *__PublishPublishableInput) GetId() string { return v.Id }
+
+// GetInput returns __PublishPublishableInput.Input, and is useful for accessing the field via an interface.
+func (v *__PublishPublishableInput) GetInput() []PublicationInput { return v.Input }
+
+// __SetProductInput is used internally by genqlient
+type __SetProductInput struct {
+	Identifier *ProductSetIdentifiers `json:"identifier,omitempty"`
+	Input      ProductSetInput        `json:"input"`
+}
+
+// GetIdentifier returns __SetProductInput.Identifier, and is useful for accessing the field via an interface.
+func (v *__SetProductInput) GetIdentifier() *ProductSetIdentifiers { return v.Identifier }
+
+// GetInput returns __SetProductInput.Input, and is useful for accessing the field via an interface.
+func (v *__SetProductInput) GetInput() ProductSetInput { return v.Input }
+
+// __UnpublishPublishableInput is used internally by genqlient
+type __UnpublishPublishableInput struct {
+	Id    string             `json:"id"`
+	Input []PublicationInput `json:"input"`
+}
+
+// GetId returns __UnpublishPublishableInput.Id, and is useful for accessing the field via an interface.
+func (v *__UnpublishPublishableInput) GetId() string { return v.Id }
+
+// GetInput returns __UnpublishPublishableInput.Input, and is useful for accessing the field via an interface.
+func (v *__UnpublishPublishableInput) GetInput() []PublicationInput { return v.Input }
+
+// __UpdateBlogInput is used internally by genqlient
+type __UpdateBlogInput struct {
+	Id   string          `json:"id"`
+	Blog BlogUpdateInput `json:"blog"`
+}
+
+// GetId returns __UpdateBlogInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateBlogInput) GetId() string { return v.Id }
+
+// GetBlog returns __UpdateBlogInput.Blog, and is useful for accessing the field via an interface.
+func (v *__UpdateBlogInput) GetBlog() BlogUpdateInput { return v.Blog }
 
 // __UpdateCheckoutAndAccountsConfigurationInput is used internally by genqlient
 type __UpdateCheckoutAndAccountsConfigurationInput struct {
@@ -15421,6 +31496,14 @@ func (v *__UpdateCheckoutAndAccountsConfigurationInput) GetId() string { return 
 func (v *__UpdateCheckoutAndAccountsConfigurationInput) GetConfiguration() CheckoutAndAccountsConfigurationInput {
 	return v.Configuration
 }
+
+// __UpdateCollectionInput is used internally by genqlient
+type __UpdateCollectionInput struct {
+	Collection CollectionUpdateInput `json:"collection"`
+}
+
+// GetCollection returns __UpdateCollectionInput.Collection, and is useful for accessing the field via an interface.
+func (v *__UpdateCollectionInput) GetCollection() CollectionUpdateInput { return v.Collection }
 
 // __UpdateConsentPolicyInput is used internally by genqlient
 type __UpdateConsentPolicyInput struct {
@@ -15441,6 +31524,38 @@ func (v *__UpdateDeliveryProfileInput) GetId() string { return v.Id }
 
 // GetProfile returns __UpdateDeliveryProfileInput.Profile, and is useful for accessing the field via an interface.
 func (v *__UpdateDeliveryProfileInput) GetProfile() DeliveryProfileInput { return v.Profile }
+
+// __UpdateDiscountAutomaticBasicInput is used internally by genqlient
+type __UpdateDiscountAutomaticBasicInput struct {
+	Id    string                      `json:"id"`
+	Input DiscountAutomaticBasicInput `json:"input"`
+}
+
+// GetId returns __UpdateDiscountAutomaticBasicInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateDiscountAutomaticBasicInput) GetId() string { return v.Id }
+
+// GetInput returns __UpdateDiscountAutomaticBasicInput.Input, and is useful for accessing the field via an interface.
+func (v *__UpdateDiscountAutomaticBasicInput) GetInput() DiscountAutomaticBasicInput { return v.Input }
+
+// __UpdateDiscountCodeBasicInput is used internally by genqlient
+type __UpdateDiscountCodeBasicInput struct {
+	Id    string                 `json:"id"`
+	Input DiscountCodeBasicInput `json:"input"`
+}
+
+// GetId returns __UpdateDiscountCodeBasicInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateDiscountCodeBasicInput) GetId() string { return v.Id }
+
+// GetInput returns __UpdateDiscountCodeBasicInput.Input, and is useful for accessing the field via an interface.
+func (v *__UpdateDiscountCodeBasicInput) GetInput() DiscountCodeBasicInput { return v.Input }
+
+// __UpdateFileInput is used internally by genqlient
+type __UpdateFileInput struct {
+	Files []FileUpdateInput `json:"files"`
+}
+
+// GetFiles returns __UpdateFileInput.Files, and is useful for accessing the field via an interface.
+func (v *__UpdateFileInput) GetFiles() []FileUpdateInput { return v.Files }
 
 // __UpdateMarketInput is used internally by genqlient
 type __UpdateMarketInput struct {
@@ -15497,6 +31612,34 @@ func (v *__UpdateMetaobjectDefinitionInput) GetId() string { return v.Id }
 func (v *__UpdateMetaobjectDefinitionInput) GetDefinition() MetaobjectDefinitionUpdateInput {
 	return v.Definition
 }
+
+// __UpdatePageInput is used internally by genqlient
+type __UpdatePageInput struct {
+	Id   string          `json:"id"`
+	Page PageUpdateInput `json:"page"`
+}
+
+// GetId returns __UpdatePageInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdatePageInput) GetId() string { return v.Id }
+
+// GetPage returns __UpdatePageInput.Page, and is useful for accessing the field via an interface.
+func (v *__UpdatePageInput) GetPage() PageUpdateInput { return v.Page }
+
+// __UpdateSegmentInput is used internally by genqlient
+type __UpdateSegmentInput struct {
+	Id    string  `json:"id"`
+	Name  *string `json:"name,omitempty"`
+	Query *string `json:"query,omitempty"`
+}
+
+// GetId returns __UpdateSegmentInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateSegmentInput) GetId() string { return v.Id }
+
+// GetName returns __UpdateSegmentInput.Name, and is useful for accessing the field via an interface.
+func (v *__UpdateSegmentInput) GetName() *string { return v.Name }
+
+// GetQuery returns __UpdateSegmentInput.Query, and is useful for accessing the field via an interface.
+func (v *__UpdateSegmentInput) GetQuery() *string { return v.Query }
 
 // __UpdateShopLocaleInput is used internally by genqlient
 type __UpdateShopLocaleInput struct {
@@ -15634,6 +31777,478 @@ func AddLocation(
 	}
 
 	data_ = &AddLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateArticle.
+const CreateArticle_Operation = `
+mutation CreateArticle ($article: ArticleCreateInput!) {
+	articleCreate(article: $article) {
+		article {
+			id
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+// Only the acceptance tests call this, to give a blog an article for the Pattern B step.
+func CreateArticle(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	article ArticleCreateInput,
+) (data_ *CreateArticleResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateArticle",
+		Query:  CreateArticle_Operation,
+		Variables: &__CreateArticleInput{
+			Article: article,
+		},
+	}
+
+	data_ = &CreateArticleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateBlog.
+const CreateBlog_Operation = `
+mutation CreateBlog ($blog: BlogCreateInput!) {
+	blogCreate(blog: $blog) {
+		blog {
+			... BlogFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment BlogFields on Blog {
+	id
+	handle
+	title
+	commentPolicy
+	templateSuffix
+}
+`
+
+// metafields is never sent: metafield values are a roadmap type.
+func CreateBlog(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	blog BlogCreateInput,
+) (data_ *CreateBlogResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateBlog",
+		Query:  CreateBlog_Operation,
+		Variables: &__CreateBlogInput{
+			Blog: blog,
+		},
+	}
+
+	data_ = &CreateBlogResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateCollection.
+const CreateCollection_Operation = `
+mutation CreateCollection ($collection: CollectionCreateInput!) {
+	collectionCreate(collection: $collection) {
+		collection {
+			... CollectionFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment CollectionFields on Collection {
+	id
+	handle
+	title
+	descriptionHtml
+	sortOrder
+	templateSuffix
+	seo {
+		title
+		description
+	}
+	... PublicationsOfPublishable
+	sources {
+		__typename
+		id
+		app {
+			id
+		}
+		... on CollectionConditionsSource {
+			shareable
+			targetType
+			exclusion {
+				conditions {
+					__typename
+					id
+				}
+				selections(first: 1) {
+					nodes {
+						product {
+							id
+						}
+					}
+				}
+			}
+			inclusion {
+				matchType
+				conditions {
+					__typename
+					id
+					... on CollectionSourceInclusionConditionMetafield {
+						definition {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionProductTag {
+						relation__ProductTag: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductTitle {
+						relation__ProductTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductType {
+						relation__ProductType: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductVendor {
+						relation__ProductVendor: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductStatus {
+						relation__ProductStatus: relation
+						values__ProductStatus: values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductCategory {
+						relation__ProductCategory: relation
+						values__ProductCategory: values {
+							category {
+								id
+							}
+							includeDescendants
+						}
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantTitle {
+						relation__VariantTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantPrice {
+						relation__VariantPrice: relation
+						value__VariantPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantCompareAtPrice {
+						relation__VariantCompareAtPrice: relation
+						value__VariantCompareAtPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantInventory {
+						relation__VariantInventory: relation
+						value__VariantInventory: value
+					}
+					... on CollectionSourceInclusionConditionVariantWeight {
+						relation__VariantWeight: relation
+						value__VariantWeight: value {
+							value
+							unit
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldBoolean {
+						relation__MetafieldBoolean: relation
+						value__MetafieldBoolean: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldInt {
+						relation__MetafieldInt: relation
+						value__MetafieldInt: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldDecimal {
+						relation__MetafieldDecimal: relation
+						value__MetafieldDecimal: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldString {
+						relation__MetafieldString: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldStringList {
+						relation__MetafieldStringList: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobject {
+						relation__MetafieldMetaobject: relation
+						value__MetafieldMetaobject: value {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobjectList {
+						relation__MetafieldMetaobjectList: relation
+						values__MetafieldMetaobjectList: values {
+							id
+						}
+						matchType
+					}
+				}
+				selections(first: 250) {
+					nodes {
+						product {
+							id
+						}
+						variantIds
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+`
+
+// Omitted keys stay unchanged, so every optional field is omitempty; conditions are raw JSON in the input's own shape.
+func CreateCollection(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	collection CollectionCreateInput,
+) (data_ *CreateCollectionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateCollection",
+		Query:  CreateCollection_Operation,
+		Variables: &__CreateCollectionInput{
+			Collection: collection,
+		},
+	}
+
+	data_ = &CreateCollectionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateDiscountAutomaticBasic.
+const CreateDiscountAutomaticBasic_Operation = `
+mutation CreateDiscountAutomaticBasic ($input: DiscountAutomaticBasicInput!) {
+	discountAutomaticBasicCreate(automaticBasicDiscount: $input) {
+		automaticDiscountNode {
+			id
+		}
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+func CreateDiscountAutomaticBasic(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input DiscountAutomaticBasicInput,
+) (data_ *CreateDiscountAutomaticBasicResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateDiscountAutomaticBasic",
+		Query:  CreateDiscountAutomaticBasic_Operation,
+		Variables: &__CreateDiscountAutomaticBasicInput{
+			Input: input,
+		},
+	}
+
+	data_ = &CreateDiscountAutomaticBasicResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateDiscountCodeBasic.
+const CreateDiscountCodeBasic_Operation = `
+mutation CreateDiscountCodeBasic ($input: DiscountCodeBasicInput!) {
+	discountCodeBasicCreate(basicCodeDiscount: $input) {
+		codeDiscountNode {
+			id
+		}
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+// Omitted keys stay unchanged, so optional fields are omitempty; the subtotal and quantity values are not, since null clears them.
+func CreateDiscountCodeBasic(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input DiscountCodeBasicInput,
+) (data_ *CreateDiscountCodeBasicResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateDiscountCodeBasic",
+		Query:  CreateDiscountCodeBasic_Operation,
+		Variables: &__CreateDiscountCodeBasicInput{
+			Input: input,
+		},
+	}
+
+	data_ = &CreateDiscountCodeBasicResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateFile.
+const CreateFile_Operation = `
+mutation CreateFile ($files: [FileCreateInput!]!) {
+	fileCreate(files: $files) {
+		files {
+			__typename
+			... FileFields
+		}
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+fragment FileFields on File {
+	__typename
+	id
+	alt
+	fileStatus
+	fileErrors {
+		code
+		message
+		details
+	}
+	... on MediaImage {
+		image {
+			url
+		}
+	}
+	... on GenericFile {
+		url
+	}
+	... on Video {
+		filename
+		sources {
+			url
+		}
+	}
+	... on Model3d {
+		filename
+		sources {
+			url
+		}
+	}
+	... on ExternalVideo {
+		originUrl
+	}
+}
+`
+
+// previewImageSource is never sent (roadmap) and neither are product references (the product owns that link).
+func CreateFile(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	files []FileCreateInput,
+) (data_ *CreateFileResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateFile",
+		Query:  CreateFile_Operation,
+		Variables: &__CreateFileInput{
+			Files: files,
+		},
+	}
+
+	data_ = &CreateFileResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -15852,6 +32467,63 @@ func CreateMetafieldDefinition(
 	return data_, err_
 }
 
+// The mutation executed by CreateMetaobject.
+const CreateMetaobject_Operation = `
+mutation CreateMetaobject ($metaobject: MetaobjectCreateInput!) {
+	metaobjectCreate(metaobject: $metaobject) {
+		metaobject {
+			... MetaobjectFields
+		}
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+fragment MetaobjectFields on Metaobject {
+	id
+	displayName
+	updatedAt
+	fields {
+		key
+		value
+	}
+	capabilities {
+		publishable {
+			status
+		}
+	}
+}
+`
+
+// Used by the data source's acceptance tests to make an entry; the provider has no metaobject resource yet.
+// Shopify rejects an explicit null onlineStore on a type without that capability.
+func CreateMetaobject(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	metaobject MetaobjectCreateInput,
+) (data_ *CreateMetaobjectResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateMetaobject",
+		Query:  CreateMetaobject_Operation,
+		Variables: &__CreateMetaobjectInput{
+			Metaobject: metaobject,
+		},
+	}
+
+	data_ = &CreateMetaobjectResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by CreateMetaobjectDefinition.
 const CreateMetaobjectDefinition_Operation = `
 mutation CreateMetaobjectDefinition ($definition: MetaobjectDefinitionCreateInput!) {
@@ -15918,6 +32590,102 @@ func CreateMetaobjectDefinition(
 	}
 
 	data_ = &CreateMetaobjectDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreatePage.
+const CreatePage_Operation = `
+mutation CreatePage ($page: PageCreateInput!) {
+	pageCreate(page: $page) {
+		page {
+			... PageFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment PageFields on Page {
+	id
+	handle
+	title
+	body
+	isPublished
+	templateSuffix
+}
+`
+
+// publishDate and metafields are never sent: scheduled publishing fights isPublished, metafield values are a roadmap type.
+func CreatePage(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	page PageCreateInput,
+) (data_ *CreatePageResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreatePage",
+		Query:  CreatePage_Operation,
+		Variables: &__CreatePageInput{
+			Page: page,
+		},
+	}
+
+	data_ = &CreatePageResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateSegment.
+const CreateSegment_Operation = `
+mutation CreateSegment ($name: String!, $query: String!) {
+	segmentCreate(name: $name, query: $query) {
+		segment {
+			... SegmentFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment SegmentFields on Segment {
+	id
+	name
+	query
+}
+`
+
+func CreateSegment(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	name string,
+	query string,
+) (data_ *CreateSegmentResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateSegment",
+		Query:  CreateSegment_Operation,
+		Variables: &__CreateSegmentInput{
+			Name:  name,
+			Query: query,
+		},
+	}
+
+	data_ = &CreateSegmentResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -16036,6 +32804,208 @@ func DeactivateLocation(
 	}
 
 	data_ = &DeactivateLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteBlog.
+const DeleteBlog_Operation = `
+mutation DeleteBlog ($id: ID!) {
+	blogDelete(id: $id) {
+		deletedBlogId
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+`
+
+func DeleteBlog(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteBlogResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteBlog",
+		Query:  DeleteBlog_Operation,
+		Variables: &__DeleteBlogInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteBlogResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteCollection.
+const DeleteCollection_Operation = `
+mutation DeleteCollection ($id: ID!) {
+	collectionDelete(input: {id:$id}) {
+		deletedCollectionId
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DeleteCollection(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteCollectionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteCollection",
+		Query:  DeleteCollection_Operation,
+		Variables: &__DeleteCollectionInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteCollectionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteDiscountAutomatic.
+const DeleteDiscountAutomatic_Operation = `
+mutation DeleteDiscountAutomatic ($id: ID!) {
+	discountAutomaticDelete(id: $id) {
+		deletedAutomaticDiscountId
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+func DeleteDiscountAutomatic(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteDiscountAutomaticResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteDiscountAutomatic",
+		Query:  DeleteDiscountAutomatic_Operation,
+		Variables: &__DeleteDiscountAutomaticInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteDiscountAutomaticResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteDiscountCode.
+const DeleteDiscountCode_Operation = `
+mutation DeleteDiscountCode ($id: ID!) {
+	discountCodeDelete(id: $id) {
+		deletedCodeDiscountId
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+func DeleteDiscountCode(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteDiscountCodeResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteDiscountCode",
+		Query:  DeleteDiscountCode_Operation,
+		Variables: &__DeleteDiscountCodeInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteDiscountCodeResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteFile.
+const DeleteFile_Operation = `
+mutation DeleteFile ($ids: [ID!]!) {
+	fileDelete(fileIds: $ids) {
+		deletedFileIds
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+`
+
+func DeleteFile(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	ids []string,
+) (data_ *DeleteFileResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteFile",
+		Query:  DeleteFile_Operation,
+		Variables: &__DeleteFileInput{
+			Ids: ids,
+		},
+	}
+
+	data_ = &DeleteFileResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -16201,6 +33171,45 @@ func DeleteMetafieldDefinition(
 	return data_, err_
 }
 
+// The mutation executed by DeleteMetaobject.
+const DeleteMetaobject_Operation = `
+mutation DeleteMetaobject ($id: ID!) {
+	metaobjectDelete(id: $id) {
+		deletedId
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+`
+
+func DeleteMetaobject(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteMetaobjectResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteMetaobject",
+		Query:  DeleteMetaobject_Operation,
+		Variables: &__DeleteMetaobjectInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteMetaobjectResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by DeleteMetaobjectDefinition.
 const DeleteMetaobjectDefinition_Operation = `
 mutation DeleteMetaobjectDefinition ($id: ID!) {
@@ -16228,6 +33237,121 @@ func DeleteMetaobjectDefinition(
 	}
 
 	data_ = &DeleteMetaobjectDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeletePage.
+const DeletePage_Operation = `
+mutation DeletePage ($id: ID!) {
+	pageDelete(id: $id) {
+		deletedPageId
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+`
+
+func DeletePage(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeletePageResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeletePage",
+		Query:  DeletePage_Operation,
+		Variables: &__DeletePageInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeletePageResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteProduct.
+const DeleteProduct_Operation = `
+mutation DeleteProduct ($id: ID!) {
+	productDelete(input: {id:$id}) {
+		deletedProductId
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DeleteProduct(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteProductResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteProduct",
+		Query:  DeleteProduct_Operation,
+		Variables: &__DeleteProductInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteProductResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteSegment.
+const DeleteSegment_Operation = `
+mutation DeleteSegment ($id: ID!) {
+	segmentDelete(id: $id) {
+		deletedSegmentId
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DeleteSegment(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteSegmentResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteSegment",
+		Query:  DeleteSegment_Operation,
+		Variables: &__DeleteSegmentInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteSegmentResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -16461,6 +33585,50 @@ func EnableShopLocale(
 	return data_, err_
 }
 
+// The query executed by FindBlogs.
+const FindBlogs_Operation = `
+query FindBlogs ($query: String!) {
+	blogs(first: 25, query: $query) {
+		nodes {
+			... BlogFields
+		}
+	}
+}
+fragment BlogFields on Blog {
+	id
+	handle
+	title
+	commentPolicy
+	templateSuffix
+}
+`
+
+// There is no blogByHandle, so this is a search; the caller checks the handle exactly.
+func FindBlogs(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	query string,
+) (data_ *FindBlogsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "FindBlogs",
+		Query:  FindBlogs_Operation,
+		Variables: &__FindBlogsInput{
+			Query: query,
+		},
+	}
+
+	data_ = &FindBlogsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by FindLocations.
 const FindLocations_Operation = `
 query FindLocations ($query: String!) {
@@ -16503,6 +33671,163 @@ func FindLocations(
 	}
 
 	data_ = &FindLocationsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by FindPages.
+const FindPages_Operation = `
+query FindPages ($query: String!) {
+	pages(first: 5, query: $query) {
+		nodes {
+			... PageFields
+		}
+	}
+}
+fragment PageFields on Page {
+	id
+	handle
+	title
+	body
+	isPublished
+	templateSuffix
+}
+`
+
+// There is no pageByHandle or pageByIdentifier, so this is a search; the caller checks the handle exactly.
+func FindPages(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	query string,
+) (data_ *FindPagesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "FindPages",
+		Query:  FindPages_Operation,
+		Variables: &__FindPagesInput{
+			Query: query,
+		},
+	}
+
+	data_ = &FindPagesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetArticle.
+const GetArticle_Operation = `
+query GetArticle ($id: ID!) {
+	article(id: $id) {
+		id
+	}
+}
+`
+
+func GetArticle(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetArticleResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetArticle",
+		Query:  GetArticle_Operation,
+		Variables: &__GetArticleInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetArticleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetBlog.
+const GetBlog_Operation = `
+query GetBlog ($id: ID!) {
+	blog(id: $id) {
+		... BlogFields
+	}
+}
+fragment BlogFields on Blog {
+	id
+	handle
+	title
+	commentPolicy
+	templateSuffix
+}
+`
+
+func GetBlog(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetBlogResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetBlog",
+		Query:  GetBlog_Operation,
+		Variables: &__GetBlogInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetBlogResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetBlogArticlesCount.
+const GetBlogArticlesCount_Operation = `
+query GetBlogArticlesCount ($id: ID!) {
+	blog(id: $id) {
+		articlesCount {
+			count
+		}
+	}
+}
+`
+
+// Only the Pattern B guard needs the count.
+func GetBlogArticlesCount(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetBlogArticlesCountResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetBlogArticlesCount",
+		Query:  GetBlogArticlesCount_Operation,
+		Variables: &__GetBlogArticlesCountInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetBlogArticlesCountResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -17799,6 +35124,525 @@ func GetCheckoutAndAccountsConfiguration(
 	return data_, err_
 }
 
+// The query executed by GetCollection.
+const GetCollection_Operation = `
+query GetCollection ($id: ID!) {
+	collection(id: $id) {
+		... CollectionFields
+	}
+}
+fragment CollectionFields on Collection {
+	id
+	handle
+	title
+	descriptionHtml
+	sortOrder
+	templateSuffix
+	seo {
+		title
+		description
+	}
+	... PublicationsOfPublishable
+	sources {
+		__typename
+		id
+		app {
+			id
+		}
+		... on CollectionConditionsSource {
+			shareable
+			targetType
+			exclusion {
+				conditions {
+					__typename
+					id
+				}
+				selections(first: 1) {
+					nodes {
+						product {
+							id
+						}
+					}
+				}
+			}
+			inclusion {
+				matchType
+				conditions {
+					__typename
+					id
+					... on CollectionSourceInclusionConditionMetafield {
+						definition {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionProductTag {
+						relation__ProductTag: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductTitle {
+						relation__ProductTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductType {
+						relation__ProductType: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductVendor {
+						relation__ProductVendor: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductStatus {
+						relation__ProductStatus: relation
+						values__ProductStatus: values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductCategory {
+						relation__ProductCategory: relation
+						values__ProductCategory: values {
+							category {
+								id
+							}
+							includeDescendants
+						}
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantTitle {
+						relation__VariantTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantPrice {
+						relation__VariantPrice: relation
+						value__VariantPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantCompareAtPrice {
+						relation__VariantCompareAtPrice: relation
+						value__VariantCompareAtPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantInventory {
+						relation__VariantInventory: relation
+						value__VariantInventory: value
+					}
+					... on CollectionSourceInclusionConditionVariantWeight {
+						relation__VariantWeight: relation
+						value__VariantWeight: value {
+							value
+							unit
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldBoolean {
+						relation__MetafieldBoolean: relation
+						value__MetafieldBoolean: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldInt {
+						relation__MetafieldInt: relation
+						value__MetafieldInt: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldDecimal {
+						relation__MetafieldDecimal: relation
+						value__MetafieldDecimal: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldString {
+						relation__MetafieldString: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldStringList {
+						relation__MetafieldStringList: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobject {
+						relation__MetafieldMetaobject: relation
+						value__MetafieldMetaobject: value {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobjectList {
+						relation__MetafieldMetaobjectList: relation
+						values__MetafieldMetaobjectList: values {
+							id
+						}
+						matchType
+					}
+				}
+				selections(first: 250) {
+					nodes {
+						product {
+							id
+						}
+						variantIds
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+`
+
+func GetCollection(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetCollectionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCollection",
+		Query:  GetCollection_Operation,
+		Variables: &__GetCollectionInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetCollectionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetCollectionByHandle.
+const GetCollectionByHandle_Operation = `
+query GetCollectionByHandle ($handle: String!) {
+	collectionByIdentifier(identifier: {handle:$handle}) {
+		... CollectionFields
+	}
+}
+fragment CollectionFields on Collection {
+	id
+	handle
+	title
+	descriptionHtml
+	sortOrder
+	templateSuffix
+	seo {
+		title
+		description
+	}
+	... PublicationsOfPublishable
+	sources {
+		__typename
+		id
+		app {
+			id
+		}
+		... on CollectionConditionsSource {
+			shareable
+			targetType
+			exclusion {
+				conditions {
+					__typename
+					id
+				}
+				selections(first: 1) {
+					nodes {
+						product {
+							id
+						}
+					}
+				}
+			}
+			inclusion {
+				matchType
+				conditions {
+					__typename
+					id
+					... on CollectionSourceInclusionConditionMetafield {
+						definition {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionProductTag {
+						relation__ProductTag: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductTitle {
+						relation__ProductTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductType {
+						relation__ProductType: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductVendor {
+						relation__ProductVendor: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductStatus {
+						relation__ProductStatus: relation
+						values__ProductStatus: values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductCategory {
+						relation__ProductCategory: relation
+						values__ProductCategory: values {
+							category {
+								id
+							}
+							includeDescendants
+						}
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantTitle {
+						relation__VariantTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantPrice {
+						relation__VariantPrice: relation
+						value__VariantPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantCompareAtPrice {
+						relation__VariantCompareAtPrice: relation
+						value__VariantCompareAtPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantInventory {
+						relation__VariantInventory: relation
+						value__VariantInventory: value
+					}
+					... on CollectionSourceInclusionConditionVariantWeight {
+						relation__VariantWeight: relation
+						value__VariantWeight: value {
+							value
+							unit
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldBoolean {
+						relation__MetafieldBoolean: relation
+						value__MetafieldBoolean: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldInt {
+						relation__MetafieldInt: relation
+						value__MetafieldInt: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldDecimal {
+						relation__MetafieldDecimal: relation
+						value__MetafieldDecimal: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldString {
+						relation__MetafieldString: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldStringList {
+						relation__MetafieldStringList: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobject {
+						relation__MetafieldMetaobject: relation
+						value__MetafieldMetaobject: value {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobjectList {
+						relation__MetafieldMetaobjectList: relation
+						values__MetafieldMetaobjectList: values {
+							id
+						}
+						matchType
+					}
+				}
+				selections(first: 250) {
+					nodes {
+						product {
+							id
+						}
+						variantIds
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+`
+
+// collectionByHandle is deprecated, so this is the exact handle lookup.
+func GetCollectionByHandle(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	handle string,
+) (data_ *GetCollectionByHandleResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCollectionByHandle",
+		Query:  GetCollectionByHandle_Operation,
+		Variables: &__GetCollectionByHandleInput{
+			Handle: handle,
+		},
+	}
+
+	data_ = &GetCollectionByHandleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetCollectionPublications.
+const GetCollectionPublications_Operation = `
+query GetCollectionPublications ($id: ID!, $after: String) {
+	collection(id: $id) {
+		resourcePublicationsV2(first: 50, after: $after, onlyPublished: false) {
+			nodes {
+				publication {
+					id
+				}
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+func GetCollectionPublications(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetCollectionPublicationsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCollectionPublications",
+		Query:  GetCollectionPublications_Operation,
+		Variables: &__GetCollectionPublicationsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetCollectionPublicationsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetCollectionSelections.
+const GetCollectionSelections_Operation = `
+query GetCollectionSelections ($id: ID!, $after: String) {
+	collection(id: $id) {
+		sources {
+			__typename
+			id
+			... on CollectionConditionsSource {
+				inclusion {
+					selections(first: 250, after: $after) {
+						nodes {
+							product {
+								id
+							}
+							variantIds
+						}
+						pageInfo {
+							hasNextPage
+							endCursor
+						}
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+// Pages selections after the first 250 that CollectionFields carries.
+func GetCollectionSelections(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetCollectionSelectionsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCollectionSelections",
+		Query:  GetCollectionSelections_Operation,
+		Variables: &__GetCollectionSelectionsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetCollectionSelectionsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetConsentPolicyByID.
 const GetConsentPolicyByID_Operation = `
 query GetConsentPolicyByID ($id: ID!) {
@@ -17981,6 +35825,422 @@ func GetDeliveryProfile(
 	}
 
 	data_ = &GetDeliveryProfileResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetDiscount.
+const GetDiscount_Operation = `
+query GetDiscount ($id: ID!) {
+	discountNode(id: $id) {
+		... DiscountNodeFields
+	}
+}
+fragment DiscountNodeFields on DiscountNode {
+	id
+	discount {
+		__typename
+		... on DiscountCodeBasic {
+			title
+			startsAt
+			endsAt
+			status
+			usageLimit
+			appliesOncePerCustomer
+			codesCount {
+				count
+			}
+			codes(first: 1) {
+				nodes {
+					code
+				}
+			}
+			combinesWith {
+				... DiscountCombinesWithFields
+			}
+			context {
+				__typename
+				... DiscountContextFields
+			}
+			customerGets {
+				... DiscountCustomerGetsFields
+			}
+			minimumRequirement {
+				__typename
+				... DiscountMinimumFields
+			}
+		}
+		... on DiscountAutomaticBasic {
+			title
+			startsAt
+			endsAt
+			status
+			combinesWith {
+				... DiscountCombinesWithFields
+			}
+			context {
+				__typename
+				... DiscountContextFields
+			}
+			customerGets {
+				... DiscountCustomerGetsFields
+			}
+			minimumRequirement {
+				__typename
+				... DiscountMinimumFields
+			}
+		}
+		... on DiscountAutomaticBxgy {
+			title
+		}
+		... on DiscountAutomaticFreeShipping {
+			title
+		}
+		... on DiscountAutomaticApp {
+			title
+		}
+	}
+}
+fragment DiscountCombinesWithFields on DiscountCombinesWith {
+	productDiscounts
+	orderDiscounts
+	shippingDiscounts
+}
+fragment DiscountContextFields on DiscountContext {
+	__typename
+	... on DiscountCustomerSegments {
+		segments {
+			id
+		}
+	}
+	... on DiscountMarkets {
+		markets(first: 250) {
+			nodes {
+				id
+			}
+			pageInfo {
+				hasNextPage
+			}
+		}
+	}
+	... on DiscountContextUnknown {
+		contextType
+	}
+}
+fragment DiscountCustomerGetsFields on DiscountCustomerGets {
+	value {
+		__typename
+		... on DiscountPercentage {
+			percentage
+		}
+		... on DiscountAmount {
+			amount {
+				amount
+			}
+			appliesOnEachItem
+		}
+	}
+	items {
+		__typename
+		... DiscountItemsFields
+	}
+}
+fragment DiscountMinimumFields on DiscountMinimumRequirement {
+	__typename
+	... on DiscountMinimumSubtotal {
+		greaterThanOrEqualToSubtotal {
+			amount
+		}
+	}
+	... on DiscountMinimumQuantity {
+		greaterThanOrEqualToQuantity
+	}
+}
+fragment DiscountItemsFields on DiscountItems {
+	__typename
+	... on DiscountProducts {
+		products(first: 250) {
+			nodes {
+				id
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+		productVariants(first: 250) {
+			nodes {
+				id
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+	... on DiscountCollections {
+		collections(first: 250) {
+			nodes {
+				id
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// discountNode is not deprecated, unlike codeDiscountNode and automaticDiscountNode.
+func GetDiscount(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetDiscountResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetDiscount",
+		Query:  GetDiscount_Operation,
+		Variables: &__GetDiscountInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetDiscountResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetDiscountByCode.
+const GetDiscountByCode_Operation = `
+query GetDiscountByCode ($code: String!) {
+	codeDiscountNodeByCode(code: $code) {
+		id
+		codeDiscount {
+			__typename
+		}
+	}
+}
+`
+
+// Case-insensitive; Read continues by GID.
+func GetDiscountByCode(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	code string,
+) (data_ *GetDiscountByCodeResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetDiscountByCode",
+		Query:  GetDiscountByCode_Operation,
+		Variables: &__GetDiscountByCodeInput{
+			Code: code,
+		},
+	}
+
+	data_ = &GetDiscountByCodeResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetDiscountItemsPage.
+const GetDiscountItemsPage_Operation = `
+query GetDiscountItemsPage ($id: ID!, $products: String, $variants: String, $collections: String) {
+	discountNode(id: $id) {
+		discount {
+			__typename
+			... on DiscountCodeBasic {
+				customerGets {
+					items {
+						__typename
+						... on DiscountProducts {
+							products(first: 250, after: $products) {
+								nodes {
+									id
+								}
+								pageInfo {
+									hasNextPage
+									endCursor
+								}
+							}
+							productVariants(first: 250, after: $variants) {
+								nodes {
+									id
+								}
+								pageInfo {
+									hasNextPage
+									endCursor
+								}
+							}
+						}
+						... on DiscountCollections {
+							collections(first: 250, after: $collections) {
+								nodes {
+									id
+								}
+								pageInfo {
+									hasNextPage
+									endCursor
+								}
+							}
+						}
+					}
+				}
+			}
+			... on DiscountAutomaticBasic {
+				customerGets {
+					items {
+						__typename
+						... on DiscountProducts {
+							products(first: 250, after: $products) {
+								nodes {
+									id
+								}
+								pageInfo {
+									hasNextPage
+									endCursor
+								}
+							}
+							productVariants(first: 250, after: $variants) {
+								nodes {
+									id
+								}
+								pageInfo {
+									hasNextPage
+									endCursor
+								}
+							}
+						}
+						... on DiscountCollections {
+							collections(first: 250, after: $collections) {
+								nodes {
+									id
+								}
+								pageInfo {
+									hasNextPage
+									endCursor
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+// Pages item selections after the first 250 that DiscountNodeFields carries; raw, as both branches share one decoder.
+func GetDiscountItemsPage(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	products *string,
+	variants *string,
+	collections *string,
+) (data_ *GetDiscountItemsPageResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetDiscountItemsPage",
+		Query:  GetDiscountItemsPage_Operation,
+		Variables: &__GetDiscountItemsPageInput{
+			Id:          id,
+			Products:    products,
+			Variants:    variants,
+			Collections: collections,
+		},
+	}
+
+	data_ = &GetDiscountItemsPageResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetFile.
+const GetFile_Operation = `
+query GetFile ($id: ID!) {
+	node(id: $id) {
+		__typename
+		... FileFields
+	}
+}
+fragment FileFields on File {
+	__typename
+	id
+	alt
+	fileStatus
+	fileErrors {
+		code
+		message
+		details
+	}
+	... on MediaImage {
+		image {
+			url
+		}
+	}
+	... on GenericFile {
+		url
+	}
+	... on Video {
+		filename
+		sources {
+			url
+		}
+	}
+	... on Model3d {
+		filename
+		sources {
+			url
+		}
+	}
+	... on ExternalVideo {
+		originUrl
+	}
+}
+`
+
+// There is no file(id:) root field. A GID of another type still returns __typename, which the caller checks.
+func GetFile(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetFileResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetFile",
+		Query:  GetFile_Operation,
+		Variables: &__GetFileInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetFileResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -18332,6 +36592,56 @@ func GetMetafieldDefinitionByID(
 	return data_, err_
 }
 
+// The query executed by GetMetaobjectByHandle.
+const GetMetaobjectByHandle_Operation = `
+query GetMetaobjectByHandle ($objectType: String!, $handle: String!) {
+	metaobjectByHandle(handle: {type:$objectType,handle:$handle}) {
+		... MetaobjectFields
+	}
+}
+fragment MetaobjectFields on Metaobject {
+	id
+	displayName
+	updatedAt
+	fields {
+		key
+		value
+	}
+	capabilities {
+		publishable {
+			status
+		}
+	}
+}
+`
+
+func GetMetaobjectByHandle(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	objectType string,
+	handle string,
+) (data_ *GetMetaobjectByHandleResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetMetaobjectByHandle",
+		Query:  GetMetaobjectByHandle_Operation,
+		Variables: &__GetMetaobjectByHandleInput{
+			ObjectType: objectType,
+			Handle:     handle,
+		},
+	}
+
+	data_ = &GetMetaobjectByHandleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetMetaobjectDefinition.
 const GetMetaobjectDefinition_Operation = `
 query GetMetaobjectDefinition ($id: ID!) {
@@ -18472,6 +36782,48 @@ func GetMetaobjectDefinitionByType(
 	return data_, err_
 }
 
+// The query executed by GetPage.
+const GetPage_Operation = `
+query GetPage ($id: ID!) {
+	page(id: $id) {
+		... PageFields
+	}
+}
+fragment PageFields on Page {
+	id
+	handle
+	title
+	body
+	isPublished
+	templateSuffix
+}
+`
+
+func GetPage(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetPageResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetPage",
+		Query:  GetPage_Operation,
+		Variables: &__GetPageInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetPageResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetPrivacySettings.
 const GetPrivacySettings_Operation = `
 query GetPrivacySettings {
@@ -18503,6 +36855,478 @@ func GetPrivacySettings(
 	}
 
 	data_ = &GetPrivacySettingsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetProduct.
+const GetProduct_Operation = `
+query GetProduct ($id: ID!) {
+	product(id: $id) {
+		... ProductFields
+	}
+}
+fragment ProductFields on Product {
+	id
+	handle
+	title
+	status
+	descriptionHtml
+	vendor
+	productType
+	category {
+		id
+	}
+	tags
+	seo {
+		title
+		description
+	}
+	templateSuffix
+	isGiftCard
+	hasOnlyDefaultVariant
+	... PublicationsOfPublishable
+	media(first: 20) {
+		nodes {
+			__typename
+			... MediaID
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+	options {
+		id
+		name
+		linkedMetafield {
+			namespace
+			key
+		}
+		optionValues {
+			id
+			name
+		}
+	}
+	variants(first: 250) {
+		nodes {
+			... VariantFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment MediaID on Media {
+	id
+}
+fragment VariantFields on ProductVariant {
+	id
+	price
+	compareAtPrice
+	sku
+	barcodes(first: 20) {
+		nodes {
+			value
+			type
+		}
+	}
+	inventoryPolicy
+	taxable
+	selectedOptions {
+		name
+		value
+	}
+	inventoryItem {
+		id
+		tracked
+		requiresShipping
+		measurement {
+			weight {
+				value
+				unit
+			}
+		}
+	}
+}
+`
+
+func GetProduct(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetProductResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetProduct",
+		Query:  GetProduct_Operation,
+		Variables: &__GetProductInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetProductResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetProductByHandle.
+const GetProductByHandle_Operation = `
+query GetProductByHandle ($handle: String!) {
+	productByIdentifier(identifier: {handle:$handle}) {
+		... ProductFields
+	}
+}
+fragment ProductFields on Product {
+	id
+	handle
+	title
+	status
+	descriptionHtml
+	vendor
+	productType
+	category {
+		id
+	}
+	tags
+	seo {
+		title
+		description
+	}
+	templateSuffix
+	isGiftCard
+	hasOnlyDefaultVariant
+	... PublicationsOfPublishable
+	media(first: 20) {
+		nodes {
+			__typename
+			... MediaID
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+	options {
+		id
+		name
+		linkedMetafield {
+			namespace
+			key
+		}
+		optionValues {
+			id
+			name
+		}
+	}
+	variants(first: 250) {
+		nodes {
+			... VariantFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment MediaID on Media {
+	id
+}
+fragment VariantFields on ProductVariant {
+	id
+	price
+	compareAtPrice
+	sku
+	barcodes(first: 20) {
+		nodes {
+			value
+			type
+		}
+	}
+	inventoryPolicy
+	taxable
+	selectedOptions {
+		name
+		value
+	}
+	inventoryItem {
+		id
+		tracked
+		requiresShipping
+		measurement {
+			weight {
+				value
+				unit
+			}
+		}
+	}
+}
+`
+
+// productByHandle is deprecated and products(query:) is search-indexed, so this is the exact handle lookup.
+func GetProductByHandle(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	handle string,
+) (data_ *GetProductByHandleResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetProductByHandle",
+		Query:  GetProductByHandle_Operation,
+		Variables: &__GetProductByHandleInput{
+			Handle: handle,
+		},
+	}
+
+	data_ = &GetProductByHandleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetProductMedia.
+const GetProductMedia_Operation = `
+query GetProductMedia ($id: ID!, $after: String) {
+	product(id: $id) {
+		media(first: 250, after: $after) {
+			nodes {
+				__typename
+				... MediaID
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+fragment MediaID on Media {
+	id
+}
+`
+
+// Pages media after the first 20 that ProductFields carries.
+func GetProductMedia(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetProductMediaResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetProductMedia",
+		Query:  GetProductMedia_Operation,
+		Variables: &__GetProductMediaInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetProductMediaResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetProductPublications.
+const GetProductPublications_Operation = `
+query GetProductPublications ($id: ID!, $after: String) {
+	product(id: $id) {
+		resourcePublicationsV2(first: 50, after: $after, onlyPublished: false) {
+			nodes {
+				publication {
+					id
+				}
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// Pages publications after the first 10 that PublicationsOfPublishable carries.
+func GetProductPublications(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetProductPublicationsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetProductPublications",
+		Query:  GetProductPublications_Operation,
+		Variables: &__GetProductPublicationsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetProductPublicationsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetProductVariants.
+const GetProductVariants_Operation = `
+query GetProductVariants ($id: ID!, $after: String) {
+	product(id: $id) {
+		variants(first: 250, after: $after) {
+			nodes {
+				... VariantFields
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+fragment VariantFields on ProductVariant {
+	id
+	price
+	compareAtPrice
+	sku
+	barcodes(first: 20) {
+		nodes {
+			value
+			type
+		}
+	}
+	inventoryPolicy
+	taxable
+	selectedOptions {
+		name
+		value
+	}
+	inventoryItem {
+		id
+		tracked
+		requiresShipping
+		measurement {
+			weight {
+				value
+				unit
+			}
+		}
+	}
+}
+`
+
+// Pages variants after the first 250 that ProductFields carries.
+func GetProductVariants(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetProductVariantsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetProductVariants",
+		Query:  GetProductVariants_Operation,
+		Variables: &__GetProductVariantsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetProductVariantsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetSegment.
+const GetSegment_Operation = `
+query GetSegment ($id: ID!) {
+	segment(id: $id) {
+		... SegmentFields
+	}
+}
+fragment SegmentFields on Segment {
+	id
+	name
+	query
+}
+`
+
+func GetSegment(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetSegmentResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetSegment",
+		Query:  GetSegment_Operation,
+		Variables: &__GetSegmentInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetSegmentResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -18600,6 +37424,53 @@ func GetWebPresence(
 	}
 
 	data_ = &GetWebPresenceResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListBlogs.
+const ListBlogs_Operation = `
+query ListBlogs ($after: String) {
+	blogs(first: 250, after: $after) {
+		nodes {
+			... BlogFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment BlogFields on Blog {
+	id
+	handle
+	title
+	commentPolicy
+	templateSuffix
+}
+`
+
+func ListBlogs(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListBlogsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListBlogs",
+		Query:  ListBlogs_Operation,
+		Variables: &__ListBlogsInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListBlogsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -19905,6 +38776,221 @@ func ListCheckoutAndAccountsConfigurations(
 	return data_, err_
 }
 
+// The query executed by ListCollections.
+const ListCollections_Operation = `
+query ListCollections ($after: String) {
+	collections(first: 100, after: $after) {
+		nodes {
+			... CollectionFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment CollectionFields on Collection {
+	id
+	handle
+	title
+	descriptionHtml
+	sortOrder
+	templateSuffix
+	seo {
+		title
+		description
+	}
+	... PublicationsOfPublishable
+	sources {
+		__typename
+		id
+		app {
+			id
+		}
+		... on CollectionConditionsSource {
+			shareable
+			targetType
+			exclusion {
+				conditions {
+					__typename
+					id
+				}
+				selections(first: 1) {
+					nodes {
+						product {
+							id
+						}
+					}
+				}
+			}
+			inclusion {
+				matchType
+				conditions {
+					__typename
+					id
+					... on CollectionSourceInclusionConditionMetafield {
+						definition {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionProductTag {
+						relation__ProductTag: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductTitle {
+						relation__ProductTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductType {
+						relation__ProductType: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductVendor {
+						relation__ProductVendor: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductStatus {
+						relation__ProductStatus: relation
+						values__ProductStatus: values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductCategory {
+						relation__ProductCategory: relation
+						values__ProductCategory: values {
+							category {
+								id
+							}
+							includeDescendants
+						}
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantTitle {
+						relation__VariantTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantPrice {
+						relation__VariantPrice: relation
+						value__VariantPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantCompareAtPrice {
+						relation__VariantCompareAtPrice: relation
+						value__VariantCompareAtPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantInventory {
+						relation__VariantInventory: relation
+						value__VariantInventory: value
+					}
+					... on CollectionSourceInclusionConditionVariantWeight {
+						relation__VariantWeight: relation
+						value__VariantWeight: value {
+							value
+							unit
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldBoolean {
+						relation__MetafieldBoolean: relation
+						value__MetafieldBoolean: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldInt {
+						relation__MetafieldInt: relation
+						value__MetafieldInt: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldDecimal {
+						relation__MetafieldDecimal: relation
+						value__MetafieldDecimal: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldString {
+						relation__MetafieldString: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldStringList {
+						relation__MetafieldStringList: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobject {
+						relation__MetafieldMetaobject: relation
+						value__MetafieldMetaobject: value {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobjectList {
+						relation__MetafieldMetaobjectList: relation
+						values__MetafieldMetaobjectList: values {
+							id
+						}
+						matchType
+					}
+				}
+				selections(first: 250) {
+					nodes {
+						product {
+							id
+						}
+						variantIds
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+`
+
+// Requested cost with sources and selections(first: 250) stays under the 1000-point limit at 100 collections.
+func ListCollections(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListCollectionsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListCollections",
+		Query:  ListCollections_Operation,
+		Variables: &__ListCollectionsInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListCollectionsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListConsentPolicies.
 const ListConsentPolicies_Operation = `
 query ListConsentPolicies {
@@ -19973,6 +39059,281 @@ func ListDeliveryProfiles(
 	}
 
 	data_ = &ListDeliveryProfilesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListDiscounts.
+const ListDiscounts_Operation = `
+query ListDiscounts ($after: String, $query: String) {
+	discountNodes(first: 50, after: $after, query: $query) {
+		nodes {
+			... DiscountNodeFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment DiscountNodeFields on DiscountNode {
+	id
+	discount {
+		__typename
+		... on DiscountCodeBasic {
+			title
+			startsAt
+			endsAt
+			status
+			usageLimit
+			appliesOncePerCustomer
+			codesCount {
+				count
+			}
+			codes(first: 1) {
+				nodes {
+					code
+				}
+			}
+			combinesWith {
+				... DiscountCombinesWithFields
+			}
+			context {
+				__typename
+				... DiscountContextFields
+			}
+			customerGets {
+				... DiscountCustomerGetsFields
+			}
+			minimumRequirement {
+				__typename
+				... DiscountMinimumFields
+			}
+		}
+		... on DiscountAutomaticBasic {
+			title
+			startsAt
+			endsAt
+			status
+			combinesWith {
+				... DiscountCombinesWithFields
+			}
+			context {
+				__typename
+				... DiscountContextFields
+			}
+			customerGets {
+				... DiscountCustomerGetsFields
+			}
+			minimumRequirement {
+				__typename
+				... DiscountMinimumFields
+			}
+		}
+		... on DiscountAutomaticBxgy {
+			title
+		}
+		... on DiscountAutomaticFreeShipping {
+			title
+		}
+		... on DiscountAutomaticApp {
+			title
+		}
+	}
+}
+fragment DiscountCombinesWithFields on DiscountCombinesWith {
+	productDiscounts
+	orderDiscounts
+	shippingDiscounts
+}
+fragment DiscountContextFields on DiscountContext {
+	__typename
+	... on DiscountCustomerSegments {
+		segments {
+			id
+		}
+	}
+	... on DiscountMarkets {
+		markets(first: 250) {
+			nodes {
+				id
+			}
+			pageInfo {
+				hasNextPage
+			}
+		}
+	}
+	... on DiscountContextUnknown {
+		contextType
+	}
+}
+fragment DiscountCustomerGetsFields on DiscountCustomerGets {
+	value {
+		__typename
+		... on DiscountPercentage {
+			percentage
+		}
+		... on DiscountAmount {
+			amount {
+				amount
+			}
+			appliesOnEachItem
+		}
+	}
+	items {
+		__typename
+		... DiscountItemsFields
+	}
+}
+fragment DiscountMinimumFields on DiscountMinimumRequirement {
+	__typename
+	... on DiscountMinimumSubtotal {
+		greaterThanOrEqualToSubtotal {
+			amount
+		}
+	}
+	... on DiscountMinimumQuantity {
+		greaterThanOrEqualToQuantity
+	}
+}
+fragment DiscountItemsFields on DiscountItems {
+	__typename
+	... on DiscountProducts {
+		products(first: 250) {
+			nodes {
+				id
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+		productVariants(first: 250) {
+			nodes {
+				id
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+	... on DiscountCollections {
+		collections(first: 250) {
+			nodes {
+				id
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// Requested cost with items and markets at first 250 was 359 for 50 nodes (§9p).
+func ListDiscounts(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+	query *string,
+) (data_ *ListDiscountsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListDiscounts",
+		Query:  ListDiscounts_Operation,
+		Variables: &__ListDiscountsInput{
+			After: after,
+			Query: query,
+		},
+	}
+
+	data_ = &ListDiscountsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListFiles.
+const ListFiles_Operation = `
+query ListFiles ($after: String, $query: String) {
+	files(first: 250, after: $after, query: $query) {
+		nodes {
+			__typename
+			... FileFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment FileFields on File {
+	__typename
+	id
+	alt
+	fileStatus
+	fileErrors {
+		code
+		message
+		details
+	}
+	... on MediaImage {
+		image {
+			url
+		}
+	}
+	... on GenericFile {
+		url
+	}
+	... on Video {
+		filename
+		sources {
+			url
+		}
+	}
+	... on Model3d {
+		filename
+		sources {
+			url
+		}
+	}
+	... on ExternalVideo {
+		originUrl
+	}
+}
+`
+
+// Used for the filename lookup too: the search is token-based, so the caller compares exactly.
+func ListFiles(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+	query *string,
+) (data_ *ListFilesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListFiles",
+		Query:  ListFiles_Operation,
+		Variables: &__ListFilesInput{
+			After: after,
+			Query: query,
+		},
+	}
+
+	data_ = &ListFilesResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -20326,6 +39687,192 @@ func ListMetaobjectDefinitions(
 	return data_, err_
 }
 
+// The query executed by ListPages.
+const ListPages_Operation = `
+query ListPages ($after: String) {
+	pages(first: 250, after: $after) {
+		nodes {
+			... PageFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment PageFields on Page {
+	id
+	handle
+	title
+	body
+	isPublished
+	templateSuffix
+}
+`
+
+// Requested cost at 250 pages is low (149 together with blogs and segments).
+func ListPages(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListPagesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListPages",
+		Query:  ListPages_Operation,
+		Variables: &__ListPagesInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListPagesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListProducts.
+const ListProducts_Operation = `
+query ListProducts ($after: String) {
+	products(first: 50, after: $after) {
+		nodes {
+			... ProductFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment ProductFields on Product {
+	id
+	handle
+	title
+	status
+	descriptionHtml
+	vendor
+	productType
+	category {
+		id
+	}
+	tags
+	seo {
+		title
+		description
+	}
+	templateSuffix
+	isGiftCard
+	hasOnlyDefaultVariant
+	... PublicationsOfPublishable
+	media(first: 20) {
+		nodes {
+			__typename
+			... MediaID
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+	options {
+		id
+		name
+		linkedMetafield {
+			namespace
+			key
+		}
+		optionValues {
+			id
+			name
+		}
+	}
+	variants(first: 250) {
+		nodes {
+			... VariantFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment MediaID on Media {
+	id
+}
+fragment VariantFields on ProductVariant {
+	id
+	price
+	compareAtPrice
+	sku
+	barcodes(first: 20) {
+		nodes {
+			value
+			type
+		}
+	}
+	inventoryPolicy
+	taxable
+	selectedOptions {
+		name
+		value
+	}
+	inventoryItem {
+		id
+		tracked
+		requiresShipping
+		measurement {
+			weight {
+				value
+				unit
+			}
+		}
+	}
+}
+`
+
+func ListProducts(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListProductsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListProducts",
+		Query:  ListProducts_Operation,
+		Variables: &__ListProductsInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListProductsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListPublications.
 const ListPublications_Operation = `
 query ListPublications ($after: String) {
@@ -20362,6 +39909,52 @@ func ListPublications(
 	}
 
 	data_ = &ListPublicationsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListSegments.
+const ListSegments_Operation = `
+query ListSegments ($after: String) {
+	segments(first: 250, after: $after) {
+		nodes {
+			... SegmentFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment SegmentFields on Segment {
+	id
+	name
+	query
+}
+`
+
+// Unfiltered on purpose: the segment search index lags a few seconds behind writes, so lookups by name page through this.
+func ListSegments(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListSegmentsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListSegments",
+		Query:  ListSegments_Operation,
+		Variables: &__ListSegmentsInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListSegmentsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -20498,6 +40091,309 @@ func ListWebPresences(
 	}
 
 	data_ = &ListWebPresencesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by PublishPublishable.
+const PublishPublishable_Operation = `
+mutation PublishPublishable ($id: ID!, $input: [PublicationInput!]!) {
+	publishablePublish(id: $id, input: $input) {
+		publishable {
+			__typename
+			... PublicationsOfPublishable
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+`
+
+func PublishPublishable(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input []PublicationInput,
+) (data_ *PublishPublishableResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "PublishPublishable",
+		Query:  PublishPublishable_Operation,
+		Variables: &__PublishPublishableInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &PublishPublishableResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by SetProduct.
+const SetProduct_Operation = `
+mutation SetProduct ($identifier: ProductSetIdentifiers, $input: ProductSetInput!) {
+	productSet(input: $input, identifier: $identifier, synchronous: true) {
+		product {
+			... ProductFields
+		}
+		userErrors {
+			code
+			field
+			message
+		}
+	}
+}
+fragment ProductFields on Product {
+	id
+	handle
+	title
+	status
+	descriptionHtml
+	vendor
+	productType
+	category {
+		id
+	}
+	tags
+	seo {
+		title
+		description
+	}
+	templateSuffix
+	isGiftCard
+	hasOnlyDefaultVariant
+	... PublicationsOfPublishable
+	media(first: 20) {
+		nodes {
+			__typename
+			... MediaID
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+	options {
+		id
+		name
+		linkedMetafield {
+			namespace
+			key
+		}
+		optionValues {
+			id
+			name
+		}
+	}
+	variants(first: 250) {
+		nodes {
+			... VariantFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment MediaID on Media {
+	id
+}
+fragment VariantFields on ProductVariant {
+	id
+	price
+	compareAtPrice
+	sku
+	barcodes(first: 20) {
+		nodes {
+			value
+			type
+		}
+	}
+	inventoryPolicy
+	taxable
+	selectedOptions {
+		name
+		value
+	}
+	inventoryItem {
+		id
+		tracked
+		requiresShipping
+		measurement {
+			weight {
+				value
+				unit
+			}
+		}
+	}
+}
+`
+
+// Omitted keys stay unchanged, so every field is omitempty; tags and files are raw JSON so [] clears while nil is omitted.
+func SetProduct(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	identifier *ProductSetIdentifiers,
+	input ProductSetInput,
+) (data_ *SetProductResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "SetProduct",
+		Query:  SetProduct_Operation,
+		Variables: &__SetProductInput{
+			Identifier: identifier,
+			Input:      input,
+		},
+	}
+
+	data_ = &SetProductResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UnpublishPublishable.
+const UnpublishPublishable_Operation = `
+mutation UnpublishPublishable ($id: ID!, $input: [PublicationInput!]!) {
+	publishableUnpublish(id: $id, input: $input) {
+		publishable {
+			__typename
+			... PublicationsOfPublishable
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+`
+
+func UnpublishPublishable(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input []PublicationInput,
+) (data_ *UnpublishPublishableResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UnpublishPublishable",
+		Query:  UnpublishPublishable_Operation,
+		Variables: &__UnpublishPublishableInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &UnpublishPublishableResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateBlog.
+const UpdateBlog_Operation = `
+mutation UpdateBlog ($id: ID!, $blog: BlogUpdateInput!) {
+	blogUpdate(id: $id, blog: $blog) {
+		blog {
+			... BlogFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment BlogFields on Blog {
+	id
+	handle
+	title
+	commentPolicy
+	templateSuffix
+}
+`
+
+// redirectNewHandle and redirectArticles are never sent: URL redirects are a roadmap type.
+func UpdateBlog(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	blog BlogUpdateInput,
+) (data_ *UpdateBlogResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateBlog",
+		Query:  UpdateBlog_Operation,
+		Variables: &__UpdateBlogInput{
+			Id:   id,
+			Blog: blog,
+		},
+	}
+
+	data_ = &UpdateBlogResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -21805,6 +41701,220 @@ func UpdateCheckoutAndAccountsConfiguration(
 	return data_, err_
 }
 
+// The mutation executed by UpdateCollection.
+const UpdateCollection_Operation = `
+mutation UpdateCollection ($collection: CollectionUpdateInput!) {
+	collectionUpdate(collection: $collection) {
+		collection {
+			... CollectionFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment CollectionFields on Collection {
+	id
+	handle
+	title
+	descriptionHtml
+	sortOrder
+	templateSuffix
+	seo {
+		title
+		description
+	}
+	... PublicationsOfPublishable
+	sources {
+		__typename
+		id
+		app {
+			id
+		}
+		... on CollectionConditionsSource {
+			shareable
+			targetType
+			exclusion {
+				conditions {
+					__typename
+					id
+				}
+				selections(first: 1) {
+					nodes {
+						product {
+							id
+						}
+					}
+				}
+			}
+			inclusion {
+				matchType
+				conditions {
+					__typename
+					id
+					... on CollectionSourceInclusionConditionMetafield {
+						definition {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionProductTag {
+						relation__ProductTag: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductTitle {
+						relation__ProductTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductType {
+						relation__ProductType: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductVendor {
+						relation__ProductVendor: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductStatus {
+						relation__ProductStatus: relation
+						values__ProductStatus: values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionProductCategory {
+						relation__ProductCategory: relation
+						values__ProductCategory: values {
+							category {
+								id
+							}
+							includeDescendants
+						}
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantTitle {
+						relation__VariantTitle: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionVariantPrice {
+						relation__VariantPrice: relation
+						value__VariantPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantCompareAtPrice {
+						relation__VariantCompareAtPrice: relation
+						value__VariantCompareAtPrice: value {
+							amount
+							currencyCode
+						}
+					}
+					... on CollectionSourceInclusionConditionVariantInventory {
+						relation__VariantInventory: relation
+						value__VariantInventory: value
+					}
+					... on CollectionSourceInclusionConditionVariantWeight {
+						relation__VariantWeight: relation
+						value__VariantWeight: value {
+							value
+							unit
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldBoolean {
+						relation__MetafieldBoolean: relation
+						value__MetafieldBoolean: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldInt {
+						relation__MetafieldInt: relation
+						value__MetafieldInt: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldDecimal {
+						relation__MetafieldDecimal: relation
+						value__MetafieldDecimal: value
+					}
+					... on CollectionSourceInclusionConditionMetafieldString {
+						relation__MetafieldString: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldStringList {
+						relation__MetafieldStringList: relation
+						values
+						matchType
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobject {
+						relation__MetafieldMetaobject: relation
+						value__MetafieldMetaobject: value {
+							id
+						}
+					}
+					... on CollectionSourceInclusionConditionMetafieldMetaobjectList {
+						relation__MetafieldMetaobjectList: relation
+						values__MetafieldMetaobjectList: values {
+							id
+						}
+						matchType
+					}
+				}
+				selections(first: 250) {
+					nodes {
+						product {
+							id
+						}
+						variantIds
+					}
+					pageInfo {
+						hasNextPage
+						endCursor
+					}
+				}
+			}
+		}
+	}
+}
+fragment PublicationsOfPublishable on Publishable {
+	resourcePublicationsV2(first: 10, onlyPublished: false) {
+		nodes {
+			publication {
+				id
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+`
+
+func UpdateCollection(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	collection CollectionUpdateInput,
+) (data_ *UpdateCollectionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateCollection",
+		Query:  UpdateCollection_Operation,
+		Variables: &__UpdateCollectionInput{
+			Collection: collection,
+		},
+	}
+
+	data_ = &UpdateCollectionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by UpdateConsentPolicy.
 const UpdateConsentPolicy_Operation = `
 mutation UpdateConsentPolicy ($policy: ConsentPolicyInput!) {
@@ -21885,6 +41995,177 @@ func UpdateDeliveryProfile(
 	}
 
 	data_ = &UpdateDeliveryProfileResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateDiscountAutomaticBasic.
+const UpdateDiscountAutomaticBasic_Operation = `
+mutation UpdateDiscountAutomaticBasic ($id: ID!, $input: DiscountAutomaticBasicInput!) {
+	discountAutomaticBasicUpdate(id: $id, automaticBasicDiscount: $input) {
+		automaticDiscountNode {
+			id
+		}
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+func UpdateDiscountAutomaticBasic(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input DiscountAutomaticBasicInput,
+) (data_ *UpdateDiscountAutomaticBasicResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateDiscountAutomaticBasic",
+		Query:  UpdateDiscountAutomaticBasic_Operation,
+		Variables: &__UpdateDiscountAutomaticBasicInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &UpdateDiscountAutomaticBasicResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateDiscountCodeBasic.
+const UpdateDiscountCodeBasic_Operation = `
+mutation UpdateDiscountCodeBasic ($id: ID!, $input: DiscountCodeBasicInput!) {
+	discountCodeBasicUpdate(id: $id, basicCodeDiscount: $input) {
+		codeDiscountNode {
+			id
+		}
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+func UpdateDiscountCodeBasic(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input DiscountCodeBasicInput,
+) (data_ *UpdateDiscountCodeBasicResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateDiscountCodeBasic",
+		Query:  UpdateDiscountCodeBasic_Operation,
+		Variables: &__UpdateDiscountCodeBasicInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &UpdateDiscountCodeBasicResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateFile.
+const UpdateFile_Operation = `
+mutation UpdateFile ($files: [FileUpdateInput!]!) {
+	fileUpdate(files: $files) {
+		files {
+			__typename
+			... FileFields
+		}
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+fragment FileFields on File {
+	__typename
+	id
+	alt
+	fileStatus
+	fileErrors {
+		code
+		message
+		details
+	}
+	... on MediaImage {
+		image {
+			url
+		}
+	}
+	... on GenericFile {
+		url
+	}
+	... on Video {
+		filename
+		sources {
+			url
+		}
+	}
+	... on Model3d {
+		filename
+		sources {
+			url
+		}
+	}
+	... on ExternalVideo {
+		originUrl
+	}
+}
+`
+
+// alt "" clears it, so a set pointer is sent and only nil is omitted.
+func UpdateFile(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	files []FileUpdateInput,
+) (data_ *UpdateFileResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateFile",
+		Query:  UpdateFile_Operation,
+		Variables: &__UpdateFileInput{
+			Files: files,
+		},
+	}
+
+	data_ = &UpdateFileResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -22175,6 +42456,107 @@ func UpdateMetaobjectDefinition(
 	}
 
 	data_ = &UpdateMetaobjectDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdatePage.
+const UpdatePage_Operation = `
+mutation UpdatePage ($id: ID!, $page: PageUpdateInput!) {
+	pageUpdate(id: $id, page: $page) {
+		page {
+			... PageFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment PageFields on Page {
+	id
+	handle
+	title
+	body
+	isPublished
+	templateSuffix
+}
+`
+
+// redirectNewHandle is never sent: a handle change creates no redirect (URL redirects are a roadmap type).
+func UpdatePage(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	page PageUpdateInput,
+) (data_ *UpdatePageResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdatePage",
+		Query:  UpdatePage_Operation,
+		Variables: &__UpdatePageInput{
+			Id:   id,
+			Page: page,
+		},
+	}
+
+	data_ = &UpdatePageResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateSegment.
+const UpdateSegment_Operation = `
+mutation UpdateSegment ($id: ID!, $name: String, $query: String) {
+	segmentUpdate(id: $id, name: $name, query: $query) {
+		segment {
+			... SegmentFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment SegmentFields on Segment {
+	id
+	name
+	query
+}
+`
+
+// Omitted arguments stay unchanged.
+func UpdateSegment(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	name *string,
+	query *string,
+) (data_ *UpdateSegmentResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateSegment",
+		Query:  UpdateSegment_Operation,
+		Variables: &__UpdateSegmentInput{
+			Id:    id,
+			Name:  name,
+			Query: query,
+		},
+	}
+
+	data_ = &UpdateSegmentResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

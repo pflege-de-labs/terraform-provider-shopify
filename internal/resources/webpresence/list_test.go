@@ -25,7 +25,7 @@ list "shopify_web_presence" "all" {
 `
 
 func TestAccListWebPresence(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	suffixA, suffixB := testSuffix(), testSuffix()
 	presence := func(name, suffix string) string {
 		return fmt.Sprintf(`

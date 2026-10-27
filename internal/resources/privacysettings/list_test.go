@@ -25,7 +25,7 @@ list "` + typ + `" "all" {
 }
 
 func TestAccListPrivacySettings(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	live := livePrivacy(t)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
@@ -51,7 +51,7 @@ func TestAccListPrivacySettings(t *testing.T) {
 }
 
 func TestAccListConsentPolicy(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	de := consentRow(t, "DE", "")
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },

@@ -1,0 +1,74 @@
+fragment SegmentFields on Segment {
+  id
+  name
+  query
+}
+
+query GetSegment(
+  $id: ID!
+) {
+  segment(id: $id) {
+    ...SegmentFields
+  }
+}
+
+# Unfiltered on purpose: the segment search index lags a few seconds behind writes, so lookups by name page through this.
+query ListSegments(
+  $after: String
+) {
+  segments(first: 250, after: $after) {
+    nodes {
+      ...SegmentFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation CreateSegment(
+  $name: String!
+  $query: String!
+) {
+  segmentCreate(name: $name, query: $query) {
+    segment {
+      ...SegmentFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# Omitted arguments stay unchanged.
+mutation UpdateSegment(
+  $id: ID!
+  # @genqlient(omitempty: true)
+  $name: String
+  # @genqlient(omitempty: true)
+  $query: String
+) {
+  segmentUpdate(id: $id, name: $name, query: $query) {
+    segment {
+      ...SegmentFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeleteSegment(
+  $id: ID!
+) {
+  segmentDelete(id: $id) {
+    deletedSegmentId
+    userErrors {
+      field
+      message
+    }
+  }
+}

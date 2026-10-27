@@ -41,7 +41,7 @@ func checkUnchanged(t *testing.T, want func() (banner, dso, pp bool)) resource.T
 
 // Nothing configured means nothing managed: this never calls privacyFeaturesDisable, whatever the store's state.
 func TestAccPrivacySettings_unmanaged(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	before := livePrivacy(t)
 	b, d, p := before.Banner.AutoManaged, before.DataSaleOptOutPage.AutoManaged, before.PrivacyPolicy.AutoManaged
 	resource.Test(t, resource.TestCase{
@@ -84,7 +84,7 @@ func TestAccPrivacySettings_unmanaged(t *testing.T) {
 // false for the banner is the only write the tests make. With the banner already off it sends nothing, so it
 // runs only then: otherwise it would switch the banner off for good.
 func TestAccPrivacySettings_bannerOff(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	requireBannerOff(t)
 	before := livePrivacy(t)
 	d, p := before.DataSaleOptOutPage.AutoManaged, before.PrivacyPolicy.AutoManaged
@@ -119,7 +119,7 @@ func TestAccPrivacySettings_bannerOff(t *testing.T) {
 
 // A fresh resource has no state for the plan-time check, so Create has to refuse.
 func TestAccPrivacySettings_createCannotEnable(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	requireBannerOff(t)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },

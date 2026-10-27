@@ -1,0 +1,437 @@
+fragment DiscountCombinesWithFields on DiscountCombinesWith {
+  productDiscounts
+  orderDiscounts
+  shippingDiscounts
+}
+
+fragment DiscountContextFields on DiscountContext {
+  __typename
+  ... on DiscountCustomerSegments {
+    segments {
+      id
+    }
+  }
+  ... on DiscountMarkets {
+    markets(first: 250) {
+      nodes {
+        id
+      }
+      pageInfo {
+        hasNextPage
+      }
+    }
+  }
+  ... on DiscountContextUnknown {
+    contextType
+  }
+}
+
+fragment DiscountItemsFields on DiscountItems {
+  __typename
+  ... on DiscountProducts {
+    products(first: 250) {
+      nodes {
+        id
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+    productVariants(first: 250) {
+      nodes {
+        id
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+  ... on DiscountCollections {
+    collections(first: 250) {
+      nodes {
+        id
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+fragment DiscountCustomerGetsFields on DiscountCustomerGets {
+  value {
+    __typename
+    ... on DiscountPercentage {
+      percentage
+    }
+    ... on DiscountAmount {
+      amount {
+        amount
+      }
+      appliesOnEachItem
+    }
+  }
+  # @genqlient(flatten: true)
+  items {
+    ...DiscountItemsFields
+  }
+}
+
+fragment DiscountMinimumFields on DiscountMinimumRequirement {
+  __typename
+  ... on DiscountMinimumSubtotal {
+    greaterThanOrEqualToSubtotal {
+      amount
+    }
+  }
+  ... on DiscountMinimumQuantity {
+    greaterThanOrEqualToQuantity
+  }
+}
+
+# Code and automatic basic discounts share the flattened sub-objects, so one mapping reads both.
+fragment DiscountNodeFields on DiscountNode {
+  id
+  discount {
+    __typename
+    ... on DiscountCodeBasic {
+      title
+      startsAt
+      endsAt
+      status
+      usageLimit
+      appliesOncePerCustomer
+      codesCount {
+        count
+      }
+      codes(first: 1) {
+        nodes {
+          code
+        }
+      }
+      # @genqlient(flatten: true)
+      combinesWith {
+        ...DiscountCombinesWithFields
+      }
+      # @genqlient(flatten: true)
+      context {
+        ...DiscountContextFields
+      }
+      # @genqlient(flatten: true)
+      customerGets {
+        ...DiscountCustomerGetsFields
+      }
+      # @genqlient(flatten: true)
+      minimumRequirement {
+        ...DiscountMinimumFields
+      }
+    }
+    ... on DiscountAutomaticBasic {
+      title
+      startsAt
+      endsAt
+      status
+      # @genqlient(flatten: true)
+      combinesWith {
+        ...DiscountCombinesWithFields
+      }
+      # @genqlient(flatten: true)
+      context {
+        ...DiscountContextFields
+      }
+      # @genqlient(flatten: true)
+      customerGets {
+        ...DiscountCustomerGetsFields
+      }
+      # @genqlient(flatten: true)
+      minimumRequirement {
+        ...DiscountMinimumFields
+      }
+    }
+    # Titles of the other automatic kinds, so a title lookup can say which resource owns a match.
+    ... on DiscountAutomaticBxgy {
+      title
+    }
+    ... on DiscountAutomaticFreeShipping {
+      title
+    }
+    ... on DiscountAutomaticApp {
+      title
+    }
+  }
+}
+
+fragment DiscountUserErrorFields on DiscountUserError {
+  field
+  message
+  code
+  extraInfo
+}
+
+# discountNode is not deprecated, unlike codeDiscountNode and automaticDiscountNode.
+query GetDiscount(
+  $id: ID!
+) {
+  discountNode(id: $id) {
+    ...DiscountNodeFields
+  }
+}
+
+# Case-insensitive; Read continues by GID.
+query GetDiscountByCode(
+  $code: String!
+) {
+  codeDiscountNodeByCode(code: $code) {
+    id
+    codeDiscount {
+      __typename
+    }
+  }
+}
+
+# Pages item selections after the first 250 that DiscountNodeFields carries; raw, as both branches share one decoder.
+query GetDiscountItemsPage(
+  $id: ID!
+  $products: String
+  $variants: String
+  $collections: String
+) {
+  discountNode(id: $id) {
+    discount {
+      __typename
+      ... on DiscountCodeBasic {
+        customerGets {
+          # @genqlient(bind: "encoding/json.RawMessage")
+          items {
+            __typename
+            ... on DiscountProducts {
+              products(first: 250, after: $products) {
+                nodes {
+                  id
+                }
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+              }
+              productVariants(first: 250, after: $variants) {
+                nodes {
+                  id
+                }
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+              }
+            }
+            ... on DiscountCollections {
+              collections(first: 250, after: $collections) {
+                nodes {
+                  id
+                }
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+              }
+            }
+          }
+        }
+      }
+      ... on DiscountAutomaticBasic {
+        customerGets {
+          # @genqlient(bind: "encoding/json.RawMessage")
+          items {
+            __typename
+            ... on DiscountProducts {
+              products(first: 250, after: $products) {
+                nodes {
+                  id
+                }
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+              }
+              productVariants(first: 250, after: $variants) {
+                nodes {
+                  id
+                }
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+              }
+            }
+            ... on DiscountCollections {
+              collections(first: 250, after: $collections) {
+                nodes {
+                  id
+                }
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# Requested cost with items and markets at first 250 was 359 for 50 nodes (§9p).
+query ListDiscounts(
+  $after: String
+  $query: String
+) {
+  discountNodes(first: 50, after: $after, query: $query) {
+    nodes {
+      ...DiscountNodeFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# Omitted keys stay unchanged, so optional fields are omitempty; the subtotal and quantity values are not, since null clears them.
+# @genqlient(for: "DiscountCodeBasicInput.combinesWith", omitempty: true)
+# @genqlient(for: "DiscountCodeBasicInput.title", omitempty: true)
+# @genqlient(for: "DiscountCodeBasicInput.startsAt", omitempty: true)
+# @genqlient(for: "DiscountCodeBasicInput.endsAt", omitempty: true)
+# @genqlient(for: "DiscountCodeBasicInput.appliesOncePerCustomer", omitempty: true)
+# @genqlient(for: "DiscountCodeBasicInput.code", omitempty: true)
+# @genqlient(for: "DiscountCodeBasicInput.usageLimit", omitempty: true)
+# @genqlient(for: "DiscountCodeBasicInput.context", omitempty: true)
+# @genqlient(for: "DiscountCodeBasicInput.tags", omitempty: true)
+# @genqlient(for: "DiscountCodeBasicInput.minimumRequirement", omitempty: true)
+# @genqlient(for: "DiscountCodeBasicInput.customerGets", omitempty: true)
+# @genqlient(for: "DiscountCodeBasicInput.recurringCycleLimit", omitempty: true)
+# @genqlient(for: "DiscountCombinesWithInput.productDiscounts", omitempty: true)
+# @genqlient(for: "DiscountCombinesWithInput.orderDiscounts", omitempty: true)
+# @genqlient(for: "DiscountCombinesWithInput.shippingDiscounts", omitempty: true)
+# @genqlient(for: "DiscountCombinesWithInput.productDiscountsWithTagsOnSameCartLine", omitempty: true)
+# @genqlient(for: "DiscountContextInput.all", omitempty: true)
+# @genqlient(for: "DiscountContextInput.customers", omitempty: true)
+# @genqlient(for: "DiscountContextInput.customerSegments", omitempty: true)
+# @genqlient(for: "DiscountContextInput.markets", omitempty: true)
+# @genqlient(for: "DiscountCustomerSegmentsInput.add", omitempty: true)
+# @genqlient(for: "DiscountCustomerSegmentsInput.remove", omitempty: true)
+# @genqlient(for: "DiscountMarketsInput.add", omitempty: true)
+# @genqlient(for: "DiscountMarketsInput.remove", omitempty: true)
+# @genqlient(for: "DiscountMinimumRequirementInput.quantity", omitempty: true)
+# @genqlient(for: "DiscountMinimumRequirementInput.subtotal", omitempty: true)
+# @genqlient(for: "DiscountCustomerGetsInput.value", omitempty: true)
+# @genqlient(for: "DiscountCustomerGetsInput.items", omitempty: true)
+# @genqlient(for: "DiscountCustomerGetsInput.appliesOnOneTimePurchase", omitempty: true)
+# @genqlient(for: "DiscountCustomerGetsInput.appliesOnSubscription", omitempty: true)
+# @genqlient(for: "DiscountCustomerGetsValueInput.discountOnQuantity", omitempty: true)
+# @genqlient(for: "DiscountCustomerGetsValueInput.percentage", omitempty: true)
+# @genqlient(for: "DiscountCustomerGetsValueInput.discountAmount", omitempty: true)
+# @genqlient(for: "DiscountAmountInput.amount", omitempty: true)
+# @genqlient(for: "DiscountAmountInput.appliesOnEachItem", omitempty: true)
+# @genqlient(for: "DiscountItemsInput.products", omitempty: true)
+# @genqlient(for: "DiscountItemsInput.collections", omitempty: true)
+# @genqlient(for: "DiscountItemsInput.all", omitempty: true)
+# @genqlient(for: "DiscountProductsInput.productsToAdd", omitempty: true)
+# @genqlient(for: "DiscountProductsInput.productsToRemove", omitempty: true)
+# @genqlient(for: "DiscountProductsInput.productVariantsToAdd", omitempty: true)
+# @genqlient(for: "DiscountProductsInput.productVariantsToRemove", omitempty: true)
+# @genqlient(for: "DiscountCollectionsInput.add", omitempty: true)
+# @genqlient(for: "DiscountCollectionsInput.remove", omitempty: true)
+mutation CreateDiscountCodeBasic(
+  $input: DiscountCodeBasicInput!
+) {
+  discountCodeBasicCreate(basicCodeDiscount: $input) {
+    codeDiscountNode {
+      id
+    }
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+mutation UpdateDiscountCodeBasic(
+  $id: ID!
+  $input: DiscountCodeBasicInput!
+) {
+  discountCodeBasicUpdate(id: $id, basicCodeDiscount: $input) {
+    codeDiscountNode {
+      id
+    }
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+# @genqlient(for: "DiscountAutomaticBasicInput.combinesWith", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBasicInput.title", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBasicInput.startsAt", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBasicInput.endsAt", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBasicInput.context", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBasicInput.tags", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBasicInput.minimumRequirement", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBasicInput.customerGets", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBasicInput.recurringCycleLimit", omitempty: true)
+mutation CreateDiscountAutomaticBasic(
+  $input: DiscountAutomaticBasicInput!
+) {
+  discountAutomaticBasicCreate(automaticBasicDiscount: $input) {
+    automaticDiscountNode {
+      id
+    }
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+mutation UpdateDiscountAutomaticBasic(
+  $id: ID!
+  $input: DiscountAutomaticBasicInput!
+) {
+  discountAutomaticBasicUpdate(id: $id, automaticBasicDiscount: $input) {
+    automaticDiscountNode {
+      id
+    }
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+mutation DeleteDiscountCode(
+  $id: ID!
+) {
+  discountCodeDelete(id: $id) {
+    deletedCodeDiscountId
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+mutation DeleteDiscountAutomatic(
+  $id: ID!
+) {
+  discountAutomaticDelete(id: $id) {
+    deletedAutomaticDiscountId
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}

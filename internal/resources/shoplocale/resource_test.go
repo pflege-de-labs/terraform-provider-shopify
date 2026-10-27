@@ -3,7 +3,6 @@ package shoplocale_test
 import (
 	"context"
 	"fmt"
-	"os"
 	"regexp"
 	"testing"
 
@@ -36,15 +35,6 @@ func expectIdentity(code string) statecheck.StateCheck {
 
 func config(body string) string {
 	return fmt.Sprintf("resource \"shopify_shop_locale\" \"test\" {\n%s\n}\n", body)
-}
-
-// accSetup skips without TF_ACC, because these tests call the API before resource.Test would skip them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
 }
 
 func lookup(t *testing.T, code string) *client.ShopLocaleFields {
@@ -129,7 +119,7 @@ func checkGone(t *testing.T, codes ...string) resource.TestCheckFunc {
 }
 
 func TestAccShopLocale_basic(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownLocales(t, locFr)
 	cfg := func(published bool) string {
 		return config(fmt.Sprintf(`
@@ -198,7 +188,7 @@ func TestAccShopLocale_basic(t *testing.T) {
 
 // Unset published is unmanaged: a change made outside Terraform must not show up in the plan.
 func TestAccShopLocale_unmanagedPublished(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownLocales(t, locFr)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
@@ -222,7 +212,7 @@ func TestAccShopLocale_unmanagedPublished(t *testing.T) {
 
 // The primary locale can't be disabled, so it is adopted and left alone on destroy, whatever the flags say.
 func TestAccShopLocale_adoptPrimary(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	primary := lookup(t, locPrimary)
 	if primary == nil || !primary.Primary {
 		t.Fatalf("dev store primary locale is not %s", locPrimary)
@@ -270,7 +260,7 @@ func TestAccShopLocale_adoptPrimary(t *testing.T) {
 
 // An adopted locale stays enabled on destroy, and the data-deletion guard doesn't apply to it.
 func TestAccShopLocale_adopt(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownLocales(t, locFr)
 	cfg := func(adopt bool) string {
 		return config(fmt.Sprintf("locale = %q\npublished = true\nadopt_existing = %t", locFr, adopt))
@@ -304,7 +294,7 @@ func TestAccShopLocale_adopt(t *testing.T) {
 
 // Disabling deletes the locale's translations, so destroy and replace need allow_data_deletion in state.
 func TestAccShopLocale_dataDeletionGuard(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownLocales(t, locFr, locIt)
 	guarded := config(fmt.Sprintf("locale = %q", locFr))
 	resource.Test(t, resource.TestCase{

@@ -35,7 +35,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | Scope | Resource types | Status | Fit |
 |---|---|---|---|
 | none | `shopify_shop` data source | ✅ | |
-| `write_products` | `shopify_metafield_definition` resource and data source (owner types `PRODUCT`, `PRODUCTVARIANT`, `COLLECTION`), catalogs, price lists, selling plan groups; products and collections | ✅ definitions (`PRODUCT`), rest planned | definitions good; products, collections volatile |
+| `write_products` | `shopify_metafield_definition` resource and data source (owner types `PRODUCT`, `PRODUCTVARIANT`, `COLLECTION`), catalogs, price lists, selling plan groups; products and collections | ✅ definitions (`PRODUCT`), `shopify_product` (core fields, options, variants, publishing, media), `shopify_collection` (with publishing), rest planned | definitions good; products, collections volatile |
 | `write_metaobject_definitions` | `shopify_metaobject_definition` resource and data source | ✅ | good |
 | `write_online_store_navigation` | `shopify_menu`, URL redirects | ✅ menus, redirects planned | menus good; redirects volatile |
 | `write_locations` | `shopify_location` | ✅ | good |
@@ -47,16 +47,17 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_checkout_and_accounts_configurations` | `shopify_checkout_and_accounts_configuration` | ✅ | volatile (branding is usually edited in the checkout editor) |
 | `write_checkout_branding_settings` | `shopify_checkout_and_accounts_configuration` `branding` ⚠ (maybe not needed: granted together with the scope above on the dev store, so untested alone) | ✅ | volatile |
 | `write_translations` | translations, market localizations | planned | volatile (follows content) |
-| `write_publications` | publications, publishing to channels | planned | volatile |
+| `write_publications` | `publication_ids` on `shopify_product` and `shopify_collection` (publishing to channels; the publications themselves belong to channel apps) ⚠ (whether `write_products` alone suffices is untested: all scopes are granted on the dev store) | ✅ | volatile |
 | `read_publications` (or `write_publications`) | `shopify_publication` data source (publications belong to sales channel apps, not managed; for referencing by name) | ✅ data source | good (read-only) |
 | `write_purchase_options` | selling plan groups (together with `write_products`) | planned | volatile |
-| `write_customers` | customer segments; metafield definitions for `CUSTOMER` ⚠ | planned | segments volatile |
+| `write_customers` | `shopify_customer_segment`; metafield definitions for `CUSTOMER` ⚠ | ✅ segments, the rest planned | segments volatile |
 | `write_companies` | metafield definitions for `COMPANY`, `COMPANY_LOCATION` ⚠ (B2B stores only; not in the reference configs) | planned | good |
 | `write_orders`, `write_draft_orders` | metafield definitions for `ORDER`, `DRAFTORDER` ⚠ | planned | good |
-| `write_content` | pages, blogs, articles; their metafield definitions ⚠ | planned | volatile (content) |
-| `write_discounts` | discounts; metafield definitions for `DISCOUNT` ⚠ | planned | volatile (content) |
-| `write_metaobjects` | metaobject entries | planned | volatile (content) |
-| `write_files` | files and media | planned | volatile (content) |
+| `write_content` | `shopify_page`, `shopify_blog`; articles; their metafield definitions ⚠ | ✅ pages, blogs, the rest planned | blogs good (settings only); pages, articles volatile (content) |
+| `write_discounts` | `shopify_discount_basic`; free shipping and buy X get Y discounts; metafield definitions for `DISCOUNT` ⚠ (segment and market contexts were read with every scope granted, so whether they also need `read_customers` / `read_markets` is untested) | ✅ basic, the rest planned | volatile (promotions) |
+| `read_metaobjects` (or `write_metaobjects`) | `shopify_metaobject` data source (entries by type and handle, for referencing; Shopify-owned types are not managed) | ✅ data source | good (read-only) |
+| `write_metaobjects` | metaobject entries (resource) | planned | volatile (content) |
+| `write_files` | `shopify_file` (URL sources; uploads of local files planned) | ✅ | volatile (content) |
 | `write_inventory` | inventory levels | planned | volatile |
 | `read_fulfillments` (or `write_fulfillments`) | `shopify_fulfillment_service` data source (fulfillment services are owned by Shopify or other apps, not managed) | ✅ data source | good (read-only) |
 | `write_payment_customizations`, `write_delivery_customizations`, `write_validations`, `write_cart_transforms`, `write_fulfillment_constraint_rules` | Function-backed customizations (need a Function from an installed app) | planned | good once the Function exists |

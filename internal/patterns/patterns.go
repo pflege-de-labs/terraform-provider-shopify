@@ -4,6 +4,7 @@ package patterns
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -111,4 +112,29 @@ func WarnRemovedFromStateOnly(diags *diag.Diagnostics, what, reason string) {
 		fmt.Sprintf("The %s was only removed from Terraform state", what),
 		fmt.Sprintf("It still exists in Shopify because %s. Remove or reset it in the admin if needed.", reason),
 	)
+}
+
+// DiffIDs returns the sorted IDs to add and to remove to get from live to want; nil when there are none.
+func DiffIDs(live, want []string) (add, remove []string) {
+	for _, id := range want {
+		if !slices.Contains(live, id) {
+			add = append(add, id)
+		}
+	}
+	for _, id := range live {
+		if !slices.Contains(want, id) {
+			remove = append(remove, id)
+		}
+	}
+	slices.Sort(add)
+	slices.Sort(remove)
+	return add, remove
+}
+
+// KeyDrift reports a natural key Shopify suffixed (news-1, "Name (2)") because the requested one was taken, which it does without a userError.
+func KeyDrift(what, attr, want, got string) error {
+	if want == got {
+		return nil
+	}
+	return fmt.Errorf("the %s got the %s %q instead of %q, because %q is taken", what, attr, got, want, want)
 }
