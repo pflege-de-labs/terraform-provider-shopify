@@ -67,7 +67,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"`publication_ids` publishes the product to sales channels; removing an ID unpublishes it there, so it disappears for customers. " +
 			"`media_ids` attaches files from the media library (`shopify_file`) in order; removing one deletes the file unless another product uses it. " +
 			"Options linked to a metafield are read but can't be managed yet: leave `options` and `variants` unset for such a product. " +
-			"Destroying a product deletes its variants, inventory, media and metafield values: archive it with `status = \"ARCHIVED\"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. " +
+			"Destroying a product deletes its variants, inventory, metafield values and the media no other product uses: archive it with `status = \"ARCHIVED\"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. " +
 			"A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. " +
 			"Import with the handle.",
 		Attributes: map[string]schema.Attribute{

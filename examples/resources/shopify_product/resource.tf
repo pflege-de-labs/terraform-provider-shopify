@@ -2,6 +2,12 @@ data "shopify_publication" "online_store" {
   name = "Online Store"
 }
 
+resource "shopify_file" "bettschutz_photo" {
+  filename     = "bettschutzeinlage.jpg"
+  content_type = "IMAGE"
+  source       = "https://example.com/images/bettschutzeinlage.jpg"
+}
+
 # Unset attributes (vendor here, sku on size M) keep whatever the admin has.
 resource "shopify_product" "bettschutz" {
   handle           = "bettschutzeinlage"
@@ -14,6 +20,10 @@ resource "shopify_product" "bettschutz" {
 
   # Removing an ID unpublishes the product from that channel. Unset leaves the publications to the admin.
   publication_ids = [data.shopify_publication.online_store.id]
+
+  # Media in position order. Removing an ID deletes that file unless another product uses it,
+  # so it needs allow_data_deletion = true. Unset leaves the media to the admin.
+  media_ids = [shopify_file.bettschutz_photo.id]
 
   options = [
     { name = "Größe", values = ["S", "M"] },

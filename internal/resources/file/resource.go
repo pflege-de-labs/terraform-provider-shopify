@@ -67,6 +67,9 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"Shopify fetches the file from `source`, which must be an `http://` or `https://` URL; uploads of local files, and with them new videos and 3D models, are not supported yet (roadmap). " +
 			"Videos and 3D models can still be imported or adopted. " +
 			"Destroying or replacing a file deletes it for good and breaks every product, page and theme that uses it, so that needs `allow_data_deletion = true` in state first. " +
+			"**Shopify also deletes a file when the last product that uses it lets go of it:** removing its ID from a `shopify_product`'s `media_ids` (guarded by that product's `allow_data_deletion`, not this one's), " +
+			"or destroying that product. The file's own `allow_data_deletion` can't prevent that; the next plan then shows a create for this resource. " +
+			"Destroying this resource first detaches the file from every product, so removing it from config together with its ID in `media_ids` needs only this resource's flag. " +
 			"A file that already has the filename needs `adopt_existing = true`; destroy then leaves it in place. " +
 			"Import with the filename, or with the URL for an external video.",
 		Blocks: map[string]schema.Block{
@@ -74,7 +77,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 		},
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				MarkdownDescription: "File GID. Its kind follows the content type (`MediaImage`, `GenericFile`, `Video`, `ExternalVideo`, `Model3d`); product media take it as is.",
+				MarkdownDescription: "File GID. Its kind follows the content type (`MediaImage`, `GenericFile`, `Video`, `ExternalVideo`, `Model3d`); a product's `media_ids` take it as is, except `GenericFile` (`content_type = \"FILE\"`), which can't be product media.",
 				Computed:            true,
 				PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},

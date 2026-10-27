@@ -27,7 +27,7 @@ func mediaIDsAttribute() schema.ListAttribute {
 	return schema.ListAttribute{
 		MarkdownDescription: "File GIDs of the product's media in position order, usually `shopify_file.<name>.id`. " +
 			"Images, videos, 3D models and external videos only: a `content_type = \"FILE\"` file can't be product media. " +
-			"**Removing an ID, or `[]`, deletes that file from the store unless another product also uses it** (Shopify's behaviour, also for files uploaded in the admin), " +
+			"**Removing an ID, or `[]`, deletes that file from the store unless another product also uses it** (Shopify's behaviour), " +
 			"so such a change fails unless `allow_data_deletion = true`; a `shopify_file` for the deleted file then plans a create. " +
 			"Reordering keeps every file. Unset means unmanaged: the media set in the admin are kept.",
 		ElementType:   types.StringType,

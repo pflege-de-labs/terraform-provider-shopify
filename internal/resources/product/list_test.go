@@ -2,6 +2,7 @@ package product_test
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -27,6 +28,7 @@ func TestAccListProduct(t *testing.T) {
 	accSetup(t)
 	handleA, handleB := testHandle(), testHandle()
 	cleanup(t, handleA, handleB)
+	f := newFiles(t)
 	product := func(name, handle, extra string) string {
 		return fmt.Sprintf(`
 resource "shopify_product" %q {
@@ -46,12 +48,13 @@ resource "shopify_product" %q {
 		TerraformVersionChecks:   []tfversion.TerraformVersionCheck{tfversion.SkipBelow(tfversion.Version1_14_0)},
 		CheckDestroy:             checkGone(t, handleA, handleB),
 		Steps: []resource.TestStep{
-			{Config: publicationData + product("a", handleA, `
+			{Config: publicationData + fileConfig("a", testFilename()) + product("a", handleA, `
   tags     = ["tf-acc-list"]
   publication_ids = [data.shopify_publication.online.id]
+  media_ids       = [shopify_file.a.id]
   options  = [{ name = "Size", values = ["S", "M"] }]
   variants = [{ option_values = { Size = "S" }, price = "3.00" }, { option_values = { Size = "M" }, sku = "TF-LIST-M" }]
-`) + product("b", handleB, "")},
+`) + product("b", handleB, ""), Check: f.track("a")},
 			{
 				Query:  true,
 				Config: listConfig,
@@ -67,6 +70,7 @@ resource "shopify_product" %q {
 							{Path: tfjsonpath.New("tags"), KnownValue: knownvalue.SetExact([]knownvalue.Check{knownvalue.StringExact("tf-acc-list")})},
 							{Path: tfjsonpath.New("gift_card"), KnownValue: knownvalue.Bool(false)},
 							{Path: tfjsonpath.New("publication_ids"), KnownValue: knownvalue.SetExact([]knownvalue.Check{knownvalue.StringExact(online)})},
+							{Path: tfjsonpath.New("media_ids"), KnownValue: knownvalue.ListExact([]knownvalue.Check{knownvalue.StringRegexp(regexp.MustCompile(`^gid://shopify/MediaImage/\d+$`))})},
 							{Path: tfjsonpath.New("options").AtSliceIndex(0).AtMapKey("values"), KnownValue: knownvalue.ListExact([]knownvalue.Check{knownvalue.StringExact("S"), knownvalue.StringExact("M")})},
 							{Path: tfjsonpath.New("variants").AtSliceIndex(0).AtMapKey("price"), KnownValue: knownvalue.StringExact("3.00")},
 							{Path: tfjsonpath.New("variants").AtSliceIndex(1).AtMapKey("option_values"), KnownValue: knownvalue.MapExact(map[string]knownvalue.Check{"Size": knownvalue.StringExact("M")})},
@@ -75,14 +79,17 @@ resource "shopify_product" %q {
 						}),
 				},
 			},
-			// An unpublished product lists no publication_ids, so generated config doesn't claim to manage them.
+			// A product published nowhere and without media lists neither, so generated config doesn't claim to manage them.
 			{
 				Query:  true,
 				Config: listConfig,
 				QueryResultChecks: []querycheck.QueryResultCheck{
 					querycheck.ExpectResourceKnownValues("shopify_product.all",
 						queryfilter.ByDisplayName(knownvalue.StringExact("tf-acc list b ("+handleB+")")),
-						[]querycheck.KnownValueCheck{{Path: tfjsonpath.New("publication_ids"), KnownValue: knownvalue.Null()}}),
+						[]querycheck.KnownValueCheck{
+							{Path: tfjsonpath.New("publication_ids"), KnownValue: knownvalue.Null()},
+							{Path: tfjsonpath.New("media_ids"), KnownValue: knownvalue.Null()},
+						}),
 				},
 			},
 			// GenerateConfig is a no-op on Query steps in terraform-plugin-testing v1.16.0; the round-trip is covered by the identity import step in _basic.
