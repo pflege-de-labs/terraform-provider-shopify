@@ -317,6 +317,7 @@ func TestAccFile_validation(t *testing.T) {
 		"no filename":     {`content_type = "IMAGE"` + "\n" + `source = "https://example.com/a.png"`, `filename\s+is\s+required`},
 		"video filename":  {`content_type = "EXTERNAL_VIDEO"` + "\n" + `filename = "a.mp4"` + "\n" + `source = "` + videoURL + `"`, `no\s+filename`},
 		"hash only":       {`content_type = "IMAGE"` + "\n" + `filename = "a.png"` + "\n" + `source_hash = "x"`, `needs\s+a\s+source`},
+		"wrong extension": {`content_type = "IMAGE"` + "\n" + `filename = "a.jpg"` + "\n" + `source = "` + imageURL + `"`, `must\s+match\s+the\s+source`},
 		"no source":       {`content_type = "IMAGE"` + "\n" + `filename = "tf-acc-file-nosource.png"`, `without\s+a\s+source`},
 		"video no source": {`content_type = "VIDEO"` + "\n" + `filename = "tf-acc-file-nosource.mp4"`, `staged upload`},
 		"bad timeout":     {`content_type = "IMAGE"` + "\n" + `filename = "a.png"` + "\n" + `source = "https://example.com/a.png"` + "\n" + `timeouts {` + "\n" + `create = "soon"` + "\n" + `}`, `invalid\s+duration`},
@@ -503,11 +504,11 @@ func TestAccFile_dataDeletion(t *testing.T) {
 	})
 }
 
-// A different extension can't be changed in place, so it plans a replace, which Pattern B refuses without allow_data_deletion.
+// A different extension (here only in case, since the source fixes the extension) can't be changed in place, so it plans a replace, which Pattern B refuses without allow_data_deletion.
 func TestAccFile_extensionReplaces(t *testing.T) {
 	accSetup(t)
 	name := testFilename()
-	renamed := strings.TrimSuffix(name, ".png") + ".jpg"
+	renamed := strings.TrimSuffix(name, ".png") + ".PNG"
 	tr := newTracker(t, name, renamed)
 	body := func(filename, allow string) string {
 		return config(fmt.Sprintf("  content_type = \"IMAGE\"\n  filename = %q\n  source = %q\n  allow_data_deletion = %s", filename, imageURL, allow))

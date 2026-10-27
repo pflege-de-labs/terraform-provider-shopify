@@ -3,12 +3,12 @@
 page_title: "shopify_file List Resource - shopify"
 subcategory: ""
 description: |-
-  Lists the files of the store, 250 per request. Generated config carries no source for hosted files, so it plans as import-only. Files that are still processing or failed have no URL and so no filename; they are skipped.
+  Lists the files of the store, 250 per request. Generated config carries no source for hosted files, so it plans as import-only. Files that are still processing or failed have no URL, and files whose filename this provider rejects (no extension, spaces, non-ASCII characters) can't be imported by filename; both are skipped and don't count toward the limit.
 ---
 
 # shopify_file (List Resource)
 
-Lists the files of the store, 250 per request. Generated config carries no `source` for hosted files, so it plans as import-only. Files that are still processing or failed have no URL and so no filename; they are skipped.
+Lists the files of the store, 250 per request. Generated config carries no `source` for hosted files, so it plans as import-only. Files that are still processing or failed have no URL, and files whose filename this provider rejects (no extension, spaces, non-ASCII characters) can't be imported by filename; both are skipped and don't count toward the limit.
 
 ## Example Usage
 

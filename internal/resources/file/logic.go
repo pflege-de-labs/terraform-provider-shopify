@@ -189,7 +189,7 @@ func validateFilename(name string) error {
 func checkSource(contentType, source string) error {
 	if contentType == typeVideo || contentType == typeModel3d {
 		return errors.New("videos and 3D models need a staged upload, which this provider does not support yet (roadmap). " +
-			"They can be imported or adopted with adopt_existing, and renamed in the admin")
+			"They can be imported or adopted with adopt_existing")
 	}
 	u, err := url.Parse(source)
 	if err != nil || (u.Scheme != "http" && u.Scheme != "https") {
@@ -197,6 +197,23 @@ func checkSource(contentType, source string) error {
 	}
 	if u.Host == "" {
 		return errors.New("the URL has no host")
+	}
+	return nil
+}
+
+// extensionMismatch applies Shopify's rule (MISMATCHED_FILENAME_AND_ORIGINAL_SOURCE) before anything is deleted or uploaded; a URL without an extension is not checked.
+func extensionMismatch(filename, source string) error {
+	u, err := url.Parse(source)
+	if err != nil {
+		return err
+	}
+	base := u.Path[strings.LastIndex(u.Path, "/")+1:]
+	i := strings.LastIndex(base, ".")
+	if i < 0 {
+		return nil
+	}
+	if want := base[i:]; !strings.EqualFold(want, extension(filename)) {
+		return fmt.Errorf("the extension of %q must match the source URL, which ends in %q: Shopify refuses the file otherwise", filename, want)
 	}
 	return nil
 }
@@ -236,6 +253,10 @@ func configErrors(m *model) []configError {
 	default:
 		if err := checkSource(ct, m.Source.ValueString()); err != nil {
 			errs = append(errs, configError{"source", err.Error()})
+		} else if ct != typeExternalVideo && !m.Filename.IsNull() && !m.Filename.IsUnknown() && validateFilename(m.Filename.ValueString()) == nil {
+			if err := extensionMismatch(m.Filename.ValueString(), m.Source.ValueString()); err != nil {
+				errs = append(errs, configError{"filename", err.Error()})
+			}
 		}
 	}
 	return errs
@@ -309,7 +330,7 @@ type timeoutError struct {
 }
 
 func (e *timeoutError) Error() string {
-	return fmt.Sprintf("file %s is still processing after %s; it was kept, so apply again once Shopify has finished", e.file.Id, e.after)
+	return fmt.Sprintf("file %s is still processing after %s; it was kept", e.file.Id, e.after)
 }
 
 // poller waits for processing; fetch, sleep and now are injected so the loop is testable.

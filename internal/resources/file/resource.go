@@ -87,7 +87,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				MarkdownDescription: "The filename with its extension, unique per shop and the import key. Required for every content type except `EXTERNAL_VIDEO`, where it must be unset. " +
 					"ASCII letters, digits, `.`, `_` and `-` only, because Shopify rewrites anything else. " +
 					"Changing it renames the file in place and **changes its CDN URL**, so links in pages and themes break; images and generic files only. " +
-					"A different extension replaces the file.",
+					"A different extension replaces the file, and it must match the extension of the `source` URL (Shopify refuses the file otherwise, which is checked at plan time).",
 				Optional: true,
 			},
 			"source": schema.StringAttribute{
@@ -282,7 +282,8 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 		resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 		resp.Diagnostics.Append(remember(ctx, resp.Private, seen)...)
-		resp.Diagnostics.AddError("The file is not ready", err.Error())
+		// State was set, so Terraform taints the resource; the next apply would replace the file.
+		resp.Diagnostics.AddError("The file is not ready", err.Error()+". Terraform marked the resource as tainted: run `terraform untaint <address of this resource>` before applying again.")
 		return
 	}
 	if name, ok := ready.filename(); ok && plan.ContentType.ValueString() != typeExternalVideo && name != plan.Filename.ValueString() {
@@ -549,6 +550,11 @@ func processingDiags(err error) diag.Diagnostics {
 		for _, fe := range failed.file.FileErrors {
 			diags.AddError("Shopify could not process the file", fe.String())
 		}
+		return diags
+	}
+	var timedOut *timeoutError
+	if errors.As(err, &timedOut) {
+		diags.AddError("The file is not ready", err.Error()+"; apply again once Shopify has finished.")
 		return diags
 	}
 	diags.AddError("The file is not ready", err.Error())

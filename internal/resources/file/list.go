@@ -3,6 +3,7 @@ package file
 import (
 	"context"
 	"fmt"
+	"slices"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/list"
@@ -31,7 +32,7 @@ type listConfig struct {
 func (r *ListResource) ListResourceConfigSchema(ctx context.Context, req list.ListResourceSchemaRequest, resp *list.ListResourceSchemaResponse) {
 	resp.Schema = listschema.Schema{
 		MarkdownDescription: "Lists the files of the store, 250 per request. Generated config carries no `source` for hosted files, so it plans as import-only. " +
-			"Files that are still processing or failed have no URL and so no filename; they are skipped.",
+			"Files that are still processing or failed have no URL, and files whose filename this provider rejects (no extension, spaces, non-ASCII characters) can't be imported by filename; both are skipped and don't count toward the limit.",
 		Attributes: map[string]listschema.Attribute{
 			"query": listschema.StringAttribute{
 				MarkdownDescription: "A Shopify search filter, such as `media_type:IMAGE` or `filename:logo`, to import a large library in parts.",
@@ -54,11 +55,10 @@ func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *l
 				return nil, nil, err
 			}
 			fs, err := decodeFiles(res.Files.Nodes)
-			return fs, patterns.NextCursor(res.Files.PageInfo.HasNextPage, res.Files.PageInfo.EndCursor), err
+			return filterListable(fs), patterns.NextCursor(res.Files.PageInfo.HasNextPage, res.Files.PageInfo.EndCursor), err
 		}
 		err := patterns.Paginate(ctx, req.Limit, page, func(f apiFile) bool {
-			res, ok := listResult(ctx, req, &f)
-			return !ok || push(res)
+			return push(listResult(ctx, req, &f))
 		})
 		if err != nil {
 			var diags diag.Diagnostics
@@ -68,19 +68,27 @@ func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *l
 	}
 }
 
+// filterListable drops what could not be imported by filename: no URL yet, or a filename the validator rejects.
+// It runs before Paginate, so skipped files don't count toward the limit.
+func filterListable(files []apiFile) []apiFile {
+	return slices.DeleteFunc(slices.Clone(files), func(f apiFile) bool {
+		if f.Typename == "ExternalVideo" {
+			return false
+		}
+		name, ok := f.filename()
+		return !ok || validateFilename(name) != nil
+	})
+}
+
 // listResult fills the resource as an import would; provider-only attributes get their schema defaults.
-// It reports false for a file without a filename, which could not pass validation.
-func listResult(ctx context.Context, req list.ListRequest, f *apiFile) (list.ListResult, bool) {
+func listResult(ctx context.Context, req list.ListRequest, f *apiFile) list.ListResult {
 	res := req.NewListResult(ctx)
 	ct, _ := f.contentType()
-	name, hasName := f.filename()
-	switch {
-	case ct == typeExternalVideo:
+	if ct == typeExternalVideo {
 		res.DisplayName = fmt.Sprintf("%s (%s)", f.OriginUrl, ct)
-	case hasName:
+	} else {
+		name, _ := f.filename()
 		res.DisplayName = fmt.Sprintf("%s (%s)", name, ct)
-	default:
-		return res, false
 	}
 	res.Diagnostics.Append(res.Identity.Set(ctx, patterns.IDIdentity{ID: types.StringValue(f.Id)})...)
 	if req.IncludeResource {
@@ -92,5 +100,5 @@ func listResult(ctx context.Context, req list.ListRequest, f *apiFile) (list.Lis
 		setFromAPI(&m, f, nil)
 		res.Diagnostics.Append(res.Resource.Set(ctx, &m)...)
 	}
-	return res, true
+	return res
 }

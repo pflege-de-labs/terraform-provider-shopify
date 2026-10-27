@@ -11,6 +11,8 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 )
 
 func TestValidateFilename(t *testing.T) {
@@ -460,10 +462,77 @@ func TestConfigErrors(t *testing.T) {
 		{"hash without source", model{ContentType: s("IMAGE"), Filename: s("a.png"), Source: null, SourceHash: s("h")}, []string{"source_hash"}},
 		{"unknowns are skipped", model{ContentType: unknown, Filename: unknown, Source: unknown, SourceHash: unknown}, nil},
 		{"unknown filename", model{ContentType: s("IMAGE"), Filename: unknown, Source: s("https://x/a.png"), SourceHash: null}, nil},
+		{"extension differs from the source", model{ContentType: s("IMAGE"), Filename: s("a.jpg"), Source: s("https://x/a.png?v=1"), SourceHash: null}, []string{"filename"}},
+		{"extension case differs only", model{ContentType: s("FILE"), Filename: s("a.PDF"), Source: s("https://x/doc.pdf"), SourceHash: null}, nil},
+		{"source without extension", model{ContentType: s("FILE"), Filename: s("a.pdf"), Source: s("https://x/download?id=3"), SourceHash: null}, nil},
+		{"unknown source", model{ContentType: s("IMAGE"), Filename: s("a.jpg"), Source: unknown, SourceHash: null}, nil},
 	}
 	for _, c := range cases {
 		if got := attrs(c.m); !slices.Equal(got, c.want) {
 			t.Errorf("%s: got %v, want %v", c.name, got, c.want)
 		}
+	}
+}
+
+func TestExtensionMismatch(t *testing.T) {
+	for _, c := range []struct {
+		filename, source string
+		wantErr          bool
+	}{
+		{"a.png", "https://x/dir/b.png", false},
+		{"a.PNG", "https://x/b.png", false},
+		{"a.jpg", "https://x/b.png", true},
+		{"a.jpg", "https://x/b.png?v=1#f", true},
+		{"a.jpg", "https://x/b", false},
+		{"a.jpg", "https://x/dir.d/b", false},
+		{"a.jpg", "https://x/", false},
+	} {
+		if err := extensionMismatch(c.filename, c.source); (err != nil) != c.wantErr {
+			t.Errorf("extensionMismatch(%q, %q) = %v, want error: %t", c.filename, c.source, err, c.wantErr)
+		}
+	}
+}
+
+func TestFilterListable(t *testing.T) {
+	mk := func(id, filename string) apiFile {
+		return apiFile{Typename: "Video", Id: id, Filename: &filename}
+	}
+	files := []apiFile{
+		mk("1", "no extension"),
+		{Typename: "GenericFile", Id: "2", Url: new(string)},
+		mk("3", "v a.mp4"),
+		mk("4", "ok.mp4"),
+		{Typename: "ExternalVideo", Id: "5", OriginUrl: "https://youtu.be/x"},
+		mk("6", "also-ok.mp4"),
+	}
+	var ids []string
+	for _, f := range filterListable(files) {
+		ids = append(ids, f.Id)
+	}
+	if !slices.Equal(ids, []string{"4", "5", "6"}) {
+		t.Errorf("listable = %v, want 4, 5, 6", ids)
+	}
+}
+
+// Skipped files must not use up the list limit.
+func TestListLimitCountsListedFilesOnly(t *testing.T) {
+	bad := func(id string) apiFile { n := "bad name"; return apiFile{Typename: "Video", Id: id, Filename: &n} }
+	good := func(id string) apiFile { n := id + ".mp4"; return apiFile{Typename: "Video", Id: id, Filename: &n} }
+	pages := [][]apiFile{{bad("b1"), bad("b2"), good("g1")}, {bad("b3"), good("g2"), good("g3")}}
+	page := func(after *string) ([]apiFile, *string, error) {
+		i := 0
+		if after != nil {
+			i = 1
+		}
+		var next *string
+		if i == 0 {
+			next = new(string)
+		}
+		return filterListable(pages[i]), next, nil
+	}
+	var got []string
+	err := patterns.Paginate(context.Background(), 2, page, func(f apiFile) bool { got = append(got, f.Id); return true })
+	if err != nil || !slices.Equal(got, []string{"g1", "g2"}) {
+		t.Errorf("got %v, %v; want g1, g2", got, err)
 	}
 }
