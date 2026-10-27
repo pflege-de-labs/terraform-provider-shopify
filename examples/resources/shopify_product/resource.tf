@@ -21,8 +21,8 @@ resource "shopify_product" "bettschutz" {
   # Removing an ID unpublishes the product from that channel. Unset leaves the publications to the admin.
   publication_ids = [data.shopify_publication.online_store.id]
 
-  # Media in position order. Removing an ID detaches the file and keeps it in the library.
-  # Unset leaves the media to the admin.
+  # Media in position order. Removing an ID detaches the file and keeps it in the library;
+  # so does destroying the product. Unset leaves the media to the admin, and destroy to Shopify.
   media_ids = [shopify_file.bettschutz_photo.id]
 
   options = [
@@ -59,7 +59,7 @@ resource "shopify_product" "existing" {
   adopt_existing = true
 }
 
-# Destroy deletes the product with its variants, inventory and media, so it needs the flag in state first.
+# Destroy deletes the product with its variants and inventory, so it needs the flag in state first.
 # Archiving (status = "ARCHIVED") is the safer way to retire a product; in production also add
 # lifecycle { prevent_destroy = true }.
 resource "shopify_product" "temporary" {

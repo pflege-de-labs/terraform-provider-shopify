@@ -6,6 +6,7 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
@@ -174,5 +175,33 @@ func TestDetachInputs(t *testing.T) {
 	}
 	if got := detachInputs(nil, "p"); len(got) != 0 {
 		t.Errorf("got %v, want no inputs", got)
+	}
+}
+
+type fakePrivate map[string][]byte
+
+func (p fakePrivate) SetKey(_ context.Context, k string, v []byte) diag.Diagnostics {
+	p[k] = v
+	return nil
+}
+
+func (p fakePrivate) GetKey(_ context.Context, k string) ([]byte, diag.Diagnostics) {
+	return p[k], nil
+}
+
+// Destroy must detach unless the last write left media_ids unset; an imported product has no record and detaches.
+func TestDetachOnDestroy(t *testing.T) {
+	ctx := context.Background()
+	p := fakePrivate{}
+	if got, _ := detachOnDestroy(ctx, p); !got {
+		t.Error("no record: got false, want true")
+	}
+	for _, managed := range []bool{false, true} {
+		if d := rememberMediaManaged(ctx, p, managed); d.HasError() {
+			t.Fatal(d)
+		}
+		if got, d := detachOnDestroy(ctx, p); d.HasError() || got != managed {
+			t.Errorf("managed %t: got %t, %v", managed, got, d)
+		}
 	}
 }

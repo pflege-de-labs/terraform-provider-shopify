@@ -68,7 +68,8 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"Videos and 3D models can still be imported or adopted. " +
 			"Destroying or replacing a file deletes it for good and breaks every product, page and theme that uses it, so that needs `allow_data_deletion = true` in state first. " +
 			"Removing the file from a `shopify_product`'s `media_ids` detaches it and keeps it. " +
-			"**Destroying a product deletes the files no other product uses** (Shopify's behaviour); this resource's `allow_data_deletion` can't prevent that, and the next plan shows a create for it. " +
+			"Destroying a product with `media_ids` set detaches its files and keeps them. " +
+			"**A product with `media_ids` unset is different: destroying it deletes the files no other product uses** (Shopify's behaviour); this resource's `allow_data_deletion` can't prevent that, and the next plan shows a create for it. " +
 			"A file that already has the filename needs `adopt_existing = true`; destroy then leaves it in place. " +
 			"Import with the filename, or with the URL for an external video.",
 		Blocks: map[string]schema.Block{
@@ -427,6 +428,15 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	}
 	if state.AdoptExisting.ValueBool() {
 		patterns.WarnRemovedFromStateOnly(&resp.Diagnostics, what, "adopt_existing is true")
+		return
+	}
+	// Look first, so a file already gone (e.g. with its product) never trips the guard.
+	f, err := r.getByID(ctx, state.ID.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to delete "+what, err.Error())
+		return
+	}
+	if f == nil {
 		return
 	}
 	// Deleting is permanent and breaks every reference, used or not.

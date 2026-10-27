@@ -57,6 +57,14 @@ func (r *Resource) IdentitySchema(ctx context.Context, req resource.IdentitySche
 	resp.IdentitySchema = patterns.IDIdentitySchema()
 }
 
+// allowDataDeletionAttribute says what the guard covers: destroy and replace from state, variant removal from the plan (§9k.2).
+func allowDataDeletionAttribute() schema.BoolAttribute {
+	a := patterns.AllowDataDeletionAttribute(what + " with its variants, inventory and metafield values")
+	a.MarkdownDescription += " Removing variants also needs it, but there the planned value counts, so it can be set in the same apply. " +
+		"Media are not covered: with `media_ids` set they are detached and kept; otherwise Shopify deletes the media no other product uses."
+	return a
+}
+
 // TODO(verify): whether any large product needs productSet with synchronous: false and productOperation polling.
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	unmanaged := " Unset means unmanaged: the value set in the admin is kept."
@@ -66,8 +74,9 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. " +
 			"`publication_ids` publishes the product to sales channels; removing an ID unpublishes it there, so it disappears for customers. " +
 			"`media_ids` attaches files from the media library (`shopify_file`) in order; removing one detaches it and keeps the file. " +
+			"Destroy or replace detaches the product's media first, so they stay in the library, unless the provider last wrote the product with `media_ids` unset: then Shopify deletes the media no other product uses. " +
 			"Options linked to a metafield are read but can't be managed yet: leave `options` and `variants` unset for such a product. " +
-			"Destroying a product deletes its variants, inventory, metafield values and the media no other product uses: archive it with `status = \"ARCHIVED\"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. " +
+			"Destroying a product deletes its variants, inventory and metafield values: archive it with `status = \"ARCHIVED\"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. " +
 			"A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. " +
 			"Import with the handle.",
 		Attributes: map[string]schema.Attribute{
@@ -154,7 +163,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"publication_ids":     publishing.Attribute(what),
 			"media_ids":           mediaIDsAttribute(),
 			"adopt_existing":      patterns.AdoptExistingAttribute(what),
-			"allow_data_deletion": patterns.AllowDataDeletionAttribute(what + ", its variants, inventory and media"),
+			"allow_data_deletion": allowDataDeletionAttribute(),
 		},
 	}
 }
@@ -358,7 +367,7 @@ func (r *Resource) warnReplace(ctx context.Context, req resource.ModifyPlanReque
 	if resp.Diagnostics.HasError() || after.IsUnknown() || before.Equal(after) {
 		return
 	}
-	detail := "Changing gift_card replaces the product and deletes its variants, inventory and media."
+	detail := "Changing gift_card replaces the product and deletes its variants and inventory; its media are detached and kept when media_ids is set."
 	if !allow.ValueBool() {
 		detail += " Apply will fail because allow_data_deletion is not true in state."
 	}
@@ -494,6 +503,15 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	if p == nil {
 		return
 	}
+	detach, d := detachOnDestroy(ctx, req.Private)
+	resp.Diagnostics.Append(d...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	// productDelete deletes media no other product uses, which would take files shopify_file owns (T14d-2).
+	if ids := mediaIDs(p); detach && len(ids) > 0 && !r.detachMedia(ctx, p.Id, ids, &resp.Diagnostics) {
+		return
+	}
 	res, err := client.DeleteProduct(ctx, r.client, state.ID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to delete "+what, err.Error())
@@ -569,6 +587,7 @@ func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFi
 	}
 	diags.Append(setFromAPI(ctx, plan, p, &p.DescriptionHtml)...)
 	diags.Append(patterns.RememberWrittenHTML(ctx, private, p.DescriptionHtml)...)
+	diags.Append(rememberMediaManaged(ctx, private, !cfg.MediaIDs.IsNull())...)
 	diags.Append(r.publish(ctx, p, plan, cfg)...)
 	return true
 }

@@ -253,3 +253,46 @@ func TestAccProduct_media(t *testing.T) {
 		},
 	})
 }
+
+// Destroying a product must not delete a file shopify_file guards with allow_data_deletion = false.
+func TestAccProduct_destroyKeepsManagedFile(t *testing.T) {
+	acctest.Setup(t)
+	acctest.KeepFrontpage(t)
+	handle := testHandle()
+	cleanup(t, handle)
+	f := newFiles(t)
+	filename := testFilename()
+	file := func(allow bool) string {
+		return strings.Replace(fileConfig("a", filename), "allow_data_deletion = true", fmt.Sprintf("allow_data_deletion = %t", allow), 1)
+	}
+	product := config(fmt.Sprintf(`
+  handle              = %q
+  title               = "tf-acc destroy keeps media"
+  status              = "DRAFT"
+  allow_data_deletion = true
+  media_ids           = [shopify_file.a.id]
+`, handle))
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             resource.ComposeTestCheckFunc(checkGone(t, handle), checkFiles(t, f, map[string]bool{"a": false})),
+		Steps: []resource.TestStep{
+			{
+				Config:            file(false) + product,
+				Check:             resource.ComposeTestCheckFunc(f.track("a"), checkMedia(t, handle, f, "a")),
+				ConfigStateChecks: mediaState("a"),
+			},
+			{
+				Config: file(false),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(addr, plancheck.ResourceActionDestroy)},
+				},
+				Check: resource.ComposeTestCheckFunc(checkGone(t, handle), checkFiles(t, f, map[string]bool{"a": true})),
+			},
+			{
+				// Lets the final destroy remove the file.
+				Config: file(true),
+			},
+		},
+	})
+}
