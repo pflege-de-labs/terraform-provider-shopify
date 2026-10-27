@@ -3,7 +3,6 @@ package product_test
 import (
 	"context"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -33,15 +32,6 @@ func testHandle() string {
 
 func config(body string) string {
 	return fmt.Sprintf("resource \"shopify_product\" \"test\" {\n%s\n}\n", body)
-}
-
-// accSetup skips without TF_ACC, because these tests call the API before resource.Test would skip them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
 }
 
 // lookup returns nil when no product has the handle.
@@ -132,7 +122,7 @@ func stateValue(path string, check knownvalue.Check) statecheck.StateCheck {
 }
 
 func TestAccProduct_basic(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	renamed := handle + "-b"
@@ -236,7 +226,7 @@ func TestAccProduct_basic(t *testing.T) {
 
 // Shopify repairs HTML; the repaired text must not show as a diff, but an admin edit must.
 func TestAccProduct_htmlNormalisation(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)
@@ -287,7 +277,7 @@ func TestAccProduct_htmlNormalisation(t *testing.T) {
 
 // Unset attributes are unmanaged: an admin edit to them must not plan, and an update must not send them.
 func TestAccProduct_unmanagedVendor(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)
@@ -336,7 +326,7 @@ func TestAccProduct_unmanagedVendor(t *testing.T) {
 
 // Pattern A: an adopted product is updated to the config, and destroy leaves it in Shopify.
 func TestAccProduct_adoptExisting(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	title, vendor, productType := "tf-acc original", "tf-acc original vendor", "tf-acc original type"
@@ -385,7 +375,7 @@ func TestAccProduct_adoptExisting(t *testing.T) {
 
 // Pattern B: destroy fails unless allow_data_deletion is true in state; gift_card forces a replace.
 func TestAccProduct_deletionGuard(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)
@@ -429,7 +419,7 @@ func TestAccProduct_deletionGuard(t *testing.T) {
 
 // seo_title and seo_description share one productSet object: leaving one out must keep its admin value.
 func TestAccProduct_unmanagedSEODescription(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)
@@ -549,7 +539,7 @@ func variantValue(i int, attr string, check knownvalue.Check) statecheck.StateCh
 }
 
 func TestAccProduct_variants(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)
@@ -700,7 +690,7 @@ func TestAccProduct_variants(t *testing.T) {
 
 // A product without options has one default variant: options = [] manages it, and adding options keeps it.
 func TestAccProduct_defaultVariant(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)

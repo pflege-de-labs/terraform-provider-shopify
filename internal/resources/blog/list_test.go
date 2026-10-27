@@ -24,7 +24,7 @@ list "shopify_blog" "all" {
 `
 
 func TestAccListBlog(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	handleA, handleB := testHandle(), testHandle()
 	cleanup(t, handleA, handleB)
 	blogs := fmt.Sprintf(`

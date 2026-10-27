@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -34,15 +33,6 @@ var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check
 // testHandle keeps test collections apart from real ones.
 func testHandle() string {
 	return "tf-acc-collection-" + strings.ToLower(sdkacctest.RandStringFromCharSet(6, sdkacctest.CharSetAlphaNum))
-}
-
-// accSetup skips without TF_ACC, because these tests call the API before resource.Test would skip them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
 }
 
 // lookup returns nil when no collection has the handle.
@@ -222,7 +212,7 @@ const (
 )
 
 func TestAccCollection_basic(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	renamed := handle + "-b"
@@ -411,7 +401,7 @@ func TestAccCollection_basic(t *testing.T) {
 
 // Pattern A: an existing collection is only taken over with adopt_existing, and destroy leaves it as Terraform left it.
 func TestAccCollection_adopt(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)
@@ -481,7 +471,7 @@ func sourceCount(t *testing.T, c *client.CollectionFields) int {
 
 // Adopting and importing a collection whose membership can't be managed works while config leaves membership unset.
 func TestAccCollection_unsupportedAdopt(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)
@@ -539,7 +529,7 @@ resource "shopify_collection" "test" {
 
 // A managed collection that gains a second source outside Terraform still refreshes; only config that sets membership fails.
 func TestAccCollection_becomesUnsupported(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)

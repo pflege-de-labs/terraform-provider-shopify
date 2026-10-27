@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -30,15 +29,6 @@ var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check
 // testHandle keeps test blogs apart from real ones.
 func testHandle() string {
 	return "tf-acc-blog-" + strings.ToLower(sdkacctest.RandStringFromCharSet(6, sdkacctest.CharSetAlphaNum))
-}
-
-// accSetup skips without TF_ACC, because these tests call the API before resource.Test would skip them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
 }
 
 // lookup returns nil when no blog has the handle.
@@ -183,7 +173,7 @@ func updatePlan() resource.ConfigPlanChecks {
 }
 
 func TestAccBlog_basic(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	handle := testHandle()
 	renamed := handle + "-b"
 	cleanup(t, handle, renamed)
@@ -299,7 +289,7 @@ func TestAccBlog_basic(t *testing.T) {
 
 // Pattern A: an existing blog is only taken over with adopt_existing, and destroy leaves it as Terraform left it.
 func TestAccBlog_adopt(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	handle := testHandle()
 	cleanup(t, handle)
 	mustCreate(t, client.BlogCreateInput{Title: "tf-acc adopt (client)", Handle: &handle, CommentPolicy: ptr(client.CommentPolicyModerated)})
@@ -342,7 +332,7 @@ func TestAccBlog_adopt(t *testing.T) {
 
 // The store's own news blog is adopted with its live values, so adopt and destroy leave it exactly as it was (Review Focus 1).
 func TestAccBlog_adoptNews(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	const handle = "news"
 	before := lookup(t, handle)
 	if before == nil {
@@ -382,7 +372,7 @@ func TestAccBlog_adoptNews(t *testing.T) {
 
 // Shopify suffixes a taken handle instead of failing; neither create nor update may leave a suffixed blog behind.
 func TestAccBlog_takenHandle(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	taken, mine := testHandle(), testHandle()
 	cleanup(t, taken, mine)
 	mustCreate(t, client.BlogCreateInput{Title: "tf-acc taken", Handle: &taken})
@@ -420,7 +410,7 @@ func TestAccBlog_takenHandle(t *testing.T) {
 
 // Pattern B: deleting a blog deletes its articles, so a blog with articles needs allow_data_deletion; an empty one never does.
 func TestAccBlog_dataDeletion(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	handle := testHandle()
 	cleanup(t, handle)
 	var articleID string
@@ -458,7 +448,7 @@ func TestAccBlog_dataDeletion(t *testing.T) {
 
 // A blog deleted outside Terraform is planned for recreation.
 func TestAccBlog_deletedOutside(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	handle := testHandle()
 	cleanup(t, handle)
 	cfg := config(fmt.Sprintf("  handle = %q\n  title  = \"tf-acc gone\"\n", handle))

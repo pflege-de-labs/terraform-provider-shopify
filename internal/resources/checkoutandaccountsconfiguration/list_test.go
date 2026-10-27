@@ -24,7 +24,7 @@ list "shopify_checkout_and_accounts_configuration" "all" {
 `
 
 func TestAccListCheckoutAndAccountsConfiguration(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownBranding(t, pCheckbox)
 	name := published(t).Name
 	resource.Test(t, resource.TestCase{

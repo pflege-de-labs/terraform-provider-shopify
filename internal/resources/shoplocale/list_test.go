@@ -25,7 +25,7 @@ list "shopify_shop_locale" "all" {
 `
 
 func TestAccListShopLocale(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownLocales(t, locFr, locIt)
 	locale := func(name, code string) string {
 		return fmt.Sprintf(`

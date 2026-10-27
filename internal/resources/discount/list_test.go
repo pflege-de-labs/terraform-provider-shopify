@@ -24,7 +24,7 @@ list "shopify_discount_basic" "all" {
 `
 
 func TestAccListDiscountBasic(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	code := testCode()
 	codeTitle, autoTitle := testTitle(), testTitle()
 	cleanup(t, []string{code}, []string{codeTitle, autoTitle}, nil)

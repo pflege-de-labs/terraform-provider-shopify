@@ -24,7 +24,7 @@ list "shopify_shop_policy" "all" {
 `
 
 func TestAccListShopPolicy(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	ownPolicy(t, typeLegal)
 	text := body("listed")
 	resource.Test(t, resource.TestCase{

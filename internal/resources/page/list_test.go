@@ -24,7 +24,7 @@ list "shopify_page" "all" {
 `
 
 func TestAccListPage(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	handleA, handleB := testHandle(), testHandle()
 	cleanup(t, handleA, handleB)
 	pages := fmt.Sprintf(`

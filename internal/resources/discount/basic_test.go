@@ -3,7 +3,6 @@ package discount_test
 import (
 	"context"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -37,15 +36,6 @@ func random() string { return sdkacctest.RandStringFromCharSet(8, sdkacctest.Cha
 // testCode and testTitle keep test discounts apart from real ones.
 func testCode() string  { return "TFACC" + strings.ToUpper(random()) }
 func testTitle() string { return "tf-acc-discount-" + random() }
-
-// accSetup skips without TF_ACC, because these tests call the API before resource.Test would skip them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
-}
 
 func getByID(t *testing.T, id string) *client.DiscountNodeFields {
 	t.Helper()
@@ -266,7 +256,7 @@ func basic(body string) string {
 }
 
 func TestAccDiscountBasic_code(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	code, renamed := testCode(), testCode()
 	title := testTitle()
@@ -493,7 +483,7 @@ func TestAccDiscountBasic_code(t *testing.T) {
 }
 
 func TestAccDiscountBasic_automatic(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	// A slash in the title checks that the import key splits at the first one.
 	title := testTitle() + "/50"
 	cleanup(t, nil, []string{title}, nil)
@@ -580,7 +570,7 @@ resource "shopify_discount_basic" "duplicate" {
 
 // Pattern A: an existing discount is only taken over with adopt_existing, and destroy leaves it as Terraform left it.
 func TestAccDiscountBasic_adopt(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	code := testCode()
 	cleanup(t, []string{code}, nil, nil)
 	start := time.Now().UTC().Format(time.RFC3339)
@@ -637,7 +627,7 @@ func ptr[T any](v T) *T { return &v }
 
 // A selection of single variants must read back as variant_ids only, so it plans empty after apply.
 func TestAccDiscountBasic_variants(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	title := testTitle()
 	handle := strings.ToLower(title)

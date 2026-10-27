@@ -3,7 +3,6 @@ package metaobject_test
 import (
 	"context"
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -19,7 +18,7 @@ import (
 const dsAddr = "data.shopify_metaobject.test"
 
 func TestAccMetaobjectDataSource_entryOfOwnDefinition(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	// A test-only type: only definitions created here are ever deleted.
 	typ := "tfacc_" + strings.ToLower(sdkacctest.RandStringFromCharSet(8, sdkacctest.CharSetAlpha))
 	const handle = "entry-one"
@@ -87,7 +86,7 @@ output "summary_is_null" { value = data.shopify_metaobject.test.fields["summary"
 
 // Shopify enables some standard definitions itself; the dev store had this entry (2026-10-26).
 func TestAccMetaobjectDataSource_shopifyStandard(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	const typ, handle = "shopify--knowledge-base-fact", "delivery_countries"
 	res, err := client.GetMetaobjectByHandle(context.Background(), acctest.Client(t), typ, handle)
 	if err != nil {
@@ -117,7 +116,7 @@ func TestAccMetaobjectDataSource_shopifyStandard(t *testing.T) {
 }
 
 func TestAccMetaobjectDataSource_notFound(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
 		Steps: []resource.TestStep{{
@@ -128,15 +127,6 @@ func TestAccMetaobjectDataSource_notFound(t *testing.T) {
 			ExpectError: regexp.MustCompile(`no\s+metaobject\s+tfacc_missing/nope`),
 		}},
 	})
-}
-
-// accSetup skips without TF_ACC, because the tests that call the API directly would otherwise run before resource.Test skips them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
 }
 
 func createEntry(t *testing.T, typ, handle string) string {

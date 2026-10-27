@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
 	"reflect"
 	"strings"
 	"testing"
@@ -16,15 +15,6 @@ import (
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/acctest"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 )
-
-// accSetup skips without TF_ACC, because these tests call the API before resource.Test would skip them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
-}
 
 // published fails the test unless the dev store has exactly one published configuration.
 func published(t *testing.T) *client.CheckoutAndAccountsConfigurationFields {

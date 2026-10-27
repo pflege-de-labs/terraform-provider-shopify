@@ -23,7 +23,7 @@ list "shopify_customer_segment" "all" {
 `
 
 func TestAccListCustomerSegment(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	nameA, nameB := testName(), testName()
 	cleanup(t, nameA, nameB)
 	segments := `

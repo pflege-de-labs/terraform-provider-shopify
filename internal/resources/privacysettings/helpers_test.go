@@ -2,24 +2,12 @@ package privacysettings_test
 
 import (
 	"context"
-	"os"
 	"strings"
 	"testing"
-
-	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/acctest"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 )
-
-// accSetup skips without TF_ACC, because these tests call the API before resource.Test would skip them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
-}
 
 func livePrivacy(t *testing.T) *client.GetPrivacySettingsPrivacySettings {
 	t.Helper()

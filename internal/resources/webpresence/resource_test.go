@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -40,15 +39,6 @@ var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check
 
 func config(body string) string {
 	return fmt.Sprintf("resource \"shopify_web_presence\" \"test\" {\n%s\n}\n", body)
-}
-
-// accSetup skips without TF_ACC, because these tests call the API before resource.Test would skip them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
 }
 
 func graphqlRaw(t *testing.T, query string) json.RawMessage {
@@ -117,7 +107,7 @@ func checkGone(t *testing.T, suffix string) resource.TestCheckFunc {
 }
 
 func TestAccWebPresence_basic(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	publishLocale(t)
 	suffix := testSuffix()
 	updated := config(fmt.Sprintf(`
@@ -190,7 +180,7 @@ func TestAccWebPresence_basic(t *testing.T) {
 
 // Unset alternate_locales is unmanaged: a change made outside Terraform must not show up in the plan.
 func TestAccWebPresence_unmanagedAlternates(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	publishLocale(t)
 	suffix := testSuffix()
 	cfg := config(fmt.Sprintf(`
@@ -224,7 +214,7 @@ func TestAccWebPresence_unmanagedAlternates(t *testing.T) {
 
 // The shop's primary-domain presence can't be deleted, so it is adopted and left alone on destroy.
 func TestAccWebPresence_adoptPrimary(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	res, err := client.ListWebPresences(context.Background(), acctest.Client(t), nil)
 	if err != nil {
 		t.Fatal(err)

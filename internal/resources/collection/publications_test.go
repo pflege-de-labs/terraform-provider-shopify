@@ -53,7 +53,7 @@ func publicationChecks(ids ...string) statecheck.StateCheck {
 }
 
 func TestAccCollection_publications(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)
@@ -141,7 +141,7 @@ func TestAccCollection_publications(t *testing.T) {
 
 // A rejected publication ID fails the create after the collection exists, which leaves it tainted.
 func TestAccCollection_publicationRejected(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	handle := testHandle()
 	cleanup(t, handle)

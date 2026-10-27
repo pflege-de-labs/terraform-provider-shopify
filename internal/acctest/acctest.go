@@ -8,6 +8,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/provider"
@@ -74,4 +75,13 @@ func Publish(t *testing.T, resourceID, publicationID string) {
 	if errs := res.PublishablePublish.UserErrors; len(errs) > 0 {
 		t.Fatalf("publishablePublish: %v", errs)
 	}
+}
+
+// Setup skips without TF_ACC, because tests that call the API directly would otherwise run before resource.Test skips them.
+func Setup(t *testing.T) {
+	t.Helper()
+	if os.Getenv(resource.EnvTfAcc) == "" {
+		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
+	}
+	PreCheck(t)
 }

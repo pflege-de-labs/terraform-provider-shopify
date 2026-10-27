@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -35,15 +34,6 @@ var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check
 // testName keeps test segments apart from real ones.
 func testName() string {
 	return "tf-acc-segment-" + strings.ToLower(sdkacctest.RandStringFromCharSet(6, sdkacctest.CharSetAlphaNum))
-}
-
-// accSetup skips without TF_ACC, because these tests call the API before resource.Test would skip them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
 }
 
 // all lists every segment; the list is unfiltered because the search index lags behind writes.
@@ -185,7 +175,7 @@ func updatePlan() resource.ConfigPlanChecks {
 }
 
 func TestAccCustomerSegment_basic(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	name := testName()
 	renamed := name + "-b"
 	cleanup(t, name, renamed)
@@ -270,7 +260,7 @@ func TestAccCustomerSegment_basic(t *testing.T) {
 
 // Review Focus 2: name and query are both required, so there is nothing unmanaged here; another segment edited through the client must not plan.
 func TestAccCustomerSegment_otherSegmentEdit(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	name, other := testName(), testName()
 	cleanup(t, name, other)
 	mustCreate(t, other)
@@ -298,7 +288,7 @@ func TestAccCustomerSegment_otherSegmentEdit(t *testing.T) {
 
 // Pattern A: an existing segment is only taken over with adopt_existing, and destroy leaves it as Terraform left it.
 func TestAccCustomerSegment_adopt(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	name := testName()
 	cleanup(t, name)
 	mustCreate(t, name)
@@ -335,7 +325,7 @@ func TestAccCustomerSegment_adopt(t *testing.T) {
 
 // The store's own Email subscribers segment is adopted with its live query, so adopt and destroy leave it exactly as it was (Review Focus 1).
 func TestAccCustomerSegment_adoptDefault(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	const name = "Email subscribers"
 	before := lookup(t, name)
 	if before == nil {
@@ -371,7 +361,7 @@ func TestAccCustomerSegment_adoptDefault(t *testing.T) {
 
 // Shopify suffixes a taken name instead of failing; neither create nor update may leave a suffixed segment behind.
 func TestAccCustomerSegment_takenName(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	taken, mine := testName(), testName()
 	cleanup(t, taken, mine)
 	mustCreate(t, taken)
@@ -411,7 +401,7 @@ func TestAccCustomerSegment_takenName(t *testing.T) {
 
 // Names that differ only in case are distinct segments, so the case-sensitive lookup is right.
 func TestAccCustomerSegment_caseOnlyDiffers(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	lower := testName()
 	upper := strings.ToUpper(lower)
 	cleanup(t, lower, upper)
@@ -429,7 +419,7 @@ func TestAccCustomerSegment_caseOnlyDiffers(t *testing.T) {
 
 // A segment deleted outside Terraform is planned for recreation.
 func TestAccCustomerSegment_deletedOutside(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	name := testName()
 	cleanup(t, name)
 	cfg := segmentConfig(name, someQuery)

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"sync"
@@ -39,15 +38,6 @@ var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check
 
 func testFilename() string {
 	return "tf-acc-file-" + strings.ToLower(sdkacctest.RandStringFromCharSet(8, sdkacctest.CharSetAlphaNum)) + ".png"
-}
-
-// accSetup skips without TF_ACC, because these tests call the API before resource.Test would skip them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
 }
 
 // liveFile is the part of a File the tests look at; the client returns raw JSON.
@@ -309,7 +299,7 @@ func planAction(a plancheck.ResourceActionType) resource.ConfigPlanChecks {
 }
 
 func TestAccFile_validation(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	cases := map[string]struct{ body, err string }{
 		"local path":      {`content_type = "IMAGE"` + "\n" + `filename = "a.png"` + "\n" + `source = "./a.png"`, `local files`},
@@ -336,7 +326,7 @@ func TestAccFile_validation(t *testing.T) {
 }
 
 func TestAccFile_basic(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	name := testFilename()
 	renamed := strings.Replace(name, "tf-acc-file-", "tf-acc-file-r-", 1)
@@ -450,7 +440,7 @@ func TestAccFile_basic(t *testing.T) {
 
 // Pattern B: deleting or replacing a file destroys it and breaks its references, used or not.
 func TestAccFile_dataDeletion(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	name := testFilename()
 	tr := newTracker(t, name)
@@ -511,7 +501,7 @@ func TestAccFile_dataDeletion(t *testing.T) {
 
 // A different extension (here only in case, since the source fixes the extension) can't be changed in place, so it plans a replace, which Pattern B refuses without allow_data_deletion.
 func TestAccFile_extensionReplaces(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	name := testFilename()
 	renamed := strings.TrimSuffix(name, ".png") + ".PNG"
@@ -551,7 +541,7 @@ func TestAccFile_extensionReplaces(t *testing.T) {
 
 // Pattern A: an existing file is only taken over with adopt_existing, and destroy leaves it as Terraform left it.
 func TestAccFile_adopt(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	name := testFilename()
 	tr := newTracker(t, name)
@@ -594,7 +584,7 @@ func TestAccFile_adopt(t *testing.T) {
 
 // A file that fails processing is deleted again, so its filename isn't blocked.
 func TestAccFile_failedProcessing(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	name := testFilename()
 	tr := newTracker(t, name)
@@ -628,7 +618,7 @@ func TestAccFile_failedProcessing(t *testing.T) {
 
 // A create that outlives its timeout keeps the file: state has its ID, and the next plan replaces the tainted resource.
 func TestAccFile_timeout(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	name := testFilename()
 	tr := newTracker(t, name)
@@ -653,7 +643,7 @@ func TestAccFile_timeout(t *testing.T) {
 }
 
 func TestAccFile_externalVideo(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	tr := newTracker(t)
 	// External videos have no filename to sweep by, and a failed apply is not tracked.
@@ -705,7 +695,7 @@ func TestAccFile_externalVideo(t *testing.T) {
 
 // A file deleted outside Terraform is planned for recreation.
 func TestAccFile_deletedOutside(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	acctest.KeepFrontpage(t)
 	name := testFilename()
 	tr := newTracker(t, name)

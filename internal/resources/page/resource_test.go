@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -30,15 +29,6 @@ var expectIdentity = statecheck.ExpectIdentity(addr, map[string]knownvalue.Check
 // testHandle keeps test pages apart from real ones.
 func testHandle() string {
 	return "tf-acc-page-" + strings.ToLower(sdkacctest.RandStringFromCharSet(6, sdkacctest.CharSetAlphaNum))
-}
-
-// accSetup skips without TF_ACC, because these tests call the API before resource.Test would skip them.
-func accSetup(t *testing.T) {
-	t.Helper()
-	if os.Getenv(resource.EnvTfAcc) == "" {
-		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
-	}
-	acctest.PreCheck(t)
 }
 
 // lookup returns nil when no page has the handle.
@@ -143,7 +133,7 @@ func emptyPlan() resource.ConfigPlanChecks {
 }
 
 func TestAccPage_basic(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	handle := testHandle()
 	renamed := handle + "-b"
 	cleanup(t, handle, renamed)
@@ -270,7 +260,7 @@ func TestAccPage_basic(t *testing.T) {
 
 // Pattern A: an existing page is only taken over with adopt_existing, and destroy leaves it as Terraform left it.
 func TestAccPage_adopt(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	handle := testHandle()
 	cleanup(t, handle)
 	mustCreate(t, client.PageCreateInput{Title: "tf-acc adopt (client)", Handle: &handle, Body: ptr("<p>client</p>")})
@@ -315,7 +305,7 @@ func ptr[T any](v T) *T { return &v }
 
 // The store's own contact page is adopted with its live values, so adopt and destroy leave it exactly as it was.
 func TestAccPage_adoptContact(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	const handle = "contact"
 	before := lookup(t, handle)
 	if before == nil {
@@ -355,7 +345,7 @@ func TestAccPage_adoptContact(t *testing.T) {
 
 // A page deleted outside Terraform is planned for recreation, and a delete of one already gone succeeds.
 func TestAccPage_deletedOutside(t *testing.T) {
-	accSetup(t)
+	acctest.Setup(t)
 	handle := testHandle()
 	cleanup(t, handle)
 	cfg := config(fmt.Sprintf("  handle = %q\n  title  = \"tf-acc gone\"\n", handle))
