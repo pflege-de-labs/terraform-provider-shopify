@@ -205,7 +205,7 @@ query ListDiscounts(
   }
 }
 
-# Omitted keys stay unchanged, so optional fields are omitempty; the subtotal value is not, since null clears the minimum.
+# Omitted keys stay unchanged, so optional fields are omitempty; the subtotal and quantity values are not, since null clears them.
 # @genqlient(for: "DiscountCodeBasicInput.combinesWith", omitempty: true)
 # @genqlient(for: "DiscountCodeBasicInput.title", omitempty: true)
 # @genqlient(for: "DiscountCodeBasicInput.startsAt", omitempty: true)

@@ -30402,7 +30402,7 @@ fragment DiscountUserErrorFields on DiscountUserError {
 }
 `
 
-// Omitted keys stay unchanged, so optional fields are omitempty; the subtotal value is not, since null clears the minimum.
+// Omitted keys stay unchanged, so optional fields are omitempty; the subtotal and quantity values are not, since null clears them.
 func CreateDiscountCodeBasic(
 	ctx_ context.Context,
 	client_ graphql.Client,

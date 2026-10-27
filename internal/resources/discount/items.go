@@ -198,8 +198,7 @@ func itemsFromAPI(items client.DiscountItemsFields) (itemsSel, error) {
 	return itemsSel{}, fmt.Errorf("has an item selection of type %T, which this provider doesn't know", items)
 }
 
-// itemsInput writes want over live (nil on create): a difference within one kind, otherwise the new kind.
-// Shopify refuses collections together with products, so a switch between them removes the old kind in the same call; all replaces either.
+// itemsInput writes want over live (nil on create): a difference within one kind, else the new kind plus removal of the old (§9p).
 func itemsInput(want itemsSel, live *itemsSel) *client.DiscountItemsInput {
 	liveProducts := live != nil && (live.ProductIDs != nil || live.VariantIDs != nil)
 	switch {
