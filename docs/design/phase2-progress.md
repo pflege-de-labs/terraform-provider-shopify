@@ -312,3 +312,13 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 20: minor (deferred): nameRe misses U+000B and U+0085 (use \p{White_Space}); §9q claims trimming of all whitespace though only ASCII space was probed
 - Task 20: minor (deferred): goneOnDelete matches userError message text, not a code
 - Task 20: complete (commits 45a5c52..8d26fd5, review clean after 1 fix round)
+- Task 21 (data source shopify_metaobject, §9r): dispatched (base af5f85b, model sonnet)
+- Task 21: implemented c7473ee (DONE: JSON scalar bound to json.RawMessage in genqlient.yaml; test-only CreateMetaobject/DeleteMetaobject; access-denied path untested; leftover tfacc_ definitions not listed after run; controller re-ran checks green)
+- Task 21: review (sonnet): spec ✅, 0 Critical/Important; JSON→json.RawMessage binding changes no existing generated type (additions only)
+- Task 21: minor (deferred): accSetup is the 4th near-verbatim copy (metaobjectdefinition, metafielddefinition, page) → move to internal/acctest
+- Task 21: minor (deferred): test entry cleanup not in t.Cleanup (relies on async cascade of definition delete)
+- Task 21: minor (deferred): type/handle echoed from config ($app: form vs resolved type; ties to TODO(verify))
+- Task 21: minor (deferred): MetaobjectCapabilityDataInput.publishable not omitempty (sends null)
+- Task 21: minor (deferred): Read nil-derefs d.client if provider unconfigured (check siblings)
+- Task 21: complete (commit c7473ee, review clean)
+- All step 13 tasks complete (14a–14d, 15–21). Next: final whole-branch review (opus).
