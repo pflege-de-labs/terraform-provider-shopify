@@ -55,8 +55,20 @@ func KeepFrontpage(t *testing.T) {
 			return
 		}
 		up, err := client.UpdateCollection(context.Background(), Client(t), client.CollectionUpdateInput{Id: &res.CollectionByIdentifier.Id, SourcesToDelete: stray})
-		if err != nil || up.CollectionUpdate.Collection == nil || len(up.CollectionUpdate.UserErrors) > 0 {
-			t.Errorf("removing frontpage sources %v: %v %+v", stray, err, up)
+		if err == nil && up.CollectionUpdate != nil && up.CollectionUpdate.Collection != nil && len(up.CollectionUpdate.UserErrors) == 0 {
+			return
+		}
+		// Packages run in parallel, so another test's cleanup may have removed the same source first.
+		now := FrontpageSources(t)
+		for _, id := range stray {
+			if _, ok := now[id]; ok {
+				var userErrors any
+				if err == nil && up.CollectionUpdate != nil {
+					userErrors = up.CollectionUpdate.UserErrors
+				}
+				t.Errorf("removing frontpage sources %v: %v %+v", stray, err, userErrors)
+				return
+			}
 		}
 	})
 }
