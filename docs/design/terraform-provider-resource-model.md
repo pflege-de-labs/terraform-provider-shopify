@@ -1632,6 +1632,8 @@ data "shopify_metaobject" "material_baumwolle" {
 
 **Dev store (2026-10-26):** read-only; one standard definition with entries, `shopify--knowledge-base-fact` (2 entries, `delivery_countries` and `shipping_policy`, 18 fields each, most without a value).
 
+**Implemented (§9r, verified on the dev store, 2026-10-27):** the lookup, mapping and errors are as specified; `type` and `handle` are echoed from the configuration. Acceptance tests cover the three cases of the Tests paragraph: (a) creates the entry through the client between two steps (the definition first, then the entry and the data source), checks every attribute and the null `summary` field through an output (`fields["summary"] == null`), and deletes the entry in a last step before the definition goes; (b) reads `shopify--knowledge-base-fact` / `delivery_countries` and compares `id`, `display_name` and the field count with a direct API read, with `status` unset; (c) not found, matching the `no metaobject <type>/<handle>` message. Unit tests cover the mapping (null values, the publishable status) and the message text. Still `TODO(verify)`: `$app:foo` types (an inline TODO in `Read`), and the access-denied path, which no test reaches because the dev store has every scope. The queries bind GraphQL `JSON` to `json.RawMessage` in `genqlient.yaml`, only because `MetaobjectCreateInput.values` needs a binding to compile; it is never sent. `CreateMetaobject` / `DeleteMetaobject` exist for the tests only.
+
 ---
 
 ## 10. Not covered

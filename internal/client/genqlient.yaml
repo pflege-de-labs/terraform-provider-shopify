@@ -23,3 +23,6 @@ bindings:
   # DateTime is an ISO 8601 string; only PublicationInput.publishDate uses it, and the provider never sends it.
   DateTime:
     type: string
+  # JSON appears only in MetaobjectCreateInput.values, which the provider never sends.
+  JSON:
+    type: encoding/json.RawMessage

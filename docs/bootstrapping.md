@@ -55,7 +55,8 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_orders`, `write_draft_orders` | metafield definitions for `ORDER`, `DRAFTORDER` ⚠ | planned | good |
 | `write_content` | `shopify_page`, `shopify_blog`; articles; their metafield definitions ⚠ | ✅ pages, blogs, the rest planned | volatile (content) |
 | `write_discounts` | `shopify_discount_basic`; free shipping and buy X get Y discounts; metafield definitions for `DISCOUNT` ⚠ (segment and market contexts were read with every scope granted, so whether they also need `read_customers` / `read_markets` is untested) | ✅ basic, the rest planned | volatile (promotions) |
-| `write_metaobjects` | metaobject entries | planned | volatile (content) |
+| `read_metaobjects` (or `write_metaobjects`) | `shopify_metaobject` data source (entries by type and handle, for referencing; Shopify-owned types are not managed) | ✅ data source | good (read-only) |
+| `write_metaobjects` | metaobject entries (resource) | planned | volatile (content) |
 | `write_files` | `shopify_file` (URL sources; uploads of local files planned) | ✅ | volatile (content) |
 | `write_inventory` | inventory levels | planned | volatile |
 | `read_fulfillments` (or `write_fulfillments`) | `shopify_fulfillment_service` data source (fulfillment services are owned by Shopify or other apps, not managed) | ✅ data source | good (read-only) |

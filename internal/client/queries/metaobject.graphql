@@ -1,0 +1,57 @@
+fragment MetaobjectFields on Metaobject {
+  id
+  displayName
+  updatedAt
+  fields {
+    key
+    value
+  }
+  capabilities {
+    publishable {
+      status
+    }
+  }
+}
+
+query GetMetaobjectByHandle(
+  $objectType: String!
+  $handle: String!
+) {
+  metaobjectByHandle(handle: {type: $objectType, handle: $handle}) {
+    ...MetaobjectFields
+  }
+}
+
+# Used by the data source's acceptance tests to make an entry; the provider has no metaobject resource yet.
+# Shopify rejects an explicit null onlineStore on a type without that capability.
+# @genqlient(for: "MetaobjectCapabilityDataInput.onlineStore", omitempty: true)
+# @genqlient(for: "MetaobjectCreateInput.handle", omitempty: true)
+# @genqlient(for: "MetaobjectCreateInput.values", omitempty: true)
+# @genqlient(for: "MetaobjectCreateInput.fields", omitempty: true)
+mutation CreateMetaobject(
+  $metaobject: MetaobjectCreateInput!
+) {
+  metaobjectCreate(metaobject: $metaobject) {
+    metaobject {
+      ...MetaobjectFields
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+mutation DeleteMetaobject(
+  $id: ID!
+) {
+  metaobjectDelete(id: $id) {
+    deletedId
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
