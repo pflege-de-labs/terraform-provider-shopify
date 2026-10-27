@@ -11,9 +11,12 @@ import (
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/publishing"
 )
 
-// completeProduct pages in what the first page of a product lacks: variants and publications.
+// completeProduct pages in what the first page of a product lacks: variants, media and publications.
 func completeProduct(ctx context.Context, c *client.Client, p *client.ProductFields) error {
 	if err := fetchAllVariants(ctx, c, p); err != nil {
+		return err
+	}
+	if err := completeMedia(p, moreMedia(ctx, c, p.Id)); err != nil {
 		return err
 	}
 	return publishing.Complete(ctx, &p.ResourcePublicationsV2, morePublications(ctx, c, p.Id))

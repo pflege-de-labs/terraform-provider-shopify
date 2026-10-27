@@ -82,6 +82,9 @@ func listModel(ctx context.Context, p *client.ProductFields) (model, diag.Diagno
 	m := model{AdoptExisting: types.BoolValue(false), AllowDataDeletion: types.BoolValue(false)}
 	diags := setFromAPI(ctx, &m, p, nil)
 	m.PublicationIDs = publishing.NullIfEmpty(m.PublicationIDs)
+	if len(m.MediaIDs.Elements()) == 0 {
+		m.MediaIDs = types.ListNull(types.StringType)
+	}
 	if linkedOptionError(p) != nil {
 		m.Options, m.Variants = types.ListNull(optionType), types.ListNull(variantType)
 	}

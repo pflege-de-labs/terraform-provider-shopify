@@ -66,7 +66,7 @@ func errorPath(field []string) (path.Path, bool) {
 	if len(field) < 2 {
 		return path.Empty(), false
 	}
-	if attr, ok := map[string]string{"productOptions": "options", "variants": "variants"}[field[1]]; ok {
+	if attr, ok := map[string]string{"productOptions": "options", "variants": "variants", "files": "media_ids"}[field[1]]; ok {
 		p := path.Root(attr)
 		if len(field) < 3 {
 			return p, true

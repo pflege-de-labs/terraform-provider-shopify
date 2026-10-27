@@ -95,7 +95,7 @@ func inputFor(t *testing.T, live *client.ProductFields, opts types.List, vs ...v
 	t.Helper()
 	m := unsetModel()
 	m.Options, m.Variants = opts, variantsList(t, vs...)
-	in, removed, diags := buildInput(context.Background(), &m, live)
+	in, removed, _, diags := buildInput(context.Background(), &m, live)
 	if diags.HasError() {
 		t.Fatal(diags)
 	}
@@ -256,7 +256,7 @@ func TestBuildInputRefusesLinkedOption(t *testing.T) {
 	m := unsetModel()
 	m.Options = optionsList(t, option{"Size", []string{"S", "M"}})
 	m.Variants = variantsList(t, cfgVariant(combo{"Size": "S"}, nil), cfgVariant(combo{"Size": "M"}, nil))
-	in, _, d := buildInput(context.Background(), &m, linkedSizeSM())
+	in, _, _, d := buildInput(context.Background(), &m, linkedSizeSM())
 	if !d.HasError() || !strings.Contains(d[0].Detail(), `"Size"`) || !strings.Contains(d[0].Detail(), "shopify.size") || !strings.Contains(d[0].Detail(), "unset") {
 		t.Fatalf("diags = %v, want an error naming the linked option and saying to leave options and variants unset", d)
 	}
@@ -268,7 +268,7 @@ func TestBuildInputRefusesLinkedOption(t *testing.T) {
 func TestBuildInputLinkedOptionCoreOnly(t *testing.T) {
 	m := unsetModel()
 	m.Vendor = types.StringValue("v")
-	in, _, d := buildInput(context.Background(), &m, linkedSizeSM())
+	in, _, _, d := buildInput(context.Background(), &m, linkedSizeSM())
 	if d.HasError() {
 		t.Fatalf("diags = %v, want core fields written to a linked product", d)
 	}

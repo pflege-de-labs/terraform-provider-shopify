@@ -30,12 +30,13 @@ type model struct {
 	Options           types.List   `tfsdk:"options"`
 	Variants          types.List   `tfsdk:"variants"`
 	PublicationIDs    types.Set    `tfsdk:"publication_ids"`
+	MediaIDs          types.List   `tfsdk:"media_ids"`
 	AdoptExisting     types.Bool   `tfsdk:"adopt_existing"`
 	AllowDataDeletion types.Bool   `tfsdk:"allow_data_deletion"`
 }
 
-// buildInput is the one place that maps config to productSet, with IDs from live (nil on create); it returns the live variants it removes.
-func buildInput(ctx context.Context, cfg *model, live *client.ProductFields) (client.ProductSetInput, []string, diag.Diagnostics) {
+// buildInput is the one place that maps config to productSet, with IDs from live (nil on create); it returns the live variants and media it removes.
+func buildInput(ctx context.Context, cfg *model, live *client.ProductFields) (client.ProductSetInput, []string, []string, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	in := client.ProductSetInput{
 		Handle:          patterns.ConfiguredString(cfg.Handle),
@@ -70,7 +71,11 @@ func buildInput(ctx context.Context, cfg *model, live *client.ProductFields) (cl
 		in.ProductOptions, in.Variants, removed, d = optionsAndVariantsInput(ctx, cfg, live)
 		diags.Append(d...)
 	}
-	return in, removed, diags
+	var removedMedia []string
+	var d diag.Diagnostics
+	in.Files, removedMedia, d = mediaInput(ctx, cfg.MediaIDs, mediaIDs(live))
+	diags.Append(d...)
+	return in, removed, removedMedia, diags
 }
 
 // setFromAPI copies the live product into m. written is the description Shopify returned at our last write, if known.
@@ -95,6 +100,8 @@ func setFromAPI(ctx context.Context, m *model, p *client.ProductFields, written 
 	m.TemplateSuffix = types.StringPointerValue(p.TemplateSuffix)
 	m.GiftCard = types.BoolValue(p.IsGiftCard)
 	m.PublicationIDs, d = publishing.Value(ctx, publishing.IDs(p.GetResourcePublicationsV2()))
+	diags.Append(d...)
+	m.MediaIDs, d = types.ListValueFrom(ctx, types.StringType, mediaIDs(p))
 	diags.Append(d...)
 	diags.Append(setVariantsFromAPI(ctx, m, p)...)
 	return diags

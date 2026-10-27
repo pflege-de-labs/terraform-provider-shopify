@@ -39,7 +39,7 @@ func TestValidateTags(t *testing.T) {
 
 func inputJSON(t *testing.T, m model) map[string]json.RawMessage {
 	t.Helper()
-	in, _, diags := buildInput(context.Background(), &m, nil)
+	in, _, _, diags := buildInput(context.Background(), &m, nil)
 	if diags.HasError() {
 		t.Fatal(diags)
 	}
@@ -163,6 +163,8 @@ func TestErrorPath(t *testing.T) {
 		{[]string{"input", "variants", "1", "inventoryQuantities"}, ptr(variant)},
 		{[]string{"input", "productOptions", "0", "values", "1"}, ptr(path.Root("options").AtListIndex(0).AtName("values"))},
 		{[]string{"input", "productOptions", "x"}, ptr(path.Root("options"))},
+		{[]string{"input", "files"}, ptr(path.Root("media_ids"))},
+		{[]string{"input", "files", "1"}, ptr(path.Root("media_ids").AtListIndex(1))},
 		{[]string{"input", "metafields", "0"}, nil},
 		{[]string{"input"}, nil},
 		{nil, nil},

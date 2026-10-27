@@ -11933,6 +11933,11 @@ func (v *GetProductByHandleProductByIdentifierProduct) GetHasOnlyDefaultVariant(
 	return v.ProductFields.HasOnlyDefaultVariant
 }
 
+// GetMedia returns GetProductByHandleProductByIdentifierProduct.Media, and is useful for accessing the field via an interface.
+func (v *GetProductByHandleProductByIdentifierProduct) GetMedia() ProductFieldsMediaMediaConnection {
+	return v.ProductFields.Media
+}
+
 // GetOptions returns GetProductByHandleProductByIdentifierProduct.Options, and is useful for accessing the field via an interface.
 func (v *GetProductByHandleProductByIdentifierProduct) GetOptions() []ProductFieldsOptionsProductOption {
 	return v.ProductFields.Options
@@ -12000,6 +12005,8 @@ type __premarshalGetProductByHandleProductByIdentifierProduct struct {
 
 	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
 
+	Media ProductFieldsMediaMediaConnection `json:"media"`
+
 	Options []ProductFieldsOptionsProductOption `json:"options"`
 
 	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
@@ -12031,6 +12038,7 @@ func (v *GetProductByHandleProductByIdentifierProduct) __premarshalJSON() (*__pr
 	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
 	retval.IsGiftCard = v.ProductFields.IsGiftCard
 	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
+	retval.Media = v.ProductFields.Media
 	retval.Options = v.ProductFields.Options
 	retval.Variants = v.ProductFields.Variants
 	retval.ResourcePublicationsV2 = v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
@@ -12047,6 +12055,167 @@ type GetProductByHandleResponse struct {
 func (v *GetProductByHandleResponse) GetProductByIdentifier() *GetProductByHandleProductByIdentifierProduct {
 	return v.ProductByIdentifier
 }
+
+// GetProductMediaProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductMediaProduct struct {
+	// The [media](https://shopify.dev/docs/apps/build/online-store/product-media) associated with the product. Valid media are images, 3D models, videos.
+	Media GetProductMediaProductMediaMediaConnection `json:"media"`
+}
+
+// GetMedia returns GetProductMediaProduct.Media, and is useful for accessing the field via an interface.
+func (v *GetProductMediaProduct) GetMedia() GetProductMediaProductMediaMediaConnection {
+	return v.Media
+}
+
+// GetProductMediaProductMediaMediaConnection includes the requested fields of the GraphQL type MediaConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Media.
+type GetProductMediaProductMediaMediaConnection struct {
+	// A list of nodes that are contained in MediaEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []MediaID `json:"-"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetProductMediaProductMediaMediaConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetProductMediaProductMediaMediaConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetProductMediaProductMediaMediaConnection) GetNodes() []MediaID { return v.Nodes }
+
+// GetPageInfo returns GetProductMediaProductMediaMediaConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetProductMediaProductMediaMediaConnection) GetPageInfo() GetProductMediaProductMediaMediaConnectionPageInfo {
+	return v.PageInfo
+}
+
+func (v *GetProductMediaProductMediaMediaConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetProductMediaProductMediaMediaConnection
+		Nodes []json.RawMessage `json:"nodes"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetProductMediaProductMediaMediaConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Nodes
+		src := firstPass.Nodes
+		*dst = make(
+			[]MediaID,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			if len(src) != 0 && string(src) != "null" {
+				err = __unmarshalMediaID(
+					src, dst)
+				if err != nil {
+					return fmt.Errorf(
+						"unable to unmarshal GetProductMediaProductMediaMediaConnection.Nodes: %w", err)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalGetProductMediaProductMediaMediaConnection struct {
+	Nodes []json.RawMessage `json:"nodes"`
+
+	PageInfo GetProductMediaProductMediaMediaConnectionPageInfo `json:"pageInfo"`
+}
+
+func (v *GetProductMediaProductMediaMediaConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetProductMediaProductMediaMediaConnection) __premarshalJSON() (*__premarshalGetProductMediaProductMediaMediaConnection, error) {
+	var retval __premarshalGetProductMediaProductMediaMediaConnection
+
+	{
+
+		dst := &retval.Nodes
+		src := v.Nodes
+		*dst = make(
+			[]json.RawMessage,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			var err error
+			*dst, err = __marshalMediaID(
+				&src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal GetProductMediaProductMediaMediaConnection.Nodes: %w", err)
+			}
+		}
+	}
+	retval.PageInfo = v.PageInfo
+	return &retval, nil
+}
+
+// GetProductMediaProductMediaMediaConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetProductMediaProductMediaMediaConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetProductMediaProductMediaMediaConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetProductMediaProductMediaMediaConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetProductMediaProductMediaMediaConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetProductMediaProductMediaMediaConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetProductMediaResponse is returned by GetProductMedia on success.
+type GetProductMediaResponse struct {
+	// Retrieves a [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) by its ID.
+	// A product is an item that a merchant can sell in their store.
+	//
+	// Use the `product` query when you need to:
+	//
+	// - Access essential product data (for example, title, description, price, images, SEO metadata, and metafields).
+	// - Build product detail pages and manage inventory.
+	// - Handle international sales with localized pricing and content.
+	// - Manage product variants and product options.
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Product *GetProductMediaProduct `json:"product"`
+}
+
+// GetProduct returns GetProductMediaResponse.Product, and is useful for accessing the field via an interface.
+func (v *GetProductMediaResponse) GetProduct() *GetProductMediaProduct { return v.Product }
 
 // GetProductProduct includes the requested fields of the GraphQL type Product.
 // The GraphQL type's documentation follows.
@@ -12105,6 +12274,11 @@ func (v *GetProductProduct) GetIsGiftCard() bool { return v.ProductFields.IsGift
 // GetHasOnlyDefaultVariant returns GetProductProduct.HasOnlyDefaultVariant, and is useful for accessing the field via an interface.
 func (v *GetProductProduct) GetHasOnlyDefaultVariant() bool {
 	return v.ProductFields.HasOnlyDefaultVariant
+}
+
+// GetMedia returns GetProductProduct.Media, and is useful for accessing the field via an interface.
+func (v *GetProductProduct) GetMedia() ProductFieldsMediaMediaConnection {
+	return v.ProductFields.Media
 }
 
 // GetOptions returns GetProductProduct.Options, and is useful for accessing the field via an interface.
@@ -12174,6 +12348,8 @@ type __premarshalGetProductProduct struct {
 
 	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
 
+	Media ProductFieldsMediaMediaConnection `json:"media"`
+
 	Options []ProductFieldsOptionsProductOption `json:"options"`
 
 	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
@@ -12205,6 +12381,7 @@ func (v *GetProductProduct) __premarshalJSON() (*__premarshalGetProductProduct, 
 	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
 	retval.IsGiftCard = v.ProductFields.IsGiftCard
 	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
+	retval.Media = v.ProductFields.Media
 	retval.Options = v.ProductFields.Options
 	retval.Variants = v.ProductFields.Variants
 	retval.ResourcePublicationsV2 = v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
@@ -14388,6 +14565,11 @@ func (v *ListProductsProductsProductConnectionNodesProduct) GetHasOnlyDefaultVar
 	return v.ProductFields.HasOnlyDefaultVariant
 }
 
+// GetMedia returns ListProductsProductsProductConnectionNodesProduct.Media, and is useful for accessing the field via an interface.
+func (v *ListProductsProductsProductConnectionNodesProduct) GetMedia() ProductFieldsMediaMediaConnection {
+	return v.ProductFields.Media
+}
+
 // GetOptions returns ListProductsProductsProductConnectionNodesProduct.Options, and is useful for accessing the field via an interface.
 func (v *ListProductsProductsProductConnectionNodesProduct) GetOptions() []ProductFieldsOptionsProductOption {
 	return v.ProductFields.Options
@@ -14455,6 +14637,8 @@ type __premarshalListProductsProductsProductConnectionNodesProduct struct {
 
 	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
 
+	Media ProductFieldsMediaMediaConnection `json:"media"`
+
 	Options []ProductFieldsOptionsProductOption `json:"options"`
 
 	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
@@ -14486,6 +14670,7 @@ func (v *ListProductsProductsProductConnectionNodesProduct) __premarshalJSON() (
 	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
 	retval.IsGiftCard = v.ProductFields.IsGiftCard
 	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
+	retval.Media = v.ProductFields.Media
 	retval.Options = v.ProductFields.Options
 	retval.Variants = v.ProductFields.Variants
 	retval.ResourcePublicationsV2 = v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
@@ -16595,6 +16780,142 @@ var AllMarketUserErrorCode = []MarketUserErrorCode{
 	MarketUserErrorCodeAdaptivePricingRequiredSetupError,
 	MarketUserErrorCodeGlobalEPricingStrategyNotPermitted,
 }
+
+// Every Media type (MediaImage, Video, Model3d, ExternalVideo) is a File, so the GID is a file ID.
+//
+// MediaID is implemented by the following types:
+// MediaIDExternalVideo
+// MediaIDMediaImage
+// MediaIDModel3d
+// MediaIDVideo
+type MediaID interface {
+	implementsGraphQLInterfaceMediaID()
+	// GetId returns the interface-field "id" from its implementation.
+	// The GraphQL interface field's documentation follows.
+	//
+	// A globally-unique ID.
+	GetId() string
+}
+
+func (v *MediaIDExternalVideo) implementsGraphQLInterfaceMediaID() {}
+func (v *MediaIDMediaImage) implementsGraphQLInterfaceMediaID()    {}
+func (v *MediaIDModel3d) implementsGraphQLInterfaceMediaID()       {}
+func (v *MediaIDVideo) implementsGraphQLInterfaceMediaID()         {}
+
+func __unmarshalMediaID(b []byte, v *MediaID) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "ExternalVideo":
+		*v = new(MediaIDExternalVideo)
+		return json.Unmarshal(b, *v)
+	case "MediaImage":
+		*v = new(MediaIDMediaImage)
+		return json.Unmarshal(b, *v)
+	case "Model3d":
+		*v = new(MediaIDModel3d)
+		return json.Unmarshal(b, *v)
+	case "Video":
+		*v = new(MediaIDVideo)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Media.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for MediaID: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalMediaID(v *MediaID) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *MediaIDExternalVideo:
+		typename = "ExternalVideo"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*MediaIDExternalVideo
+		}{typename, v}
+		return json.Marshal(result)
+	case *MediaIDMediaImage:
+		typename = "MediaImage"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*MediaIDMediaImage
+		}{typename, v}
+		return json.Marshal(result)
+	case *MediaIDModel3d:
+		typename = "Model3d"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*MediaIDModel3d
+		}{typename, v}
+		return json.Marshal(result)
+	case *MediaIDVideo:
+		typename = "Video"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*MediaIDVideo
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for MediaID: "%T"`, v)
+	}
+}
+
+// Every Media type (MediaImage, Video, Model3d, ExternalVideo) is a File, so the GID is a file ID.
+type MediaIDExternalVideo struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns MediaIDExternalVideo.Id, and is useful for accessing the field via an interface.
+func (v *MediaIDExternalVideo) GetId() string { return v.Id }
+
+// Every Media type (MediaImage, Video, Model3d, ExternalVideo) is a File, so the GID is a file ID.
+type MediaIDMediaImage struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns MediaIDMediaImage.Id, and is useful for accessing the field via an interface.
+func (v *MediaIDMediaImage) GetId() string { return v.Id }
+
+// Every Media type (MediaImage, Video, Model3d, ExternalVideo) is a File, so the GID is a file ID.
+type MediaIDModel3d struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns MediaIDModel3d.Id, and is useful for accessing the field via an interface.
+func (v *MediaIDModel3d) GetId() string { return v.Id }
+
+// Every Media type (MediaImage, Video, Model3d, ExternalVideo) is a File, so the GID is a file ID.
+type MediaIDVideo struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns MediaIDVideo.Id, and is useful for accessing the field via an interface.
+func (v *MediaIDVideo) GetId() string { return v.Id }
 
 // MenuFields includes the GraphQL fields of Menu requested by the fragment MenuFields.
 // The GraphQL type's documentation follows.
@@ -19695,6 +20016,8 @@ type ProductFields struct {
 	// Whether the product has only a single variant with the default option and value.
 	HasOnlyDefaultVariant            bool `json:"hasOnlyDefaultVariant"`
 	PublicationsOfPublishableProduct `json:"-"`
+	// The [media](https://shopify.dev/docs/apps/build/online-store/product-media) associated with the product. Valid media are images, 3D models, videos.
+	Media ProductFieldsMediaMediaConnection `json:"media"`
 	// A list of product options. The limit is defined by the
 	// [shop's resource limits for product options](https://shopify.dev/docs/api/admin-graphql/latest/objects/Shop#field-resourcelimits) (`Shop.resourceLimits.maxProductOptions`).
 	Options []ProductFieldsOptionsProductOption `json:"options"`
@@ -19741,6 +20064,9 @@ func (v *ProductFields) GetIsGiftCard() bool { return v.IsGiftCard }
 
 // GetHasOnlyDefaultVariant returns ProductFields.HasOnlyDefaultVariant, and is useful for accessing the field via an interface.
 func (v *ProductFields) GetHasOnlyDefaultVariant() bool { return v.HasOnlyDefaultVariant }
+
+// GetMedia returns ProductFields.Media, and is useful for accessing the field via an interface.
+func (v *ProductFields) GetMedia() ProductFieldsMediaMediaConnection { return v.Media }
 
 // GetOptions returns ProductFields.Options, and is useful for accessing the field via an interface.
 func (v *ProductFields) GetOptions() []ProductFieldsOptionsProductOption { return v.Options }
@@ -19807,6 +20133,8 @@ type __premarshalProductFields struct {
 
 	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
 
+	Media ProductFieldsMediaMediaConnection `json:"media"`
+
 	Options []ProductFieldsOptionsProductOption `json:"options"`
 
 	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
@@ -19838,6 +20166,7 @@ func (v *ProductFields) __premarshalJSON() (*__premarshalProductFields, error) {
 	retval.TemplateSuffix = v.TemplateSuffix
 	retval.IsGiftCard = v.IsGiftCard
 	retval.HasOnlyDefaultVariant = v.HasOnlyDefaultVariant
+	retval.Media = v.Media
 	retval.Options = v.Options
 	retval.Variants = v.Variants
 	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableProduct.ResourcePublicationsV2
@@ -19857,6 +20186,122 @@ type ProductFieldsCategoryTaxonomyCategory struct {
 
 // GetId returns ProductFieldsCategoryTaxonomyCategory.Id, and is useful for accessing the field via an interface.
 func (v *ProductFieldsCategoryTaxonomyCategory) GetId() string { return v.Id }
+
+// ProductFieldsMediaMediaConnection includes the requested fields of the GraphQL type MediaConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Media.
+type ProductFieldsMediaMediaConnection struct {
+	// A list of nodes that are contained in MediaEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []MediaID `json:"-"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ProductFieldsMediaMediaConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ProductFieldsMediaMediaConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ProductFieldsMediaMediaConnection) GetNodes() []MediaID { return v.Nodes }
+
+// GetPageInfo returns ProductFieldsMediaMediaConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ProductFieldsMediaMediaConnection) GetPageInfo() ProductFieldsMediaMediaConnectionPageInfo {
+	return v.PageInfo
+}
+
+func (v *ProductFieldsMediaMediaConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ProductFieldsMediaMediaConnection
+		Nodes []json.RawMessage `json:"nodes"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ProductFieldsMediaMediaConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Nodes
+		src := firstPass.Nodes
+		*dst = make(
+			[]MediaID,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			if len(src) != 0 && string(src) != "null" {
+				err = __unmarshalMediaID(
+					src, dst)
+				if err != nil {
+					return fmt.Errorf(
+						"unable to unmarshal ProductFieldsMediaMediaConnection.Nodes: %w", err)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalProductFieldsMediaMediaConnection struct {
+	Nodes []json.RawMessage `json:"nodes"`
+
+	PageInfo ProductFieldsMediaMediaConnectionPageInfo `json:"pageInfo"`
+}
+
+func (v *ProductFieldsMediaMediaConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ProductFieldsMediaMediaConnection) __premarshalJSON() (*__premarshalProductFieldsMediaMediaConnection, error) {
+	var retval __premarshalProductFieldsMediaMediaConnection
+
+	{
+
+		dst := &retval.Nodes
+		src := v.Nodes
+		*dst = make(
+			[]json.RawMessage,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			var err error
+			*dst, err = __marshalMediaID(
+				&src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal ProductFieldsMediaMediaConnection.Nodes: %w", err)
+			}
+		}
+	}
+	retval.PageInfo = v.PageInfo
+	return &retval, nil
+}
+
+// ProductFieldsMediaMediaConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ProductFieldsMediaMediaConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ProductFieldsMediaMediaConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ProductFieldsMediaMediaConnectionPageInfo) GetHasNextPage() bool { return v.HasNextPage }
+
+// GetEndCursor returns ProductFieldsMediaMediaConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ProductFieldsMediaMediaConnectionPageInfo) GetEndCursor() *string { return v.EndCursor }
 
 // ProductFieldsOptionsProductOption includes the requested fields of the GraphQL type ProductOption.
 // The GraphQL type's documentation follows.
@@ -20211,7 +20656,7 @@ type ProductSetInput struct {
 	// The files to associate with the product.
 	//
 	// Complexity cost: 1.9 per file.
-	Files []FileSetInput `json:"files,omitempty"`
+	Files json.RawMessage `json:"files,omitempty"`
 	// List of custom product options and option values (maximum of 3 per product).
 	ProductOptions []OptionSetInput `json:"productOptions,omitempty"`
 	// A list of variants associated with the product.
@@ -20276,7 +20721,7 @@ func (v *ProductSetInput) GetCollections() []string { return v.Collections }
 func (v *ProductSetInput) GetMetafields() []MetafieldInput { return v.Metafields }
 
 // GetFiles returns ProductSetInput.Files, and is useful for accessing the field via an interface.
-func (v *ProductSetInput) GetFiles() []FileSetInput { return v.Files }
+func (v *ProductSetInput) GetFiles() json.RawMessage { return v.Files }
 
 // GetProductOptions returns ProductSetInput.ProductOptions, and is useful for accessing the field via an interface.
 func (v *ProductSetInput) GetProductOptions() []OptionSetInput { return v.ProductOptions }
@@ -21456,6 +21901,11 @@ func (v *SetProductProductSetProductSetPayloadProduct) GetHasOnlyDefaultVariant(
 	return v.ProductFields.HasOnlyDefaultVariant
 }
 
+// GetMedia returns SetProductProductSetProductSetPayloadProduct.Media, and is useful for accessing the field via an interface.
+func (v *SetProductProductSetProductSetPayloadProduct) GetMedia() ProductFieldsMediaMediaConnection {
+	return v.ProductFields.Media
+}
+
 // GetOptions returns SetProductProductSetProductSetPayloadProduct.Options, and is useful for accessing the field via an interface.
 func (v *SetProductProductSetProductSetPayloadProduct) GetOptions() []ProductFieldsOptionsProductOption {
 	return v.ProductFields.Options
@@ -21523,6 +21973,8 @@ type __premarshalSetProductProductSetProductSetPayloadProduct struct {
 
 	HasOnlyDefaultVariant bool `json:"hasOnlyDefaultVariant"`
 
+	Media ProductFieldsMediaMediaConnection `json:"media"`
+
 	Options []ProductFieldsOptionsProductOption `json:"options"`
 
 	Variants ProductFieldsVariantsProductVariantConnection `json:"variants"`
@@ -21554,6 +22006,7 @@ func (v *SetProductProductSetProductSetPayloadProduct) __premarshalJSON() (*__pr
 	retval.TemplateSuffix = v.ProductFields.TemplateSuffix
 	retval.IsGiftCard = v.ProductFields.IsGiftCard
 	retval.HasOnlyDefaultVariant = v.ProductFields.HasOnlyDefaultVariant
+	retval.Media = v.ProductFields.Media
 	retval.Options = v.ProductFields.Options
 	retval.Variants = v.ProductFields.Variants
 	retval.ResourcePublicationsV2 = v.ProductFields.PublicationsOfPublishableProduct.ResourcePublicationsV2
@@ -25436,6 +25889,18 @@ type __GetProductInput struct {
 
 // GetId returns __GetProductInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetProductInput) GetId() string { return v.Id }
+
+// __GetProductMediaInput is used internally by genqlient
+type __GetProductMediaInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetProductMediaInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetProductMediaInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetProductMediaInput.After, and is useful for accessing the field via an interface.
+func (v *__GetProductMediaInput) GetAfter() *string { return v.After }
 
 // __GetProductPublicationsInput is used internally by genqlient
 type __GetProductPublicationsInput struct {
@@ -30261,6 +30726,16 @@ fragment ProductFields on Product {
 	isGiftCard
 	hasOnlyDefaultVariant
 	... PublicationsOfPublishable
+	media(first: 20) {
+		nodes {
+			__typename
+			... MediaID
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
 	options {
 		id
 		name
@@ -30295,6 +30770,9 @@ fragment PublicationsOfPublishable on Publishable {
 			endCursor
 		}
 	}
+}
+fragment MediaID on Media {
+	id
 }
 fragment VariantFields on ProductVariant {
 	id
@@ -30379,6 +30857,16 @@ fragment ProductFields on Product {
 	isGiftCard
 	hasOnlyDefaultVariant
 	... PublicationsOfPublishable
+	media(first: 20) {
+		nodes {
+			__typename
+			... MediaID
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
 	options {
 		id
 		name
@@ -30413,6 +30901,9 @@ fragment PublicationsOfPublishable on Publishable {
 			endCursor
 		}
 	}
+}
+fragment MediaID on Media {
+	id
 }
 fragment VariantFields on ProductVariant {
 	id
@@ -30460,6 +30951,55 @@ func GetProductByHandle(
 	}
 
 	data_ = &GetProductByHandleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetProductMedia.
+const GetProductMedia_Operation = `
+query GetProductMedia ($id: ID!, $after: String) {
+	product(id: $id) {
+		media(first: 250, after: $after) {
+			nodes {
+				__typename
+				... MediaID
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+fragment MediaID on Media {
+	id
+}
+`
+
+// Pages media after the first 20 that ProductFields carries.
+func GetProductMedia(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetProductMediaResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetProductMedia",
+		Query:  GetProductMedia_Operation,
+		Variables: &__GetProductMediaInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetProductMediaResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -32826,6 +33366,16 @@ fragment ProductFields on Product {
 	isGiftCard
 	hasOnlyDefaultVariant
 	... PublicationsOfPublishable
+	media(first: 20) {
+		nodes {
+			__typename
+			... MediaID
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
 	options {
 		id
 		name
@@ -32860,6 +33410,9 @@ fragment PublicationsOfPublishable on Publishable {
 			endCursor
 		}
 	}
+}
+fragment MediaID on Media {
+	id
 }
 fragment VariantFields on ProductVariant {
 	id
@@ -33190,6 +33743,16 @@ fragment ProductFields on Product {
 	isGiftCard
 	hasOnlyDefaultVariant
 	... PublicationsOfPublishable
+	media(first: 20) {
+		nodes {
+			__typename
+			... MediaID
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
 	options {
 		id
 		name
@@ -33225,6 +33788,9 @@ fragment PublicationsOfPublishable on Publishable {
 		}
 	}
 }
+fragment MediaID on Media {
+	id
+}
 fragment VariantFields on ProductVariant {
 	id
 	price
@@ -33256,7 +33822,7 @@ fragment VariantFields on ProductVariant {
 }
 `
 
-// Omitted keys stay unchanged, so every field is omitempty; tags is raw JSON so [] clears while nil is omitted.
+// Omitted keys stay unchanged, so every field is omitempty; tags and files are raw JSON so [] clears while nil is omitted.
 func SetProduct(
 	ctx_ context.Context,
 	client_ graphql.Client,

@@ -18,6 +18,17 @@ fragment ProductFields on Product {
   isGiftCard
   hasOnlyDefaultVariant
   ...PublicationsOfPublishable
+  # 20 keeps a list page of 50 products under the cost limit (947 of 1,000); GetProductMedia pages the rest.
+  media(first: 20) {
+    # @genqlient(flatten: true)
+    nodes {
+      ...MediaID
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
   options {
     id
     name
@@ -39,6 +50,11 @@ fragment ProductFields on Product {
       endCursor
     }
   }
+}
+
+# Every Media type (MediaImage, Video, Model3d, ExternalVideo) is a File, so the GID is a file ID.
+fragment MediaID on Media {
+  id
 }
 
 # TODO(verify): whether reading inventoryItem needs read_inventory; every scope is granted on the dev store.
@@ -107,6 +123,25 @@ query GetProductVariants(
   }
 }
 
+# Pages media after the first 20 that ProductFields carries.
+query GetProductMedia(
+  $id: ID!
+  $after: String
+) {
+  product(id: $id) {
+    media(first: 250, after: $after) {
+      # @genqlient(flatten: true)
+      nodes {
+        ...MediaID
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
 query ListProducts(
   $after: String
 ) {
@@ -121,7 +156,7 @@ query ListProducts(
   }
 }
 
-# Omitted keys stay unchanged, so every field is omitempty; tags is raw JSON so [] clears while nil is omitted.
+# Omitted keys stay unchanged, so every field is omitempty; tags and files are raw JSON so [] clears while nil is omitted.
 # @genqlient(for: "ProductSetInput.descriptionHtml", omitempty: true)
 # @genqlient(for: "ProductSetInput.handle", omitempty: true)
 # @genqlient(for: "ProductSetInput.seo", omitempty: true)
@@ -137,7 +172,7 @@ query ListProducts(
 # @genqlient(for: "ProductSetInput.status", omitempty: true)
 # @genqlient(for: "ProductSetInput.collections", omitempty: true)
 # @genqlient(for: "ProductSetInput.metafields", omitempty: true)
-# @genqlient(for: "ProductSetInput.files", omitempty: true)
+# @genqlient(for: "ProductSetInput.files", omitempty: true, bind: "encoding/json.RawMessage")
 # @genqlient(for: "ProductSetInput.productOptions", omitempty: true)
 # @genqlient(for: "ProductSetInput.variants", omitempty: true)
 # @genqlient(for: "ProductSetInput.requiresSellingPlan", omitempty: true)
