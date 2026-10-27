@@ -37,7 +37,7 @@ func (d *DataSource) Schema(ctx context.Context, req datasource.SchemaRequest, r
 			"Entries are content that merchants edit in the admin; the data source reads the current state on every plan.",
 		Attributes: map[string]schema.Attribute{
 			"type": schema.StringAttribute{
-				MarkdownDescription: "Definition type, e.g. `shopify--material`, exactly as the API returns it.",
+				MarkdownDescription: "Definition type, e.g. `shopify--material`, exactly as the API returns it. A type of the provider's own app can also be given as `$app:<name>`.",
 				Required:            true,
 			},
 			"handle": schema.StringAttribute{
@@ -84,7 +84,6 @@ func (d *DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp 
 	}
 	typ, handle := cfg.Type.ValueString(), cfg.Handle.ValueString()
 
-	// TODO(verify): whether `$app:foo` types resolve to the caller's app prefix here.
 	res, err := client.GetMetaobjectByHandle(ctx, d.client, typ, handle)
 	if client.IsAccessDenied(err) {
 		resp.Diagnostics.AddError("Failed to read metaobject",
