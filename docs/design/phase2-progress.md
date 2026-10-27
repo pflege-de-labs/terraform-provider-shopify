@@ -269,3 +269,19 @@ Temporary execution log, committed so it survives worktree cleanup. Removed in t
 - Task 18: minor (deferred): `extension(name)` slices at LastIndex(".") and would panic without a dot; all callers are guarded today
 - Task 18: minor (deferred): Create-timeout untaint wording has no test assertion
 - Task 18: complete (commits 7d33ad0..5c6e126, review clean after 1 fix round)
+- Ruling T14d-1: 14d = product-level `media_ids` only (variant media, collection images → roadmap/TODO(verify)); implementer probes first whether detaching a file via productSet(files) deletes it — if yes, removals are guarded by the product's allow_data_deletion (fail closed) with a ModifyPlan warning, if no, no guard; list includes media_ids, cost re-measured (page of 50 was 898/1000) — spec left the deciding fact open — costs a design adjustment inside the task if the probe surprises
+- Task 14d (product media_ids, §9k.4): dispatched (base e14c469, model opus — product resource + data-loss path)
+- Ruling T18-3: signed off by user 2026-10-27 (list skips files without a URL)
+- Task 14d: implemented f060228..897fbd5 (probe: removing a file from productSet(files) deletes it unless another product uses it; reorder keeps; GenericFile IDs refused; product delete deletes files no other product uses; fileUpdate(referencesToRemove) detaches without deleting). Implemented with allow_data_deletion guard.
+- Ruling T14d-2: media removal becomes non-destructive — detach removed IDs via fileUpdate(referencesToRemove: [productId]) before productSet, drop the media deletion guard/warning; product stays the single writer of the link — removing an ID from media_ids means "detach", and deleting a file another resource (shopify_file) manages from the product would be silent data loss and state drift — costs one extra API call per update with removals, and a rework round before review
+- Task 14d: flaky TestAccFile_dataDeletion ("File not found") when run alongside product suite; implementer asked to diagnose
+- Task 14d: T14d-2 applied 623628a (detach via fileUpdate(referencesToRemove) before productSet; guard removed; probe: detach keeps every file incl. external video and shared files; combined file destroy + media_ids removal: only shopify_file deletes; TestAccFile_dataDeletion flake = search-index lag, wait added in test; recurring empty 'Untitled Source' on frontpage after test runs removed manually); controller re-ran checks green; review dispatched (model opus)
+- Task 14d: review (opus): spec ✅, 0 Critical/Important; FILE_DOES_NOT_EXIST on detach correctly fails (skipping would let productSet delete the rest of the batch)
+- Task 14d: minor (deferred): race — a file attached in the admin between Update's live read and productSet is removed by productSet and deleted if unused elsewhere; document in §9k.4 and media_ids description
+- Task 14d: minor (deferred): FILE_DOES_NOT_EXIST on detach surfaces Shopify's raw message; clearer "deleted elsewhere, re-apply" message or one re-read+retry (never skip the batch)
+- Task 14d: minor (deferred): GenericFile ID unknown at plan fails at apply after the detach (top-level GraphQL error, no attribute); validate mediaIDRe in mediaInput before detaching
+- Task 14d: minor (deferred): file test waitSearchable ends on any file with that filename; wait for the GID in state instead
+- Task 14d: minor (deferred): product/file acceptance runs leave an empty "Untitled Source" on frontpage (Shopify adds it for DRAFT products); add cleanup to product test cleanup or a TODO — dev store needs manual collectionUpdate(sourcesToDelete) after each run
+- Task 14d: minor (deferred): AllowDataDeletionAttribute text "its variants, inventory and media" reads as gating media_ids removal; reword
+- Task 14d: minor (deferred): no acceptance step for adopt_existing + media_ids; >20 media paging unit-tested only
+- Task 14d: complete (commits f060228..623628a, review clean; rework per T14d-2 before review)
