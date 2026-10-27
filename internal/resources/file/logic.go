@@ -103,7 +103,6 @@ func (f *apiFile) publicURL() *string {
 }
 
 // filenameFromURL takes the last path segment without the query.
-// TODO(verify): that a GenericFile URL ends in the filename as an image URL does.
 func filenameFromURL(raw string) (string, bool) {
 	u, err := url.Parse(raw)
 	if err != nil {
@@ -161,8 +160,7 @@ func findQuery(k key) string {
 	return "filename:" + strconv.Quote(k.filename)
 }
 
-// matchFiles keeps the exact matches.
-// TODO(verify): whether filenames that differ only in case can coexist; the compare is case-sensitive.
+// matchFiles keeps the exact matches; Shopify treats names that differ only in case as taken, but keeps the case it was given.
 func matchFiles(files []apiFile, k key) []apiFile {
 	var out []apiFile
 	for _, f := range files {
@@ -252,8 +250,7 @@ func contentChanged(prior, plan *model) bool {
 
 func extension(name string) string { return name[strings.LastIndex(name, "."):] }
 
-// replaceReasons lists why the plan replaces the file: the API can't change these in place.
-// TODO(verify): whether fileUpdate accepts an extension that differs only in case; it is treated as a change.
+// replaceReasons lists why the plan replaces the file: the API can't change these in place, and an extension that differs only in case counts.
 func replaceReasons(prior, plan *model) []string {
 	var out []string
 	if !plan.ContentType.IsUnknown() && !plan.ContentType.Equal(prior.ContentType) {

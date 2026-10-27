@@ -89,7 +89,7 @@ func listResult(ctx context.Context, req list.ListRequest, f *apiFile) (list.Lis
 			Timeouts: patterns.TimeoutsNull("create", "update"),
 			Filename: types.StringNull(), Source: types.StringNull(), SourceHash: types.StringNull(), Alt: types.StringNull(),
 		}
-		setFromAPI(&m, f)
+		setFromAPI(&m, f, nil)
 		res.Diagnostics.Append(res.Resource.Set(ctx, &m)...)
 	}
 	return res, true

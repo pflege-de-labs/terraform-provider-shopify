@@ -24,8 +24,7 @@ type model struct {
 func (m *model) createInput() client.FileCreateInput {
 	ct := client.FileContentType(m.ContentType.ValueString())
 	in := client.FileCreateInput{ContentType: &ct, Alt: patterns.ConfiguredString(m.Alt), OriginalSource: m.Source.ValueString()}
-	// RAISE_ERROR keeps filenames unique so the key holds; external videos have no filename.
-	// TODO(verify): whether duplicateResolutionMode: RAISE_ERROR is rejected for external videos; it is not sent.
+	// RAISE_ERROR keeps filenames unique so the key holds; Shopify rejects it for external videos, which have no filename.
 	if ct != client.FileContentTypeExternalVideo {
 		mode := client.FileCreateInputDuplicateResolutionModeRaiseError
 		in.Filename, in.DuplicateResolutionMode = patterns.ConfiguredString(m.Filename), &mode
@@ -49,7 +48,8 @@ func (m *model) updateInput(id string, prior *model) (client.FileUpdateInput, bo
 }
 
 // setFromAPI keeps source and source_hash: Shopify never returns them for hosted files.
-func setFromAPI(m *model, f *apiFile) {
+// written is the origin URL Shopify returned at our last write: it rewrites video URLs (watch?v=ID becomes youtu.be/ID), and the configured form stays while it is unchanged.
+func setFromAPI(m *model, f *apiFile, written *string) {
 	ct, _ := f.contentType()
 	m.ID = types.StringValue(f.Id)
 	m.ContentType = types.StringValue(ct)
@@ -66,6 +66,6 @@ func setFromAPI(m *model, f *apiFile) {
 		m.Alt = types.StringPointerValue(f.Alt)
 	}
 	if ct == typeExternalVideo {
-		m.Source = types.StringValue(f.OriginUrl)
+		m.Source = patterns.KeepOrTake(m.Source, written, f.OriginUrl)
 	}
 }

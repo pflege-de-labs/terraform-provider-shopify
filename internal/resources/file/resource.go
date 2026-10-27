@@ -26,6 +26,10 @@ const (
 	what           = "file"
 	defaultTimeout = 10 * time.Minute
 	pollInterval   = 2 * time.Second
+	deleteInterval = 500 * time.Millisecond
+	deleteWait     = time.Minute
+	// Shopify keeps a deleted filename taken for a moment and suffixes it on create, even with RAISE_ERROR.
+	deleteSettle = 5 * time.Second
 )
 
 var (
@@ -100,7 +104,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				MarkdownDescription: "Alt text for screen readers. `\"\"` clears it. Unset means unmanaged: the value set in the admin is kept.",
 				Optional:            true,
 				Computed:            true,
-				PlanModifiers:       []planmodifier.String{patterns.UseStateForUnknownIncludingNull()},
+				PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			"url": schema.StringAttribute{
 				MarkdownDescription: "The public URL of the file; for an external video, the video URL. Changes with the filename and with a content update (`?v=`).",
@@ -183,7 +187,8 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 		resp.Diagnostics.AddWarning("This change replaces the file", detail)
 	}
 
-	renamed := !plan.Filename.IsNull() && !plan.Filename.IsUnknown() && !state.Filename.IsNull() && !plan.Filename.Equal(state.Filename)
+	newName := differs(state.Filename, plan.Filename)
+	renamed := newName && !plan.Filename.IsUnknown() && !state.Filename.IsNull()
 	if ct := plan.ContentType.ValueString(); renamed && (ct == typeVideo || ct == typeModel3d) {
 		resp.Diagnostics.AddAttributeError(path.Root("filename"), "This file can't be renamed", "Shopify renames images and generic files only.")
 	} else if renamed && len(reasons) == 0 {
@@ -191,8 +196,8 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 			"Links to the old URL in pages, themes and blog posts break.")
 	}
 
-	// A rename or new content changes the URL (?v= for content).
-	if (renamed || contentChanged(&state, &plan)) && !plan.URL.IsUnknown() {
+	// A rename or new content changes the URL (?v= for content); the condition matches what Update sends.
+	if (newName || contentChanged(&state, &plan)) && !plan.URL.IsUnknown() {
 		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("url"), types.StringUnknown())...)
 	}
 }
@@ -262,7 +267,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	var failed *failedError
 	if errors.As(err, &failed) {
 		// The failed file would block its filename on the next apply.
-		resp.Diagnostics.Append(r.removeFailed(ctx, failed.file)...)
+		resp.Diagnostics.Append(r.removeFile(ctx, failed.file)...)
 		resp.Diagnostics.Append(processingDiags(err)...)
 		return
 	}
@@ -273,15 +278,24 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		if errors.As(err, &timedOut) {
 			seen = timedOut.file
 		}
-		setFromAPI(&plan, seen)
+		setFromAPI(&plan, seen, &seen.OriginUrl)
 		resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 		resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
+		resp.Diagnostics.Append(remember(ctx, resp.Private, seen)...)
 		resp.Diagnostics.AddError("The file is not ready", err.Error())
 		return
 	}
-	setFromAPI(&plan, ready)
+	if name, ok := ready.filename(); ok && plan.ContentType.ValueString() != typeExternalVideo && name != plan.Filename.ValueString() {
+		// Shopify suffixes a name that is still in use instead of failing, which would break the key.
+		resp.Diagnostics.Append(r.removeFile(ctx, ready)...)
+		resp.Diagnostics.AddAttributeError(path.Root("filename"), "Shopify renamed the file",
+			fmt.Sprintf("Shopify named it %q because %q was still in use, for example by a file deleted moments ago. The new file was removed again; apply again.", name, plan.Filename.ValueString()))
+		return
+	}
+	setFromAPI(&plan, ready, &ready.OriginUrl)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
+	resp.Diagnostics.Append(remember(ctx, resp.Private, ready)...)
 }
 
 // adopt takes over a file that exists: only what differs from it is sent.
@@ -292,7 +306,7 @@ func (r *Resource) adopt(ctx context.Context, resp *resource.CreateResponse, pla
 		return
 	}
 	var live model
-	setFromAPI(&live, existing)
+	setFromAPI(&live, existing, nil)
 	file := existing
 	if in, has := plan.updateInput(existing.Id, &live); has {
 		var ok bool
@@ -306,9 +320,10 @@ func (r *Resource) adopt(ctx context.Context, resp *resource.CreateResponse, pla
 		}
 		file = ready
 	}
-	setFromAPI(plan, file)
+	setFromAPI(plan, file, &file.OriginUrl)
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
+	resp.Diagnostics.Append(remember(ctx, resp.Private, file)...)
 }
 
 func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -346,7 +361,9 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	if state.AllowDataDeletion.IsNull() {
 		state.AllowDataDeletion = types.BoolValue(false)
 	}
-	setFromAPI(&state, f)
+	written, d := patterns.WrittenHTML(ctx, req.Private)
+	resp.Diagnostics.Append(d...)
+	setFromAPI(&state, f, written)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: state.ID})...)
 }
@@ -385,15 +402,18 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 		} else if errors.As(err, &timedOut) {
 			seen = timedOut.file
 		}
-		setFromAPI(&state, seen)
+		written, d := patterns.WrittenHTML(ctx, req.Private)
+		resp.Diagnostics.Append(d...)
+		setFromAPI(&state, seen, written)
 		state.AdoptExisting, state.AllowDataDeletion, state.Timeouts = plan.AdoptExisting, plan.AllowDataDeletion, plan.Timeouts
 		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 		resp.Diagnostics.Append(processingDiags(err)...)
 		return
 	}
-	setFromAPI(&plan, ready)
+	setFromAPI(&plan, ready, &ready.OriginUrl)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
+	resp.Diagnostics.Append(remember(ctx, resp.Private, ready)...)
 }
 
 func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -478,16 +498,47 @@ func (r *Resource) deleteFile(ctx context.Context, id string) diag.Diagnostics {
 	if gone(res.FileDelete.UserErrors) {
 		return diags
 	}
-	return userErrorDiags("Failed to delete "+what, res.FileDelete.UserErrors, nil)
+	diags.Append(userErrorDiags("Failed to delete "+what, res.FileDelete.UserErrors, nil)...)
+	if diags.HasError() {
+		return diags
+	}
+	// Deleting is asynchronous, and the name stays taken for a moment, which a replace would hit.
+	if !r.waitGone(ctx, id) {
+		diags.AddWarning("The deleted file still exists", fmt.Sprintf("Shopify has not finished deleting %s after %s.", id, deleteWait))
+	}
+	return diags
 }
 
-// removeFailed deletes a file that failed processing; a failure to do so is reported with the GID so it can be removed by hand.
-func (r *Resource) removeFailed(ctx context.Context, f *apiFile) diag.Diagnostics {
+// waitGone reports whether the file disappeared within deleteWait, and then lets the name settle.
+func (r *Resource) waitGone(ctx context.Context, id string) bool {
+	p := r.poller(id)
+	deadline := p.now().Add(deleteWait)
+	for p.now().Before(deadline) {
+		if f, err := p.fetch(ctx); err == nil && f == nil {
+			return p.sleep(ctx, deleteSettle) == nil
+		}
+		if p.sleep(ctx, deleteInterval) != nil {
+			return false
+		}
+	}
+	return false
+}
+
+// removeFile deletes a file Create must not keep; a failure to do so is reported with the GID so it can be removed by hand.
+func (r *Resource) removeFile(ctx context.Context, f *apiFile) diag.Diagnostics {
 	var diags diag.Diagnostics
 	for _, d := range r.deleteFile(ctx, f.Id) {
 		diags.AddError("Failed to remove the failed file "+f.Id, d.Detail())
 	}
 	return diags
+}
+
+// remember stores the origin URL Shopify returned, for external videos; the helper is generic despite its name.
+func remember(ctx context.Context, private patterns.PrivateSetter, f *apiFile) diag.Diagnostics {
+	if f.Typename != "ExternalVideo" {
+		return nil
+	}
+	return patterns.RememberWrittenHTML(ctx, private, f.OriginUrl)
 }
 
 // processingDiags reports why a file isn't ready, one error per Shopify file error.

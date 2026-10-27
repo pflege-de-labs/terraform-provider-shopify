@@ -380,7 +380,7 @@ func TestSetFromAPI(t *testing.T) {
 	alt := ""
 	img := &apiFile{Typename: "MediaImage", Id: "gid://shopify/MediaImage/1", Alt: &alt, FileStatus: "READY", Image: &urlRef{"https://cdn/files/a.png?v=1"}}
 	m := model{Source: s("https://x/a.png"), SourceHash: s("h"), Alt: s("")}
-	setFromAPI(&m, img)
+	setFromAPI(&m, img, nil)
 	if m.ContentType.ValueString() != "IMAGE" || m.Filename.ValueString() != "a.png" || m.URL.ValueString() != "https://cdn/files/a.png?v=1" {
 		t.Errorf("image: %+v", m)
 	}
@@ -390,32 +390,46 @@ func TestSetFromAPI(t *testing.T) {
 
 	// A cleared alt reads back as null or "" and must keep the configured "".
 	img.Alt = nil
-	setFromAPI(&m, img)
+	setFromAPI(&m, img, nil)
 	if m.Alt.IsNull() || m.Alt.ValueString() != "" {
 		t.Errorf("alt = %v, want the configured empty string kept", m.Alt)
 	}
 	m.Alt = types.StringNull()
-	setFromAPI(&m, img)
+	setFromAPI(&m, img, nil)
 	if !m.Alt.IsNull() {
 		t.Errorf("alt = %v, want null", m.Alt)
 	}
 
 	// An imported file has no source; a processing one has no URL, which keeps the known filename.
 	imported := model{}
-	setFromAPI(&imported, &apiFile{Typename: "GenericFile", Id: "g", FileStatus: "UPLOADED"})
+	setFromAPI(&imported, &apiFile{Typename: "GenericFile", Id: "g", FileStatus: "UPLOADED"}, nil)
 	if !imported.Source.IsNull() || !imported.URL.IsNull() || !imported.Filename.IsNull() {
 		t.Errorf("imported: %+v", imported)
 	}
 	known := model{Filename: s("keep.pdf")}
-	setFromAPI(&known, &apiFile{Typename: "GenericFile", Id: "g", FileStatus: "UPLOADED"})
+	setFromAPI(&known, &apiFile{Typename: "GenericFile", Id: "g", FileStatus: "UPLOADED"}, nil)
 	if known.Filename.ValueString() != "keep.pdf" {
 		t.Errorf("filename = %v, want the known one kept", known.Filename)
 	}
 
 	ext := model{}
-	setFromAPI(&ext, &apiFile{Typename: "ExternalVideo", Id: "e", OriginUrl: "https://youtu.be/x"})
+	video := &apiFile{Typename: "ExternalVideo", Id: "e", OriginUrl: "https://youtu.be/x"}
+	setFromAPI(&ext, video, nil)
 	if ext.ContentType.ValueString() != "EXTERNAL_VIDEO" || ext.Source.ValueString() != "https://youtu.be/x" || !ext.Filename.IsNull() || ext.URL.ValueString() != "https://youtu.be/x" {
 		t.Errorf("external: %+v", ext)
+	}
+
+	// Shopify rewrites video URLs: the configured form stays while the live URL is what it returned at our write.
+	cfg := model{Source: s("https://www.youtube.com/watch?v=x")}
+	written := "https://youtu.be/x"
+	setFromAPI(&cfg, video, &written)
+	if cfg.Source.ValueString() != "https://www.youtube.com/watch?v=x" || cfg.URL.ValueString() != "https://youtu.be/x" {
+		t.Errorf("configured form not kept: %+v", cfg)
+	}
+	other := "https://youtu.be/other"
+	setFromAPI(&cfg, video, &other)
+	if cfg.Source.ValueString() != "https://youtu.be/x" {
+		t.Errorf("a changed live URL must be taken: %+v", cfg)
 	}
 }
 
