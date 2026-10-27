@@ -24,29 +24,6 @@ func conn(hasNext bool, cursor string, ids ...string) client.PublicationsOfPubli
 	return c
 }
 
-func TestDiff(t *testing.T) {
-	tests := []struct {
-		name        string
-		live, want  []string
-		add, remove []string
-	}{
-		{"same", []string{"a", "b"}, []string{"b", "a"}, nil, nil},
-		{"add", []string{"a"}, []string{"a", "b"}, []string{"b"}, nil},
-		{"remove", []string{"a", "b"}, []string{"a"}, nil, []string{"b"}},
-		{"both, sorted", []string{"c", "a"}, []string{"z", "b"}, []string{"b", "z"}, []string{"a", "c"}},
-		{"clear", []string{"a"}, []string{}, nil, []string{"a"}},
-		{"from nothing", nil, []string{"a"}, []string{"a"}, nil},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			add, remove := Diff(tt.live, tt.want)
-			if !reflect.DeepEqual(add, tt.add) || !reflect.DeepEqual(remove, tt.remove) {
-				t.Errorf("Diff = %v, %v; want %v, %v", add, remove, tt.add, tt.remove)
-			}
-		})
-	}
-}
-
 func TestComplete_pagesUntilLast(t *testing.T) {
 	c := conn(true, "c1", "a", "b")
 	var cursors []string

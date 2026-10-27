@@ -2,7 +2,7 @@ package patterns
 
 import (
 	"context"
-	"slices"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -84,12 +84,25 @@ func TestWarnOnDataDeletingReplace(t *testing.T) {
 }
 
 func TestDiffIDs(t *testing.T) {
-	add, remove := DiffIDs([]string{"d", "b"}, []string{"c", "b", "a"})
-	if !slices.Equal(add, []string{"a", "c"}) || !slices.Equal(remove, []string{"d"}) {
-		t.Errorf("got add %v remove %v", add, remove)
+	tests := []struct {
+		name        string
+		live, want  []string
+		add, remove []string
+	}{
+		{"same", []string{"a", "b"}, []string{"b", "a"}, nil, nil},
+		{"add", []string{"a"}, []string{"a", "b"}, []string{"b"}, nil},
+		{"remove", []string{"a", "b"}, []string{"a"}, nil, []string{"b"}},
+		{"both, sorted", []string{"d", "b"}, []string{"c", "b", "a"}, []string{"a", "c"}, []string{"d"}},
+		{"clear", []string{"a"}, []string{}, nil, []string{"a"}},
+		{"from nothing", nil, []string{"a"}, []string{"a"}, nil},
 	}
-	if add, remove = DiffIDs([]string{"a"}, []string{"a"}); add != nil || remove != nil {
-		t.Errorf("no change: got add %v remove %v", add, remove)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			add, remove := DiffIDs(tt.live, tt.want)
+			if !reflect.DeepEqual(add, tt.add) || !reflect.DeepEqual(remove, tt.remove) {
+				t.Errorf("DiffIDs = %v, %v; want %v, %v", add, remove, tt.add, tt.remove)
+			}
+		})
 	}
 }
 

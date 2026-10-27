@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"regexp"
-	"slices"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
@@ -19,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 )
 
 // Connection is the publications fragment both resources embed in their fields.
@@ -74,23 +74,6 @@ func Complete(ctx context.Context, conn *Connection, more func(after *string) ([
 	return nil
 }
 
-// Diff returns the sorted IDs to publish and to unpublish to turn live into want.
-func Diff(live, want []string) (add, remove []string) {
-	for _, id := range want {
-		if !slices.Contains(live, id) {
-			add = append(add, id)
-		}
-	}
-	for _, id := range live {
-		if !slices.Contains(want, id) {
-			remove = append(remove, id)
-		}
-	}
-	slices.Sort(add)
-	slices.Sort(remove)
-	return add, remove
-}
-
 // Value is the attribute value for live IDs; no publications is an empty set, not null.
 func Value(ctx context.Context, ids []string) (types.Set, diag.Diagnostics) {
 	return types.SetValueFrom(ctx, types.StringType, append([]string{}, ids...))
@@ -124,7 +107,7 @@ type Target struct {
 // Publishing goes first, so a rejected ID unpublishes nothing.
 func Sync(ctx context.Context, c *client.Client, t Target, live, want []string) ([]string, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	add, remove := Diff(live, want)
+	add, remove := patterns.DiffIDs(live, want)
 	if len(add) == 0 && len(remove) == 0 {
 		return live, nil
 	}
@@ -191,7 +174,7 @@ func attributePath([]string) (path.Path, bool) { return path.Root("publication_i
 
 // mismatch explains why Shopify doesn't list a wanted publication, or returns "" when it does; an extra one is no error, since the next plan removes it.
 func mismatch(want, got []string) string {
-	missing, _ := Diff(got, want)
+	missing, _ := patterns.DiffIDs(got, want)
 	if len(missing) == 0 {
 		return ""
 	}

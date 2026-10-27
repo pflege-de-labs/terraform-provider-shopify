@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 )
 
 // restOfWorld stands for Shopify's "rest of world" pseudo-country in zone countries.
@@ -71,7 +72,7 @@ func diff(current, desired tree) (client.DeliveryProfileInput, bool) {
 		}
 		c := current.Groups[i]
 		up := client.DeliveryProfileLocationGroupInput{Id: &c.ID}
-		up.LocationsToAdd, up.LocationsToRemove = setDiff(c.Locations, d.Locations)
+		up.LocationsToAdd, up.LocationsToRemove = patterns.DiffIDs(c.Locations, d.Locations)
 
 		currentZones := map[string]zone{}
 		for _, z := range c.Zones {
@@ -112,7 +113,7 @@ func zoneUpdate(c, d zone) (client.DeliveryLocationGroupZoneInput, []string, boo
 	up := client.DeliveryLocationGroupZoneInput{Id: &c.ID}
 	changed := false
 	// Countries are only sent when the set changes, since sending them resets province selections.
-	if add, del := setDiff(c.Countries, d.Countries); len(add)+len(del) > 0 {
+	if add, del := patterns.DiffIDs(c.Countries, d.Countries); len(add)+len(del) > 0 {
 		up.Countries = countriesInput(d.Countries)
 		changed = true
 	}
@@ -250,21 +251,4 @@ func normAmount(a string) string {
 		return r.RatString()
 	}
 	return a
-}
-
-// setDiff returns the sorted elements to add to old and to delete from it to get desired.
-func setDiff(old, desired []string) (add, del []string) {
-	for _, d := range desired {
-		if !slices.Contains(old, d) {
-			add = append(add, d)
-		}
-	}
-	for _, o := range old {
-		if !slices.Contains(desired, o) {
-			del = append(del, o)
-		}
-	}
-	slices.Sort(add)
-	slices.Sort(del)
-	return add, del
 }

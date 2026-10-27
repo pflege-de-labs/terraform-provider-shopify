@@ -86,17 +86,6 @@ func mustInput(s ...string) []any {
 	return v
 }
 
-func TestDiffIDs(t *testing.T) {
-	add, remove := diffIDs([]string{"P1", "P2", "P3"}, []string{"P4", "P2", "P1"})
-	if !reflect.DeepEqual(add, []string{"P4"}) || !reflect.DeepEqual(remove, []string{"P3"}) {
-		t.Errorf("got add %v remove %v", add, remove)
-	}
-	add, remove = diffIDs(nil, []string{"P1"})
-	if !reflect.DeepEqual(add, []string{"P1"}) || remove != nil {
-		t.Errorf("got add %v remove %v", add, remove)
-	}
-}
-
 func sel(ids ...string) []client.CollectionInclusionProductSelectionInput {
 	out := make([]client.CollectionInclusionProductSelectionInput, len(ids))
 	for i, id := range ids {

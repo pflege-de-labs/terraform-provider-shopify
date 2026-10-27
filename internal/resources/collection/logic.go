@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 )
 
 // source is one entry of Collection.sources as CollectionFields reads it.
@@ -101,23 +102,6 @@ func membershipOf(sources []source) (*membership, error) {
 	return m, nil
 }
 
-// diffIDs returns the IDs to add and to remove to get from live to want, sorted.
-func diffIDs(live, want []string) (add, remove []string) {
-	for _, id := range want {
-		if !slices.Contains(live, id) {
-			add = append(add, id)
-		}
-	}
-	for _, id := range live {
-		if !slices.Contains(want, id) {
-			remove = append(remove, id)
-		}
-	}
-	slices.Sort(add)
-	slices.Sort(remove)
-	return add, remove
-}
-
 // desired is the configured membership; nil fields are unmanaged.
 type desired struct {
 	MatchType  *string
@@ -190,7 +174,7 @@ func planSource(live *membership, want desired) (sourceChanges, error) {
 		}
 	}
 	if want.ProductIDs != nil {
-		add, remove := diffIDs(cur.ProductIDs, want.ProductIDs)
+		add, remove := patterns.DiffIDs(cur.ProductIDs, want.ProductIDs)
 		in.SelectionsToAdd, in.SelectionsToRemove = selections(add), selections(remove)
 	}
 	if in.MatchType == nil && in.ConditionsToDelete == nil && in.ConditionsToCreate == nil && in.SelectionsToAdd == nil && in.SelectionsToRemove == nil {
