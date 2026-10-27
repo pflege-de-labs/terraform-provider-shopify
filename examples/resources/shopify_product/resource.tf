@@ -21,8 +21,8 @@ resource "shopify_product" "bettschutz" {
   # Removing an ID unpublishes the product from that channel. Unset leaves the publications to the admin.
   publication_ids = [data.shopify_publication.online_store.id]
 
-  # Media in position order. Removing an ID deletes that file unless another product uses it,
-  # so it needs allow_data_deletion = true. Unset leaves the media to the admin.
+  # Media in position order. Removing an ID detaches the file and keeps it in the library.
+  # Unset leaves the media to the admin.
   media_ids = [shopify_file.bettschutz_photo.id]
 
   options = [

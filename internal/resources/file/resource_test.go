@@ -492,6 +492,8 @@ func TestAccFile_dataDeletion(t *testing.T) {
 			},
 			{Config: body("FILE", "true"), ConfigPlanChecks: emptyPlan()},
 			{
+				// The replace made a new file, which the filename search finds only seconds later.
+				PreConfig:                            func() { waitSearchable(t, name) },
 				Config:                               body("FILE", "true"),
 				ResourceName:                         addr,
 				ImportState:                          true,

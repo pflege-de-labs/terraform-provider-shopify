@@ -194,25 +194,21 @@ func TestAccProduct_media(t *testing.T) {
 				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}},
 			},
 			{
-				// Detaching b deletes it while shopify_file.b still holds it, so the product's guard refuses.
-				Config:      cfg(abc, false, title, `media_ids = [shopify_file.a.id]`),
-				ExpectError: regexp.MustCompile(`Removing media would delete\s+files`),
+				// Detaching keeps the file: no flag needed, and shopify_file.b still finds it.
+				Config:            cfg(abc, false, title, `media_ids = [shopify_file.a.id]`),
+				Check:             resource.ComposeTestCheckFunc(checkMedia(t, handle, f, "a"), checkFiles(t, f, map[string]bool{"a": true, "b": true, "c": true})),
+				ConfigStateChecks: mediaState("a"),
 			},
 			{
-				PreConfig: func() {
-					if !fileExists(t, f.id("b")) {
-						t.Fatal("file b was deleted although the guard refused the change")
-					}
-				},
-				// Shopify deletes b, so shopify_file.b plans a create afterwards.
-				Config:             cfg(abc, true, title, `media_ids = [shopify_file.a.id]`),
-				Check:              resource.ComposeTestCheckFunc(checkMedia(t, handle, f, "a"), checkFiles(t, f, map[string]bool{"a": true, "b": false, "c": true})),
-				ConfigStateChecks:  mediaState("a"),
-				ExpectNonEmptyPlan: true,
+				Config:            cfg(abc, false, title, `media_ids = [shopify_file.a.id, shopify_file.b.id]`),
+				Check:             checkMedia(t, handle, f, "a", "b"),
+				ConfigStateChecks: mediaState("a", "b"),
 			},
 			{
-				Config:           cfg(ac, true, title, `media_ids = [shopify_file.a.id]`),
-				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}},
+				// Removing a file and its ID together: whichever runs first, only shopify_file.b deletes b, under its own flag.
+				Config:            cfg(ac, false, title, `media_ids = [shopify_file.a.id]`),
+				Check:             resource.ComposeTestCheckFunc(checkMedia(t, handle, f, "a"), checkFiles(t, f, map[string]bool{"a": true, "b": false, "c": true})),
+				ConfigStateChecks: mediaState("a"),
 			},
 			{
 				// Review focus 2: unset means unmanaged, so media attached elsewhere are no diff and survive other updates.
@@ -221,14 +217,21 @@ func TestAccProduct_media(t *testing.T) {
 					id := mustLookup(t, handle).Id
 					mustSet(t, &id, client.ProductSetInput{Files: raw})
 				},
-				Config:            cfg(ac, true, title, ""),
+				Config:            cfg(ac, false, title, ""),
 				ConfigPlanChecks:  resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}},
 				ConfigStateChecks: mediaState("a", "c"),
 			},
 			{
+				// Also sets the flag in state for the final destroy.
 				Config:            cfg(ac, true, title+" (renamed)", ""),
 				Check:             checkMedia(t, handle, f, "a", "c"),
 				ConfigStateChecks: mediaState("a", "c"),
+			},
+			{
+				// c was attached outside Terraform and isn't listed, so it is detached and kept.
+				Config:            cfg(ac, true, title, `media_ids = [shopify_file.a.id]`),
+				Check:             resource.ComposeTestCheckFunc(checkMedia(t, handle, f, "a"), checkFiles(t, f, map[string]bool{"a": true, "c": true})),
+				ConfigStateChecks: mediaState("a"),
 			},
 			{
 				ResourceName:                         addr,

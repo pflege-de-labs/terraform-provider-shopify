@@ -65,7 +65,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"**A poor fit for Terraform unless you bootstrap a store or keep a small catalogue in a repository:** products are content that merchants and other systems (PIM, ERP, apps) edit in the admin all the time, " +
 			"and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. " +
 			"`publication_ids` publishes the product to sales channels; removing an ID unpublishes it there, so it disappears for customers. " +
-			"`media_ids` attaches files from the media library (`shopify_file`) in order; removing one deletes the file unless another product uses it. " +
+			"`media_ids` attaches files from the media library (`shopify_file`) in order; removing one detaches it and keeps the file. " +
 			"Options linked to a metafield are read but can't be managed yet: leave `options` and `variants` unset for such a product. " +
 			"Destroying a product deletes its variants, inventory, metafield values and the media no other product uses: archive it with `status = \"ARCHIVED\"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. " +
 			"A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. " +
@@ -154,7 +154,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"publication_ids":     publishing.Attribute(what),
 			"media_ids":           mediaIDsAttribute(),
 			"adopt_existing":      patterns.AdoptExistingAttribute(what),
-			"allow_data_deletion": patterns.AllowDataDeletionAttribute(what + ", its variants, inventory and media, or removing media"),
+			"allow_data_deletion": patterns.AllowDataDeletionAttribute(what + ", its variants, inventory and media"),
 		},
 	}
 }
@@ -301,41 +301,7 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 		return
 	}
 	r.planVariants(ctx, req, resp)
-	r.warnMedia(ctx, req, resp)
 	r.warnReplace(ctx, req, resp)
-}
-
-// warnMedia names the media a plan detaches, since Shopify deletes a detached file no other product uses.
-func (r *Resource) warnMedia(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	var prior, planned types.List
-	var allow types.Bool
-	resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root("media_ids"), &prior)...)
-	resp.Diagnostics.Append(req.Plan.GetAttribute(ctx, path.Root("media_ids"), &planned)...)
-	resp.Diagnostics.Append(req.Plan.GetAttribute(ctx, path.Root("allow_data_deletion"), &allow)...)
-	if resp.Diagnostics.HasError() || prior.IsNull() || prior.IsUnknown() || planned.IsNull() || planned.IsUnknown() {
-		return
-	}
-	// Unknown elements are new files, so only known ones can keep a prior ID.
-	var priorIDs, plannedIDs []string
-	for _, v := range prior.Elements() {
-		if s, ok := v.(types.String); ok && !s.IsUnknown() {
-			priorIDs = append(priorIDs, s.ValueString())
-		}
-	}
-	for _, v := range planned.Elements() {
-		if s, ok := v.(types.String); ok && !s.IsUnknown() {
-			plannedIDs = append(plannedIDs, s.ValueString())
-		}
-	}
-	removed := removedIDs(priorIDs, plannedIDs)
-	if len(removed) == 0 {
-		return
-	}
-	detail := fmt.Sprintf("This change removes the media %s from the product; Shopify deletes each of these files unless another product also uses it.", strings.Join(removed, ", "))
-	if !allow.ValueBool() {
-		detail += " Apply will fail unless allow_data_deletion = true."
-	}
-	resp.Diagnostics.AddWarning("This change deletes media files", detail)
 }
 
 // planVariants matches configured variants to the ones in state, so the plan shows which survive and which are deleted.
@@ -575,10 +541,8 @@ func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFi
 			fmt.Sprintf("This change deletes the variants %s with their inventory items and stock. Set allow_data_deletion = true to allow it.", strings.Join(removed, "; ")))
 		return false
 	}
-	// Compared with live media, so a file already deleted by its own resource in this apply doesn't count.
-	if len(removedMedia) > 0 && !plan.AllowDataDeletion.ValueBool() {
-		diags.AddAttributeError(path.Root("media_ids"), "Removing media would delete files",
-			fmt.Sprintf("This change removes the media %s from the product, and Shopify deletes each of these files unless another product also uses it. Set allow_data_deletion = true to allow it.", strings.Join(removedMedia, ", ")))
+	// Detached first, so productSet never removes a file: it would delete one no other product uses.
+	if len(removedMedia) > 0 && !r.detachMedia(ctx, *id, removedMedia, diags) {
 		return false
 	}
 	var ident *client.ProductSetIdentifiers
@@ -607,6 +571,21 @@ func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFi
 	diags.Append(patterns.RememberWrittenHTML(ctx, private, p.DescriptionHtml)...)
 	diags.Append(r.publish(ctx, p, plan, cfg)...)
 	return true
+}
+
+// detachMedia takes the files off the product in one fileUpdate, which fails as a whole on any error.
+func (r *Resource) detachMedia(ctx context.Context, productID string, ids []string, diags *diag.Diagnostics) bool {
+	res, err := client.UpdateFile(ctx, r.client, detachInputs(ids, productID))
+	if err != nil {
+		diags.AddError("Failed to detach media", err.Error())
+		return false
+	}
+	if res.FileUpdate == nil {
+		diags.AddError("Failed to detach media", "Shopify returned no result.")
+		return false
+	}
+	diags.Append(client.UserErrorDiagsWith("Failed to detach media", res.FileUpdate.UserErrors, func([]string) (path.Path, bool) { return path.Root("media_ids"), true })...)
+	return !diags.HasError()
 }
 
 // getByID returns the product with all its variants, or nil when it doesn't exist.

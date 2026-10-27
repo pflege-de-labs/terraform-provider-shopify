@@ -159,3 +159,20 @@ func TestMediaIDPattern(t *testing.T) {
 		}
 	}
 }
+
+func TestDetachInputs(t *testing.T) {
+	got := detachInputs([]string{"gid://shopify/MediaImage/1", "gid://shopify/ExternalVideo/2"}, "gid://shopify/Product/9")
+	if len(got) != 2 {
+		t.Fatalf("got %d inputs, want one per removed file", len(got))
+	}
+	for i, id := range []string{"gid://shopify/MediaImage/1", "gid://shopify/ExternalVideo/2"} {
+		in := got[i]
+		if in.Id != id || !slices.Equal(in.ReferencesToRemove, []string{"gid://shopify/Product/9"}) ||
+			in.Alt != nil || in.Filename != nil || in.OriginalSource != nil || in.ReferencesToAdd != nil {
+			t.Errorf("input %d = %+v, want only id %s and referencesToRemove [product]", i, in, id)
+		}
+	}
+	if got := detachInputs(nil, "p"); len(got) != 0 {
+		t.Errorf("got %v, want no inputs", got)
+	}
+}

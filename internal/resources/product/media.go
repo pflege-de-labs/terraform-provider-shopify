@@ -27,9 +27,8 @@ func mediaIDsAttribute() schema.ListAttribute {
 	return schema.ListAttribute{
 		MarkdownDescription: "File GIDs of the product's media in position order, usually `shopify_file.<name>.id`. " +
 			"Images, videos, 3D models and external videos only: a `content_type = \"FILE\"` file can't be product media. " +
-			"**Removing an ID, or `[]`, deletes that file from the store unless another product also uses it** (Shopify's behaviour), " +
-			"so such a change fails unless `allow_data_deletion = true`; a `shopify_file` for the deleted file then plans a create. " +
-			"Reordering keeps every file. Unset means unmanaged: the media set in the admin are kept.",
+			"Removing an ID, or `[]`, detaches the file from the product and keeps it in the media library; media attached in the admin but not listed are detached the same way. " +
+			"Unset means unmanaged: the media set in the admin are kept.",
 		ElementType:   types.StringType,
 		Optional:      true,
 		Computed:      true,
@@ -41,7 +40,7 @@ func mediaIDsAttribute() schema.ListAttribute {
 	}
 }
 
-// mediaInput builds productSet's files from configured IDs (nil when unset) and names the live media it would detach.
+// mediaInput builds productSet's files from configured IDs (nil when unset) and names the live media to detach first.
 func mediaInput(ctx context.Context, cfg types.List, live []string) (json.RawMessage, []string, diag.Diagnostics) {
 	if cfg.IsNull() || cfg.IsUnknown() {
 		return nil, nil, nil
@@ -57,6 +56,15 @@ func mediaInput(ctx context.Context, cfg types.List, live []string) (json.RawMes
 		diags.AddError("Failed to encode media_ids", err.Error())
 	}
 	return raw, removedIDs(live, ids), diags
+}
+
+// detachInputs takes files off a product without deleting them, which productSet would do for a file no other product uses.
+func detachInputs(ids []string, productID string) []client.FileUpdateInput {
+	in := make([]client.FileUpdateInput, len(ids))
+	for i, id := range ids {
+		in[i] = client.FileUpdateInput{Id: id, ReferencesToRemove: []string{productID}}
+	}
+	return in
 }
 
 // removedIDs returns the prior IDs that are not planned, in prior order.
