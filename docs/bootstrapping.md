@@ -54,7 +54,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_companies` | metafield definitions for `COMPANY`, `COMPANY_LOCATION` ⚠ (B2B stores only; not in the reference configs) | planned | good |
 | `write_orders`, `write_draft_orders` | metafield definitions for `ORDER`, `DRAFTORDER` ⚠ | planned | good |
 | `write_content` | `shopify_page`, `shopify_blog`; articles; their metafield definitions ⚠ | ✅ pages, blogs, the rest planned | volatile (content) |
-| `write_discounts` | discounts; metafield definitions for `DISCOUNT` ⚠ | planned | volatile (content) |
+| `write_discounts` | `shopify_discount_basic`; free shipping and buy X get Y discounts; metafield definitions for `DISCOUNT` ⚠ (segment and market contexts were read with every scope granted, so whether they also need `read_customers` / `read_markets` is untested) | ✅ basic, the rest planned | volatile (promotions) |
 | `write_metaobjects` | metaobject entries | planned | volatile (content) |
 | `write_files` | `shopify_file` (URL sources; uploads of local files planned) | ✅ | volatile (content) |
 | `write_inventory` | inventory levels | planned | volatile |

@@ -167,6 +167,7 @@ type contextSel struct {
 }
 
 // contextFromAPI returns the context, or the name of a context type the schema can't hold.
+// TODO(verify): whether reading segment and market contexts needs read_customers / read_markets; checked only with every scope granted.
 func contextFromAPI(c client.DiscountContextFields) (*contextSel, string, error) {
 	switch c := c.(type) {
 	case *client.DiscountContextFieldsDiscountBuyerSelectionAll:
@@ -197,6 +198,7 @@ func contextFromAPI(c client.DiscountContextFields) (*contextSel, string, error)
 }
 
 // contextInput writes want over live (nil on create): a difference within one kind, otherwise the new kind, which replaces the old.
+// TODO(verify): whether a switch between segments and markets also needs the old kind removed, as items do.
 func contextInput(want contextSel, live *contextSel) *client.DiscountContextInput {
 	switch {
 	case want.CustomerSegmentIDs != nil:
@@ -379,7 +381,7 @@ func commonAttributes() map[string]schema.Attribute {
 			Validators:          []validator.Bool{boolvalidator.AlsoRequires(codeOnly...)},
 			PlanModifiers:       []planmodifier.Bool{patterns.UseStateForUnknownIncludingNullBool()},
 		},
-		"adopt_existing": patterns.AdoptExistingAttribute("discount with the same code, or automatic discount with the same title,"),
+		"adopt_existing": patterns.AdoptExistingAttribute("discount"),
 	}
 }
 
