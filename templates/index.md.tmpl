@@ -1,0 +1,102 @@
+---
+page_title: "{{.ProviderName}} Provider"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.ProviderName}} Provider
+
+{{ .Description | trimspace }}
+
+One provider instance configures one store; use provider aliases for several stores. The provider covers store configuration (metafield and metaobject definitions, markets, locations, shipping, menus, locales, policies and more) and, as volatile types, some content. App configuration, themes and transactional records (orders, payments and the like) are out of scope: use `shopify.app.toml` with the Shopify CLI and theme tooling for those.
+
+To bring an existing store under Terraform, see [Importing an existing store](https://registry.terraform.io/providers/pflege-de-labs/shopify/latest/docs/guides/importing-an-existing-store).
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{ tffile .ExampleFile }}
+{{- end }}
+
+## Authentication
+
+The provider authenticates as a [Dev Dashboard](https://shopify.dev/docs/apps/build/dev-dashboard/create-apps-using-dev-dashboard) app installed on the store. Set exactly one of:
+
+- **Client credentials (preferred):** `client_id` and `client_secret`. The provider requests an Admin API token with the client credentials grant, keeps it in memory only (never in state) and renews it before it expires (tokens last 24 hours). This works only when the app and the store belong to the same Shopify organization; otherwise Shopify answers `shop_not_permitted`.
+- **Static token:** `access_token`, for a token obtained elsewhere. It is used as is and not renewed.
+
+Every setting can come from an environment variable; a value in the provider block wins over the variable.
+
+| Argument | Environment variable |
+|---|---|
+| `store_domain` | `SHOPIFY_STORE_DOMAIN` |
+| `client_id` | `SHOPIFY_CLIENT_ID` |
+| `client_secret` | `SHOPIFY_CLIENT_SECRET` |
+| `access_token` | `SHOPIFY_ACCESS_TOKEN` |
+
+`store_domain` is the store's `<handle>.myshopify.com` domain, not a custom domain. The credentials and the token are marked sensitive; keep them out of version control and pass them through variables or the environment.
+
+Creating the app, releasing a version, installing it on the store and verifying the granted scopes is a manual one-time step per store: see [Bootstrapping](https://github.com/pflege-de-labs/terraform-provider-shopify/blob/main/docs/bootstrapping.md).
+
+## Required scopes
+
+The app needs the Admin API access scopes for the resource types you use. Grant only those: every extra write scope widens what a leaked secret can change. Some examples:
+
+| Scope | Used by |
+|---|---|
+| `write_products` | `shopify_product`, `shopify_collection`, `shopify_metafield_definition` |
+| `write_metaobject_definitions` | `shopify_metaobject_definition` |
+| `write_online_store_navigation` | `shopify_menu` |
+| `write_locations` | `shopify_location` |
+| `write_markets` | `shopify_market`, `shopify_web_presence` |
+| `write_shipping` | `shopify_delivery_profile` |
+| `write_locales` | `shopify_shop_locale` |
+| `write_content` | `shopify_page`, `shopify_blog` |
+| `write_files` | `shopify_file` |
+
+The [scope table in the bootstrapping guide](https://github.com/pflege-de-labs/terraform-provider-shopify/blob/main/docs/bootstrapping.md#2-release-a-version) is the complete and authoritative list, including the scopes for policies, privacy, checkout and the data sources. A scope change takes effect on a store only after the app is released and reinstalled there.
+
+`terraform plan` only reads. You can therefore run plans with a second app that has just the `read_*` counterparts of those scopes, and keep the write app for apply jobs. See [Recommended: separate plan and apply apps](https://github.com/pflege-de-labs/terraform-provider-shopify/blob/main/docs/bootstrapping.md#recommended-separate-plan-and-apply-apps).
+
+## Behaviour to know about
+
+### Import keys and identity
+
+The `id` in state is the Shopify GID (for example `gid://shopify/Menu/123`). `terraform import` takes a **natural key** instead, never a GID, so the same command works on every store: a handle (`main-menu`), a type (`care_level`), `<OWNER_TYPE>/<namespace>/<key>` for metafield definitions. Each resource page states its import key. Read looks the object up by GID and falls back to the natural key if the GID is gone, so recreating an object by hand in the admin does not break state.
+
+Every resource also has a resource identity (a single attribute `id`, the GID), which is what identity-based `import` blocks and `terraform query` use. Identity-based import needs Terraform 1.12 or later.
+
+### Unset optional attributes are not managed
+
+An optional attribute you leave out of the configuration is not managed: the provider does not overwrite what someone set in the Shopify admin. Only the attributes you write down are kept in line. Some resources go further and own a whole structure, for example `shopify_menu` owns the full item tree and `shopify_delivery_profile` its zones and rates; the resource page says so.
+
+### Objects that already exist: `adopt_existing`
+
+Some objects exist once per store and cannot be created or deleted: the general delivery profile, the default menus, the primary locale (`shopify_shop_locale`), the privacy settings. For those, create finds the existing object and updates it, and destroy only removes it from state, with a warning.
+
+Ordinary resources (menus, pages, blogs, collections, products, files, shop locales and so on) get the same behaviour when you set `adopt_existing = true`. Without it, create fails if an object with the same natural key already exists, so Terraform never takes over something silently. With it, destroy leaves the object in place and only removes it from state.
+
+### Guarded deletes: `allow_data_deletion`
+
+Deleting some objects deletes the data stored in them: metafield and metaobject definitions (and their fields), locations, and also products, blogs, files and shop locales. These resources have `allow_data_deletion`, default `false`. A delete, or a replacement that would delete, fails with an error unless it is `true`. The value must already be `true` **in state** when the delete runs, so set it in a separate apply first. A plan-time warning tells you when a change forces a replacement or removes a metaobject field. For production, also add `lifecycle { prevent_destroy = true }`.
+
+### Volatile types
+
+Some resources manage content or objects that people and other systems edit in the admin all the time: `shopify_product`, `shopify_collection`, `shopify_page`, `shopify_file`, `shopify_shop_policy` and `shopify_checkout_and_accounts_configuration`. They are implemented, but their pages call them a poor fit for Terraform in general: every admin edit to a managed attribute is reverted on the next apply, and `terraform plan` shows drift constantly. They suit a few objects kept in a repository, or bootstrapping a store; leave attributes unset (see above) to keep the managed surface small. Whether to manage them is your decision. Catalogue data at scale belongs in a product data system or a sync job, not in Terraform state.
+
+### Throttling and concurrency
+
+Shopify's GraphQL API limits requests by cost (a leaky bucket). When a request is throttled, the provider waits until enough capacity is restored and retries it, as it does for HTTP 429 and 5xx responses, up to `max_retries` (default `5`). `concurrency` (default `2`) caps the requests in flight at once, whatever `-parallelism` Terraform runs with. Errors that retrying cannot fix (for example a country that already belongs to another market) are reported as they are, not retried.
+
+Shopify reports many failures as `userErrors` inside an HTTP 200 response; the provider turns them into Terraform diagnostics, pointing at the attribute where Shopify names one.
+
+### API version
+
+The provider is built against Admin API version `2026-10`, which is the default for `api_version`. Its queries are generated from that version's schema, so a new API version arrives with a new provider release. Shopify supports each version for about a year; keep the provider up to date. <!-- TODO(verify): behaviour when api_version is overridden with a different version is untested -->
+
+## Terraform versions
+
+`terraform query` and the list resources need Terraform 1.14 or later, and identity-based `import` blocks 1.12 or later. The provider's CI runs Terraform 1.13 and 1.14. <!-- TODO(verify): minimum Terraform version for plain plan and apply is not documented -->
+
+{{ .SchemaMarkdown | trimspace }}
