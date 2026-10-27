@@ -115,7 +115,7 @@ func TestAccProduct_publications(t *testing.T) {
 				ImportStateId:                        handle,
 				ImportStateVerify:                    true,
 				ImportStateVerifyIdentifierAttribute: "handle",
-				ImportStateVerifyIgnore:              []string{"adopt_existing", "allow_data_deletion"},
+				ImportStateVerifyIgnore:              []string{"adopt_existing", "allow_data_deletion", "media_managed"},
 			},
 			{
 				// Review focus 2: unset means unmanaged, so a publication made elsewhere is no diff and survives other updates.

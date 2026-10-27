@@ -205,3 +205,28 @@ func TestDetachOnDestroy(t *testing.T) {
 		}
 	}
 }
+
+func TestNeedsMediaRecord(t *testing.T) {
+	cases := []struct {
+		name   string
+		cfgSet bool
+		record string
+		want   bool
+	}{
+		{"set, recorded true", true, "true", false},
+		{"set, recorded false", true, "false", true},
+		{"set, no record (import detaches anyway)", true, "", false},
+		{"unset, recorded false", false, "false", false},
+		{"unset, recorded true", false, "true", false},
+		{"unset, no record", false, "", false},
+	}
+	for _, c := range cases {
+		var rec []byte
+		if c.record != "" {
+			rec = []byte(c.record)
+		}
+		if got := needsMediaRecord(c.cfgSet, rec); got != c.want {
+			t.Errorf("%s: got %v, want %v", c.name, got, c.want)
+		}
+	}
+}

@@ -240,7 +240,7 @@ func TestAccProduct_media(t *testing.T) {
 				ImportStateId:                        handle,
 				ImportStateVerify:                    true,
 				ImportStateVerifyIdentifierAttribute: "handle",
-				ImportStateVerifyIgnore:              []string{"adopt_existing", "allow_data_deletion"},
+				ImportStateVerifyIgnore:              []string{"adopt_existing", "allow_data_deletion", "media_managed"},
 			},
 			{
 				// Generated config carries media_ids as file GIDs and must plan as import-only.
@@ -327,6 +327,66 @@ func TestAccProduct_destroyUnmanagedMedia(t *testing.T) {
 				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}},
 				Check:            checkMedia(t, handle, f, "a"),
 			},
+		},
+	})
+}
+
+// Issue 32: media_ids going from unset to the live list must record the media as managed, or a destroy deletes the guarded file.
+func TestAccProduct_mediaUnsetToSetKeepsFile(t *testing.T) {
+	acctest.Setup(t)
+	acctest.KeepFrontpage(t)
+	handle := testHandle()
+	cleanup(t, handle)
+	f := newFiles(t)
+	file := func(allow bool) string {
+		return strings.Replace(fileConfig("a", testFilename()), "allow_data_deletion = true", fmt.Sprintf("allow_data_deletion = %t", allow), 1)
+	}
+	product := func(media string) string {
+		return file(false) + config(fmt.Sprintf(`
+  handle              = %q
+  title               = "tf-acc media transition"
+  status              = "DRAFT"
+  allow_data_deletion = true
+  %s
+`, handle, media))
+	}
+	unmanaged := product("depends_on = [shopify_file.a]")
+	managed := product("media_ids = [shopify_file.a.id]")
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             resource.ComposeTestCheckFunc(checkGone(t, handle), checkFiles(t, f, map[string]bool{"a": false})),
+		Steps: []resource.TestStep{
+			{Config: unmanaged, Check: f.track("a")},
+			{
+				PreConfig: func() {
+					raw, _ := json.Marshal([]map[string]string{{"id": f.id("a")}})
+					id := mustLookup(t, handle).Id
+					mustSet(t, &id, client.ProductSetInput{Files: raw})
+				},
+				Config: unmanaged,
+				Check:  checkMedia(t, handle, f, "a"),
+			},
+			{
+				Config: managed,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(addr, plancheck.ResourceActionUpdate)},
+				},
+				Check:             checkMedia(t, handle, f, "a"),
+				ConfigStateChecks: mediaState("a"),
+			},
+			{
+				Config:           managed,
+				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}},
+			},
+			{
+				Config: file(false),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(addr, plancheck.ResourceActionDestroy)},
+				},
+				Check: resource.ComposeTestCheckFunc(checkGone(t, handle), checkFiles(t, f, map[string]bool{"a": true})),
+			},
+			{Config: file(true)},
 		},
 	})
 }

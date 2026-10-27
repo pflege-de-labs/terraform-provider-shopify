@@ -114,6 +114,7 @@ resource "shopify_product" "temporary" {
 ### Read-Only
 
 - `id` (String) Product GID.
+- `media_managed` (Boolean) Plan-only vehicle, not a setting: it turns a change from unset to set `media_ids` into an update, which records that the media are managed so a destroy detaches them.
 
 <a id="nestedatt--options"></a>
 ### Nested Schema for `options`

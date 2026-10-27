@@ -158,10 +158,15 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				Computed:            true,
 				PlanModifiers:       []planmodifier.Bool{boolplanmodifier.UseStateForUnknown(), boolplanmodifier.RequiresReplace()},
 			},
-			"options":             optionsAttribute(),
-			"variants":            variantsAttribute(),
-			"publication_ids":     publishing.Attribute(what),
-			"media_ids":           mediaIDsAttribute(),
+			"options":         optionsAttribute(),
+			"variants":        variantsAttribute(),
+			"publication_ids": publishing.Attribute(what),
+			"media_ids":       mediaIDsAttribute(),
+			"media_managed": schema.BoolAttribute{
+				MarkdownDescription: "Plan-only vehicle, not a setting: it turns a change from unset to set `media_ids` into an update, which records that the media are managed so a destroy detaches them.",
+				Computed:            true,
+				PlanModifiers:       []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+			},
 			"adopt_existing":      patterns.AdoptExistingAttribute(what),
 			"allow_data_deletion": allowDataDeletionAttribute(),
 		},
@@ -310,6 +315,7 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 		return
 	}
 	r.planVariants(ctx, req, resp)
+	r.planMediaManaged(ctx, req, resp)
 	r.warnReplace(ctx, req, resp)
 }
 
@@ -587,6 +593,10 @@ func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFi
 	}
 	diags.Append(setFromAPI(ctx, plan, p, &p.DescriptionHtml)...)
 	diags.Append(patterns.RememberWrittenHTML(ctx, private, p.DescriptionHtml)...)
+	// A known planned value stays: state must equal the plan; the private record is what Delete reads.
+	if plan.MediaManaged.IsUnknown() {
+		plan.MediaManaged = types.BoolValue(!cfg.MediaIDs.IsNull())
+	}
 	diags.Append(rememberMediaManaged(ctx, private, !cfg.MediaIDs.IsNull())...)
 	diags.Append(r.publish(ctx, p, plan, cfg)...)
 	return true

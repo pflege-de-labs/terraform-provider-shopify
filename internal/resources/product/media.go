@@ -11,6 +11,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -80,6 +82,25 @@ func rememberMediaManaged(ctx context.Context, private patterns.PrivateSetter, m
 func detachOnDestroy(ctx context.Context, private patterns.PrivateGetter) (bool, diag.Diagnostics) {
 	raw, diags := private.GetKey(ctx, mediaManagedKey)
 	return string(raw) != "false", diags
+}
+
+// needsMediaRecord is true when config manages media_ids but the last write recorded them as unmanaged; no record (import) already detaches.
+func needsMediaRecord(cfgSet bool, record []byte) bool {
+	return cfgSet && string(record) == "false"
+}
+
+// planMediaManaged forces an update, which records the managed state, when media_ids goes from unset (to set.
+func (r *Resource) planMediaManaged(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	var ids types.List
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("media_ids"), &ids)...)
+	raw, d := req.Private.GetKey(ctx, mediaManagedKey)
+	resp.Diagnostics.Append(d...)
+	if resp.Diagnostics.HasError() || ids.IsUnknown() || !needsMediaRecord(!ids.IsNull(), raw) {
+		return
+	}
+	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("media_managed"), types.BoolUnknown())...)
+	resp.Diagnostics.AddWarning("Updating the product to manage its media",
+		"media_ids is set but the provider has recorded it as unmanaged. The update changes no media; it makes a destroy detach them so the files survive.")
 }
 
 // removedIDs returns the prior IDs that are not planned, in prior order.
