@@ -1,64 +1,70 @@
-# Terraform Provider Scaffolding (Terraform Plugin Framework)
+# Terraform Provider for Shopify
 
-_This template repository is built on the [Terraform Plugin Framework](https://github.com/hashicorp/terraform-plugin-framework). The template repository built on the [Terraform Plugin SDK](https://github.com/hashicorp/terraform-plugin-sdk) can be found at [terraform-provider-scaffolding](https://github.com/hashicorp/terraform-provider-scaffolding). See [Which SDK Should I Use?](https://developer.hashicorp.com/terraform/plugin/framework-benefits) in the Terraform documentation for additional information._
+Manage the configuration of a Shopify store with Terraform, through the Admin GraphQL API: metafield and metaobject definitions, markets, locations, delivery profiles, menus, locales, policies, privacy and checkout settings. Content such as products, collections, pages and files is supported too, but is marked as volatile in the docs because it is edited in the admin all the time.
 
-This repository is a *template* for a [Terraform](https://www.terraform.io) provider. It is intended as a starting point for creating Terraform providers, containing:
+Registry: `pflege-de-labs/shopify`. Documentation: [Terraform Registry](https://registry.terraform.io/providers/pflege-de-labs/shopify/latest/docs) (generated into [`docs/`](docs)).
 
-- A resource and a data source (`internal/provider/`),
-- Examples (`examples/`) and generated documentation (`docs/`),
-- Miscellaneous meta files.
+## Approach
 
-These files contain boilerplate code that you will need to edit to create your own Terraform provider. Tutorials for creating Terraform providers can be found on the [HashiCorp Developer](https://developer.hashicorp.com/terraform/tutorials/providers-plugin-framework) platform. _Terraform Plugin Framework specific guides are titled accordingly._
-
-Please see the [GitHub template repository documentation](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template) for how to create a new repository from this template on GitHub.
-
-Once you've written your provider, you'll want to [publish it on the Terraform Registry](https://developer.hashicorp.com/terraform/registry/providers/publishing) so that others can use it.
+Each part of a Shopify setup is handled by the tool that matches how Shopify manages it. This provider covers store configuration and schema. App configuration, extensions and Functions (`shopify.app.toml` and the Shopify CLI), themes (theme tooling), and transactional records such as orders, payments and gift cards are out of scope. See [`CLAUDE.md`](CLAUDE.md) ("Scope") and [`docs/design/shopify-infra-automation-approach.md`](docs/design/shopify-infra-automation-approach.md).
 
 ## Requirements
 
-- [Terraform](https://developer.hashicorp.com/terraform/downloads) >= 1.0
-- [Go](https://golang.org/doc/install) >= 1.24
+- Terraform 1.14 or later for `terraform query` (list resources); identity-based `import` blocks need 1.12 or later.
+- A Shopify Dev Dashboard app installed on the store, with the Admin API scopes for the resource types you use. See [`docs/bootstrapping.md`](docs/bootstrapping.md) for the setup and the scope table.
+- To build from source: Go 1.25 or later (see `go.mod`).
 
-## Building the Provider
+## Usage
 
-1. Clone the repository
-1. Enter the repository directory
-1. Build the provider using the Go `install` command:
+```terraform
+terraform {
+  required_providers {
+    shopify = {
+      source = "pflege-de-labs/shopify"
+    }
+  }
+}
 
-```shell
-go install
+provider "shopify" {
+  store_domain  = "example.myshopify.com"
+  client_id     = var.shopify_client_id
+  client_secret = var.shopify_client_secret
+}
 ```
 
-## Adding Dependencies
+Authenticate with `client_id` and `client_secret` (client credentials grant, preferred: the provider fetches and renews the token itself) or with a static `access_token`. Each setting can also come from an environment variable:
 
-This provider uses [Go modules](https://github.com/golang/go/wiki/Modules).
-Please see the Go documentation for the most up to date information about using Go modules.
+| Argument | Environment variable |
+|---|---|
+| `store_domain` | `SHOPIFY_STORE_DOMAIN` |
+| `client_id` | `SHOPIFY_CLIENT_ID` |
+| `client_secret` | `SHOPIFY_CLIENT_SECRET` |
+| `access_token` | `SHOPIFY_ACCESS_TOKEN` |
 
-To add a new dependency `github.com/author/dependency` to your Terraform provider:
+`store_domain` must be the `<handle>.myshopify.com` domain. The provider index page lists the other arguments (`api_version`, `max_retries`, `concurrency`) and the behaviour every user should know: import keys, unmanaged attributes, `adopt_existing`, `allow_data_deletion`, volatile types and throttling.
 
-```shell
-go get github.com/author/dependency
-go mod tidy
-```
+## Importing an existing store
 
-Then commit the changes to `go.mod` and `go.sum`.
+Every resource has a list resource, so `terraform query -generate-config-out=generated.tf` can write the configuration and `import` blocks for what a store already has. See the guide [Importing an existing store](docs/guides/importing-an-existing-store.md).
 
-## Using the Provider
-
-Fill this in for each provider
-
-## Developing the Provider
-
-If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (see [Requirements](#requirements) above).
-
-To compile the provider, run `go install`. This will build the provider and put the provider binary in the `$GOPATH/bin` directory.
-
-To generate or update documentation, run `make generate`.
-
-In order to run the full suite of Acceptance tests, run `make testacc`.
-
-*Note:* Acceptance tests create real resources, and often cost money to run.
+## Development
 
 ```shell
-make testacc
+make build      # go build
+make install    # build and install the provider binary into $GOPATH/bin
+make fmt        # gofmt
+make lint       # golangci-lint
+make test       # unit tests
+make generate   # regenerate docs (tfplugindocs) and GraphQL code (genqlient); commit the output
+make testacc    # acceptance tests (TF_ACC=1), real API calls
 ```
+
+Before a change is done, `make fmt lint test` must pass and `make generate` must leave no uncommitted diff. Docs are generated from the schemas, `examples/` and `templates/`; edit those, not `docs/`. The GraphQL client is generated from the pinned Admin API schema (2026-10).
+
+**Acceptance tests make real API calls and must run only against a disposable dev store**, configured with `SHOPIFY_STORE_DOMAIN` and `SHOPIFY_ACCESS_TOKEN`. Never run them against a staging or production store. Never print, log or commit tokens or secrets.
+
+Design notes live in [`docs/design/`](docs/design); [`docs/devcontainer.md`](docs/devcontainer.md) describes the dev container.
+
+## License
+
+[MPL-2.0](LICENSE)
