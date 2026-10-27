@@ -343,7 +343,7 @@ func TestAccPage_adoptContact(t *testing.T) {
 	})
 }
 
-// A page deleted outside Terraform is planned for recreation, and a delete of one already gone succeeds.
+// A page deleted outside Terraform is planned for recreation, also when it goes again just before destroy.
 func TestAccPage_deletedOutside(t *testing.T) {
 	acctest.Setup(t)
 	handle := testHandle()
