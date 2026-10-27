@@ -524,6 +524,12 @@ func TestAccFile_extensionReplaces(t *testing.T) {
 				ExpectError:      regexp.MustCompile(`(?s)would delete its data`),
 			},
 			{
+				// The create half of a replace is planned again with no prior state, so a replace without a source fails before the delete.
+				Config:      config(fmt.Sprintf("  content_type = \"IMAGE\"\n  filename = %q\n  allow_data_deletion = true", renamed)),
+				PlanOnly:    true,
+				ExpectError: regexp.MustCompile(`(?s)without\s+a\s+source`),
+			},
+			{
 				Config: body(name, "true"),
 				Check: func(*terraform.State) error {
 					if tr.live(t).FileStatus != "READY" {
