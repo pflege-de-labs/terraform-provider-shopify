@@ -419,8 +419,12 @@ func TestAccDiscountBasic_code(t *testing.T) {
 			{Config: created, ConfigPlanChecks: emptyPlan},
 			{
 				// Code rename, value, items, context, minimum, dates and limits in one in-place update.
-				Config:           toSegment,
-				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(addr, plancheck.ResourceActionUpdate)}},
+				Config: toSegment,
+				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{
+					plancheck.ExpectResourceAction(addr, plancheck.ResourceActionUpdate),
+					// A real update leaves status to the apply, since the dates may move it.
+					plancheck.ExpectUnknownValue(addr, tfjsonpath.New("status")),
+				}},
 				Check: func(*terraform.State) error {
 					d := codeBasic(t, byCode(t, renamed))
 					ctxSegments, ok := d.Context.(*client.DiscountContextFieldsDiscountCustomerSegments)
@@ -684,3 +688,40 @@ func TestAccDiscountBasic_adopt(t *testing.T) {
 }
 
 func ptr[T any](v T) *T { return &v }
+
+// A selection of single variants must read back as variant_ids only, so it plans empty after apply.
+func TestAccDiscountBasic_variants(t *testing.T) {
+	accSetup(t)
+	keepFrontpage(t)
+	title := testTitle()
+	handle := strings.ToLower(title)
+	cleanup(t, nil, []string{title}, []string{handle})
+	cfg := fmt.Sprintf(`
+resource "shopify_product" "v" {
+  handle              = %q
+  title               = "tf-acc discount variants"
+  status              = "DRAFT"
+  allow_data_deletion = true
+  options             = [{ name = "Size", values = ["S", "M"] }]
+  variants            = [{ option_values = { Size = "S" }, price = "5" }, { option_values = { Size = "M" }, price = "6" }]
+}
+`, handle) + basic(fmt.Sprintf(`
+  title         = %q
+  customer_gets = { value = { percentage = 0.1 }, items = { variant_ids = [shopify_product.v.variants[0].id] } }
+`, title))
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkGone(t, nil, []string{title}, []string{handle}),
+		Steps: []resource.TestStep{
+			{
+				Config: cfg,
+				ConfigStateChecks: []statecheck.StateCheck{
+					nested(knownvalue.SetSizeExact(1), "customer_gets", "items", "variant_ids"),
+					nested(knownvalue.Null(), "customer_gets", "items", "product_ids"),
+				},
+			},
+			{Config: cfg, ConfigPlanChecks: emptyPlan},
+		},
+	})
+}

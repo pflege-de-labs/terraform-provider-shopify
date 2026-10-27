@@ -3,12 +3,12 @@
 page_title: "shopify_discount_basic List Resource - shopify"
 subcategory: ""
 description: |-
-  Lists the basic (amount-off) discounts of the store, code and automatic. Other methods and app discounts are left out. Discounts this resource can't hold (more than 250 selected products, variants, collections or markets, or a code discount without a code) are skipped with a warning and don't count toward the limit. Generated config holds product, collection, segment and market GIDs, which tie it to the store: replace them with references.
+  Lists the basic (amount-off) discounts of the store, code and automatic. Other methods and app discounts are left out. Discounts this resource can't hold (more than 250 markets, or a code discount without a code) are skipped with a warning and don't count toward the limit. Generated config holds product, collection, segment and market GIDs, which tie it to the store: replace them with references.
 ---
 
 # shopify_discount_basic (List Resource)
 
-Lists the basic (amount-off) discounts of the store, code and automatic. Other methods and app discounts are left out. Discounts this resource can't hold (more than 250 selected products, variants, collections or markets, or a code discount without a code) are skipped with a warning and don't count toward the limit. Generated config holds product, collection, segment and market GIDs, which tie it to the store: replace them with references.
+Lists the basic (amount-off) discounts of the store, code and automatic. Other methods and app discounts are left out. Discounts this resource can't hold (more than 250 markets, or a code discount without a code) are skipped with a warning and don't count toward the limit. Generated config holds product, collection, segment and market GIDs, which tie it to the store: replace them with references.
 
 ## Example Usage
 

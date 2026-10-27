@@ -1,6 +1,8 @@
 package discount
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -19,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 )
 
 // itemsSel is an item selection: all, products and/or variants, or collections. Empty lists read as null, as config leaves them out.
@@ -167,8 +170,8 @@ func nodeIDs[T any, P interface {
 }
 
 func itemsFromAPI(items client.DiscountItemsFields) (itemsSel, error) {
-	// shortcut: the first 250 of each list only, page them if a discount ever selects more.
-	const tooMany = "selects more than 250 %s, which this provider can't read yet"
+	// completeItems pages before mapping; this only guards against a partial read.
+	const tooMany = "came back with an incomplete list of %s"
 	switch it := items.(type) {
 	case *client.DiscountItemsFieldsAllDiscountItems:
 		all := true
@@ -210,8 +213,8 @@ func itemsInput(want itemsSel, live *itemsSel) *client.DiscountItemsInput {
 			}
 			return in
 		}
-		addP, removeP := addRemove(want.ProductIDs, live.ProductIDs)
-		addV, removeV := addRemove(want.VariantIDs, live.VariantIDs)
+		addP, removeP := patterns.DiffIDs(live.ProductIDs, want.ProductIDs)
+		addV, removeV := patterns.DiffIDs(live.VariantIDs, want.VariantIDs)
 		if addP == nil && removeP == nil && addV == nil && removeV == nil {
 			return nil
 		}
@@ -226,7 +229,7 @@ func itemsInput(want itemsSel, live *itemsSel) *client.DiscountItemsInput {
 			}
 			return in
 		}
-		add, remove := addRemove(want.CollectionIDs, live.CollectionIDs)
+		add, remove := patterns.DiffIDs(live.CollectionIDs, want.CollectionIDs)
 		if add == nil && remove == nil {
 			return nil
 		}
@@ -299,4 +302,103 @@ func minimumInput(m minimumSel) *client.DiscountMinimumRequirementInput {
 		in.Quantity.GreaterThanOrEqualToQuantity = &q
 	}
 	return in
+}
+
+// itemsCursors returns where each item list continues, and whether any has more; a complete list gets its end cursor, so its next page is empty.
+func itemsCursors(items client.DiscountItemsFields) (products, variants, collections *string, more bool) {
+	switch it := items.(type) {
+	case *client.DiscountItemsFieldsDiscountProducts:
+		return it.Products.PageInfo.EndCursor, it.ProductVariants.PageInfo.EndCursor, nil,
+			it.Products.PageInfo.HasNextPage || it.ProductVariants.PageInfo.HasNextPage
+	case *client.DiscountItemsFieldsDiscountCollections:
+		return nil, nil, it.Collections.PageInfo.EndCursor, it.Collections.PageInfo.HasNextPage
+	}
+	return nil, nil, nil, false
+}
+
+type rawConnection struct {
+	Nodes []struct {
+		ID string `json:"id"`
+	}
+	PageInfo struct {
+		HasNextPage bool
+		EndCursor   *string
+	}
+}
+
+// mergeItemsPage appends one page of GetDiscountItemsPage to items.
+func mergeItemsPage(items client.DiscountItemsFields, raw json.RawMessage) error {
+	var page struct {
+		Typename                               string `json:"__typename"`
+		Products, ProductVariants, Collections rawConnection
+	}
+	if err := json.Unmarshal(raw, &page); err != nil {
+		return err
+	}
+	changed := fmt.Errorf("the discount's items changed while they were read; try again")
+	switch it := items.(type) {
+	case *client.DiscountItemsFieldsDiscountProducts:
+		if page.Typename != "DiscountProducts" {
+			return changed
+		}
+		for _, n := range page.Products.Nodes {
+			it.Products.Nodes = append(it.Products.Nodes, client.DiscountItemsFieldsProductsProductConnectionNodesProduct{Id: n.ID})
+		}
+		for _, n := range page.ProductVariants.Nodes {
+			it.ProductVariants.Nodes = append(it.ProductVariants.Nodes, client.DiscountItemsFieldsProductVariantsProductVariantConnectionNodesProductVariant{Id: n.ID})
+		}
+		it.Products.PageInfo.HasNextPage, it.Products.PageInfo.EndCursor = page.Products.PageInfo.HasNextPage, keepCursor(page.Products, it.Products.PageInfo.EndCursor)
+		it.ProductVariants.PageInfo.HasNextPage, it.ProductVariants.PageInfo.EndCursor = page.ProductVariants.PageInfo.HasNextPage, keepCursor(page.ProductVariants, it.ProductVariants.PageInfo.EndCursor)
+	case *client.DiscountItemsFieldsDiscountCollections:
+		if page.Typename != "DiscountCollections" {
+			return changed
+		}
+		for _, n := range page.Collections.Nodes {
+			it.Collections.Nodes = append(it.Collections.Nodes, client.DiscountItemsFieldsCollectionsCollectionConnectionNodesCollection{Id: n.ID})
+		}
+		it.Collections.PageInfo.HasNextPage, it.Collections.PageInfo.EndCursor = page.Collections.PageInfo.HasNextPage, keepCursor(page.Collections, it.Collections.PageInfo.EndCursor)
+	default:
+		return changed
+	}
+	return nil
+}
+
+// keepCursor keeps the old end cursor when a page is empty, which has none.
+func keepCursor(page rawConnection, old *string) *string {
+	if page.PageInfo.EndCursor == nil {
+		return old
+	}
+	return page.PageInfo.EndCursor
+}
+
+// completeItems pages the item lists of n after the first 250 that DiscountNodeFields carries.
+func completeItems(ctx context.Context, c *client.Client, n *node) error {
+	if n.CustomerGets == nil {
+		return nil
+	}
+	for {
+		products, variants, collections, more := itemsCursors(n.CustomerGets.Items)
+		if !more {
+			return nil
+		}
+		res, err := client.GetDiscountItemsPage(ctx, c, n.ID, products, variants, collections)
+		if err != nil {
+			return err
+		}
+		var raw json.RawMessage
+		if res.DiscountNode != nil {
+			switch d := res.DiscountNode.Discount.(type) {
+			case *client.GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic:
+				raw = d.CustomerGets.Items
+			case *client.GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic:
+				raw = d.CustomerGets.Items
+			}
+		}
+		if raw == nil {
+			return fmt.Errorf("discount %s disappeared or changed while its items were read", n.ID)
+		}
+		if err := mergeItemsPage(n.CustomerGets.Items, raw); err != nil {
+			return err
+		}
+	}
 }

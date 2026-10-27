@@ -9876,11 +9876,18 @@ func (v *DiscountItemsFieldsCollectionsCollectionConnectionNodesCollection) GetI
 type DiscountItemsFieldsCollectionsCollectionConnectionPageInfo struct {
 	// Whether there are more pages to fetch following the current page.
 	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
 }
 
 // GetHasNextPage returns DiscountItemsFieldsCollectionsCollectionConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
 func (v *DiscountItemsFieldsCollectionsCollectionConnectionPageInfo) GetHasNextPage() bool {
 	return v.HasNextPage
+}
+
+// GetEndCursor returns DiscountItemsFieldsCollectionsCollectionConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsCollectionsCollectionConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
 }
 
 // DiscountItemsFields includes the GraphQL fields of DiscountCollections requested by the fragment DiscountItemsFields.
@@ -9996,11 +10003,18 @@ func (v *DiscountItemsFieldsProductVariantsProductVariantConnectionNodesProductV
 type DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo struct {
 	// Whether there are more pages to fetch following the current page.
 	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
 }
 
 // GetHasNextPage returns DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
 func (v *DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo) GetHasNextPage() bool {
 	return v.HasNextPage
+}
+
+// GetEndCursor returns DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsProductVariantsProductVariantConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
 }
 
 // DiscountItemsFieldsProductsProductConnection includes the requested fields of the GraphQL type ProductConnection.
@@ -10053,11 +10067,18 @@ func (v *DiscountItemsFieldsProductsProductConnectionNodesProduct) GetId() strin
 type DiscountItemsFieldsProductsProductConnectionPageInfo struct {
 	// Whether there are more pages to fetch following the current page.
 	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
 }
 
 // GetHasNextPage returns DiscountItemsFieldsProductsProductConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
 func (v *DiscountItemsFieldsProductsProductConnectionPageInfo) GetHasNextPage() bool {
 	return v.HasNextPage
+}
+
+// GetEndCursor returns DiscountItemsFieldsProductsProductConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *DiscountItemsFieldsProductsProductConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
 }
 
 // The input fields for the items attached to a discount. You can specify the discount items by product ID or collection ID.
@@ -13946,6 +13967,540 @@ func (v *GetDiscountDiscountNode) __premarshalJSON() (*__premarshalGetDiscountDi
 		}
 	}
 	return &retval, nil
+}
+
+// GetDiscountItemsPageDiscountNode includes the requested fields of the GraphQL type DiscountNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountNode` object enables you to manage [discounts](https://help.shopify.com/manual/discounts), which are applied at checkout or on a cart.
+//
+// Discounts are a way for merchants to promote sales and special offers, or as customer loyalty rewards. Discounts can apply to [orders, products, or shipping](https://shopify.dev/docs/apps/build/discounts#discount-classes), and can be either automatic or code-based. For example, you can offer customers a buy X get Y discount that's automatically applied when purchases meet specific criteria. Or, you can offer discounts where customers have to enter a code to redeem an amount off discount on products, variants, or collections in a store.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related mutations, limitations, and considerations.
+type GetDiscountItemsPageDiscountNode struct {
+	// A discount that's applied at checkout or on cart.
+	//
+	//
+	// Discounts can be [automatic or code-based](https://shopify.dev/docs/apps/build/discounts#discount-methods).
+	Discount GetDiscountItemsPageDiscountNodeDiscount `json:"-"`
+}
+
+// GetDiscount returns GetDiscountItemsPageDiscountNode.Discount, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNode) GetDiscount() GetDiscountItemsPageDiscountNodeDiscount {
+	return v.Discount
+}
+
+func (v *GetDiscountItemsPageDiscountNode) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDiscountItemsPageDiscountNode
+		Discount json.RawMessage `json:"discount"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDiscountItemsPageDiscountNode = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Discount
+		src := firstPass.Discount
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalGetDiscountItemsPageDiscountNodeDiscount(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal GetDiscountItemsPageDiscountNode.Discount: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalGetDiscountItemsPageDiscountNode struct {
+	Discount json.RawMessage `json:"discount"`
+}
+
+func (v *GetDiscountItemsPageDiscountNode) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDiscountItemsPageDiscountNode) __premarshalJSON() (*__premarshalGetDiscountItemsPageDiscountNode, error) {
+	var retval __premarshalGetDiscountItemsPageDiscountNode
+
+	{
+
+		dst := &retval.Discount
+		src := v.Discount
+		var err error
+		*dst, err = __marshalGetDiscountItemsPageDiscountNodeDiscount(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal GetDiscountItemsPageDiscountNode.Discount: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// GetDiscountItemsPageDiscountNodeDiscount includes the requested fields of the GraphQL interface Discount.
+//
+// GetDiscountItemsPageDiscountNodeDiscount is implemented by the following types:
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping
+// The GraphQL type's documentation follows.
+//
+// A discount offers promotional value and can be applied by entering a code or automatically when conditions are met. Discounts can provide fixed amounts, percentage reductions, free shipping, or Buy X Get Y (BXGY) benefits on specific products or the entire order. For more complex scenarios, developers can use Function-backed discounts to create custom discount configurations.
+type GetDiscountItemsPageDiscountNodeDiscount interface {
+	implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping) implementsGraphQLInterfaceGetDiscountItemsPageDiscountNodeDiscount() {
+}
+
+func __unmarshalGetDiscountItemsPageDiscountNodeDiscount(b []byte, v *GetDiscountItemsPageDiscountNodeDiscount) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DiscountAutomaticApp":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp)
+		return json.Unmarshal(b, *v)
+	case "DiscountAutomaticBasic":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic)
+		return json.Unmarshal(b, *v)
+	case "DiscountAutomaticBxgy":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy)
+		return json.Unmarshal(b, *v)
+	case "DiscountAutomaticFreeShipping":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeApp":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeBasic":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeBxgy":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy)
+		return json.Unmarshal(b, *v)
+	case "DiscountCodeFreeShipping":
+		*v = new(GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Discount.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for GetDiscountItemsPageDiscountNodeDiscount: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalGetDiscountItemsPageDiscountNodeDiscount(v *GetDiscountItemsPageDiscountNodeDiscount) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp:
+		typename = "DiscountAutomaticApp"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic:
+		typename = "DiscountAutomaticBasic"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy:
+		typename = "DiscountAutomaticBxgy"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping:
+		typename = "DiscountAutomaticFreeShipping"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp:
+		typename = "DiscountCodeApp"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic:
+		typename = "DiscountCodeBasic"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy:
+		typename = "DiscountCodeBxgy"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping:
+		typename = "DiscountCodeFreeShipping"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for GetDiscountItemsPageDiscountNodeDiscount: "%T"`, v)
+	}
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp includes the requested fields of the GraphQL type DiscountAutomaticApp.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticApp` object stores information about automatic discounts
+// that are managed by an app using
+// [Shopify Functions](https://shopify.dev/docs/apps/build/functions).
+// Use `DiscountAutomaticApp`when you need advanced, custom, or
+// dynamic discount capabilities that aren't supported by
+// [Shopify's native discount types](https://help.shopify.com/manual/discounts/discount-types).
+//
+// Learn more about creating
+// [custom discount functionality](https://shopify.dev/docs/apps/build/discounts/build-discount-function).
+//
+// > Note:
+// > The [`DiscountCodeApp`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeApp)
+// object has similar functionality to the `DiscountAutomaticApp` object, with the exception that `DiscountCodeApp`
+// stores information about discount codes that are managed by an app using Shopify Functions.
+// >
+// > API versions prior to `2025-10` only return automatic discounts with `context` set to `all`, discounts with other values are filtered out.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticApp) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic includes the requested fields of the GraphQL type DiscountAutomaticBasic.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticBasic` object lets you manage
+// [amount off discounts](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount)
+// that are automatically applied on a cart and at checkout. Amount off discounts give customers a
+// fixed value or a percentage off the products in an order, but don't apply to shipping costs.
+//
+// The `DiscountAutomaticBasic` object stores information about automatic amount off discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountCodeBasic`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeBasic)
+// object has similar functionality to the `DiscountAutomaticBasic` object, but customers need to enter a code to
+// receive a discount.
+// >
+// > API versions prior to `2025-10` only return automatic discounts with `context` set to `all`, discounts with other values are filtered out.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic struct {
+	Typename *string `json:"__typename"`
+	// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+	CustomerGets GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasicCustomerGetsDiscountCustomerGets `json:"customerGets"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic) GetTypename() *string {
+	return v.Typename
+}
+
+// GetCustomerGets returns GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic.CustomerGets, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasic) GetCustomerGets() GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasicCustomerGetsDiscountCustomerGets {
+	return v.CustomerGets
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasicCustomerGetsDiscountCustomerGets includes the requested fields of the GraphQL type DiscountCustomerGets.
+// The GraphQL type's documentation follows.
+//
+// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasicCustomerGetsDiscountCustomerGets struct {
+	// The items to which the discount applies.
+	Items json.RawMessage `json:"items"`
+}
+
+// GetItems returns GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasicCustomerGetsDiscountCustomerGets.Items, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBasicCustomerGetsDiscountCustomerGets) GetItems() json.RawMessage {
+	return v.Items
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy includes the requested fields of the GraphQL type DiscountAutomaticBxgy.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticBxgy` object lets you manage
+// [buy X get Y discounts (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+// that are automatically applied on a cart and at checkout. BXGY discounts incentivize customers by offering
+// them additional items at a discounted price or for free when they purchase a specified quantity of items.
+//
+// The `DiscountAutomaticBxgy` object stores information about automatic BXGY discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountCodeBxgy`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeBxgy)
+// object has similar functionality to the `DiscountAutomaticBxgy` object, but customers need to enter a code to
+// receive a discount.
+// >
+// > API versions prior to `2025-10` only return automatic discounts with `context` set to `all`, discounts with other values are filtered out.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticBxgy) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping includes the requested fields of the GraphQL type DiscountAutomaticFreeShipping.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticFreeShipping` object lets you manage
+// [free shipping discounts](https://help.shopify.com/manual/discounts/discount-types/free-shipping)
+// that are automatically applied on a cart and at checkout. Free shipping discounts are promotional deals that
+// merchants offer to customers to waive shipping costs and encourage online purchases.
+//
+// The `DiscountAutomaticFreeShipping` object stores information about automatic free shipping discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountCodeFreeShipping`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCodeFreeShipping)
+// object has similar functionality to the `DiscountAutomaticFreeShipping` object, but customers need to enter a code to
+// receive a discount.
+// >
+// > API versions prior to `2025-10` only return automatic discounts with `context` set to `all`, discounts with other values are filtered out.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountAutomaticFreeShipping) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp includes the requested fields of the GraphQL type DiscountCodeApp.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeApp` object stores information about code discounts
+// that are managed by an app using
+// [Shopify Functions](https://shopify.dev/docs/apps/build/functions).
+// Use `DiscountCodeApp` when you need advanced, custom, or
+// dynamic discount capabilities that aren't supported by
+// [Shopify's native discount types](https://help.shopify.com/manual/discounts/discount-types).
+//
+// Learn more about creating
+// [custom discount functionality](https://shopify.dev/docs/apps/build/discounts/build-discount-function).
+//
+// > Note:
+// > The [`DiscountAutomaticApp`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticApp)
+// object has similar functionality to the `DiscountCodeApp` object, with the exception that `DiscountAutomaticApp`
+// stores information about automatic discounts that are managed by an app using Shopify Functions.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeApp) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic includes the requested fields of the GraphQL type DiscountCodeBasic.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeBasic` object lets you manage
+// [amount off discounts](https://help.shopify.com/manual/discounts/discount-types/percentage-fixed-amount)
+// that are applied on a cart and at checkout when a customer enters a code. Amount off discounts give customers a
+// fixed value or a percentage off the products in an order, but don't apply to shipping costs.
+//
+// The `DiscountCodeBasic` object stores information about amount off code discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountAutomaticBasic`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticBasic)
+// object has similar functionality to the `DiscountCodeBasic` object, but discounts are automatically applied,
+// without the need for customers to enter a code.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic struct {
+	Typename *string `json:"__typename"`
+	// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+	CustomerGets GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasicCustomerGetsDiscountCustomerGets `json:"customerGets"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic) GetTypename() *string {
+	return v.Typename
+}
+
+// GetCustomerGets returns GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic.CustomerGets, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasic) GetCustomerGets() GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasicCustomerGetsDiscountCustomerGets {
+	return v.CustomerGets
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasicCustomerGetsDiscountCustomerGets includes the requested fields of the GraphQL type DiscountCustomerGets.
+// The GraphQL type's documentation follows.
+//
+// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasicCustomerGetsDiscountCustomerGets struct {
+	// The items to which the discount applies.
+	Items json.RawMessage `json:"items"`
+}
+
+// GetItems returns GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasicCustomerGetsDiscountCustomerGets.Items, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBasicCustomerGetsDiscountCustomerGets) GetItems() json.RawMessage {
+	return v.Items
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy includes the requested fields of the GraphQL type DiscountCodeBxgy.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeBxgy` object lets you manage
+// [buy X get Y discounts (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+// that are applied on a cart and at checkout when a customer enters a code. BXGY discounts incentivize customers
+// by offering them additional items at a discounted price or for free when they purchase a specified quantity
+// of items.
+//
+// The `DiscountCodeBxgy` object stores information about BXGY code discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The [`DiscountAutomaticBxgy`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticBxgy)
+// object has similar functionality to the `DiscountCodeBxgy` object, but discounts are automatically applied,
+// without the need for customers to enter a code.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeBxgy) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping includes the requested fields of the GraphQL type DiscountCodeFreeShipping.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeFreeShipping` object lets you manage
+// [free shipping discounts](https://help.shopify.com/manual/discounts/discount-types/free-shipping)
+// that are applied on a cart and at checkout when a customer enters a code. Free shipping discounts are
+// promotional deals that merchants offer to customers to waive shipping costs and encourage online purchases.
+//
+// The `DiscountCodeFreeShipping` object stores information about free shipping code discounts that apply to
+// specific [products and variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountProducts),
+// [collections](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCollections),
+// or [all items in a cart](https://shopify.dev/docs/api/admin-graphql/latest/objects/AllDiscountItems).
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including limitations and considerations.
+//
+// > Note:
+// > The
+// [`DiscountAutomaticFreeShipping`](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticFreeShipping)
+// object has similar functionality to the `DiscountCodeFreeShipping` object, but discounts are automatically applied,
+// without the need for customers to enter a code.
+type GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping struct {
+	Typename *string `json:"__typename"`
+}
+
+// GetTypename returns GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping.Typename, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageDiscountNodeDiscountDiscountCodeFreeShipping) GetTypename() *string {
+	return v.Typename
+}
+
+// GetDiscountItemsPageResponse is returned by GetDiscountItemsPage on success.
+type GetDiscountItemsPageResponse struct {
+	// Returns a `DiscountNode` resource by ID.
+	DiscountNode *GetDiscountItemsPageDiscountNode `json:"discountNode"`
+}
+
+// GetDiscountNode returns GetDiscountItemsPageResponse.DiscountNode, and is useful for accessing the field via an interface.
+func (v *GetDiscountItemsPageResponse) GetDiscountNode() *GetDiscountItemsPageDiscountNode {
+	return v.DiscountNode
 }
 
 // GetDiscountResponse is returned by GetDiscount on success.
@@ -29422,6 +29977,26 @@ type __GetDiscountInput struct {
 // GetId returns __GetDiscountInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetDiscountInput) GetId() string { return v.Id }
 
+// __GetDiscountItemsPageInput is used internally by genqlient
+type __GetDiscountItemsPageInput struct {
+	Id          string  `json:"id"`
+	Products    *string `json:"products"`
+	Variants    *string `json:"variants"`
+	Collections *string `json:"collections"`
+}
+
+// GetId returns __GetDiscountItemsPageInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetDiscountItemsPageInput) GetId() string { return v.Id }
+
+// GetProducts returns __GetDiscountItemsPageInput.Products, and is useful for accessing the field via an interface.
+func (v *__GetDiscountItemsPageInput) GetProducts() *string { return v.Products }
+
+// GetVariants returns __GetDiscountItemsPageInput.Variants, and is useful for accessing the field via an interface.
+func (v *__GetDiscountItemsPageInput) GetVariants() *string { return v.Variants }
+
+// GetCollections returns __GetDiscountItemsPageInput.Collections, and is useful for accessing the field via an interface.
+func (v *__GetDiscountItemsPageInput) GetCollections() *string { return v.Collections }
+
 // __GetFileInput is used internally by genqlient
 type __GetFileInput struct {
 	Id string `json:"id"`
@@ -34036,6 +34611,7 @@ fragment DiscountItemsFields on DiscountItems {
 			}
 			pageInfo {
 				hasNextPage
+				endCursor
 			}
 		}
 		productVariants(first: 250) {
@@ -34044,6 +34620,7 @@ fragment DiscountItemsFields on DiscountItems {
 			}
 			pageInfo {
 				hasNextPage
+				endCursor
 			}
 		}
 	}
@@ -34054,6 +34631,7 @@ fragment DiscountItemsFields on DiscountItems {
 			}
 			pageInfo {
 				hasNextPage
+				endCursor
 			}
 		}
 	}
@@ -34113,6 +34691,125 @@ func GetDiscountByCode(
 	}
 
 	data_ = &GetDiscountByCodeResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetDiscountItemsPage.
+const GetDiscountItemsPage_Operation = `
+query GetDiscountItemsPage ($id: ID!, $products: String, $variants: String, $collections: String) {
+	discountNode(id: $id) {
+		discount {
+			__typename
+			... on DiscountCodeBasic {
+				customerGets {
+					items {
+						__typename
+						... on DiscountProducts {
+							products(first: 250, after: $products) {
+								nodes {
+									id
+								}
+								pageInfo {
+									hasNextPage
+									endCursor
+								}
+							}
+							productVariants(first: 250, after: $variants) {
+								nodes {
+									id
+								}
+								pageInfo {
+									hasNextPage
+									endCursor
+								}
+							}
+						}
+						... on DiscountCollections {
+							collections(first: 250, after: $collections) {
+								nodes {
+									id
+								}
+								pageInfo {
+									hasNextPage
+									endCursor
+								}
+							}
+						}
+					}
+				}
+			}
+			... on DiscountAutomaticBasic {
+				customerGets {
+					items {
+						__typename
+						... on DiscountProducts {
+							products(first: 250, after: $products) {
+								nodes {
+									id
+								}
+								pageInfo {
+									hasNextPage
+									endCursor
+								}
+							}
+							productVariants(first: 250, after: $variants) {
+								nodes {
+									id
+								}
+								pageInfo {
+									hasNextPage
+									endCursor
+								}
+							}
+						}
+						... on DiscountCollections {
+							collections(first: 250, after: $collections) {
+								nodes {
+									id
+								}
+								pageInfo {
+									hasNextPage
+									endCursor
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+// Pages item selections after the first 250 that DiscountNodeFields carries; raw, as both branches share one decoder.
+func GetDiscountItemsPage(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	products *string,
+	variants *string,
+	collections *string,
+) (data_ *GetDiscountItemsPageResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetDiscountItemsPage",
+		Query:  GetDiscountItemsPage_Operation,
+		Variables: &__GetDiscountItemsPageInput{
+			Id:          id,
+			Products:    products,
+			Variants:    variants,
+			Collections: collections,
+		},
+	}
+
+	data_ = &GetDiscountItemsPageResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -37065,6 +37762,7 @@ fragment DiscountItemsFields on DiscountItems {
 			}
 			pageInfo {
 				hasNextPage
+				endCursor
 			}
 		}
 		productVariants(first: 250) {
@@ -37073,6 +37771,7 @@ fragment DiscountItemsFields on DiscountItems {
 			}
 			pageInfo {
 				hasNextPage
+				endCursor
 			}
 		}
 	}
@@ -37083,6 +37782,7 @@ fragment DiscountItemsFields on DiscountItems {
 			}
 			pageInfo {
 				hasNextPage
+				endCursor
 			}
 		}
 	}

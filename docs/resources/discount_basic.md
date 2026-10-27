@@ -13,6 +13,11 @@ An amount-off discount: a percentage or a fixed amount off selected products, co
 ## Example Usage
 
 ```terraform
+resource "shopify_collection" "pflegehilfsmittel" {
+  handle = "pflegehilfsmittel"
+  title  = "Pflegehilfsmittel"
+}
+
 # Code discount: 10 % off one collection for newsletter subscribers, from 30 € on.
 resource "shopify_discount_basic" "newsletter" {
   title = "Newsletter 10 %"

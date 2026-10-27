@@ -2,6 +2,7 @@ package patterns
 
 import (
 	"context"
+	"slices"
 	"strings"
 	"testing"
 
@@ -79,5 +80,15 @@ func TestWarnOnDataDeletingReplace(t *testing.T) {
 	}
 	if d := run(tftypes.NewValue(s.Type().TerraformType(ctx), nil), obj("b", "x", false)); len(d) != 0 {
 		t.Errorf("create warned: %v", d)
+	}
+}
+
+func TestDiffIDs(t *testing.T) {
+	add, remove := DiffIDs([]string{"d", "b"}, []string{"c", "b", "a"})
+	if !slices.Equal(add, []string{"a", "c"}) || !slices.Equal(remove, []string{"d"}) {
+		t.Errorf("got add %v remove %v", add, remove)
+	}
+	if add, remove = DiffIDs([]string{"a"}, []string{"a"}); add != nil || remove != nil {
+		t.Errorf("no change: got add %v remove %v", add, remove)
 	}
 }

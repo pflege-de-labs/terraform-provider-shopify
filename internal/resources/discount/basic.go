@@ -110,7 +110,14 @@ func (r *BasicResource) Create(ctx context.Context, req resource.CreateRequest, 
 		}
 	}
 	id := r.write(ctx, &cfg, &plan, live, &resp.Diagnostics)
-	if id == "" || !r.finish(ctx, id, &cfg, &plan, &resp.Diagnostics, resp.Private) {
+	if id == "" {
+		return
+	}
+	if !r.finish(ctx, id, &cfg, &plan, &resp.Diagnostics, resp.Private) {
+		// The discount exists, so its ID goes into state: Terraform taints it instead of orphaning it, and Read fills the rest.
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id)...)
+		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("adopt_existing"), plan.AdoptExisting)...)
+		resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: types.StringValue(id)})...)
 		return
 	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)

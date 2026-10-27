@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"slices"
 	"strings"
 	"time"
 
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
@@ -144,21 +144,6 @@ func displayName(n *node) string {
 	return fmt.Sprintf("%s (code %s)", n.Title, *n.Code)
 }
 
-// addRemove returns what to add to have to get want, and what to remove; nil when nothing.
-func addRemove(want, have []string) (add, remove []string) {
-	for _, id := range want {
-		if !slices.Contains(have, id) {
-			add = append(add, id)
-		}
-	}
-	for _, id := range have {
-		if !slices.Contains(want, id) {
-			remove = append(remove, id)
-		}
-	}
-	return add, remove
-}
-
 // contextSel is the context attribute; exactly one field is set.
 type contextSel struct {
 	All                *bool    `tfsdk:"all"`
@@ -203,7 +188,7 @@ func contextInput(want contextSel, live *contextSel) *client.DiscountContextInpu
 	switch {
 	case want.CustomerSegmentIDs != nil:
 		if live != nil && live.CustomerSegmentIDs != nil {
-			add, remove := addRemove(want.CustomerSegmentIDs, live.CustomerSegmentIDs)
+			add, remove := patterns.DiffIDs(live.CustomerSegmentIDs, want.CustomerSegmentIDs)
 			if add == nil && remove == nil {
 				return nil
 			}
@@ -212,7 +197,7 @@ func contextInput(want contextSel, live *contextSel) *client.DiscountContextInpu
 		return &client.DiscountContextInput{CustomerSegments: &client.DiscountCustomerSegmentsInput{Add: want.CustomerSegmentIDs}}
 	case want.MarketIDs != nil:
 		if live != nil && live.MarketIDs != nil {
-			add, remove := addRemove(want.MarketIDs, live.MarketIDs)
+			add, remove := patterns.DiffIDs(live.MarketIDs, want.MarketIDs)
 			if add == nil && remove == nil {
 				return nil
 			}
@@ -362,7 +347,6 @@ func commonAttributes() map[string]schema.Attribute {
 		"status": schema.StringAttribute{
 			MarkdownDescription: "`ACTIVE`, `SCHEDULED` or `EXPIRED`, from the dates.",
 			Computed:            true,
-			PlanModifiers:       []planmodifier.String{statusFromDates{}},
 		},
 		"context":       contextAttribute(),
 		"combines_with": combinesAttribute(),
@@ -560,7 +544,11 @@ func getNode(ctx context.Context, c *client.Client, id string) (*node, error) {
 	if err != nil || res.DiscountNode == nil {
 		return nil, err
 	}
-	return nodeOf(&res.DiscountNode.DiscountNodeFields)
+	n, err := nodeOf(&res.DiscountNode.DiscountNodeFields)
+	if err != nil {
+		return nil, err
+	}
+	return n, completeItems(ctx, c, n)
 }
 
 // findByKey looks a discount up by its code, or an automatic one by its exact title; nil when there is none.
@@ -598,6 +586,9 @@ func findAutomaticByTitle(ctx context.Context, c *client.Client, title string) (
 	})
 	if err == nil {
 		err = nodeErr
+	}
+	if err == nil && found != nil {
+		err = completeItems(ctx, c, found)
 	}
 	return found, err
 }
@@ -686,6 +677,8 @@ func modifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resou
 	if req.State.Raw.IsNull() || req.Plan.Raw.IsNull() {
 		return
 	}
+	// Resource-level ModifyPlan runs after the attribute modifiers, so the plan is final here.
+	resp.Diagnostics.Append(keepStatus(ctx, req.State, &resp.Plan)...)
 	var stateCode, planCode types.String
 	var stateContext, cfgContext types.Object
 	resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root("code"), &stateCode)...)
@@ -713,27 +706,14 @@ func modifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resou
 	}
 }
 
-// statusFromDates keeps the status unless the dates change; unset nested objects otherwise make every plan look like an update.
-type statusFromDates struct{}
-
-func (statusFromDates) Description(context.Context) string {
-	return "Keeps the prior status while starts_at and ends_at stay the same."
-}
-
-func (m statusFromDates) MarkdownDescription(ctx context.Context) string { return m.Description(ctx) }
-
-func (statusFromDates) PlanModifyString(ctx context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
-	if req.State.Raw.IsNull() || req.Plan.Raw.IsNull() || !req.PlanValue.IsUnknown() {
-		return
+// keepStatus takes the state's status only when the plan then equals the state, so no-op plans stay empty and real updates leave it unknown.
+func keepStatus(ctx context.Context, state tfsdk.State, plan *tfsdk.Plan) diag.Diagnostics {
+	var status types.String
+	diags := state.GetAttribute(ctx, path.Root("status"), &status)
+	candidate := *plan
+	diags.Append(candidate.SetAttribute(ctx, path.Root("status"), status)...)
+	if !diags.HasError() && candidate.Raw.Equal(state.Raw) {
+		*plan = candidate
 	}
-	// Config, not plan: other attributes' modifiers haven't run on the plan yet, and unset dates are unmanaged.
-	for _, a := range []string{"starts_at", "ends_at"} {
-		var before, cfg instantValue
-		resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root(a), &before)...)
-		resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root(a), &cfg)...)
-		if !cfg.IsNull() && (cfg.IsUnknown() || before.IsNull() || !(instantEquality{}).Equal(before.ValueString(), cfg.ValueString())) {
-			return
-		}
-	}
-	resp.PlanValue = req.StateValue
+	return diags
 }

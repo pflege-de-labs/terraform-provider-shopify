@@ -88,17 +88,6 @@ func TestCheckBasic(t *testing.T) {
 	}
 }
 
-func TestAddRemove(t *testing.T) {
-	add, remove := addRemove([]string{"a", "b", "c"}, []string{"b", "d"})
-	if !reflect.DeepEqual(add, []string{"a", "c"}) || !reflect.DeepEqual(remove, []string{"d"}) {
-		t.Errorf("got add %v remove %v", add, remove)
-	}
-	add, remove = addRemove([]string{"a"}, []string{"a"})
-	if add != nil || remove != nil {
-		t.Errorf("no change: got add %v remove %v", add, remove)
-	}
-}
-
 func segments(ids ...string) client.DiscountContextFields {
 	s := &client.DiscountContextFieldsDiscountCustomerSegments{Typename: ptr("DiscountCustomerSegments")}
 	for _, id := range ids {
@@ -205,7 +194,7 @@ func TestItemsFromAPI(t *testing.T) {
 		{"collections", collections("c1"), itemsSel{CollectionIDs: []string{"c1"}}, ""},
 		{"no products", products(false, nil, nil), itemsSel{}, "selects no products"},
 		{"no collections", collections(), itemsSel{}, "selects no collections"},
-		{"too many", products(true, []string{"p1"}, nil), itemsSel{}, "more than 250"},
+		{"partial read", products(true, []string{"p1"}, nil), itemsSel{}, "incomplete list"},
 	}
 	for _, c := range cases {
 		got, err := itemsFromAPI(c.in)
@@ -354,5 +343,44 @@ func TestUserErrorDiagsKeepMessageAndExtraInfo(t *testing.T) {
 	}
 	if d := diags[1].Detail(); d != "Something (more detail)" {
 		t.Errorf("second detail = %q", d)
+	}
+}
+
+func TestItemsPaging(t *testing.T) {
+	first := products(false, []string{"p1"}, []string{"v1"})
+	p, _ := first.(*client.DiscountItemsFieldsDiscountProducts)
+	p.Products.PageInfo.HasNextPage, p.Products.PageInfo.EndCursor = true, ptr("pc")
+	p.ProductVariants.PageInfo.EndCursor = ptr("vc")
+	pc, vc, cc, more := itemsCursors(first)
+	if !more || *pc != "pc" || *vc != "vc" || cc != nil {
+		t.Fatalf("cursors %v %v %v %t", pc, vc, cc, more)
+	}
+	// A complete list is passed its end cursor, so its next page is empty.
+	page := `{"__typename":"DiscountProducts","products":{"nodes":[{"id":"p2"}],"pageInfo":{"hasNextPage":false,"endCursor":"pc2"}},
+		"productVariants":{"nodes":[],"pageInfo":{"hasNextPage":false,"endCursor":null}}}`
+	if err := mergeItemsPage(first, json.RawMessage(page)); err != nil {
+		t.Fatal(err)
+	}
+	if _, _, _, more := itemsCursors(first); more {
+		t.Error("still more after the last page")
+	}
+	got, err := itemsFromAPI(first)
+	if err != nil || !reflect.DeepEqual(got, itemsSel{ProductIDs: []string{"p1", "p2"}, VariantIDs: []string{"v1"}}) {
+		t.Errorf("got %+v, %v", got, err)
+	}
+
+	cols := collections("c1")
+	c, _ := cols.(*client.DiscountItemsFieldsDiscountCollections)
+	c.Collections.PageInfo.HasNextPage = true
+	if err := mergeItemsPage(cols, json.RawMessage(`{"__typename":"DiscountCollections","collections":{"nodes":[{"id":"c2"}],"pageInfo":{"hasNextPage":false}}}`)); err != nil {
+		t.Fatal(err)
+	}
+	if got, err := itemsFromAPI(cols); err != nil || !reflect.DeepEqual(got.CollectionIDs, []string{"c1", "c2"}) {
+		t.Errorf("collections: got %+v, %v", got, err)
+	}
+	// The selection changed kind between pages.
+	c.Collections.PageInfo.HasNextPage = true
+	if err := mergeItemsPage(cols, json.RawMessage(`{"__typename":"DiscountProducts","products":{"nodes":[]}}`)); err == nil {
+		t.Error("a selection that changed kind must fail")
 	}
 }
