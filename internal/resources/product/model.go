@@ -31,6 +31,7 @@ type model struct {
 	Variants          types.List   `tfsdk:"variants"`
 	PublicationIDs    types.Set    `tfsdk:"publication_ids"`
 	MediaIDs          types.List   `tfsdk:"media_ids"`
+	MediaManaged      types.Bool   `tfsdk:"media_managed"`
 	AdoptExisting     types.Bool   `tfsdk:"adopt_existing"`
 	AllowDataDeletion types.Bool   `tfsdk:"allow_data_deletion"`
 }
