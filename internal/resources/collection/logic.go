@@ -117,7 +117,7 @@ type sourceChanges struct {
 }
 
 // planSource turns the configured membership into source changes against live (nil: no source).
-// Shopify rejects a source without conditions and products, so emptying one deletes it.
+// Shopify rejects a source without conditions and products unless it has exclusions, so emptying one without them deletes it.
 func planSource(live *membership, want desired) (sourceChanges, error) {
 	if want.MatchType == nil && want.Conditions == nil && want.ProductIDs == nil {
 		return sourceChanges{}, nil
@@ -137,7 +137,8 @@ func planSource(live *membership, want desired) (sourceChanges, error) {
 	if want.ProductIDs != nil {
 		products = want.ProductIDs
 	}
-	if len(conds) == 0 && len(products) == 0 {
+	// S13-9: a source with exclusions is emptied in place, which Shopify accepts and which keeps them.
+	if len(conds) == 0 && len(products) == 0 && !cur.Exclusions {
 		if want.MatchType != nil {
 			return sourceChanges{}, errors.New("match_type needs at least one condition or product in the collection; Shopify keeps no source without them")
 		}
@@ -145,11 +146,8 @@ func planSource(live *membership, want desired) (sourceChanges, error) {
 		if live == nil || (len(cur.Conditions) == 0 && len(cur.ProductIDs) == 0) {
 			return sourceChanges{}, nil
 		}
-		// S13-9: deleting the source must not lose what Terraform doesn't manage or can't recreate.
-		switch {
-		case cur.Exclusions:
-			return sourceChanges{}, errors.New("removing the last condition and product deletes the collection's source, which also has exclusions; Terraform doesn't manage exclusions, so remove them in the admin first")
-		case cur.ShopifyMade:
+		// S13-9: deleting the source must not lose what Terraform can't recreate.
+		if cur.ShopifyMade {
 			return sourceChanges{}, errors.New("removing the last condition and product would delete the collection's source, which Shopify made and Terraform can't recreate; leave product_ids and conditions unset, or keep at least one entry")
 		}
 		return sourceChanges{Delete: true}, nil

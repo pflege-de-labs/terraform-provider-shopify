@@ -24,7 +24,7 @@ fragment CollectionFields on Collection {
     ... on CollectionConditionsSource {
       shareable
       targetType
-      # Only whether exclusions exist: deleting the source would lose them (S13-9).
+      # Only whether exclusions exist: such a source is emptied in place, since deleting it would lose them (S13-9).
       exclusion {
         conditions {
           id
@@ -307,6 +307,20 @@ mutation DeleteCollection(
 ) {
   collectionDelete(input: { id: $id }) {
     deletedCollectionId
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# Only the acceptance tests call this, to give a source an exclusion; inline input avoids the null siblings Shopify's @oneOf rejects.
+mutation AddCollectionExclusionTag(
+  $id: ID!
+  $sourceId: ID!
+  $tag: String!
+) {
+  collectionUpdate(collection: { id: $id, sourcesToUpdate: [{ condition: { id: $sourceId, exclusion: { matchType: ALL, conditionsToCreate: [{ productTag: { relation: TAGGED_WITH, values: [$tag], matchType: ALL } }] } } }] }) {
     userErrors {
       field
       message

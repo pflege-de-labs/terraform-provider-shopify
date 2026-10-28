@@ -170,6 +170,74 @@ func (v *ActivateLocationResponse) GetLocationActivate() *ActivateLocationLocati
 	return v.LocationActivate
 }
 
+// AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayload includes the requested fields of the GraphQL type CollectionUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `collectionUpdate` mutation.
+type AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayload struct {
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetUserErrors returns AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayload) GetUserErrors() []AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// AddCollectionExclusionTagResponse is returned by AddCollectionExclusionTag on success.
+type AddCollectionExclusionTagResponse struct {
+	// Updates a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection),
+	// modifying its properties, products, or publication settings. Collections help organize
+	// [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) together
+	// in the [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	//
+	// Use the `collectionUpdate` mutation to programmatically modify collections in scenarios such as:
+	//
+	// - Updating collection details, like title, description, or image
+	// - Modifying SEO metadata for better search visibility
+	// - Changing which products are included in a collection by updating its rules, sources, or conditions
+	// - Updating custom data using [metafields](https://shopify.dev/docs/apps/build/custom-data/metafields)
+	//
+	// Collections can include products manually and can also include products automatically based on rules, sources,
+	// or conditions. When product membership is updated through rules, sources, or conditions, the operation might
+	// be processed asynchronously. In these cases, the mutation returns a [`job`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Job) object
+	// that you can use to track the progress of the update.
+	//
+	// To publish or unpublish collections to specific sales channels, use the dedicated
+	// [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish) and
+	// [`publishableUnpublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishableUnpublish) mutations.
+	//
+	// Learn more about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+	CollectionUpdate *AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayload `json:"collectionUpdate"`
+}
+
+// GetCollectionUpdate returns AddCollectionExclusionTagResponse.CollectionUpdate, and is useful for accessing the field via an interface.
+func (v *AddCollectionExclusionTagResponse) GetCollectionUpdate() *AddCollectionExclusionTagCollectionUpdateCollectionUpdatePayload {
+	return v.CollectionUpdate
+}
+
 // AddLocationLocationAddLocationAddPayload includes the requested fields of the GraphQL type LocationAddPayload.
 // The GraphQL type's documentation follows.
 //
@@ -30663,6 +30731,22 @@ func (v *__ActivateLocationInput) GetLocationId() string { return v.LocationId }
 // GetIdempotencyKey returns __ActivateLocationInput.IdempotencyKey, and is useful for accessing the field via an interface.
 func (v *__ActivateLocationInput) GetIdempotencyKey() string { return v.IdempotencyKey }
 
+// __AddCollectionExclusionTagInput is used internally by genqlient
+type __AddCollectionExclusionTagInput struct {
+	Id       string `json:"id"`
+	SourceId string `json:"sourceId"`
+	Tag      string `json:"tag"`
+}
+
+// GetId returns __AddCollectionExclusionTagInput.Id, and is useful for accessing the field via an interface.
+func (v *__AddCollectionExclusionTagInput) GetId() string { return v.Id }
+
+// GetSourceId returns __AddCollectionExclusionTagInput.SourceId, and is useful for accessing the field via an interface.
+func (v *__AddCollectionExclusionTagInput) GetSourceId() string { return v.SourceId }
+
+// GetTag returns __AddCollectionExclusionTagInput.Tag, and is useful for accessing the field via an interface.
+func (v *__AddCollectionExclusionTagInput) GetTag() string { return v.Tag }
+
 // __AddLocationInput is used internally by genqlient
 type __AddLocationInput struct {
 	Input LocationAddInput `json:"input"`
@@ -31721,6 +31805,48 @@ func ActivateLocation(
 	}
 
 	data_ = &ActivateLocationResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by AddCollectionExclusionTag.
+const AddCollectionExclusionTag_Operation = `
+mutation AddCollectionExclusionTag ($id: ID!, $sourceId: ID!, $tag: String!) {
+	collectionUpdate(collection: {id:$id,sourcesToUpdate:[{condition:{id:$sourceId,exclusion:{matchType:ALL,conditionsToCreate:[{productTag:{relation:TAGGED_WITH,values:[$tag],matchType:ALL}}]}}}]}) {
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+// Only the acceptance tests call this, to give a source an exclusion; inline input avoids the null siblings Shopify's @oneOf rejects.
+func AddCollectionExclusionTag(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	sourceId string,
+	tag string,
+) (data_ *AddCollectionExclusionTagResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "AddCollectionExclusionTag",
+		Query:  AddCollectionExclusionTag_Operation,
+		Variables: &__AddCollectionExclusionTagInput{
+			Id:       id,
+			SourceId: sourceId,
+			Tag:      tag,
+		},
+	}
+
+	data_ = &AddCollectionExclusionTagResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

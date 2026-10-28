@@ -57,8 +57,8 @@ func (r *Resource) IdentitySchema(ctx context.Context, req resource.IdentitySche
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	unmanaged := " Unset means unmanaged: the value set in the admin is kept."
 	emptying := " Removing the last condition and the last product deletes the collection's source, since Shopify keeps no empty one. " +
-		"That is refused when the source has exclusions, which Terraform doesn't manage (remove them in the admin first), " +
-		"and when Shopify made the source itself (no app, such as `frontpage`'s or one migrated from an older API version), because it can't be recreated (leave the attribute unset or keep one entry)."
+		"A source with exclusions, which Terraform doesn't manage, is kept with them instead and then includes no product. " +
+		"Without exclusions, that is refused when Shopify made the source itself (no app, such as `frontpage`'s or one migrated from an older API version), because it can't be recreated (leave the attribute unset or keep one entry)."
 	membership := " Unset means unmanaged. Null when the collection's membership can't be managed (see the resource description). A source another app created is managed too, but Shopify may reject changes to it."
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "A collection: title, handle, description, sort order and which products it holds, by hand (`product_ids`) or by rules (`conditions`). " +
