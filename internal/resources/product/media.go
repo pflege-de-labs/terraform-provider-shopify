@@ -21,7 +21,6 @@ import (
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 )
 
-// TODO(verify): Video and Model3d GIDs as productSet files; only MediaImage and ExternalVideo were attached on the dev store.
 var mediaIDRe = regexp.MustCompile(`^gid://shopify/(MediaImage|Video|Model3d|ExternalVideo)/\d+$`)
 
 func mediaIDsAttribute() schema.ListAttribute {

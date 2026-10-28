@@ -110,7 +110,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			"url": schema.StringAttribute{
-				MarkdownDescription: "The public URL of the file; for an external video, the video URL. Changes with the filename and with a content update (`?v=`).",
+				MarkdownDescription: "The public URL of the file; for an external video, the video URL; for a video, Shopify's 480p MP4 rendition, not the uploaded original; for a 3D model, the uploaded model. Changes with the filename and with a content update (`?v=`).",
 				Computed:            true,
 				PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},

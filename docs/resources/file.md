@@ -71,7 +71,7 @@ resource "shopify_file" "existing" {
 ### Read-Only
 
 - `id` (String) File GID. Its kind follows the content type (`MediaImage`, `GenericFile`, `Video`, `ExternalVideo`, `Model3d`); a product's `media_ids` take it as is, except `GenericFile` (`content_type = "FILE"`), which can't be product media.
-- `url` (String) The public URL of the file; for an external video, the video URL. Changes with the filename and with a content update (`?v=`).
+- `url` (String) The public URL of the file; for an external video, the video URL; for a video, Shopify's 480p MP4 rendition, not the uploaded original; for a 3D model, the uploaded model. Changes with the filename and with a content update (`?v=`).
 
 <a id="nestedblock--timeouts"></a>
 ### Nested Schema for `timeouts`
