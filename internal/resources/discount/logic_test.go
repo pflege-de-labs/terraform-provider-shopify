@@ -72,9 +72,9 @@ func TestCheckBasic(t *testing.T) {
 	}{
 		{"DiscountCodeBasic", ""},
 		{"DiscountAutomaticBasic", ""},
-		{"DiscountCodeBxgy", "is a bxgy discount; use shopify_discount_bxgy"},
-		{"DiscountAutomaticFreeShipping", "is a free_shipping discount; use shopify_discount_free_shipping"},
-		{"DiscountCodeApp", "belongs to an app"},
+		{"DiscountCodeBxgy", "the discount is a bxgy discount (DiscountCodeBxgy); shopify_discount_bxgy is not supported yet"},
+		{"DiscountAutomaticFreeShipping", "the discount is a free_shipping discount (DiscountAutomaticFreeShipping); shopify_discount_free_shipping is not supported yet"},
+		{"DiscountCodeApp", "the discount belongs to an app (DiscountCodeApp): its Function's app manages it"},
 		{"DiscountSomethingNew", "unknown discount type DiscountSomethingNew"},
 	}
 	for _, c := range cases {

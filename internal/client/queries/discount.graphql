@@ -151,7 +151,16 @@ fragment DiscountNodeFields on DiscountNode {
         ...DiscountMinimumFields
       }
     }
-    # Titles of the other automatic kinds, so a title lookup can say which resource owns a match.
+    # Titles of the other kinds, so a title lookup or a list skip can name the discount.
+    ... on DiscountCodeBxgy {
+      title
+    }
+    ... on DiscountCodeFreeShipping {
+      title
+    }
+    ... on DiscountCodeApp {
+      title
+    }
     ... on DiscountAutomaticBxgy {
       title
     }
