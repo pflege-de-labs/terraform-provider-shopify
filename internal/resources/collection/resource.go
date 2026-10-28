@@ -54,7 +54,6 @@ func (r *Resource) IdentitySchema(ctx context.Context, req resource.IdentitySche
 	resp.IdentitySchema = patterns.IDIdentitySchema()
 }
 
-// TODO(verify): whether selections of large collections ever come back only after the collectionUpdate job.
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	unmanaged := " Unset means unmanaged: the value set in the admin is kept."
 	emptying := " Removing the last condition and the last product deletes the collection's source, since Shopify keeps no empty one. " +
