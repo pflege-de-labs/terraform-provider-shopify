@@ -146,7 +146,6 @@ func planSource(live *membership, want desired) (sourceChanges, error) {
 			return sourceChanges{}, nil
 		}
 		// S13-9: deleting the source must not lose what Terraform doesn't manage or can't recreate.
-		// TODO(verify): whether a source with exclusions but no inclusion can exist, and how Shopify treats it.
 		switch {
 		case cur.Exclusions:
 			return sourceChanges{}, errors.New("removing the last condition and product deletes the collection's source, which also has exclusions; Terraform doesn't manage exclusions, so remove them in the admin first")
