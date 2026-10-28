@@ -113,7 +113,7 @@ Status 2026-10-27: steps 7-11 merged (#25-#29), step 13 in review. Counts are st
 - **Phase 2 types not built** (counts staging / production; reasons in [the report](../reports/2026-10-27-phase2-resources.md)). Decide after the first successful import (D6):
   - `shopify_catalog` (3 / 5, channel app catalogs only; design in resource model §9i).
   - `shopify_discount_free_shipping` and `shopify_discount_bxgy`: check the kinds of production's 7 discounts at first import. App discounts are not creatable here.
-  - `shopify_file` uploads of local files (staged uploads), needed for videos and 3D models.
+  - `shopify_file` uploads of local files (staged uploads), needed for videos and 3D models, which take a multipart POST rather than a PUT (resource model §9o).
   - Variant media and collection images.
   - Articles (0 / 0), return policy profiles (1 / 1), custom delivery profiles, carrier services, URL redirects, price lists, selling plan groups and all step 12 types (0 / 0).
   - Translations, market localizations, inventory levels (not counted; single locale `de`).
