@@ -25,6 +25,7 @@ const (
 	addr       = "shopify_web_presence.test"
 	testPrefix = "tfacc"
 	// A locale that is not the shop's primary one; enabled and published for the test.
+	// Must differ from shoplocale's locales (nl, it): packages run in parallel on one store (#33).
 	altLocale = "fr"
 )
 

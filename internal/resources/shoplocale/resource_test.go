@@ -20,7 +20,8 @@ import (
 const (
 	addr = "shopify_shop_locale.test"
 	// Non-primary locales the tests enable and disable again; the dev store starts with only `en`.
-	locFr = "fr"
+	// Must differ from webpresence's altLocale ("fr"): packages run in parallel on one store (#33).
+	locNl = "nl"
 	locIt = "it"
 	// The dev store's primary locale.
 	locPrimary = "en"
@@ -120,20 +121,20 @@ func checkGone(t *testing.T, codes ...string) resource.TestCheckFunc {
 
 func TestAccShopLocale_basic(t *testing.T) {
 	acctest.Setup(t)
-	ownLocales(t, locFr)
+	ownLocales(t, locNl)
 	cfg := func(published bool) string {
 		return config(fmt.Sprintf(`
   locale              = %q
   published           = %t
   allow_data_deletion = true
-`, locFr, published))
+`, locNl, published))
 	}
 	// Imported state has allow_data_deletion = false, so import steps use a config without it.
-	imported := config(fmt.Sprintf("locale = %q\npublished = false", locFr))
+	imported := config(fmt.Sprintf("locale = %q\npublished = false", locNl))
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
-		CheckDestroy:             checkGone(t, locFr),
+		CheckDestroy:             checkGone(t, locNl),
 		Steps: []resource.TestStep{
 			{
 				Config:      config(`locale = "xx"`),
@@ -142,11 +143,11 @@ func TestAccShopLocale_basic(t *testing.T) {
 			{
 				Config: cfg(true),
 				ConfigStateChecks: []statecheck.StateCheck{
-					expectIdentity(locFr),
-					statecheck.ExpectKnownValue(addr, tfjsonpath.New("id"), knownvalue.StringExact(locFr)),
-					statecheck.ExpectKnownValue(addr, tfjsonpath.New("locale"), knownvalue.StringExact(locFr)),
+					expectIdentity(locNl),
+					statecheck.ExpectKnownValue(addr, tfjsonpath.New("id"), knownvalue.StringExact(locNl)),
+					statecheck.ExpectKnownValue(addr, tfjsonpath.New("locale"), knownvalue.StringExact(locNl)),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("published"), knownvalue.Bool(true)),
-					statecheck.ExpectKnownValue(addr, tfjsonpath.New("name"), knownvalue.StringExact("French")),
+					statecheck.ExpectKnownValue(addr, tfjsonpath.New("name"), knownvalue.StringExact("Dutch")),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("primary"), knownvalue.Bool(false)),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("adopt_existing"), knownvalue.Bool(false)),
 				},
@@ -164,7 +165,7 @@ func TestAccShopLocale_basic(t *testing.T) {
 			{
 				// Refresh steps can't carry state checks; this no-op step checks identity survives the refresh.
 				Config:            cfg(false),
-				ConfigStateChecks: []statecheck.StateCheck{expectIdentity(locFr)},
+				ConfigStateChecks: []statecheck.StateCheck{expectIdentity(locNl)},
 			},
 			{Config: imported, ResourceName: addr, ImportState: true, ImportStateKind: resource.ImportBlockWithResourceIdentity},
 			{
@@ -178,7 +179,7 @@ func TestAccShopLocale_basic(t *testing.T) {
 			{
 				ResourceName:            addr,
 				ImportState:             true,
-				ImportStateId:           locFr,
+				ImportStateId:           locNl,
 				ImportStateVerify:       true,
 				ImportStateVerifyIgnore: []string{"allow_data_deletion"},
 			},
@@ -189,16 +190,16 @@ func TestAccShopLocale_basic(t *testing.T) {
 // Unset published is unmanaged: a change made outside Terraform must not show up in the plan.
 func TestAccShopLocale_unmanagedPublished(t *testing.T) {
 	acctest.Setup(t)
-	ownLocales(t, locFr)
+	ownLocales(t, locNl)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
-		CheckDestroy:             checkGone(t, locFr),
+		CheckDestroy:             checkGone(t, locNl),
 		Steps: []resource.TestStep{
-			{Config: config(fmt.Sprintf("locale = %q\npublished = true\nallow_data_deletion = true", locFr))},
+			{Config: config(fmt.Sprintf("locale = %q\npublished = true\nallow_data_deletion = true", locNl))},
 			{
-				PreConfig: func() { setPublished(t, locFr, false) },
-				Config:    config(fmt.Sprintf("locale = %q\nallow_data_deletion = true", locFr)),
+				PreConfig: func() { setPublished(t, locNl, false) },
+				Config:    config(fmt.Sprintf("locale = %q\nallow_data_deletion = true", locNl)),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 				},
@@ -261,29 +262,29 @@ func TestAccShopLocale_adoptPrimary(t *testing.T) {
 // An adopted locale stays enabled on destroy, and the data-deletion guard doesn't apply to it.
 func TestAccShopLocale_adopt(t *testing.T) {
 	acctest.Setup(t)
-	ownLocales(t, locFr)
+	ownLocales(t, locNl)
 	cfg := func(adopt bool) string {
-		return config(fmt.Sprintf("locale = %q\npublished = true\nadopt_existing = %t", locFr, adopt))
+		return config(fmt.Sprintf("locale = %q\npublished = true\nadopt_existing = %t", locNl, adopt))
 	}
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
 		CheckDestroy: func(*terraform.State) error {
-			if lookup(t, locFr) == nil {
-				return fmt.Errorf("adopted locale %s was disabled, want it kept", locFr)
+			if lookup(t, locNl) == nil {
+				return fmt.Errorf("adopted locale %s was disabled, want it kept", locNl)
 			}
 			return nil
 		},
 		Steps: []resource.TestStep{
 			{
-				PreConfig:   func() { enable(t, locFr) },
+				PreConfig:   func() { enable(t, locNl) },
 				Config:      cfg(false),
 				ExpectError: regexp.MustCompile(`adopt_existing = true`),
 			},
 			{
 				Config: cfg(true),
 				ConfigStateChecks: []statecheck.StateCheck{
-					expectIdentity(locFr),
+					expectIdentity(locNl),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("published"), knownvalue.Bool(true)),
 					statecheck.ExpectKnownValue(addr, tfjsonpath.New("adopt_existing"), knownvalue.Bool(true)),
 				},
@@ -295,12 +296,12 @@ func TestAccShopLocale_adopt(t *testing.T) {
 // Disabling deletes the locale's translations, so destroy and replace need allow_data_deletion in state.
 func TestAccShopLocale_dataDeletionGuard(t *testing.T) {
 	acctest.Setup(t)
-	ownLocales(t, locFr, locIt)
-	guarded := config(fmt.Sprintf("locale = %q", locFr))
+	ownLocales(t, locNl, locIt)
+	guarded := config(fmt.Sprintf("locale = %q", locNl))
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
-		CheckDestroy:             checkGone(t, locFr, locIt),
+		CheckDestroy:             checkGone(t, locNl, locIt),
 		Steps: []resource.TestStep{
 			{
 				Config: guarded,
@@ -316,7 +317,7 @@ func TestAccShopLocale_dataDeletionGuard(t *testing.T) {
 			{Config: guarded, Destroy: true, ExpectError: regexp.MustCompile(`allow_data_deletion = true`)},
 			{
 				// Opt in so the test can clean up after itself.
-				Config: config(fmt.Sprintf("locale = %q\nallow_data_deletion = true", locFr)),
+				Config: config(fmt.Sprintf("locale = %q\nallow_data_deletion = true", locNl)),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(addr, plancheck.ResourceActionUpdate)},
 				},

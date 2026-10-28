@@ -73,7 +73,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"and every admin edit to a managed attribute is reverted on the next apply. Attributes you leave unset are not managed, which keeps that small. " +
 			"`publication_ids` publishes the product to sales channels; removing an ID unpublishes it there, so it disappears for customers. " +
 			"`media_ids` attaches files from the media library (`shopify_file`) in order; removing one detaches it and keeps the file. " +
-			"Destroy or replace detaches the product's media first, so they stay in the library, unless the provider last wrote the product with `media_ids` unset: then Shopify deletes the media no other product uses. " +
+			"Destroy or replace detaches the product's media first, so they stay in the library, unless `media_ids` has never been set since the product was created by this provider: then Shopify deletes the media no other product uses. Once set, it stays managed even if `media_ids` is later unset. " +
 			"Options linked to a metafield are read but can't be managed yet: leave `options` and `variants` unset for such a product. " +
 			"Destroying a product deletes its variants, inventory and metafield values: archive it with `status = \"ARCHIVED\"` instead, or set `allow_data_deletion = true` first, and add `lifecycle { prevent_destroy = true }` to guard it. " +
 			"A product that already has the handle needs `adopt_existing = true`, so it isn't overwritten silently. " +
@@ -157,10 +157,15 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				Computed:            true,
 				PlanModifiers:       []planmodifier.Bool{boolplanmodifier.UseStateForUnknown(), boolplanmodifier.RequiresReplace()},
 			},
-			"options":             optionsAttribute(),
-			"variants":            variantsAttribute(),
-			"publication_ids":     publishing.Attribute(what),
-			"media_ids":           mediaIDsAttribute(),
+			"options":         optionsAttribute(),
+			"variants":        variantsAttribute(),
+			"publication_ids": publishing.Attribute(what),
+			"media_ids":       mediaIDsAttribute(),
+			"media_managed": schema.BoolAttribute{
+				MarkdownDescription: "Whether the provider has managed `media_ids` (sticky once true), mirroring what a destroy reads. Not a setting: it turns a change from unset to set `media_ids` into an update that records it.",
+				Computed:            true,
+				PlanModifiers:       []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+			},
 			"adopt_existing":      patterns.AdoptExistingAttribute(what),
 			"allow_data_deletion": allowDataDeletionAttribute(),
 		},
@@ -309,6 +314,7 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 		return
 	}
 	r.planVariants(ctx, req, resp)
+	r.planMediaManaged(ctx, req, resp)
 	r.warnReplace(ctx, req, resp)
 }
 
@@ -396,7 +402,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		}
 		id = &existing.Id
 	}
-	if !r.write(ctx, id, existing, &plan, &cfg, &resp.Diagnostics, resp.Private) {
+	if !r.write(ctx, id, existing, &plan, &cfg, &resp.Diagnostics, resp.Private, false) {
 		return
 	}
 	// The product exists even if publishing failed, so it goes into state, tainted.
@@ -470,7 +476,9 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 			return
 		}
 	}
-	if !r.write(ctx, &id, live, &plan, &cfg, &resp.Diagnostics, resp.Private) {
+	prior, d := req.Private.GetKey(ctx, mediaManagedKey)
+	resp.Diagnostics.Append(d...)
+	if !r.write(ctx, &id, live, &plan, &cfg, &resp.Diagnostics, resp.Private, string(prior) == "true") {
 		return
 	}
 	// Written even if publishing failed: the product changed, and plan holds the publications it really has.
@@ -546,7 +554,7 @@ func (r *Resource) ImportState(ctx context.Context, req resource.ImportStateRequ
 
 // write sends the configured attributes to the product with the given ID and live state (both nil create one) and writes the result into plan.
 // It reports whether the product was written; publishing errors still land in diags after that.
-func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFields, plan, cfg *model, diags *diag.Diagnostics, private patterns.PrivateSetter) bool {
+func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFields, plan, cfg *model, diags *diag.Diagnostics, private patterns.PrivateSetter, priorManaged bool) bool {
 	in, removed, removedMedia, d := buildInput(ctx, cfg, live)
 	diags.Append(d...)
 	if diags.HasError() {
@@ -586,7 +594,12 @@ func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFi
 	}
 	diags.Append(setFromAPI(ctx, plan, p, &p.DescriptionHtml)...)
 	diags.Append(patterns.RememberWrittenHTML(ctx, private, p.DescriptionHtml)...)
-	diags.Append(rememberMediaManaged(ctx, private, !cfg.MediaIDs.IsNull())...)
+	// A known planned value stays: state must equal the plan; the private record is what Delete reads.
+	managed := !cfg.MediaIDs.IsNull() || priorManaged
+	if plan.MediaManaged.IsUnknown() {
+		plan.MediaManaged = types.BoolValue(managed)
+	}
+	diags.Append(rememberMediaManaged(ctx, private, managed)...)
 	diags.Append(r.publish(ctx, p, plan, cfg)...)
 	return true
 }

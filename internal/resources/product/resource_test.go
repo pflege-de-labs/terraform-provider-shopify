@@ -218,7 +218,7 @@ func TestAccProduct_basic(t *testing.T) {
 				ImportStateId:                        renamed,
 				ImportStateVerify:                    true,
 				ImportStateVerifyIdentifierAttribute: "handle",
-				ImportStateVerifyIgnore:              []string{"adopt_existing", "allow_data_deletion"},
+				ImportStateVerifyIgnore:              []string{"adopt_existing", "allow_data_deletion", "media_managed"},
 			},
 		},
 	})
@@ -682,7 +682,7 @@ func TestAccProduct_variants(t *testing.T) {
 				ImportStateId:                        handle,
 				ImportStateVerify:                    true,
 				ImportStateVerifyIdentifierAttribute: "handle",
-				ImportStateVerifyIgnore:              []string{"adopt_existing", "allow_data_deletion"},
+				ImportStateVerifyIgnore:              []string{"adopt_existing", "allow_data_deletion", "media_managed"},
 			},
 		},
 	})
