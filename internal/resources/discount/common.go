@@ -184,7 +184,6 @@ func contextFromAPI(c client.DiscountContextFields) (*contextSel, string, error)
 
 // contextInput writes want over live (nil on create): a difference within one kind, otherwise the new kind, which replaces the old.
 func contextInput(want contextSel, live *contextSel) *client.DiscountContextInput {
-	// TODO(verify): whether a switch between segments and markets also needs the old kind removed, as items do.
 	switch {
 	case want.CustomerSegmentIDs != nil:
 		if live != nil && live.CustomerSegmentIDs != nil {

@@ -218,6 +218,19 @@ func segmentID(t *testing.T) string {
 	return res.Segments.Nodes[0].Id
 }
 
+// marketID is a market of the dev store (it has its primary market, `de`), for the markets context.
+func marketID(t *testing.T) string {
+	t.Helper()
+	res, err := client.ListMarkets(context.Background(), acctest.Client(t), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res.Markets.Nodes) == 0 {
+		t.Fatal("the dev store has no market")
+	}
+	return res.Markets.Nodes[0].Id
+}
+
 func value(path string, check knownvalue.Check) statecheck.StateCheck {
 	return statecheck.ExpectKnownValue(addr, tfjsonpath.New(path), check)
 }
@@ -262,7 +275,7 @@ func TestAccDiscountBasic_code(t *testing.T) {
 	title := testTitle()
 	handle := strings.ToLower(title)
 	cleanup(t, []string{code, renamed}, []string{title, title + " b"}, []string{handle})
-	segment := segmentID(t)
+	segment, market := segmentID(t), marketID(t)
 	sameID := statecheck.CompareValue(compare.ValuesSame())
 
 	created := items(handle) + basic(fmt.Sprintf(`
@@ -286,6 +299,7 @@ func TestAccDiscountBasic_code(t *testing.T) {
 `, title+" b", renamed, contextSel, minimum, value, itemsSel))
 	}
 	toSegment := updated(`{ subtotal = "30" }`, `{ amount = { amount = "5" } }`, `{ collection_ids = [shopify_collection.c.id] }`, fmt.Sprintf(`{ customer_segment_ids = [%q] }`, segment))
+	toMarket := updated(`{ subtotal = "30" }`, `{ amount = { amount = "5" } }`, `{ collection_ids = [shopify_collection.c.id] }`, fmt.Sprintf(`{ market_ids = [%q] }`, market))
 	toProducts := updated(`{ quantity = 2 }`, `{ percentage = 0.25 }`, `{ product_ids = [shopify_product.p.id] }`, `{ all = true }`)
 	cleared := updated(`{}`, `{ percentage = 0.25 }`, `{ product_ids = [shopify_product.p.id] }`, `{ all = true }`)
 	// ends_at and combines_with left out: unmanaged, so the client's changes below must not plan.
@@ -389,6 +403,30 @@ func TestAccDiscountBasic_code(t *testing.T) {
 				},
 			},
 			{Config: toSegment, ConfigPlanChecks: emptyPlan},
+			{
+				// Segments to markets and back: the new kind alone replaces the old one (checked, 2026-10-27).
+				Config: toMarket,
+				Check: func(*terraform.State) error {
+					d := codeBasic(t, byCode(t, renamed))
+					m, ok := d.Context.(*client.DiscountContextFieldsDiscountMarkets)
+					if !ok || len(m.Markets.Nodes) != 1 || m.Markets.Nodes[0].Id != market {
+						return fmt.Errorf("live context = %#v, want the market", d.Context)
+					}
+					return nil
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					nested(knownvalue.SetExact([]knownvalue.Check{str(market)}), "context", "market_ids"),
+					nested(knownvalue.Null(), "context", "customer_segment_ids"),
+				},
+			},
+			{Config: toMarket, ConfigPlanChecks: emptyPlan},
+			{
+				Config: toSegment,
+				ConfigStateChecks: []statecheck.StateCheck{
+					nested(knownvalue.SetExact([]knownvalue.Check{str(segment)}), "context", "customer_segment_ids"),
+					nested(knownvalue.Null(), "context", "market_ids"),
+				},
+			},
 			{
 				// Items switch kind, the context goes back to all buyers, the minimum becomes a quantity.
 				Config: toProducts,
