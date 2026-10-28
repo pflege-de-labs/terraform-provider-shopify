@@ -78,8 +78,7 @@ func (f *apiFile) filename() (string, bool) {
 	return "", false
 }
 
-// publicURL is nil while a file is still processing.
-// sources[0] is a Video's 480p MP4 rendition and a Model3d's uploaded file: public, and stable across reads (§9o).
+// publicURL is nil while a file is still processing; a Video's is its 480p rendition, a Model3d's the uploaded file (§9o).
 func (f *apiFile) publicURL() *string {
 	switch f.Typename {
 	case "MediaImage":
