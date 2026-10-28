@@ -11318,10 +11318,15 @@ func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetTitle() str
 // stores information about automatic discounts that are managed by an app using Shopify Functions.
 type DiscountNodeFieldsDiscountDiscountCodeApp struct {
 	Typename *string `json:"__typename"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title string `json:"title"`
 }
 
 // GetTypename returns DiscountNodeFieldsDiscountDiscountCodeApp.Typename, and is useful for accessing the field via an interface.
 func (v *DiscountNodeFieldsDiscountDiscountCodeApp) GetTypename() *string { return v.Typename }
+
+// GetTitle returns DiscountNodeFieldsDiscountDiscountCodeApp.Title, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeApp) GetTitle() string { return v.Title }
 
 // DiscountNodeFieldsDiscountDiscountCodeBasic includes the requested fields of the GraphQL type DiscountCodeBasic.
 // The GraphQL type's documentation follows.
@@ -11620,10 +11625,15 @@ func (v *DiscountNodeFieldsDiscountDiscountCodeBasicCodesDiscountRedeemCodeConne
 // without the need for customers to enter a code.
 type DiscountNodeFieldsDiscountDiscountCodeBxgy struct {
 	Typename *string `json:"__typename"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title string `json:"title"`
 }
 
 // GetTypename returns DiscountNodeFieldsDiscountDiscountCodeBxgy.Typename, and is useful for accessing the field via an interface.
 func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetTypename() *string { return v.Typename }
+
+// GetTitle returns DiscountNodeFieldsDiscountDiscountCodeBxgy.Title, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetTitle() string { return v.Title }
 
 // DiscountNodeFieldsDiscountDiscountCodeFreeShipping includes the requested fields of the GraphQL type DiscountCodeFreeShipping.
 // The GraphQL type's documentation follows.
@@ -11648,10 +11658,15 @@ func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetTypename() *string { ret
 // without the need for customers to enter a code.
 type DiscountNodeFieldsDiscountDiscountCodeFreeShipping struct {
 	Typename *string `json:"__typename"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title string `json:"title"`
 }
 
 // GetTypename returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.Typename, and is useful for accessing the field via an interface.
 func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetTypename() *string { return v.Typename }
+
+// GetTitle returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.Title, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetTitle() string { return v.Title }
 
 // The input fields for the quantity of items discounted and the discount value.
 type DiscountOnQuantityInput struct {
@@ -36023,6 +36038,15 @@ fragment DiscountNodeFields on DiscountNode {
 				... DiscountMinimumFields
 			}
 		}
+		... on DiscountCodeBxgy {
+			title
+		}
+		... on DiscountCodeFreeShipping {
+			title
+		}
+		... on DiscountCodeApp {
+			title
+		}
 		... on DiscountAutomaticBxgy {
 			title
 		}
@@ -39262,6 +39286,15 @@ fragment DiscountNodeFields on DiscountNode {
 				__typename
 				... DiscountMinimumFields
 			}
+		}
+		... on DiscountCodeBxgy {
+			title
+		}
+		... on DiscountCodeFreeShipping {
+			title
+		}
+		... on DiscountCodeApp {
+			title
 		}
 		... on DiscountAutomaticBxgy {
 			title

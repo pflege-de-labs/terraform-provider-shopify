@@ -26,7 +26,7 @@ type BasicListResource struct {
 
 func (r *BasicListResource) ListResourceConfigSchema(ctx context.Context, req list.ListResourceSchemaRequest, resp *list.ListResourceSchemaResponse) {
 	resp.Schema = listschema.Schema{
-		MarkdownDescription: "Lists the basic (amount-off) discounts of the store, code and automatic. Other methods and app discounts are left out. " +
+		MarkdownDescription: "Lists the basic (amount-off) discounts of the store, code and automatic. Other methods and app discounts are skipped with a warning naming their kind. " +
 			"Discounts this resource can't hold (more than 250 markets, or a code discount without a code) are skipped with a warning and don't count toward the limit. " +
 			"Generated config holds product, collection, segment and market GIDs, which tie it to the store: replace them with references.",
 	}
@@ -35,21 +35,8 @@ func (r *BasicListResource) ListResourceConfigSchema(ctx context.Context, req li
 func (r *BasicListResource) List(ctx context.Context, req list.ListRequest, stream *list.ListResultsStream) {
 	stream.Results = func(push func(list.ListResult) bool) {
 		err := patterns.PaginateCounting(ctx, req.Limit, listPage(ctx, r.client, nil), func(raw client.DiscountNodeFields) (bool, bool) {
-			n, err := nodeOf(&raw)
-			if err != nil {
-				return false, push(skipped(raw.Id, err.Error()))
-			}
-			if n.Method != methodBasic {
-				return false, true
-			}
-			if err := completeItems(ctx, r.client, n); err != nil {
-				return false, push(skipped(displayName(n), err.Error()))
-			}
-			res, ok := basicListResult(ctx, req, n)
-			if !ok {
-				return false, push(res)
-			}
-			return true, push(res)
+			res, counted := r.result(ctx, req, &raw)
+			return counted, push(res)
 		})
 		if err != nil {
 			var diags diag.Diagnostics
@@ -57,6 +44,21 @@ func (r *BasicListResource) List(ctx context.Context, req list.ListRequest, stre
 			push(list.ListResult{Diagnostics: diags})
 		}
 	}
+}
+
+// result maps one listed discount; a skip is a warning that doesn't count toward the limit.
+func (r *BasicListResource) result(ctx context.Context, req list.ListRequest, raw *client.DiscountNodeFields) (list.ListResult, bool) {
+	n, err := nodeOf(raw)
+	if err != nil {
+		return skipped(raw.Id, err.Error()), false
+	}
+	if err := checkBasic(n.Typename); err != nil {
+		return skipped(displayName(n), err.Error()), false
+	}
+	if err := completeItems(ctx, r.client, n); err != nil {
+		return skipped(displayName(n), err.Error()), false
+	}
+	return basicListResult(ctx, req, n)
 }
 
 func skipped(name, detail string) list.ListResult {

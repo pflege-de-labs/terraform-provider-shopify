@@ -65,7 +65,7 @@ func checkBasic(typename string) error {
 	case t.method == methodApp:
 		return fmt.Errorf("the discount belongs to an app (%s): its Function's app manages it", typename)
 	case t.method != want:
-		return fmt.Errorf("the discount is a %s discount; use shopify_discount_%s", t.method, t.method)
+		return fmt.Errorf("the discount is a %s discount (%s); shopify_discount_%s is not supported yet", t.method, typename, t.method)
 	}
 	return nil
 }
@@ -122,12 +122,8 @@ func nodeOf(n *client.DiscountNodeFields) (*node, error) {
 	case *client.DiscountNodeFieldsDiscountDiscountAutomaticBasic:
 		out.Title, out.StartsAt, out.EndsAt, out.Status = d.Title, d.StartsAt, d.EndsAt, string(d.Status)
 		out.CombinesWith, out.Context, out.CustomerGets, out.Minimum = d.CombinesWith, d.Context, &d.CustomerGets, d.MinimumRequirement
-	case *client.DiscountNodeFieldsDiscountDiscountAutomaticBxgy:
-		out.Title = d.Title
-	case *client.DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping:
-		out.Title = d.Title
-	case *client.DiscountNodeFieldsDiscountDiscountAutomaticApp:
-		out.Title = d.Title
+	case interface{ GetTitle() string }:
+		out.Title = d.GetTitle()
 	}
 	return out, nil
 }

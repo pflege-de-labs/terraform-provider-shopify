@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
@@ -288,5 +289,39 @@ func TestDisplayName(t *testing.T) {
 	}
 	if got := displayName(&node{Title: "A"}); got != "A (automatic)" {
 		t.Errorf("got %q", got)
+	}
+}
+
+func TestListSkipsOtherMethods(t *testing.T) {
+	cases := []struct {
+		discount client.DiscountNodeFieldsDiscount
+		summary  string
+		detail   string
+	}{
+		{
+			&client.DiscountNodeFieldsDiscountDiscountCodeFreeShipping{Typename: ptr("DiscountCodeFreeShipping"), Title: "Versandfrei"},
+			"Skipping discount Versandfrei (code)",
+			"the discount is a free_shipping discount (DiscountCodeFreeShipping); shopify_discount_free_shipping is not supported yet",
+		},
+		{
+			&client.DiscountNodeFieldsDiscountDiscountAutomaticBxgy{Typename: ptr("DiscountAutomaticBxgy"), Title: "2 for 1"},
+			"Skipping discount 2 for 1 (automatic)",
+			"the discount is a bxgy discount (DiscountAutomaticBxgy); shopify_discount_bxgy is not supported yet",
+		},
+		{
+			&client.DiscountNodeFieldsDiscountDiscountCodeApp{Typename: ptr("DiscountCodeApp"), Title: "Loyalty"},
+			"Skipping discount Loyalty (code)",
+			"the discount belongs to an app (DiscountCodeApp): its Function's app manages it",
+		},
+	}
+	r := &BasicListResource{} // no client: a skip must return before any API call
+	for _, c := range cases {
+		res, counted := r.result(context.Background(), list.ListRequest{}, &client.DiscountNodeFields{Id: "x", Discount: c.discount})
+		if counted {
+			t.Errorf("%s: a skipped discount must not count toward the limit", c.summary)
+		}
+		if w := res.Diagnostics.Warnings(); len(w) != 1 || res.Diagnostics.HasError() || w[0].Summary() != c.summary || w[0].Detail() != c.detail {
+			t.Errorf("got %v, want one warning %q: %q", res.Diagnostics, c.summary, c.detail)
+		}
 	}
 }
