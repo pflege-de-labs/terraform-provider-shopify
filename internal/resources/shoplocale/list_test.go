@@ -26,7 +26,7 @@ list "shopify_shop_locale" "all" {
 
 func TestAccListShopLocale(t *testing.T) {
 	acctest.Setup(t)
-	ownLocales(t, locFr, locIt)
+	ownLocales(t, locNl, locIt)
 	locale := func(name, code string) string {
 		return fmt.Sprintf(`
 resource "shopify_shop_locale" %q {
@@ -40,9 +40,9 @@ resource "shopify_shop_locale" %q {
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
 		TerraformVersionChecks:   []tfversion.TerraformVersionCheck{tfversion.SkipBelow(tfversion.Version1_14_0)},
-		CheckDestroy:             checkGone(t, locFr, locIt),
+		CheckDestroy:             checkGone(t, locNl, locIt),
 		Steps: []resource.TestStep{
-			{Config: locale("a", locFr) + locale("b", locIt)},
+			{Config: locale("a", locNl) + locale("b", locIt)},
 			{
 				Query:  true,
 				Config: listConfig,
@@ -51,10 +51,10 @@ resource "shopify_shop_locale" %q {
 					querycheck.ExpectLengthAtLeast("shopify_shop_locale.all", 3),
 					querycheck.ExpectIdentity("shopify_shop_locale.all", map[string]knownvalue.Check{"id": id}),
 					querycheck.ExpectResourceKnownValues("shopify_shop_locale.all",
-						queryfilter.ByDisplayName(knownvalue.StringExact("fr (French)")),
+						queryfilter.ByDisplayName(knownvalue.StringExact("nl (Dutch)")),
 						[]querycheck.KnownValueCheck{
-							{Path: tfjsonpath.New("id"), KnownValue: knownvalue.StringExact(locFr)},
-							{Path: tfjsonpath.New("locale"), KnownValue: knownvalue.StringExact(locFr)},
+							{Path: tfjsonpath.New("id"), KnownValue: knownvalue.StringExact(locNl)},
+							{Path: tfjsonpath.New("locale"), KnownValue: knownvalue.StringExact(locNl)},
 							{Path: tfjsonpath.New("published"), KnownValue: knownvalue.Bool(false)},
 							{Path: tfjsonpath.New("primary"), KnownValue: knownvalue.Bool(false)},
 							{Path: tfjsonpath.New("adopt_existing"), KnownValue: knownvalue.Bool(false)},
