@@ -184,7 +184,6 @@ func contextFromAPI(c client.DiscountContextFields) (*contextSel, string, error)
 
 // contextInput writes want over live (nil on create): a difference within one kind, otherwise the new kind, which replaces the old.
 func contextInput(want contextSel, live *contextSel) *client.DiscountContextInput {
-	// TODO(verify): whether a switch between segments and markets also needs the old kind removed, as items do.
 	switch {
 	case want.CustomerSegmentIDs != nil:
 		if live != nil && live.CustomerSegmentIDs != nil {
@@ -409,9 +408,9 @@ func (m *commonModel) input(ctx context.Context, live *node) (commonInput, diag.
 		in.Code = code
 	case *code == *live.Code:
 	case live.CodesCount > 1:
-		// TODO(verify): which of several codes DiscountCodeBasicInput.code replaces.
+		// Shopify refuses it anyway ("Cannot update the code of a bulk discount."), even for one of the discount's own codes.
 		diags.AddAttributeError(path.Root("code"), "Code can't be changed",
-			fmt.Sprintf("The discount has %d codes, and which one a new code would replace is not known. Change the codes in the admin.", live.CodesCount))
+			fmt.Sprintf("The discount has %d codes, and Shopify doesn't change the code of a discount with several codes. Change the codes in the admin.", live.CodesCount))
 	default:
 		in.Code = code
 	}

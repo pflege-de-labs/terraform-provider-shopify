@@ -102,6 +102,9 @@ func TestPlanSource(t *testing.T) {
 	empty := &membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{}, ShopifyMade: true}
 	shopifyManual := &membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{"P1"}, ShopifyMade: true}
 	excluding := &membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{"P1"}, Exclusions: true}
+	smartExcluding := &membership{SourceID: "S1", MatchType: ptr("ALL"), Conditions: mustInput(tagInput), ConditionIDs: []string{"C1"}, ProductIDs: []string{}, Exclusions: true}
+	shopifyExcluding := &membership{SourceID: "S1", Conditions: []any{}, ProductIDs: []string{"P1"}, ShopifyMade: true, Exclusions: true}
+	emptyExcluding := &membership{SourceID: "S1", MatchType: ptr("ALL"), Conditions: []any{}, ProductIDs: []string{}, Exclusions: true}
 	cases := []struct {
 		name    string
 		live    *membership
@@ -127,7 +130,17 @@ func TestPlanSource(t *testing.T) {
 			sourceChanges{Update: &client.CollectionUpdateSourceInclusionInput{ConditionsToDelete: []string{"C1"}, SelectionsToAdd: sel("P1")}}, ""},
 		{"emptied: delete the source", manual, desired{ProductIDs: []string{}}, sourceChanges{Delete: true}, ""},
 		{"emptied Shopify-made source: refused (S13-9)", shopifyManual, desired{ProductIDs: []string{}}, sourceChanges{}, "Shopify made"},
-		{"emptied source with exclusions: refused (S13-9)", excluding, desired{ProductIDs: []string{}}, sourceChanges{}, "exclusions"},
+		{"emptied source with exclusions: products removed in place (S13-9)", excluding, desired{ProductIDs: []string{}},
+			sourceChanges{Update: &client.CollectionUpdateSourceInclusionInput{SelectionsToRemove: sel("P1")}}, ""},
+		{"emptied source with exclusions: conditions deleted in place (S13-9)", smartExcluding, desired{Conditions: json.RawMessage(`[]`)},
+			sourceChanges{Update: &client.CollectionUpdateSourceInclusionInput{ConditionsToDelete: []string{"C1"}}}, ""},
+		{"emptied Shopify-made source with exclusions: updated, not refused", shopifyExcluding, desired{ProductIDs: []string{}},
+			sourceChanges{Update: &client.CollectionUpdateSourceInclusionInput{SelectionsToRemove: sel("P1")}}, ""},
+		{"emptied source with exclusions keeps match type", smartExcluding, desired{MatchType: ptr("ALL"), Conditions: json.RawMessage(`[]`)},
+			sourceChanges{Update: &client.CollectionUpdateSourceInclusionInput{ConditionsToDelete: []string{"C1"}}}, ""},
+		{"empty source with exclusions stays", emptyExcluding, desired{Conditions: json.RawMessage(`[]`), ProductIDs: []string{}}, sourceChanges{}, ""},
+		{"empty source with exclusions: match type changed", emptyExcluding, desired{MatchType: ptr("ANY"), Conditions: json.RawMessage(`[]`)},
+			sourceChanges{Update: &client.CollectionUpdateSourceInclusionInput{MatchType: &anyOf}}, ""},
 		{"Shopify-made source keeps an entry", shopifyManual, desired{ProductIDs: []string{"P2"}},
 			sourceChanges{Update: &client.CollectionUpdateSourceInclusionInput{SelectionsToAdd: sel("P2"), SelectionsToRemove: sel("P1")}}, ""},
 		{"emptied, conditions unmanaged but live", smart, desired{ProductIDs: []string{}}, sourceChanges{}, ""},

@@ -122,7 +122,6 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	}
 
 	// pageCreate also fails on a taken handle, but this says how to take the page over.
-	// TODO(verify): whether the search index lags behind a page created seconds ago; the lookup would then miss it and pageCreate reports TAKEN.
 	existing, err := r.getByHandle(ctx, plan.Handle.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to look up "+what, err.Error())

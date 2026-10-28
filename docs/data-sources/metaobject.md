@@ -34,7 +34,7 @@ output "material_label" {
 ### Required
 
 - `handle` (String) Entry handle, unique within the type.
-- `type` (String) Definition type, e.g. `shopify--material`, exactly as the API returns it.
+- `type` (String) Definition type, e.g. `shopify--material`, exactly as the API returns it. A type of the provider's own app can also be given as `$app:<name>`.
 
 ### Read-Only
 

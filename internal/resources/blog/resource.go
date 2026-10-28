@@ -116,7 +116,6 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	}
 
 	// Shopify suffixes a taken handle instead of failing, so existence is checked here and again after create.
-	// TODO(verify): whether the search index lags behind a blog created seconds ago; the post-create check still catches it.
 	existing, err := r.getByHandle(ctx, plan.Handle.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to look up "+what, err.Error())

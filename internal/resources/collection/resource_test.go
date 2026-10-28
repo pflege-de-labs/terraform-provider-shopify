@@ -67,6 +67,7 @@ type liveSource struct {
 			Nodes []struct{ Product struct{ ID string } }
 		}
 	}
+	Exclusion *struct{ Conditions []json.RawMessage }
 }
 
 func mustSource(t *testing.T, c *client.CollectionFields) liveSource {
@@ -576,6 +577,74 @@ resource "shopify_collection" "test" {
 					return nil
 				},
 			},
+		},
+	})
+}
+
+// S13-9: emptying a source with exclusions keeps the source and its exclusions, for the last condition and the last product alike.
+func TestAccCollection_emptiedWithExclusions(t *testing.T) {
+	acctest.Setup(t)
+	acctest.KeepFrontpage(t)
+	handle := testHandle()
+	productHandle := handle + "-p"
+	cleanup(t, handle, productHandle)
+	body := func(membership string) string {
+		return config(productHandle, fmt.Sprintf("  handle = %q\n  title  = \"tf-acc emptied with exclusions\"\n%s", handle, membership))
+	}
+	smart := body("  match_type = \"ALL\"\n  conditions = jsonencode([" + tagCondition + "])")
+	noConditions := body("  conditions = jsonencode([])")
+	manual := body("  conditions  = jsonencode([])\n  product_ids = [shopify_product.p.id]")
+	emptied := body("  conditions  = jsonencode([])\n  product_ids = []")
+	var sourceID string
+	// keptEmpty checks the live source is the original one, includes nothing and still has its exclusion.
+	keptEmpty := func(*terraform.State) error {
+		s := mustSource(t, mustLookup(t, handle))
+		switch {
+		case s.ID != sourceID:
+			return fmt.Errorf("live source = %s, want %s kept", s.ID, sourceID)
+		case len(s.Inclusion.Conditions) != 0 || len(s.Inclusion.Selections.Nodes) != 0:
+			return fmt.Errorf("live inclusion = %+v, want empty", s.Inclusion)
+		case s.Exclusion == nil || len(s.Exclusion.Conditions) != 1:
+			return fmt.Errorf("live exclusion = %+v, want the one condition kept", s.Exclusion)
+		}
+		return nil
+	}
+	emptyPlan := resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}}
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkGone(t, handle, productHandle),
+		Steps: []resource.TestStep{
+			{Config: smart, ConfigStateChecks: []statecheck.StateCheck{stateValue("source_id", knownvalue.StringRegexp(sourceRe))}},
+			{
+				// An exclusion added outside Terraform, then the last condition removed.
+				PreConfig: func() {
+					c := mustLookup(t, handle)
+					sourceID = mustSource(t, c).ID
+					res, err := client.AddCollectionExclusionTag(context.Background(), acctest.Client(t), c.Id, sourceID, "tf-acc-excluded")
+					if err != nil {
+						t.Fatal(err)
+					}
+					if errs := res.CollectionUpdate.UserErrors; len(errs) > 0 {
+						t.Fatalf("collectionUpdate: %v", errs)
+					}
+				},
+				Config: noConditions,
+				Check:  keptEmpty,
+				ConfigStateChecks: []statecheck.StateCheck{
+					stateValue("conditions", str("[]")),
+					stateValue("product_ids", knownvalue.SetExact([]knownvalue.Check{})),
+				},
+			},
+			{Config: noConditions, ConfigPlanChecks: emptyPlan},
+			{Config: manual, ConfigStateChecks: []statecheck.StateCheck{stateValue("product_ids", knownvalue.SetSizeExact(1))}},
+			{
+				// The last product removed from the same source.
+				Config:            emptied,
+				Check:             keptEmpty,
+				ConfigStateChecks: []statecheck.StateCheck{stateValue("product_ids", knownvalue.SetExact([]knownvalue.Check{}))},
+			},
+			{Config: emptied, ConfigPlanChecks: emptyPlan},
 		},
 	})
 }

@@ -115,6 +115,55 @@ func TestAccMetaobjectDataSource_shopifyStandard(t *testing.T) {
 	})
 }
 
+// Shopify stores `$app:<name>` as `app--<app id>--<name>` and resolves the `$app:` spelling on lookup (2026-10-27).
+func TestAccMetaobjectDataSource_appType(t *testing.T) {
+	acctest.Setup(t)
+	typ := "$app:tfacc_" + strings.ToLower(sdkacctest.RandStringFromCharSet(8, sdkacctest.CharSetAlpha))
+	const handle = "entry-one"
+	c := acctest.Client(t)
+	str := func(s string) *string { return &s }
+	def, err := client.CreateMetaobjectDefinition(context.Background(), c, client.MetaobjectDefinitionCreateInput{
+		Type: typ,
+		FieldDefinitions: []client.MetaobjectFieldDefinitionCreateInput{
+			{Key: "title", Type: "single_line_text_field", Name: str("Title")},
+			{Key: "tags", Type: "list.single_line_text_field", Name: str("Tags")},
+		},
+		Capabilities: &client.MetaobjectCapabilityCreateInput{Publishable: &client.MetaobjectCapabilityPublishableInput{Enabled: true}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := def.MetaobjectDefinitionCreate
+	if p == nil || len(p.UserErrors) > 0 || p.MetaobjectDefinition == nil {
+		t.Fatalf("metaobjectDefinitionCreate: %+v", p)
+	}
+	defID := p.MetaobjectDefinition.Id
+	// Deleting the definition deletes its entries too.
+	t.Cleanup(func() {
+		if _, err := client.DeleteMetaobjectDefinition(context.Background(), c, defID); err != nil {
+			t.Errorf("deleting %s: %v", defID, err)
+		}
+	})
+	if !regexp.MustCompile(`^app--\d+--tfacc_`).MatchString(p.MetaobjectDefinition.Type) {
+		t.Fatalf("stored type %q, want app--<id>--tfacc_…", p.MetaobjectDefinition.Type)
+	}
+	entryID := createEntry(t, typ, handle)
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		Steps: []resource.TestStep{{
+			Config: fmt.Sprintf(`data "shopify_metaobject" "test" {
+  type   = %q
+  handle = %q
+}`, typ, handle),
+			Check: resource.ComposeAggregateTestCheckFunc(
+				resource.TestCheckResourceAttr(dsAddr, "id", entryID),
+				resource.TestCheckResourceAttr(dsAddr, "type", typ),
+				resource.TestCheckResourceAttr(dsAddr, "fields.title", "First entry"),
+			),
+		}},
+	})
+}
+
 func TestAccMetaobjectDataSource_notFound(t *testing.T) {
 	acctest.Setup(t)
 	resource.Test(t, resource.TestCase{
