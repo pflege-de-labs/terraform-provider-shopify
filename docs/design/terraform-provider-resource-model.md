@@ -1228,7 +1228,7 @@ resource "shopify_page" "impressum" {
 | `template_suffix` | string | Optional + Computed, UseStateForUnknownIncludingNull; unset = unmanaged. `""` and `null` both mean the default template, but they read back as given (`""` stays `""`, never set reads `null`; checked), so no normalisation is needed |
 | `adopt_existing` | bool | Pattern A, see below |
 
-Import key: the handle (`impressum`). Handles are unique per shop: a taken handle fails with `TAKEN`, `field = ["page","handle"]`, on create and on update (checked; no `-1` suffix, unlike blogs and menus). Read: `page(id:)` first. If it is gone, `pages(first: 5, query: "handle:<handle>")` and an exact handle match; there is no `pageByHandle` or `pageByIdentifier` root field, so the fallback is search-indexed (a new page was found right away in the probe; `TODO(verify)`: whether the index lags under load, as it does for menus). `MutableIdentity` is set.
+Import key: the handle (`impressum`). Handles are unique per shop: a taken handle fails with `TAKEN`, `field = ["page","handle"]`, on create and on update (checked; no `-1` suffix, unlike blogs and menus). Read: `page(id:)` first. If it is gone, `pages(first: 5, query: "handle:<handle>")` and an exact handle match; there is no `pageByHandle` or `pageByIdentifier` root field, so the fallback is search-indexed (a new page was found right away in the probe; see the lag measurement under Implemented). `MutableIdentity` is set.
 
 **Publishing: `published` only, no `publishDate`.** `Page` is not `Publishable`: there is no `publication_ids` as on products (§9k.3), and pages are visible on the online store only. `isPublished` is the switch. `publishDate` (scheduled publishing) is not managed and never sent: it is an admin workflow, and it fights with `isPublished` (`isPublished: true` with a future `publishDate` fails with `INVALID_PUBLISH_DATE`, checked). A scheduled page reads as `published = false` (checked: a future `publishDate` gave `isPublished = false` and `publishedAt` = that date), so a config with `published = true` publishes it at the next apply. `publishedAt` is not exposed.
 
@@ -1253,11 +1253,11 @@ Notes:
 **Implemented (§9m, verified on the dev store, 2026-10-26):**
 - Everything above held in the acceptance tests: create without `published` gives `true`; the body repair is no diff (`<p>Hi<br>there<b>bold</p>` stays configured, `...</b></p>` lives); `template_suffix` `""` reads back as `""`; a handle rename keeps the GID; import by handle, by identity and from generated config; the list shows `body`, `published` and `template_suffix` (null stays null).
 - `template_suffix` uses `UseStateForUnknownIncludingNull`, not plain `UseStateForUnknown`: a never-set suffix reads `null`, and plain keeps the plan unknown on every run.
-- The handle fallback sends `pages(first: 5, query: "handle:\"<handle>\"")` (quoted) and compares handles exactly; the quoted form found new pages immediately. `TODO(verify)` on index lag stays in `Create`.
+- The handle fallback sends `pages(first: 5, query: "handle:\"<handle>\"")` (quoted) and compares handles exactly; the quoted form found new pages immediately. **Index lag (dev store, 2026-10-27):** five pages created through `pageCreate` and looked up with that query immediately after the mutation returned were each found by the first query (0.42–1.25 s after the create returned, round trip included), so no lag was measurable, unlike segments (§9q, 2 to 4 s) and files (§9o). A lag under load would only degrade the message: the lookup misses, `pageCreate` fails with `TAKEN` on `handle`, and nothing is created twice.
 - Update sends only attributes that are configured and differ from state; a plan that changes only `adopt_existing` makes no API call. Adopt does the same against the live page, so a page that already matches is not written at all: adopting `contact` with its live title left it byte-identical (`TestAccPage_adoptContact`, Review Focus 1).
 - Review Focus 2 passed: `template_suffix`, `published` and `body` changed through the client while unset in config plan empty, and state takes the live values.
 - `pageDelete` is not preceded by a lookup: `NOT_FOUND` is recognised by its `code` and tolerated (`goneOnDelete`, unit-tested only: the refresh before destroy already drops a page deleted outside, which the acceptance test covers). A page deleted outside Terraform is planned for recreation.
-- Not verified, still `TODO(verify)`: whether `contact` can be deleted (not tried), menu items of type `PAGE` losing their target, search-index lag under load.
+- Not verified, still `TODO(verify)`: whether `contact` can be deleted (not tried), menu items of type `PAGE` losing their target. Index lag under production load can't be measured on the dev store; the path is safe either way (above).
 - End state of the dev store equals the start: only `contact`.
 
 ---
@@ -1288,7 +1288,7 @@ resource "shopify_blog" "news" {
 | `adopt_existing` | bool | Pattern A, see below |
 | `allow_data_deletion` | bool | Pattern B, see below |
 
-Import key: the handle (`news`). Read: `blog(id:)` first; if it is gone, `blogs(first: 25, query: "handle:\"<handle>\"")` with an exact handle match (no `blogByHandle` root field, so search-indexed; same `TODO(verify)` on lag as pages). `MutableIdentity` is set.
+Import key: the handle (`news`). Read: `blog(id:)` first; if it is gone, `blogs(first: 25, query: "handle:\"<handle>\"")` with an exact handle match (no `blogByHandle` root field, so search-indexed; lag measured under Implemented). `MutableIdentity` is set.
 
 **Shopify suffixes a taken handle instead of failing**, on create and on update: `blogCreate` with `handle: "news"` returned a new blog `news-1`, and `blogUpdate` to `news` renamed the blog to `news-1` (both checked, no userError). So, as for menus (§9):
 - Create looks the handle up first (fails unless `adopt_existing`), then checks the returned handle; a suffixed handle (another writer won the race) means the new blog is deleted again and Create fails, naming the handle.
@@ -1318,7 +1318,7 @@ Notes:
 - Suffixed handles: a taken handle on create is refused by the lookup before `blogCreate`, on update before `blogUpdate`; neither test left a `-1` blog. The post-create check (delete the suffixed copy, then fail) and the post-update check (state takes the returned handle) only run when Shopify wins a race, so they are not reached by the tests; `handleDrift` is unit-tested.
 - Pattern B: `articlesCount` reflected an article created seconds earlier, so the guard fires on the first destroy (`holds 1 articles`, plus the `allow_data_deletion` hint); with `allow_data_deletion = true` blog and article are gone. An empty blog is deleted without the flag (every other test's destroy).
 - `NOT_FOUND` on delete is handled by `goneOnDelete` (unit-tested), not by an acceptance test: Terraform refreshes before destroy, so Read already drops a blog deleted outside. The `deletedOutside` test covers that Read path and the recreate.
-- The handle fallback sends `blogs(first: 25, query: "handle:\"<handle>\"")` and compares handles exactly; the quoted form found new blogs immediately. `TODO(verify)` on index lag stays in `Create`. `TODO(verify)` on deleting `news` stays untried.
+- The handle fallback sends `blogs(first: 25, query: "handle:\"<handle>\"")` and compares handles exactly; the quoted form found new blogs immediately. **Index lag (dev store, 2026-10-27):** five blogs created through `blogCreate` were each found by the first lookup sent immediately after the mutation returned (0.42–0.43 s after it returned, round trip included): no measurable lag. Under load a missed lookup would let `blogCreate` suffix the handle; the post-create check then deletes the copy and fails, so nothing is left behind. `TODO(verify)` on deleting `news` stays untried.
 - The test-only `articleCreate` / `article(id:)` operations live in `blog.graphql`; the provider never calls them.
 
 ---
