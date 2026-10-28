@@ -65,7 +65,6 @@ func allowDataDeletionAttribute() schema.BoolAttribute {
 	return a
 }
 
-// TODO(verify): whether any large product needs productSet with synchronous: false and productOperation polling.
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	unmanaged := " Unset means unmanaged: the value set in the admin is kept."
 	resp.Schema = schema.Schema{
