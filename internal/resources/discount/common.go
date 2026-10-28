@@ -408,9 +408,9 @@ func (m *commonModel) input(ctx context.Context, live *node) (commonInput, diag.
 		in.Code = code
 	case *code == *live.Code:
 	case live.CodesCount > 1:
-		// TODO(verify): which of several codes DiscountCodeBasicInput.code replaces.
+		// Shopify refuses it anyway ("Cannot update the code of a bulk discount."), even for one of the discount's own codes.
 		diags.AddAttributeError(path.Root("code"), "Code can't be changed",
-			fmt.Sprintf("The discount has %d codes, and which one a new code would replace is not known. Change the codes in the admin.", live.CodesCount))
+			fmt.Sprintf("The discount has %d codes, and Shopify doesn't change the code of a discount with several codes. Change the codes in the admin.", live.CodesCount))
 	default:
 		in.Code = code
 	}
