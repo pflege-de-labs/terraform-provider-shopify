@@ -1,3 +1,9 @@
+## 0.1.1 (Unreleased)
+
+BUG FIXES:
+
+* resource/shopify_discount_basic: an import no longer plans an in-place update when `customer_gets.value.percentage` has no exact float64 form (e.g. `0.1`). Only `status` changed, to `(known after apply)`.
+
 ## 0.1.0 (October 28, 2026)
 
 FEATURES:

@@ -300,8 +300,8 @@ func TestAccDiscountBasic_code(t *testing.T) {
 	}
 	toSegment := updated(`{ subtotal = "30" }`, `{ amount = { amount = "5" } }`, `{ collection_ids = [shopify_collection.c.id] }`, fmt.Sprintf(`{ customer_segment_ids = [%q] }`, segment))
 	toMarket := updated(`{ subtotal = "30" }`, `{ amount = { amount = "5" } }`, `{ collection_ids = [shopify_collection.c.id] }`, fmt.Sprintf(`{ market_ids = [%q] }`, market))
-	toProducts := updated(`{ quantity = 2 }`, `{ percentage = 0.25 }`, `{ product_ids = [shopify_product.p.id] }`, `{ all = true }`)
-	cleared := updated(`{}`, `{ percentage = 0.25 }`, `{ product_ids = [shopify_product.p.id] }`, `{ all = true }`)
+	toProducts := updated(`{ quantity = 2 }`, `{ percentage = 0.1 }`, `{ product_ids = [shopify_product.p.id] }`, `{ all = true }`)
+	cleared := updated(`{}`, `{ percentage = 0.1 }`, `{ product_ids = [shopify_product.p.id] }`, `{ all = true }`)
 	// ends_at and combines_with left out: unmanaged, so the client's changes below must not plan.
 	unmanaged := items(handle) + basic(fmt.Sprintf(`
   title                     = %q
@@ -311,7 +311,8 @@ func TestAccDiscountBasic_code(t *testing.T) {
   usage_limit               = 100
   applies_once_per_customer = true
   minimum_requirement       = {}
-  customer_gets             = { value = { percentage = 0.25 }, items = { product_ids = [shopify_product.p.id] } }
+  # 0.1 has no exact float64 form, so the import steps catch config/state number mismatches.
+  customer_gets             = { value = { percentage = 0.1 }, items = { product_ids = [shopify_product.p.id] } }
 `, title+" b", renamed))
 	// An import can only return UTC, and a plan must take the configured spelling, so import configs spell it in UTC.
 	imported := strings.Replace(unmanaged, "2026-10-01T12:00:00+02:00", "2026-10-01T10:00:00Z", 1)
@@ -437,7 +438,7 @@ func TestAccDiscountBasic_code(t *testing.T) {
 					})),
 					nested(knownvalue.Int64Exact(2), "minimum_requirement", "quantity"),
 					nested(knownvalue.Null(), "minimum_requirement", "subtotal"),
-					nested(knownvalue.Float64Exact(0.25), "customer_gets", "value", "percentage"),
+					nested(knownvalue.Float64Exact(0.1), "customer_gets", "value", "percentage"),
 					nested(knownvalue.SetExact([]knownvalue.Check{knownvalue.StringRegexp(productGIDRe)}), "customer_gets", "items", "product_ids"),
 					// Selecting a product doesn't list its variants.
 					nested(knownvalue.Null(), "customer_gets", "items", "variant_ids"),
