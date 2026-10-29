@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math/big"
 	"strings"
 	"time"
 
@@ -25,6 +26,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
@@ -707,8 +709,27 @@ func keepStatus(ctx context.Context, state tfsdk.State, plan *tfsdk.Plan) diag.D
 	diags := state.GetAttribute(ctx, path.Root("status"), &status)
 	candidate := *plan
 	diags.Append(candidate.SetAttribute(ctx, path.Root("status"), status)...)
-	if !diags.HasError() && candidate.Raw.Equal(state.Raw) {
+	if !diags.HasError() && asFloat64(candidate.Raw).Equal(asFloat64(state.Raw)) {
 		*plan = candidate
 	}
 	return diags
+}
+
+// asFloat64 rounds every number to float64: config holds exact decimals (0.1), state what Read stored as float64.
+func asFloat64(v tftypes.Value) tftypes.Value {
+	out, err := tftypes.Transform(v, func(_ *tftypes.AttributePath, v tftypes.Value) (tftypes.Value, error) {
+		if !v.Type().Is(tftypes.Number) || !v.IsKnown() || v.IsNull() {
+			return v, nil
+		}
+		var f big.Float
+		if err := v.As(&f); err != nil {
+			return v, err
+		}
+		f64, _ := f.Float64()
+		return tftypes.NewValue(tftypes.Number, big.NewFloat(f64)), nil
+	})
+	if err != nil {
+		return v
+	}
+	return out
 }
