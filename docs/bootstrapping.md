@@ -49,6 +49,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_translations` | translations, market localizations | planned | volatile (follows content) |
 | `write_publications` | `publication_ids` on `shopify_product` and `shopify_collection` (publishing to channels; the publications themselves belong to channel apps) ⚠ (whether `write_products` alone suffices is untested: all scopes are granted on the dev store) | ✅ | volatile |
 | `read_publications` (or `write_publications`) | `shopify_publication` data source (publications belong to sales channel apps, not managed; for referencing by name) | ✅ data source | good (read-only) |
+| `read_customers` ⚠ (assumed, unverified: the dev store grants all scopes) | `shopify_customer_account_page` data source (Shopify-created pages; for referencing their GIDs by handle) | ✅ data source | good (read-only) |
 | `write_purchase_options` | selling plan groups (together with `write_products`) | planned | volatile |
 | `write_customers` | `shopify_customer_segment`; metafield definitions for `CUSTOMER` ⚠ | ✅ segments, the rest planned | segments volatile |
 | `write_companies` | metafield definitions for `COMPANY`, `COMPANY_LOCATION` ⚠ (B2B stores only; not in the reference configs) | planned | good |

@@ -557,6 +557,11 @@ func setStrings(ctx context.Context, s types.Set, diags *diag.Diagnostics) ([]st
 	if s.IsUnknown() {
 		return nil, false
 	}
+	for _, e := range s.Elements() {
+		if e.IsUnknown() {
+			return nil, false
+		}
+	}
 	out := []string{}
 	if !s.IsNull() {
 		diags.Append(s.ElementsAs(ctx, &out, false)...)
