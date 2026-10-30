@@ -4,6 +4,10 @@ FEATURES:
 
 * **New Data Source:** `shopify_customer_account_page`
 
+BUG FIXES:
+
+* resource/shopify_delivery_profile: `location_ids` may reference a location created in the same apply (an unknown element no longer fails validation).
+
 ## 0.1.1 (October 29, 2026)
 
 BUG FIXES:
