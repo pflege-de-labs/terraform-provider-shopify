@@ -18049,6 +18049,298 @@ func (v *ListConsentPoliciesResponse) GetConsentPolicy() []ListConsentPoliciesCo
 	return v.ConsentPolicy
 }
 
+// ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection includes the requested fields of the GraphQL type CustomerAccountPageConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple CustomerAccountPages.
+type ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection struct {
+	// A list of nodes that are contained in CustomerAccountPageEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage `json:"-"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection) GetNodes() []ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection) GetPageInfo() ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionPageInfo {
+	return v.PageInfo
+}
+
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection
+		Nodes []json.RawMessage `json:"nodes"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Nodes
+		src := firstPass.Nodes
+		*dst = make(
+			[]ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			if len(src) != 0 && string(src) != "null" {
+				err = __unmarshalListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage(
+					src, dst)
+				if err != nil {
+					return fmt.Errorf(
+						"unable to unmarshal ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection.Nodes: %w", err)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection struct {
+	Nodes []json.RawMessage `json:"nodes"`
+
+	PageInfo ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionPageInfo `json:"pageInfo"`
+}
+
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection) __premarshalJSON() (*__premarshalListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection, error) {
+	var retval __premarshalListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection
+
+	{
+
+		dst := &retval.Nodes
+		src := v.Nodes
+		*dst = make(
+			[]json.RawMessage,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			var err error
+			*dst, err = __marshalListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage(
+				&src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection.Nodes: %w", err)
+			}
+		}
+	}
+	retval.PageInfo = v.PageInfo
+	return &retval, nil
+}
+
+// ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage includes the requested fields of the GraphQL type CustomerAccountAppExtensionPage.
+// The GraphQL type's documentation follows.
+//
+// An app extension page for the customer account navigation menu.
+type ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage struct {
+	Typename *string `json:"__typename"`
+	// The unique ID for the customer account page.
+	Id string `json:"id"`
+	// A unique, human-friendly string for the customer account page.
+	Handle string `json:"handle"`
+	// The title of the customer account page.
+	Title string `json:"title"`
+}
+
+// GetTypename returns ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage.Typename, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage) GetTypename() *string {
+	return v.Typename
+}
+
+// GetId returns ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage.Id, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage) GetId() string {
+	return v.Id
+}
+
+// GetHandle returns ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage.Handle, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage) GetHandle() string {
+	return v.Handle
+}
+
+// GetTitle returns ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage.Title, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage) GetTitle() string {
+	return v.Title
+}
+
+// ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage includes the requested fields of the GraphQL type CustomerAccountNativePage.
+// The GraphQL type's documentation follows.
+//
+// A native page for the customer account navigation menu.
+type ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage struct {
+	Typename *string `json:"__typename"`
+	// The unique ID for the customer account page.
+	Id string `json:"id"`
+	// A unique, human-friendly string for the customer account page.
+	Handle string `json:"handle"`
+	// The title of the customer account page.
+	Title string `json:"title"`
+}
+
+// GetTypename returns ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage.Typename, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage) GetTypename() *string {
+	return v.Typename
+}
+
+// GetId returns ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage.Id, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage) GetId() string {
+	return v.Id
+}
+
+// GetHandle returns ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage.Handle, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage) GetHandle() string {
+	return v.Handle
+}
+
+// GetTitle returns ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage.Title, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage) GetTitle() string {
+	return v.Title
+}
+
+// ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage includes the requested fields of the GraphQL interface CustomerAccountPage.
+//
+// ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage is implemented by the following types:
+// ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage
+// ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage
+// The GraphQL type's documentation follows.
+//
+// A customer account page.
+type ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage interface {
+	implementsGraphQLInterfaceListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+	// GetId returns the interface-field "id" from its implementation.
+	// The GraphQL interface field's documentation follows.
+	//
+	// The unique ID for the customer account page.
+	GetId() string
+	// GetHandle returns the interface-field "handle" from its implementation.
+	// The GraphQL interface field's documentation follows.
+	//
+	// A unique, human-friendly string for the customer account page.
+	GetHandle() string
+	// GetTitle returns the interface-field "title" from its implementation.
+	// The GraphQL interface field's documentation follows.
+	//
+	// The title of the customer account page.
+	GetTitle() string
+}
+
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage) implementsGraphQLInterfaceListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage() {
+}
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage) implementsGraphQLInterfaceListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage() {
+}
+
+func __unmarshalListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage(b []byte, v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "CustomerAccountAppExtensionPage":
+		*v = new(ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage)
+		return json.Unmarshal(b, *v)
+	case "CustomerAccountNativePage":
+		*v = new(ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing CustomerAccountPage.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage(v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage:
+		typename = "CustomerAccountAppExtensionPage"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountAppExtensionPage
+		}{typename, v}
+		return json.Marshal(result)
+	case *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage:
+		typename = "CustomerAccountNativePage"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountNativePage
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionNodesCustomerAccountPage: "%T"`, v)
+	}
+}
+
+// ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// ListCustomerAccountPagesResponse is returned by ListCustomerAccountPages on success.
+type ListCustomerAccountPagesResponse struct {
+	// List of the shop's customer account pages.
+	CustomerAccountPages *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection `json:"customerAccountPages"`
+}
+
+// GetCustomerAccountPages returns ListCustomerAccountPagesResponse.CustomerAccountPages, and is useful for accessing the field via an interface.
+func (v *ListCustomerAccountPagesResponse) GetCustomerAccountPages() *ListCustomerAccountPagesCustomerAccountPagesCustomerAccountPageConnection {
+	return v.CustomerAccountPages
+}
+
 // ListDeliveryProfilesDeliveryProfilesDeliveryProfileConnection includes the requested fields of the GraphQL type DeliveryProfileConnection.
 // The GraphQL type's documentation follows.
 //
@@ -31414,6 +31706,14 @@ type __ListCollectionsInput struct {
 // GetAfter returns __ListCollectionsInput.After, and is useful for accessing the field via an interface.
 func (v *__ListCollectionsInput) GetAfter() *string { return v.After }
 
+// __ListCustomerAccountPagesInput is used internally by genqlient
+type __ListCustomerAccountPagesInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __ListCustomerAccountPagesInput.After, and is useful for accessing the field via an interface.
+func (v *__ListCustomerAccountPagesInput) GetAfter() *string { return v.After }
+
 // __ListDeliveryProfilesInput is used internally by genqlient
 type __ListDeliveryProfilesInput struct {
 	After *string `json:"after"`
@@ -39168,6 +39468,49 @@ func ListConsentPolicies(
 	}
 
 	data_ = &ListConsentPoliciesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by ListCustomerAccountPages.
+const ListCustomerAccountPages_Operation = `
+query ListCustomerAccountPages ($after: String) {
+	customerAccountPages(first: 250, after: $after) {
+		nodes {
+			__typename
+			id
+			handle
+			title
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+`
+
+func ListCustomerAccountPages(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *ListCustomerAccountPagesResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListCustomerAccountPages",
+		Query:  ListCustomerAccountPages_Operation,
+		Variables: &__ListCustomerAccountPagesInput{
+			After: after,
+		},
+	}
+
+	data_ = &ListCustomerAccountPagesResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

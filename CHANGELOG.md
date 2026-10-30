@@ -1,3 +1,9 @@
+## 0.1.2 (Unreleased)
+
+FEATURES:
+
+* **New Data Source:** `shopify_customer_account_page`
+
 ## 0.1.1 (October 29, 2026)
 
 BUG FIXES:

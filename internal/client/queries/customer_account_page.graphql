@@ -1,0 +1,15 @@
+query ListCustomerAccountPages(
+  $after: String
+) {
+  customerAccountPages(first: 250, after: $after) {
+    nodes {
+      id
+      handle
+      title
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
