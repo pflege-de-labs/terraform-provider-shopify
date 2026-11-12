@@ -37,7 +37,7 @@ list "shopify_product" "first" {
 
 Each list resource page shows its own example and arguments. Two are not plain "list everything":
 
-- `shopify_metafield_definition` needs an `owner_type` and lists one owner type per block. If the app has no read scope for an owner type, Shopify returns an empty list rather than an error, so an empty result can mean a missing scope. See the scope table in [Bootstrapping](https://github.com/pflege-de-labs/terraform-provider-shopify/blob/main/docs/bootstrapping.md#2-release-a-version).
+- `shopify_metafield_definition` needs an `owner_type` and lists one owner type per block. If the app has no read scope for an owner type, Shopify returns an empty list rather than an error, so an empty result comes with a warning that it can mean a missing scope. See the scope table in [Bootstrapping](https://github.com/pflege-de-labs/terraform-provider-shopify/blob/main/docs/bootstrapping.md#2-release-a-version).
 - `shopify_file` takes an optional `query` to narrow the files.
 
 Some lists leave things out on purpose, for example `shopify_consent_policy` omits Shopify's untouched defaults and `shopify_shop_policy` skips policies without text. Read the "Lists …" sentence on the list resource's page.
