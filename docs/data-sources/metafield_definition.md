@@ -32,7 +32,7 @@ output "material_type" {
 
 - `key` (String) Key within the namespace.
 - `namespace` (String) Namespace, e.g. `shopify`.
-- `owner_type` (String) Owner resource type, e.g. `PRODUCT`, `ORDER` or `SHOP`.
+- `owner_type` (String) Owner resource type, e.g. `PRODUCT`, `CUSTOMER`, `ORDER` or `SHOP`.
 
 ### Read-Only
 

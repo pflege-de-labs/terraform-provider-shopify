@@ -49,7 +49,7 @@ resource "shopify_metafield_definition" "care_level" {
 - `key` (String) Key within the namespace. Changing it forces replacement.
 - `name` (String) Human-readable name.
 - `namespace` (String) Namespace, e.g. `custom`. Changing it forces replacement.
-- `owner_type` (String) Owner resource type, e.g. `PRODUCT`. Changing it forces replacement.
+- `owner_type` (String) Owner resource type, e.g. `PRODUCT`, `CUSTOMER` or `ORDER`. The app needs that owner type's scope (scope table in docs/bootstrapping.md). Changing it forces replacement.
 - `type` (String) Metafield type, e.g. `number_integer` or `list.single_line_text_field`. Changing it forces replacement.
 
 ### Optional

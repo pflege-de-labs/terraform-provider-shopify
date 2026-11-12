@@ -41,7 +41,7 @@ func (d *DataSource) Schema(ctx context.Context, req datasource.SchemaRequest, r
 		Attributes: map[string]schema.Attribute{
 			"id": computedString("Metafield definition GID."),
 			"owner_type": schema.StringAttribute{
-				MarkdownDescription: "Owner resource type, e.g. `PRODUCT`, `ORDER` or `SHOP`.",
+				MarkdownDescription: "Owner resource type, e.g. `PRODUCT`, `CUSTOMER`, `ORDER` or `SHOP`.",
 				Required:            true,
 			},
 			"namespace":   schema.StringAttribute{MarkdownDescription: "Namespace, e.g. `shopify`.", Required: true},
