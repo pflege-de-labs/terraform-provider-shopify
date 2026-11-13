@@ -86,7 +86,7 @@ resource "shopify_discount_basic" "five_off" {
 
 Required:
 
-- `items` (Attributes) Which items are discounted: exactly one of `all`, `product_ids` and/or `variant_ids`, or `collection_ids`. Changes are written as additions and removals against the live selection. (see [below for nested schema](#nestedatt--customer_gets--items))
+- `items` (Attributes) Which items are discounted: exactly one of `all`, `product_ids` and/or `variant_ids`, or `collection_ids`. Changes are written as additions and removals against the live selection. A selection whose items are all gone (for example deleted products) reads as `product_ids = []` or `collection_ids = []`. (see [below for nested schema](#nestedatt--customer_gets--items))
 - `value` (Attributes) The discount value: exactly one of `percentage` or `amount`. (see [below for nested schema](#nestedatt--customer_gets--value))
 
 <a id="nestedatt--customer_gets--items"></a>
