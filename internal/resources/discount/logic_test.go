@@ -192,8 +192,9 @@ func TestItemsFromAPI(t *testing.T) {
 		{"variants only", products(false, nil, []string{"v1"}), itemsSel{VariantIDs: []string{"v1"}}, ""},
 		{"both", products(false, []string{"p1"}, []string{"v1"}), itemsSel{ProductIDs: []string{"p1"}, VariantIDs: []string{"v1"}}, ""},
 		{"collections", collections("c1"), itemsSel{CollectionIDs: []string{"c1"}}, ""},
-		{"no products", products(false, nil, nil), itemsSel{}, "selects no products"},
-		{"no collections", collections(), itemsSel{}, "selects no collections"},
+		// Live selections can end up empty (seen on expired discounts); they read as [], not null.
+		{"no products", products(false, nil, nil), itemsSel{ProductIDs: []string{}}, ""},
+		{"no collections", collections(), itemsSel{CollectionIDs: []string{}}, ""},
 		{"partial read", products(true, []string{"p1"}, nil), itemsSel{}, "incomplete list"},
 	}
 	for _, c := range cases {
@@ -230,6 +231,11 @@ func TestItemsInput(t *testing.T) {
 		{"products to collections", itemsSel{CollectionIDs: []string{"c"}}, &itemsSel{ProductIDs: []string{"p"}, VariantIDs: []string{"v"}}, `{"products":{"productsToRemove":["p"],"productVariantsToRemove":["v"]},"collections":{"add":["c"]}}`},
 		{"collections to products", itemsSel{ProductIDs: []string{"p"}}, &itemsSel{CollectionIDs: []string{"c"}}, `{"products":{"productsToAdd":["p"]},"collections":{"remove":["c"]}}`},
 		{"all to products", itemsSel{ProductIDs: []string{"p"}}, &all, `{"products":{"productsToAdd":["p"]}}`},
+		// An empty selection must stay a selection of its kind, never fall through to all.
+		{"empty products unchanged", itemsSel{ProductIDs: []string{}}, &itemsSel{ProductIDs: []string{}}, `null`},
+		{"empty products to products", itemsSel{ProductIDs: []string{"p"}}, &itemsSel{ProductIDs: []string{}}, `{"products":{"productsToAdd":["p"]}}`},
+		{"products to empty", itemsSel{ProductIDs: []string{}}, &itemsSel{ProductIDs: []string{"p"}}, `{"products":{"productsToRemove":["p"]}}`},
+		{"empty collections unchanged", itemsSel{CollectionIDs: []string{}}, &itemsSel{CollectionIDs: []string{}}, `null`},
 	}
 	for _, c := range cases {
 		if got := jsonOf(t, itemsInput(c.want, c.live)); got != c.json {
