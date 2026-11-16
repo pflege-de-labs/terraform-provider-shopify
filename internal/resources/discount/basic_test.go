@@ -737,11 +737,21 @@ resource "shopify_product" %q {
 		CheckDestroy:             checkGone(t, []string{code}, nil, []string{handle, handle2}),
 		Steps: []resource.TestStep{
 			{
+				// Create is rejected too, with "Customer get must have either item selection or set as all".
+				Config:      discount("[]", ""),
+				ExpectError: regexp.MustCompile(`selects\s+no\s+items`),
+			},
+			{
 				Config: product("p", handle) + discount("[shopify_product.p.id]", ""),
 				Check: func(s *terraform.State) error {
 					productID = s.RootModule().Resources["shopify_product.p"].Primary.ID
 					return nil
 				},
+			},
+			{
+				// Removing the last product through config is rejected like any update that leaves no items.
+				Config:      product("p", handle) + discount("[]", ""),
+				ExpectError: regexp.MustCompile(`selects\s+no\s+items`),
 			},
 			{
 				// The product is deleted outside Terraform, as on the store where #38 was found.

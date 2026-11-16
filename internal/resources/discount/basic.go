@@ -327,7 +327,7 @@ func (r *BasicResource) write(ctx context.Context, cfg, plan *basicModel, live *
 	}
 	if diags.Append(userErrorDiags(summary, errs)...); diags.HasError() {
 		var cg customerGetsSel
-		if d := plan.CustomerGets.As(ctx, &cg, basetypes.ObjectAsOptions{}); live != nil && !d.HasError() && cg.Items.empty() {
+		if d := plan.CustomerGets.As(ctx, &cg, basetypes.ObjectAsOptions{}); !d.HasError() && cg.Items.empty() {
 			diags.AddAttributeError(path.Root("customer_gets").AtName("items"), summary, emptySelectionHint)
 		}
 		return ""
