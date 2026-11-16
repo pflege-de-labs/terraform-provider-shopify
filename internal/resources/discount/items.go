@@ -33,6 +33,15 @@ type itemsSel struct {
 	CollectionIDs []string `tfsdk:"collection_ids"`
 }
 
+// empty reports a selection with no items, which Shopify refuses to write.
+func (s itemsSel) empty() bool {
+	return s.All == nil && len(s.ProductIDs) == 0 && len(s.VariantIDs) == 0 && len(s.CollectionIDs) == 0
+}
+
+// emptySelectionHint follows Shopify's userError when an update leaves the selection empty (issue #38).
+const emptySelectionHint = "Shopify rejects every update to a discount that selects no items, such as one whose products were deleted. " +
+	"Add products, variants or collections to the selection in the same change."
+
 type amountSel struct {
 	Amount            string `tfsdk:"amount"`
 	AppliesOnEachItem bool   `tfsdk:"applies_on_each_item"`
@@ -73,7 +82,8 @@ func itemsAttribute() schema.SingleNestedAttribute {
 	return schema.SingleNestedAttribute{
 		MarkdownDescription: "Which items are discounted: exactly one of `all`, `product_ids` and/or `variant_ids`, or `collection_ids`. " +
 			"Changes are written as additions and removals against the live selection. " +
-			"A selection whose items are all gone (for example deleted products) reads as `product_ids = []` or `collection_ids = []`.",
+			"A selection whose items are all gone (for example deleted products) reads as `product_ids = []` or `collection_ids = []`; " +
+			"Shopify rejects any update to such a discount unless the same change adds items.",
 		Required: true,
 		Attributes: map[string]schema.Attribute{
 			"all": schema.BoolAttribute{

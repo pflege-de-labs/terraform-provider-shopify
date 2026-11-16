@@ -244,6 +244,27 @@ func TestItemsInput(t *testing.T) {
 	}
 }
 
+func TestItemsEmpty(t *testing.T) {
+	all := true
+	cases := map[string]struct {
+		sel  itemsSel
+		want bool
+	}{
+		"empty products":    {itemsSel{ProductIDs: []string{}}, true},
+		"empty collections": {itemsSel{CollectionIDs: []string{}}, true},
+		"nothing set":       {itemsSel{}, true},
+		"all":               {itemsSel{All: &all}, false},
+		"a product":         {itemsSel{ProductIDs: []string{"p1"}}, false},
+		"a variant":         {itemsSel{ProductIDs: []string{}, VariantIDs: []string{"v1"}}, false},
+		"a collection":      {itemsSel{CollectionIDs: []string{"c1"}}, false},
+	}
+	for name, c := range cases {
+		if got := c.sel.empty(); got != c.want {
+			t.Errorf("%s: empty() = %t, want %t", name, got, c.want)
+		}
+	}
+}
+
 func TestMinimum(t *testing.T) {
 	inputs := []struct {
 		in   minimumSel

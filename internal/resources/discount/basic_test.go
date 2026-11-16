@@ -707,7 +707,8 @@ func TestAccDiscountBasic_emptySelection(t *testing.T) {
 	acctest.KeepFrontpage(t)
 	code, title := testCode(), testTitle()
 	handle := strings.ToLower(title)
-	cleanup(t, []string{code}, nil, []string{handle})
+	handle2 := handle + "-2"
+	cleanup(t, []string{code}, nil, []string{handle, handle2})
 	discount := func(ids, extra string) string {
 		return basic(fmt.Sprintf(`
   title         = %q
@@ -715,14 +716,16 @@ func TestAccDiscountBasic_emptySelection(t *testing.T) {
   customer_gets = { value = { percentage = 0.1 }, items = { product_ids = %s } }
 %s`, title, code, ids, extra))
 	}
-	product := fmt.Sprintf(`
-resource "shopify_product" "p" {
+	product := func(name, handle string) string {
+		return fmt.Sprintf(`
+resource "shopify_product" %q {
   handle              = %q
   title               = "tf-acc discount product"
   status              = "DRAFT"
   allow_data_deletion = true
 }
-`, handle)
+`, name, handle)
+	}
 	var productID string
 	empty := []statecheck.StateCheck{
 		nested(knownvalue.SetSizeExact(0), "customer_gets", "items", "product_ids"),
@@ -731,10 +734,10 @@ resource "shopify_product" "p" {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
-		CheckDestroy:             checkGone(t, []string{code}, nil, []string{handle}),
+		CheckDestroy:             checkGone(t, []string{code}, nil, []string{handle, handle2}),
 		Steps: []resource.TestStep{
 			{
-				Config: product + discount("[shopify_product.p.id]", ""),
+				Config: product("p", handle) + discount("[shopify_product.p.id]", ""),
 				Check: func(s *terraform.State) error {
 					productID = s.RootModule().Resources["shopify_product.p"].Primary.ID
 					return nil
@@ -766,9 +769,17 @@ resource "shopify_product" "p" {
 			},
 			{Config: discount("[]", ""), ResourceName: addr, ImportState: true, ImportStateId: "code/" + code, ImportStateVerify: true},
 			{
-				// An update that leaves the items alone must not send them.
-				Config:            discount("[]", "  usage_limit = 5\n"),
-				ConfigStateChecks: append(empty, value("usage_limit", knownvalue.Int64Exact(5))),
+				// Shopify rejects any update while the selection is empty, even without items in it (also with customerGets left out).
+				Config:      discount("[]", "  usage_limit = 5\n"),
+				ExpectError: regexp.MustCompile(`selects\s+no\s+items`),
+			},
+			{
+				// TODO(verify): adding items in the same change is the remedy the error hint names; not run yet.
+				Config: product("p2", handle2) + discount("[shopify_product.p2.id]", "  usage_limit = 5\n"),
+				ConfigStateChecks: []statecheck.StateCheck{
+					nested(knownvalue.SetSizeExact(1), "customer_gets", "items", "product_ids"),
+					value("usage_limit", knownvalue.Int64Exact(5)),
+				},
 			},
 		},
 	})
