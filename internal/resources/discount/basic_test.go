@@ -774,7 +774,7 @@ resource "shopify_product" %q {
 				ExpectError: regexp.MustCompile(`selects\s+no\s+items`),
 			},
 			{
-				// TODO(verify): adding items in the same change is the remedy the error hint names; not run yet.
+				// Adding items in the same change is the remedy the error hint names.
 				Config: product("p2", handle2) + discount("[shopify_product.p2.id]", "  usage_limit = 5\n"),
 				ConfigStateChecks: []statecheck.StateCheck{
 					nested(knownvalue.SetSizeExact(1), "customer_gets", "items", "product_ids"),
