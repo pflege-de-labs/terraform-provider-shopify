@@ -105,7 +105,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				PlanModifiers:       keepString,
 			},
 			"owner_type": schema.StringAttribute{
-				MarkdownDescription: "Owner resource type, e.g. `PRODUCT`. Changing it forces replacement.",
+				MarkdownDescription: "Owner resource type, e.g. `PRODUCT`, `CUSTOMER` or `ORDER`. The app needs that owner type's scope (scope table in docs/bootstrapping.md). Changing it forces replacement.",
 				Required:            true,
 				PlanModifiers:       replace,
 			},

@@ -1,3 +1,10 @@
+## 0.1.3 (Unreleased)
+
+ENHANCEMENTS:
+
+* resource/shopify_metafield_definition: owner types `CUSTOMER`, `ORDER`, `DRAFTORDER`, `DISCOUNT`, `COMPANY` and `COMPANY_LOCATION` are covered by acceptance tests and documented with their scopes. The reference app configs add `read_companies` / `write_companies` (B2B stores only, optional).
+* list/shopify_metafield_definition: an empty result comes with a warning, since Shopify returns one instead of an error when the app lacks the owner type's read scope.
+
 ## 0.1.2 (Unreleased)
 
 FEATURES:

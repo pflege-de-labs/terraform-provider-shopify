@@ -163,7 +163,7 @@ Mutations: `metafieldDefinitionCreate`, `metafieldDefinitionUpdate`, `metafieldD
 
 **Read** uses `metafieldDefinition(identifier:)` with the natural key only. The query has no `id` argument, so GID-first lookup isn't possible here (identity import uses `node(id:)` bound to `json.RawMessage`, since genqlient can't generate the `Node` interface). Owner type, namespace and key can't change, so this finds a definition recreated in the admin just like GID-first with fallback would.
 
-**List:** `owner_type` (Required). An owner type the app can't read returns an empty list, not `ACCESS_DENIED`.
+**List:** `owner_type` (Required). An owner type the app can't read returns an empty list, not `ACCESS_DENIED`, so an empty result comes with a warning naming the owner type and the scope table.
 
 ---
 

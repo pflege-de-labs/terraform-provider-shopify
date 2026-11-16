@@ -13,11 +13,28 @@ Lists the metafield definitions of one owner type.
 ## Example Usage
 
 ```terraform
+# One block per owner type; an empty result warns, since it can mean a missing read scope.
 list "shopify_metafield_definition" "product" {
   provider = shopify
 
   config {
     owner_type = "PRODUCT"
+  }
+}
+
+list "shopify_metafield_definition" "customer" {
+  provider = shopify
+
+  config {
+    owner_type = "CUSTOMER"
+  }
+}
+
+list "shopify_metafield_definition" "order" {
+  provider = shopify
+
+  config {
+    owner_type = "ORDER"
   }
 }
 ```
@@ -27,4 +44,4 @@ list "shopify_metafield_definition" "product" {
 
 ### Required
 
-- `owner_type` (String) Owner resource type, e.g. `PRODUCT`. For an owner type the app has no read scope for, Shopify returns an empty list, not an error.
+- `owner_type` (String) Owner resource type, e.g. `PRODUCT`. For an owner type the app has no read scope for, Shopify returns an empty list, not an error, so an empty result comes with a warning.

@@ -51,11 +51,11 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `read_publications` (or `write_publications`) | `shopify_publication` data source (publications belong to sales channel apps, not managed; for referencing by name) | ✅ data source | good (read-only) |
 | `read_customers` ⚠ (assumed, unverified: the dev store grants all scopes) | `shopify_customer_account_page` data source (Shopify-created pages; for referencing their GIDs by handle) | ✅ data source | good (read-only) |
 | `write_purchase_options` | selling plan groups (together with `write_products`) | planned | volatile |
-| `write_customers` | `shopify_customer_segment`; metafield definitions for `CUSTOMER` ⚠ | ✅ segments, the rest planned | segments volatile |
-| `write_companies` | metafield definitions for `COMPANY`, `COMPANY_LOCATION` ⚠ (B2B stores only; not in the reference configs) | planned | good |
-| `write_orders`, `write_draft_orders` | metafield definitions for `ORDER`, `DRAFTORDER` ⚠ | planned | good |
+| `write_customers` | `shopify_customer_segment`; metafield definitions for `CUSTOMER` ⚠ | ✅ | segments volatile; definitions good |
+| `write_companies` | metafield definitions for `COMPANY`, `COMPANY_LOCATION` ⚠ (B2B stores only; optional, drop it from both app configs if the store doesn't use B2B) | ✅ | good |
+| `write_orders`, `write_draft_orders` | metafield definitions for `ORDER`, `DRAFTORDER` ⚠ | ✅ | good |
 | `write_content` | `shopify_page`, `shopify_blog`; articles; their metafield definitions ⚠ | ✅ pages, blogs, the rest planned | blogs good (settings only); pages, articles volatile (content) |
-| `write_discounts` | `shopify_discount_basic`; free shipping and buy X get Y discounts; metafield definitions for `DISCOUNT` ⚠ (segment and market contexts were read with every scope granted, so whether they also need `read_customers` / `read_markets` is untested) | ✅ basic, the rest planned | volatile (promotions) |
+| `write_discounts` | `shopify_discount_basic`; free shipping and buy X get Y discounts; metafield definitions for `DISCOUNT` ⚠ (definitions ✅; segment and market contexts were read with every scope granted, so whether they also need `read_customers` / `read_markets` is untested) | ✅ basic, the rest planned | volatile (promotions) |
 | `read_metaobjects` (or `write_metaobjects`) | `shopify_metaobject` data source (entries by type and handle, for referencing; Shopify-owned types are not managed) | ✅ data source | good (read-only) |
 | `write_metaobjects` | metaobject entries (resource) | planned | volatile (content) |
 | `write_files` | `shopify_file` (URL sources; uploads of local files planned) | ✅ | volatile (content) |
@@ -63,7 +63,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `read_fulfillments` (or `write_fulfillments`) | `shopify_fulfillment_service` data source (fulfillment services are owned by Shopify or other apps, not managed) | ✅ data source | good (read-only) |
 | `write_payment_customizations`, `write_delivery_customizations`, `write_validations`, `write_cart_transforms`, `write_fulfillment_constraint_rules` | Function-backed customizations (need a Function from an installed app) | planned | good once the Function exists |
 
-⚠ Which scope a metafield definition needs per owner type is not documented by Shopify. Without it, listing returns an empty result instead of an error (checked on the dev store), and the `shopify_metafield_definition` data source reports "not found" with a hint about the scope. Verify each mapping when its owner type is implemented.
+⚠ Which scope a metafield definition needs per owner type is not documented by Shopify. Without it, listing returns an empty result instead of an error (checked on the dev store), and the `shopify_metafield_definition` data source reports "not found" with a hint about the scope. The `shopify_metafield_definition` list resource warns on an empty result for that reason. The mappings marked ⚠ are assumed: the dev store grants every scope, so they need an app with trimmed scopes to verify.
 
 Not covered, because another tool owns them or they are records, not configuration:
 - Themes (`write_themes`): theme tooling (GitHub integration, `shopify theme push`).
