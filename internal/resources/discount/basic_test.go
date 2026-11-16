@@ -700,3 +700,97 @@ resource "shopify_product" "v" {
 		},
 	})
 }
+
+// Issue #38: a discount whose selected products are gone reads as product_ids = [], imports, and updates without becoming "all".
+func TestAccDiscountBasic_emptySelection(t *testing.T) {
+	acctest.Setup(t)
+	acctest.KeepFrontpage(t)
+	code, title := testCode(), testTitle()
+	handle := strings.ToLower(title)
+	handle2 := handle + "-2"
+	cleanup(t, []string{code}, nil, []string{handle, handle2})
+	discount := func(ids, extra string) string {
+		return basic(fmt.Sprintf(`
+  title         = %q
+  code          = %q
+  customer_gets = { value = { percentage = 0.1 }, items = { product_ids = %s } }
+%s`, title, code, ids, extra))
+	}
+	product := func(name, handle string) string {
+		return fmt.Sprintf(`
+resource "shopify_product" %q {
+  handle              = %q
+  title               = "tf-acc discount product"
+  status              = "DRAFT"
+  allow_data_deletion = true
+}
+`, name, handle)
+	}
+	var productID string
+	empty := []statecheck.StateCheck{
+		nested(knownvalue.SetSizeExact(0), "customer_gets", "items", "product_ids"),
+		nested(knownvalue.Null(), "customer_gets", "items", "all"),
+	}
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkGone(t, []string{code}, nil, []string{handle, handle2}),
+		Steps: []resource.TestStep{
+			{
+				// Create is rejected too, with "Customer get must have either item selection or set as all".
+				Config:      discount("[]", ""),
+				ExpectError: regexp.MustCompile(`selects\s+no\s+items`),
+			},
+			{
+				Config: product("p", handle) + discount("[shopify_product.p.id]", ""),
+				Check: func(s *terraform.State) error {
+					productID = s.RootModule().Resources["shopify_product.p"].Primary.ID
+					return nil
+				},
+			},
+			{
+				// Removing the last product through config is rejected like any update that leaves no items.
+				Config:      product("p", handle) + discount("[]", ""),
+				ExpectError: regexp.MustCompile(`selects\s+no\s+items`),
+			},
+			{
+				// The product is deleted outside Terraform, as on the store where #38 was found.
+				PreConfig: func() {
+					res, err := client.DeleteProduct(context.Background(), acctest.Client(t), productID)
+					if err != nil || len(res.ProductDelete.UserErrors) > 0 {
+						t.Fatalf("productDelete: %v %+v", err, res)
+					}
+				},
+				Config:            discount("[]", ""),
+				ConfigPlanChecks:  emptyPlan,
+				ConfigStateChecks: empty,
+				Check: func(s *terraform.State) error {
+					t.Logf("status after the product was deleted: %s", s.RootModule().Resources[addr].Primary.Attributes["status"])
+					return nil
+				},
+			},
+			{
+				// Generated config must pass validation and plan as import-only.
+				Config:          ` `,
+				ResourceName:    addr,
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithResourceIdentity,
+				GenerateConfig:  true,
+			},
+			{Config: discount("[]", ""), ResourceName: addr, ImportState: true, ImportStateId: "code/" + code, ImportStateVerify: true},
+			{
+				// Shopify rejects any update while the selection is empty, even without items in it (also with customerGets left out).
+				Config:      discount("[]", "  usage_limit = 5\n"),
+				ExpectError: regexp.MustCompile(`selects\s+no\s+items`),
+			},
+			{
+				// Adding items in the same change is the remedy the error hint names.
+				Config: product("p2", handle2) + discount("[shopify_product.p2.id]", "  usage_limit = 5\n"),
+				ConfigStateChecks: []statecheck.StateCheck{
+					nested(knownvalue.SetSizeExact(1), "customer_gets", "items", "product_ids"),
+					value("usage_limit", knownvalue.Int64Exact(5)),
+				},
+			},
+		},
+	})
+}

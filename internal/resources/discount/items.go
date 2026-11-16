@@ -24,13 +24,23 @@ import (
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 )
 
-// itemsSel is an item selection: all, products and/or variants, or collections. Empty lists read as null, as config leaves them out.
+// itemsSel is an item selection: all, products and/or variants, or collections. Empty lists read as null, as config leaves them out,
+// except a selection left with no items, which reads as product_ids or collection_ids = [] (issue #38).
 type itemsSel struct {
 	All           *bool    `tfsdk:"all"`
 	ProductIDs    []string `tfsdk:"product_ids"`
 	VariantIDs    []string `tfsdk:"variant_ids"`
 	CollectionIDs []string `tfsdk:"collection_ids"`
 }
+
+// empty reports a selection with no items, which Shopify refuses to write.
+func (s itemsSel) empty() bool {
+	return s.All == nil && len(s.ProductIDs) == 0 && len(s.VariantIDs) == 0 && len(s.CollectionIDs) == 0
+}
+
+// emptySelectionHint follows Shopify's userError when a write leaves the selection empty (issue #38).
+const emptySelectionHint = "Shopify rejects creating or updating a discount that selects no items, such as one whose products were deleted. " +
+	"Add products, variants or collections to the selection in the same change."
 
 type amountSel struct {
 	Amount            string `tfsdk:"amount"`
@@ -65,13 +75,15 @@ var decimalValidator = stringvalidator.RegexMatches(decimalRe, "must be a decima
 
 func itemsAttribute() schema.SingleNestedAttribute {
 	ids := func(desc string) schema.SetAttribute {
-		return schema.SetAttribute{MarkdownDescription: desc, ElementType: types.StringType, Optional: true, Validators: []validator.Set{setvalidator.SizeAtLeast(1)}}
+		return schema.SetAttribute{MarkdownDescription: desc, ElementType: types.StringType, Optional: true}
 	}
 	collections := ids("Collection GIDs; reference `shopify_collection` IDs.")
-	collections.Validators = append(collections.Validators, setvalidator.ConflictsWith(sibling("product_ids", "variant_ids")...))
+	collections.Validators = []validator.Set{setvalidator.ConflictsWith(sibling("product_ids", "variant_ids")...)}
 	return schema.SingleNestedAttribute{
 		MarkdownDescription: "Which items are discounted: exactly one of `all`, `product_ids` and/or `variant_ids`, or `collection_ids`. " +
-			"Changes are written as additions and removals against the live selection.",
+			"Changes are written as additions and removals against the live selection. " +
+			"A selection whose items are all gone (for example deleted products) reads as `product_ids = []` or `collection_ids = []`; " +
+			"Shopify rejects creating such a discount, and any update to it unless the same change adds items.",
 		Required: true,
 		Attributes: map[string]schema.Attribute{
 			"all": schema.BoolAttribute{
@@ -185,7 +197,7 @@ func itemsFromAPI(items client.DiscountItemsFields) (itemsSel, error) {
 		}
 		sel := itemsSel{ProductIDs: nodeIDs(it.Products.Nodes), VariantIDs: nodeIDs(it.ProductVariants.Nodes)}
 		if sel.ProductIDs == nil && sel.VariantIDs == nil {
-			return itemsSel{}, fmt.Errorf("selects no products")
+			sel.ProductIDs = []string{} // non-nil keeps it a product selection, which itemsInput relies on
 		}
 		return sel, nil
 	case *client.DiscountItemsFieldsDiscountCollections:
@@ -194,7 +206,7 @@ func itemsFromAPI(items client.DiscountItemsFields) (itemsSel, error) {
 		}
 		sel := itemsSel{CollectionIDs: nodeIDs(it.Collections.Nodes)}
 		if sel.CollectionIDs == nil {
-			return itemsSel{}, fmt.Errorf("selects no collections")
+			sel.CollectionIDs = []string{}
 		}
 		return sel, nil
 	}

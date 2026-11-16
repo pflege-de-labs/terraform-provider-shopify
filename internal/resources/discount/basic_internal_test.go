@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 )
@@ -269,12 +270,23 @@ func TestSetFromAPI(t *testing.T) {
 		t.Errorf("minimum = %s, want %s", am.MinimumRequirement, want)
 	}
 
-	// Shapes the schema can't hold are errors, so list and import skip or refuse them.
-	bad := codeBasicNode()
-	codeBasic(t, bad).CustomerGets.Items = collections()
-	bn, _ := nodeOf(bad)
-	if _, d := (&basicModel{}).setFromAPI(ctx, bn); !d.HasError() {
-		t.Error("a selection of no collections must be an error")
+	// An empty live selection survives the round trip through state as [] and plans no item change.
+	empty := codeBasicNode()
+	codeBasic(t, empty).CustomerGets.Items = products(false, nil, nil)
+	en, _ := nodeOf(empty)
+	var em basicModel
+	if _, d := em.setFromAPI(ctx, en); d.HasError() {
+		t.Fatal(d)
+	}
+	var cg customerGetsSel
+	if d := em.CustomerGets.As(ctx, &cg, basetypes.ObjectAsOptions{}); d.HasError() {
+		t.Fatal(d)
+	}
+	if cg.Items.ProductIDs == nil || len(cg.Items.ProductIDs) != 0 || cg.Items.VariantIDs != nil {
+		t.Errorf("empty selection read back as %+v", cg.Items)
+	}
+	if in, err := customerGetsInput(cg, en.CustomerGets); err != nil || in.Items != nil {
+		t.Errorf("unchanged empty selection: got %s, %v", jsonOf(t, in.Items), err)
 	}
 }
 

@@ -5,6 +5,10 @@ ENHANCEMENTS:
 * resource/shopify_metafield_definition: owner types `CUSTOMER`, `ORDER`, `DRAFTORDER`, `DISCOUNT`, `COMPANY` and `COMPANY_LOCATION` are covered by acceptance tests and documented with their scopes. The reference app configs add `read_companies` / `write_companies` (B2B stores only, optional).
 * list/shopify_metafield_definition: an empty result comes with a warning, since Shopify returns one instead of an error when the app lacks the owner type's read scope.
 
+BUG FIXES:
+
+* resource/shopify_discount_basic, list/shopify_discount_basic: a discount whose item selection is empty (e.g. its products were deleted) reads as `product_ids = []` or `collection_ids = []` instead of failing Read, import and the list. Shopify rejects creating such a discount and updating it unless the same change adds items; the error now says so.
+
 ## 0.1.2 (Unreleased)
 
 FEATURES:
