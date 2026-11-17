@@ -6,6 +6,7 @@ FEATURES:
 * **New Resource:** `shopify_metaobject`
 * **New List Resource:** `shopify_standard_metaobject_definition`
 * **New List Resource:** `shopify_metaobject`
+* **New Data Source:** `shopify_product` (lookup by variant SKU, e.g. for `product_ids` of products Terraform doesn't manage)
 
 ENHANCEMENTS:
 

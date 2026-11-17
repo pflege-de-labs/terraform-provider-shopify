@@ -252,3 +252,25 @@ mutation DeleteProduct(
     }
   }
 }
+
+# The sku filter is a search, so the caller still compares SKUs exactly.
+query FindProductVariantsBySku(
+  $query: String!
+  $after: String
+) {
+  productVariants(first: 25, after: $after, query: $query) {
+    nodes {
+      id
+      sku
+      product {
+        id
+        handle
+        title
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

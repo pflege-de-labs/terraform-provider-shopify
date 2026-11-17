@@ -12863,6 +12863,179 @@ type FindPagesResponse struct {
 // GetPages returns FindPagesResponse.Pages, and is useful for accessing the field via an interface.
 func (v *FindPagesResponse) GetPages() FindPagesPagesPageConnection { return v.Pages }
 
+// FindProductVariantsBySkuProductVariantsProductVariantConnection includes the requested fields of the GraphQL type ProductVariantConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple ProductVariants.
+type FindProductVariantsBySkuProductVariantsProductVariantConnection struct {
+	// A list of nodes that are contained in ProductVariantEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariant `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo FindProductVariantsBySkuProductVariantsProductVariantConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns FindProductVariantsBySkuProductVariantsProductVariantConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *FindProductVariantsBySkuProductVariantsProductVariantConnection) GetNodes() []FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariant {
+	return v.Nodes
+}
+
+// GetPageInfo returns FindProductVariantsBySkuProductVariantsProductVariantConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *FindProductVariantsBySkuProductVariantsProductVariantConnection) GetPageInfo() FindProductVariantsBySkuProductVariantsProductVariantConnectionPageInfo {
+	return v.PageInfo
+}
+
+// FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariant struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A case-sensitive identifier for the product variant in the shop.
+	// Required in order to connect to a fulfillment service.
+	Sku *string `json:"sku"`
+	// The product that this variant belongs to.
+	Product FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariantProduct `json:"product"`
+}
+
+// GetId returns FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariant.Id, and is useful for accessing the field via an interface.
+func (v *FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariant) GetId() string {
+	return v.Id
+}
+
+// GetSku returns FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariant.Sku, and is useful for accessing the field via an interface.
+func (v *FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariant) GetSku() *string {
+	return v.Sku
+}
+
+// GetProduct returns FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariant.Product, and is useful for accessing the field via an interface.
+func (v *FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariant) GetProduct() FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariantProduct {
+	return v.Product
+}
+
+// FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariantProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariantProduct struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A unique, human-readable string of the product's title. A handle can contain letters, hyphens (`-`), and numbers, but no spaces.
+	// The handle is used in the online store URL for the product.
+	Handle string `json:"handle"`
+	// The name for the product that displays to customers. The title is used to construct the product's handle.
+	// For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
+	Title string `json:"title"`
+}
+
+// GetId returns FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariantProduct.Id, and is useful for accessing the field via an interface.
+func (v *FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariantProduct) GetId() string {
+	return v.Id
+}
+
+// GetHandle returns FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariantProduct.Handle, and is useful for accessing the field via an interface.
+func (v *FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariantProduct) GetHandle() string {
+	return v.Handle
+}
+
+// GetTitle returns FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariantProduct.Title, and is useful for accessing the field via an interface.
+func (v *FindProductVariantsBySkuProductVariantsProductVariantConnectionNodesProductVariantProduct) GetTitle() string {
+	return v.Title
+}
+
+// FindProductVariantsBySkuProductVariantsProductVariantConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type FindProductVariantsBySkuProductVariantsProductVariantConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns FindProductVariantsBySkuProductVariantsProductVariantConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *FindProductVariantsBySkuProductVariantsProductVariantConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns FindProductVariantsBySkuProductVariantsProductVariantConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *FindProductVariantsBySkuProductVariantsProductVariantConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// FindProductVariantsBySkuResponse is returned by FindProductVariantsBySku on success.
+type FindProductVariantsBySkuResponse struct {
+	// Retrieves a list of [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant)
+	// associated with a [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product).
+	//
+	// A product variant is a specific version of a product that comes in more than
+	// one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+	// such as size or color. For example, if a merchant sells t-shirts with options for size and color,
+	// then a small, blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+	//
+	// Use the `productVariants` query when you need to:
+	//
+	// - Search for product variants by attributes such as SKU, barcode, or inventory quantity.
+	// - Filter product variants by attributes, such as whether they're gift cards or have custom metafields.
+	// - Fetch product variants for bulk operations, such as updating prices or inventory.
+	// - Preload data for product variants, such as inventory items, selected options, or associated products.
+	//
+	// The `productVariants` query supports [pagination](https://shopify.dev/docs/api/usage/pagination-graphql)
+	// to handle large product catalogs and [saved searches](https://shopify.dev/docs/api/admin-graphql/latest/queries/productVariants#arguments-savedSearchId)
+	// for frequently used product variant queries.
+	//
+	// The `productVariants` query returns product variants with their associated metadata, including:
+	//
+	// - Basic product variant information (for example, title, SKU, barcode, price, and inventory)
+	// - Media attachments (for example, images and videos)
+	// - Associated products, selling plans, bundles, and metafields
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	ProductVariants FindProductVariantsBySkuProductVariantsProductVariantConnection `json:"productVariants"`
+}
+
+// GetProductVariants returns FindProductVariantsBySkuResponse.ProductVariants, and is useful for accessing the field via an interface.
+func (v *FindProductVariantsBySkuResponse) GetProductVariants() FindProductVariantsBySkuProductVariantsProductVariantConnection {
+	return v.ProductVariants
+}
+
 // The type of a fulfillment service.
 type FulfillmentServiceType string
 
@@ -32055,6 +32228,18 @@ type __FindPagesInput struct {
 // GetQuery returns __FindPagesInput.Query, and is useful for accessing the field via an interface.
 func (v *__FindPagesInput) GetQuery() string { return v.Query }
 
+// __FindProductVariantsBySkuInput is used internally by genqlient
+type __FindProductVariantsBySkuInput struct {
+	Query string  `json:"query"`
+	After *string `json:"after"`
+}
+
+// GetQuery returns __FindProductVariantsBySkuInput.Query, and is useful for accessing the field via an interface.
+func (v *__FindProductVariantsBySkuInput) GetQuery() string { return v.Query }
+
+// GetAfter returns __FindProductVariantsBySkuInput.After, and is useful for accessing the field via an interface.
+func (v *__FindProductVariantsBySkuInput) GetAfter() *string { return v.After }
+
 // __GetArticleInput is used internally by genqlient
 type __GetArticleInput struct {
 	Id string `json:"id"`
@@ -34941,6 +35126,55 @@ func FindPages(
 	}
 
 	data_ = &FindPagesResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by FindProductVariantsBySku.
+const FindProductVariantsBySku_Operation = `
+query FindProductVariantsBySku ($query: String!, $after: String) {
+	productVariants(first: 25, after: $after, query: $query) {
+		nodes {
+			id
+			sku
+			product {
+				id
+				handle
+				title
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+`
+
+// The sku filter is a search, so the caller still compares SKUs exactly.
+func FindProductVariantsBySku(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	query string,
+	after *string,
+) (data_ *FindProductVariantsBySkuResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "FindProductVariantsBySku",
+		Query:  FindProductVariantsBySku_Operation,
+		Variables: &__FindProductVariantsBySkuInput{
+			Query: query,
+			After: after,
+		},
+	}
+
+	data_ = &FindProductVariantsBySkuResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
