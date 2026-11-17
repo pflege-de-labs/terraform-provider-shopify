@@ -90,7 +90,7 @@ resource "shopify_collection" "frontpage" {
 
 Required:
 
-- `src` (String) Public URL Shopify downloads the image from, such as a `shopify_file` URL or another store's CDN URL. Kept as configured while the collection still has the image of the last apply; an image replaced in the admin shows as a change and is put back. After import it is the CDN URL, so generated config copies the image to another store as long as the source store still has it.
+- `src` (String) Public URL Shopify downloads the image from, such as a `shopify_file` URL or another store's CDN URL. Kept as configured while the collection still has the image of the last apply; an image replaced in the admin, or its alt text edited there, shows as a change and is put back. After import it is the CDN URL, so generated config copies the image to another store as long as the source store still has it.
 
 Optional:
 

@@ -76,6 +76,11 @@ func TestAccCollection_image(t *testing.T) {
 		CheckDestroy:             checkGone(t, handle),
 		Steps: []resource.TestStep{
 			{
+				Config:            imageConfig(handle, "Image", ""),
+				ConfigStateChecks: []statecheck.StateCheck{statecheck.ExpectKnownValue(addr, tfjsonpath.New("image"), knownvalue.Null())},
+			},
+			{
+				// Adding the block to a collection without an image.
 				Config: first,
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(addr, imagePath("src"), str(image1)),
@@ -127,6 +132,22 @@ func TestAccCollection_image(t *testing.T) {
 				Check:             captureURL(&url),
 			},
 			{
+				// An alt text edited in the admin bumps the URL like a new image, so src shows as a change too, and both are put back.
+				PreConfig: func() {
+					id := mustLookup(t, handle).Id
+					mustUpdate(t, client.CollectionUpdateInput{Id: &id, Image: &client.ImageInput{AltText: ptr("admin")}})
+				},
+				Config: srcChanged,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(addr, plancheck.ResourceActionUpdate)},
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(addr, imagePath("src"), str(image2)),
+					statecheck.ExpectKnownValue(addr, imagePath("alt_text"), str("B")),
+				},
+				Check: captureURL(&url),
+			},
+			{
 				// Removing the block stops managing the image and keeps it.
 				Config:           imageConfig(handle, "Image renamed", ""),
 				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}},
@@ -171,6 +192,40 @@ list "shopify_collection" "all" {
 						}),
 				},
 			},
+		},
+	})
+}
+
+// A shopify_file URL works as src: the use case of copying a store's media library first.
+func TestAccCollection_imageFromFile(t *testing.T) {
+	acctest.Setup(t)
+	handle := testHandle()
+	cleanup(t, handle)
+	cfg := fmt.Sprintf(`
+resource "shopify_file" "banner" {
+  content_type        = "IMAGE"
+  filename            = %q
+  source              = %q
+  allow_data_deletion = true
+}
+`, handle+".png", image1) + imageConfig(handle, "Image from file", `  image = {
+    src = shopify_file.banner.url
+  }
+`)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkGone(t, handle),
+		Steps: []resource.TestStep{
+			{
+				Config: cfg,
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(addr, imagePath("url"), knownvalue.StringRegexp(cdnRe)),
+					statecheck.ExpectKnownValue(addr, imagePath("alt_text"), knownvalue.Null()),
+				},
+				Check: resource.TestCheckResourceAttrPair(addr, "image.src", "shopify_file.banner", "url"),
+			},
+			{Config: cfg, ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}}},
 		},
 	})
 }

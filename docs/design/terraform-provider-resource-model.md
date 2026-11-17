@@ -1176,6 +1176,18 @@ Design:
 - `url` keeps its state value unless `src` or `alt_text` change (ModifyPlan marks it unknown then).
 - Removing the block stops managing the image (user ruling 2026-11-17); clearing it is not offered.
 - Import and the list take `src = url`: generated config plans import-only and copies the image to another store. A CDN URL whose image was replaced or removed no longer downloads ("failed to download. - file not found", checked), so re-apply such config only while the source store still has the image.
+- An alt text edited in the admin bumps `?v=` like a new image does, and the `CollectionImage` id and file name stay the same either way, so the two can't be told apart. Such an edit shows as a `src` change, and apply puts the configured image and alt text back, which downloads `src` again.
+
+**Implemented (#56, dev store 2026-11-17):** as designed. Acceptance tests cover:
+- adding the block to a collection without an image
+- an empty re-plan, and changing only the alt text (`url` unknown in the plan)
+- a title edit that keeps `url`, and a new `src`
+- an image replaced and an alt text edited through the client: both show as changes and are put back
+- removing the block, which gives an empty plan and keeps the image
+- import by identity with generated config, import by handle, and the list (`src` = CDN URL)
+- `src = shopify_file.<x>.url`
+
+Not tested: an image removed in the admin (`CollectionUpdateInput.image` is `omitempty`, so the client can't send `null`). Unit-tested instead: no prior image means a full `{ src, altText }`.
 
 **Conditions: a JSON attribute, like checkout branding (§9f).** 18 inclusion condition kinds, each with its own relation enum and value shape (strings, `MoneyInput`, `WeightInput`, booleans, metafield definition IDs, taxonomy categories with `includeDescendants`, metaobject IDs). A typed block would need one nested block per kind or a flattened block with kind-specific fields; JSON in the input's own shape keeps Shopify's docs usable one to one, and users write `jsonencode([...])`.
 - Write: sent as is (`# @genqlient(for: "CollectionCreateSourceInclusionInput.conditions", bind: "encoding/json.RawMessage")` and the same for `CollectionUpdateSourceInclusionInput.conditionsToCreate`). Shopify validates kinds and values. ValidateConfig only checks that the value is a JSON list of objects with exactly one key each.

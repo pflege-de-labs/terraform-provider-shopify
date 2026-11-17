@@ -32,11 +32,12 @@ func TestReadImage(t *testing.T) {
 		written *string
 		want    *imageModel
 	}{
-		"no image":                    {img(src, "", cdn1), nil, str(cdn1), nil},
-		"unchanged keeps src":         {img(src, "A", cdn1), &client.CollectionFieldsImage{Url: cdn1, AltText: str("A")}, str(cdn1), img(src, "A", cdn1)},
-		"replaced in the admin":       {img(src, "A", cdn1), &client.CollectionFieldsImage{Url: cdn2, AltText: str("A")}, str(cdn1), img(cdn2, "A", cdn2)},
-		"import takes the live url":   {nil, &client.CollectionFieldsImage{Url: cdn1}, nil, img(cdn1, "", cdn1)},
-		"alt edited in the admin":     {img(src, "A", cdn1), &client.CollectionFieldsImage{Url: cdn1, AltText: str("B")}, str(cdn1), img(src, "B", cdn1)},
+		"no image":                  {img(src, "", cdn1), nil, str(cdn1), nil},
+		"unchanged keeps src":       {img(src, "A", cdn1), &client.CollectionFieldsImage{Url: cdn1, AltText: str("A")}, str(cdn1), img(src, "A", cdn1)},
+		"replaced in the admin":     {img(src, "A", cdn1), &client.CollectionFieldsImage{Url: cdn2, AltText: str("A")}, str(cdn1), img(cdn2, "A", cdn2)},
+		"import takes the live url": {nil, &client.CollectionFieldsImage{Url: cdn1}, nil, img(cdn1, "", cdn1)},
+		// An alt edit bumps ?v= like a new image does (checked), so it can't be told apart and takes the live URL.
+		"alt edited in the admin":     {img(src, "A", cdn1), &client.CollectionFieldsImage{Url: cdn2, AltText: str("B")}, str(cdn1), img(cdn2, "B", cdn2)},
 		"empty alt stays empty":       {nil, &client.CollectionFieldsImage{Url: cdn1, AltText: str("")}, nil, &imageModel{Src: types.StringValue(cdn1), AltText: types.StringValue(""), URL: types.StringValue(cdn1)}},
 		"nothing remembered from src": {img(src, "", cdn1), &client.CollectionFieldsImage{Url: cdn1}, nil, img(cdn1, "", cdn1)},
 	}

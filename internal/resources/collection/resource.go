@@ -160,7 +160,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				Attributes: map[string]schema.Attribute{
 					"src": schema.StringAttribute{
 						MarkdownDescription: "Public URL Shopify downloads the image from, such as a `shopify_file` URL or another store's CDN URL. " +
-							"Kept as configured while the collection still has the image of the last apply; an image replaced in the admin shows as a change and is put back. " +
+							"Kept as configured while the collection still has the image of the last apply; an image replaced in the admin, or its alt text edited there, shows as a change and is put back. " +
 							"After import it is the CDN URL, so generated config copies the image to another store as long as the source store still has it.",
 						Required:   true,
 						Validators: []validator.String{stringvalidator.RegexMatches(regexp.MustCompile(`^https?://`), "must be an http(s) URL")},
@@ -234,7 +234,7 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 	resp.Diagnostics.Append(d...)
 	stateImg, d := imageOf(ctx, state.Image)
 	resp.Diagnostics.Append(d...)
-	if cfgImg != nil && stateImg != nil && imageInput(cfgImg, stateImg) != nil {
+	if cfgImg != nil && (cfgImg.AltText.IsUnknown() || imageInput(cfgImg, stateImg) != nil) {
 		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("image").AtName("url"), types.StringUnknown())...)
 	}
 	// Read leaves product_ids null only when the membership can't be managed.
