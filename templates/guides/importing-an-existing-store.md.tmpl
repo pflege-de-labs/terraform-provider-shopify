@@ -56,7 +56,15 @@ terraform query -generate-config-out=generated.tf
 The generated configuration describes what the store has now, so it is a starting point, not a finished design. Check at least:
 
 - **Product references in collections.** A collection that holds products by hand has their GIDs in `product_ids`, which tie the configuration to this store. Replace them with references to `shopify_product` resources (or leave `product_ids` out so membership stays unmanaged).
-- **Publication IDs.** `publication_ids` on products and collections are GIDs of sales channel publications. Publications belong to sales channel apps and are not managed by the provider; look them up with the `shopify_publication` data source (`data.shopify_publication.<name>.id`) so the configuration works on other stores too.
+- **Publication IDs.** `publication_ids` on products and collections are GIDs of sales channel publications. Publications belong to sales channel apps and are not managed by the provider; look them up with the `shopify_publication` data source (`data.shopify_publication.<name>.id`) so the configuration works on other stores too. To translate the GIDs in a generated file, list the names of the source store's publications with `shopify_publications` and look each GID up:
+
+```hcl
+data "shopify_publications" "all" {}
+
+output "publication_names_by_id" {
+  value = { for p in data.shopify_publications.all.publications : p.id => p.name }
+}
+```
 - **Collection images.** The generated `image.src` is the source store's CDN URL. Applying it to another store makes Shopify download that image, which works only while the source store still has it; point `src` at a `shopify_file` or another stable URL to keep it independent.
 - **Metaobject references.** Reference values in `shopify_metaobject` `fields` (to files, products, collections, pages or other entries) are GIDs of this store. Replace them with references to the target's resource or data source (for example `shopify_metaobject.<name>.id`) before applying the configuration to another store. The entries' types must exist there too: a `shopify--…` type needs `shopify_standard_metaobject_definition`. Set the entry's `type` to that resource's `type` attribute (or to `shopify_metaobject_definition.<name>.type`) rather than the literal string, so Terraform creates the type before its entries.
 - **Other IDs.** Any other GID in the output (for example the target of a menu item) is specific to this store; replace it with a reference where the target is managed by Terraform too.

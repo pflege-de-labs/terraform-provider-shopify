@@ -5660,6 +5660,132 @@ func (v *CreateSegmentSegmentCreateSegmentCreatePayloadUserErrorsUserError) GetM
 	return v.Message
 }
 
+// CreateUrlRedirectResponse is returned by CreateUrlRedirect on success.
+type CreateUrlRedirectResponse struct {
+	// Creates a [`UrlRedirect`](https://shopify.dev/api/admin-graphql/latest/objects/UrlRedirect) object.
+	UrlRedirectCreate *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayload `json:"urlRedirectCreate"`
+}
+
+// GetUrlRedirectCreate returns CreateUrlRedirectResponse.UrlRedirectCreate, and is useful for accessing the field via an interface.
+func (v *CreateUrlRedirectResponse) GetUrlRedirectCreate() *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayload {
+	return v.UrlRedirectCreate
+}
+
+// CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayload includes the requested fields of the GraphQL type UrlRedirectCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `urlRedirectCreate` mutation.
+type CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayload struct {
+	// The created redirect.
+	UrlRedirect *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect `json:"urlRedirect"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUserErrorsUrlRedirectUserError `json:"userErrors"`
+}
+
+// GetUrlRedirect returns CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayload.UrlRedirect, and is useful for accessing the field via an interface.
+func (v *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayload) GetUrlRedirect() *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect {
+	return v.UrlRedirect
+}
+
+// GetUserErrors returns CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayload) GetUserErrors() []CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUserErrorsUrlRedirectUserError {
+	return v.UserErrors
+}
+
+// CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect includes the requested fields of the GraphQL type UrlRedirect.
+// The GraphQL type's documentation follows.
+//
+// The URL redirect for the online store.
+type CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect struct {
+	UrlRedirectFields `json:"-"`
+}
+
+// GetId returns CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect.Id, and is useful for accessing the field via an interface.
+func (v *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect) GetId() string {
+	return v.UrlRedirectFields.Id
+}
+
+// GetPath returns CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect.Path, and is useful for accessing the field via an interface.
+func (v *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect) GetPath() string {
+	return v.UrlRedirectFields.Path
+}
+
+// GetTarget returns CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect.Target, and is useful for accessing the field via an interface.
+func (v *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect) GetTarget() string {
+	return v.UrlRedirectFields.Target
+}
+
+func (v *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.UrlRedirectFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalCreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect struct {
+	Id string `json:"id"`
+
+	Path string `json:"path"`
+
+	Target string `json:"target"`
+}
+
+func (v *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect) __premarshalJSON() (*__premarshalCreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect, error) {
+	var retval __premarshalCreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUrlRedirect
+
+	retval.Id = v.UrlRedirectFields.Id
+	retval.Path = v.UrlRedirectFields.Path
+	retval.Target = v.UrlRedirectFields.Target
+	return &retval, nil
+}
+
+// CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUserErrorsUrlRedirectUserError includes the requested fields of the GraphQL type UrlRedirectUserError.
+// The GraphQL type's documentation follows.
+//
+// Represents an error that happens during execution of a redirect mutation.
+type CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUserErrorsUrlRedirectUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUserErrorsUrlRedirectUserError.Field, and is useful for accessing the field via an interface.
+func (v *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUserErrorsUrlRedirectUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUserErrorsUrlRedirectUserError.Message, and is useful for accessing the field via an interface.
+func (v *CreateUrlRedirectUrlRedirectCreateUrlRedirectCreatePayloadUserErrorsUrlRedirectUserError) GetMessage() string {
+	return v.Message
+}
+
 // CreateWebPresenceResponse is returned by CreateWebPresence on success.
 type CreateWebPresenceResponse struct {
 	// Creates a web presence.
@@ -7377,6 +7503,66 @@ func (v *DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError) GetF
 // GetMessage returns DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
 func (v *DeleteSegmentSegmentDeleteSegmentDeletePayloadUserErrorsUserError) GetMessage() string {
 	return v.Message
+}
+
+// DeleteUrlRedirectResponse is returned by DeleteUrlRedirect on success.
+type DeleteUrlRedirectResponse struct {
+	// Deletes a [`UrlRedirect`](https://shopify.dev/api/admin-graphql/latest/objects/UrlRedirect) object.
+	UrlRedirectDelete *DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayload `json:"urlRedirectDelete"`
+}
+
+// GetUrlRedirectDelete returns DeleteUrlRedirectResponse.UrlRedirectDelete, and is useful for accessing the field via an interface.
+func (v *DeleteUrlRedirectResponse) GetUrlRedirectDelete() *DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayload {
+	return v.UrlRedirectDelete
+}
+
+// DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayload includes the requested fields of the GraphQL type UrlRedirectDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `urlRedirectDelete` mutation.
+type DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayload struct {
+	// The ID of the deleted redirect.
+	DeletedUrlRedirectId *string `json:"deletedUrlRedirectId"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayloadUserErrorsUrlRedirectUserError `json:"userErrors"`
+}
+
+// GetDeletedUrlRedirectId returns DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayload.DeletedUrlRedirectId, and is useful for accessing the field via an interface.
+func (v *DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayload) GetDeletedUrlRedirectId() *string {
+	return v.DeletedUrlRedirectId
+}
+
+// GetUserErrors returns DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayload) GetUserErrors() []DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayloadUserErrorsUrlRedirectUserError {
+	return v.UserErrors
+}
+
+// DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayloadUserErrorsUrlRedirectUserError includes the requested fields of the GraphQL type UrlRedirectUserError.
+// The GraphQL type's documentation follows.
+//
+// Represents an error that happens during execution of a redirect mutation.
+type DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayloadUserErrorsUrlRedirectUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *UrlRedirectErrorCode `json:"code"`
+}
+
+// GetField returns DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayloadUserErrorsUrlRedirectUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayloadUserErrorsUrlRedirectUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayloadUserErrorsUrlRedirectUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayloadUserErrorsUrlRedirectUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayloadUserErrorsUrlRedirectUserError.Code, and is useful for accessing the field via an interface.
+func (v *DeleteUrlRedirectUrlRedirectDeleteUrlRedirectDeletePayloadUserErrorsUrlRedirectUserError) GetCode() *UrlRedirectErrorCode {
+	return v.Code
 }
 
 // DeleteWebPresenceResponse is returned by DeleteWebPresence on success.
@@ -20757,6 +20943,82 @@ type GetShopShopPrimaryDomain struct {
 // GetHost returns GetShopShopPrimaryDomain.Host, and is useful for accessing the field via an interface.
 func (v *GetShopShopPrimaryDomain) GetHost() string { return v.Host }
 
+// GetUrlRedirectResponse is returned by GetUrlRedirect on success.
+type GetUrlRedirectResponse struct {
+	// Returns a `UrlRedirect` resource by ID.
+	UrlRedirect *GetUrlRedirectUrlRedirect `json:"urlRedirect"`
+}
+
+// GetUrlRedirect returns GetUrlRedirectResponse.UrlRedirect, and is useful for accessing the field via an interface.
+func (v *GetUrlRedirectResponse) GetUrlRedirect() *GetUrlRedirectUrlRedirect { return v.UrlRedirect }
+
+// GetUrlRedirectUrlRedirect includes the requested fields of the GraphQL type UrlRedirect.
+// The GraphQL type's documentation follows.
+//
+// The URL redirect for the online store.
+type GetUrlRedirectUrlRedirect struct {
+	UrlRedirectFields `json:"-"`
+}
+
+// GetId returns GetUrlRedirectUrlRedirect.Id, and is useful for accessing the field via an interface.
+func (v *GetUrlRedirectUrlRedirect) GetId() string { return v.UrlRedirectFields.Id }
+
+// GetPath returns GetUrlRedirectUrlRedirect.Path, and is useful for accessing the field via an interface.
+func (v *GetUrlRedirectUrlRedirect) GetPath() string { return v.UrlRedirectFields.Path }
+
+// GetTarget returns GetUrlRedirectUrlRedirect.Target, and is useful for accessing the field via an interface.
+func (v *GetUrlRedirectUrlRedirect) GetTarget() string { return v.UrlRedirectFields.Target }
+
+func (v *GetUrlRedirectUrlRedirect) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetUrlRedirectUrlRedirect
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetUrlRedirectUrlRedirect = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.UrlRedirectFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalGetUrlRedirectUrlRedirect struct {
+	Id string `json:"id"`
+
+	Path string `json:"path"`
+
+	Target string `json:"target"`
+}
+
+func (v *GetUrlRedirectUrlRedirect) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetUrlRedirectUrlRedirect) __premarshalJSON() (*__premarshalGetUrlRedirectUrlRedirect, error) {
+	var retval __premarshalGetUrlRedirectUrlRedirect
+
+	retval.Id = v.UrlRedirectFields.Id
+	retval.Path = v.UrlRedirectFields.Path
+	retval.Target = v.UrlRedirectFields.Target
+	return &retval, nil
+}
+
 // GetVariantMetafieldsProductVariant includes the requested fields of the GraphQL type ProductVariant.
 // The GraphQL type's documentation follows.
 //
@@ -23934,6 +24196,134 @@ func (v *ListShopPoliciesShopShopPoliciesShopPolicy) __premarshalJSON() (*__prem
 	retval.Body = v.ShopPolicyFields.Body
 	retval.Url = v.ShopPolicyFields.Url
 	return &retval, nil
+}
+
+// ListUrlRedirectsResponse is returned by ListUrlRedirects on success.
+type ListUrlRedirectsResponse struct {
+	// A list of redirects for a shop.
+	UrlRedirects ListUrlRedirectsUrlRedirectsUrlRedirectConnection `json:"urlRedirects"`
+}
+
+// GetUrlRedirects returns ListUrlRedirectsResponse.UrlRedirects, and is useful for accessing the field via an interface.
+func (v *ListUrlRedirectsResponse) GetUrlRedirects() ListUrlRedirectsUrlRedirectsUrlRedirectConnection {
+	return v.UrlRedirects
+}
+
+// ListUrlRedirectsUrlRedirectsUrlRedirectConnection includes the requested fields of the GraphQL type UrlRedirectConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple UrlRedirects.
+type ListUrlRedirectsUrlRedirectsUrlRedirectConnection struct {
+	// A list of nodes that are contained in UrlRedirectEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo ListUrlRedirectsUrlRedirectsUrlRedirectConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns ListUrlRedirectsUrlRedirectsUrlRedirectConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *ListUrlRedirectsUrlRedirectsUrlRedirectConnection) GetNodes() []ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect {
+	return v.Nodes
+}
+
+// GetPageInfo returns ListUrlRedirectsUrlRedirectsUrlRedirectConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *ListUrlRedirectsUrlRedirectsUrlRedirectConnection) GetPageInfo() ListUrlRedirectsUrlRedirectsUrlRedirectConnectionPageInfo {
+	return v.PageInfo
+}
+
+// ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect includes the requested fields of the GraphQL type UrlRedirect.
+// The GraphQL type's documentation follows.
+//
+// The URL redirect for the online store.
+type ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect struct {
+	UrlRedirectFields `json:"-"`
+}
+
+// GetId returns ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect.Id, and is useful for accessing the field via an interface.
+func (v *ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect) GetId() string {
+	return v.UrlRedirectFields.Id
+}
+
+// GetPath returns ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect.Path, and is useful for accessing the field via an interface.
+func (v *ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect) GetPath() string {
+	return v.UrlRedirectFields.Path
+}
+
+// GetTarget returns ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect.Target, and is useful for accessing the field via an interface.
+func (v *ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect) GetTarget() string {
+	return v.UrlRedirectFields.Target
+}
+
+func (v *ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.UrlRedirectFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect struct {
+	Id string `json:"id"`
+
+	Path string `json:"path"`
+
+	Target string `json:"target"`
+}
+
+func (v *ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *ListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect) __premarshalJSON() (*__premarshalListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect, error) {
+	var retval __premarshalListUrlRedirectsUrlRedirectsUrlRedirectConnectionNodesUrlRedirect
+
+	retval.Id = v.UrlRedirectFields.Id
+	retval.Path = v.UrlRedirectFields.Path
+	retval.Target = v.UrlRedirectFields.Target
+	return &retval, nil
+}
+
+// ListUrlRedirectsUrlRedirectsUrlRedirectConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type ListUrlRedirectsUrlRedirectsUrlRedirectConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns ListUrlRedirectsUrlRedirectsUrlRedirectConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *ListUrlRedirectsUrlRedirectsUrlRedirectConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns ListUrlRedirectsUrlRedirectsUrlRedirectConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *ListUrlRedirectsUrlRedirectsUrlRedirectConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
 }
 
 // ListWebPresencesResponse is returned by ListWebPresences on success.
@@ -34810,6 +35200,132 @@ func (v *UpdateShopPolicyShopPolicyUpdateShopPolicyUpdatePayloadUserErrorsShopPo
 	return v.Message
 }
 
+// UpdateUrlRedirectResponse is returned by UpdateUrlRedirect on success.
+type UpdateUrlRedirectResponse struct {
+	// Updates a URL redirect.
+	UrlRedirectUpdate *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayload `json:"urlRedirectUpdate"`
+}
+
+// GetUrlRedirectUpdate returns UpdateUrlRedirectResponse.UrlRedirectUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateUrlRedirectResponse) GetUrlRedirectUpdate() *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayload {
+	return v.UrlRedirectUpdate
+}
+
+// UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayload includes the requested fields of the GraphQL type UrlRedirectUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `urlRedirectUpdate` mutation.
+type UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayload struct {
+	// Returns the updated URL redirect.
+	UrlRedirect *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect `json:"urlRedirect"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUserErrorsUrlRedirectUserError `json:"userErrors"`
+}
+
+// GetUrlRedirect returns UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayload.UrlRedirect, and is useful for accessing the field via an interface.
+func (v *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayload) GetUrlRedirect() *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect {
+	return v.UrlRedirect
+}
+
+// GetUserErrors returns UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayload) GetUserErrors() []UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUserErrorsUrlRedirectUserError {
+	return v.UserErrors
+}
+
+// UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect includes the requested fields of the GraphQL type UrlRedirect.
+// The GraphQL type's documentation follows.
+//
+// The URL redirect for the online store.
+type UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect struct {
+	UrlRedirectFields `json:"-"`
+}
+
+// GetId returns UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect.Id, and is useful for accessing the field via an interface.
+func (v *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect) GetId() string {
+	return v.UrlRedirectFields.Id
+}
+
+// GetPath returns UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect.Path, and is useful for accessing the field via an interface.
+func (v *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect) GetPath() string {
+	return v.UrlRedirectFields.Path
+}
+
+// GetTarget returns UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect.Target, and is useful for accessing the field via an interface.
+func (v *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect) GetTarget() string {
+	return v.UrlRedirectFields.Target
+}
+
+func (v *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.UrlRedirectFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalUpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect struct {
+	Id string `json:"id"`
+
+	Path string `json:"path"`
+
+	Target string `json:"target"`
+}
+
+func (v *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect) __premarshalJSON() (*__premarshalUpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect, error) {
+	var retval __premarshalUpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUrlRedirect
+
+	retval.Id = v.UrlRedirectFields.Id
+	retval.Path = v.UrlRedirectFields.Path
+	retval.Target = v.UrlRedirectFields.Target
+	return &retval, nil
+}
+
+// UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUserErrorsUrlRedirectUserError includes the requested fields of the GraphQL type UrlRedirectUserError.
+// The GraphQL type's documentation follows.
+//
+// Represents an error that happens during execution of a redirect mutation.
+type UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUserErrorsUrlRedirectUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUserErrorsUrlRedirectUserError.Field, and is useful for accessing the field via an interface.
+func (v *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUserErrorsUrlRedirectUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUserErrorsUrlRedirectUserError.Message, and is useful for accessing the field via an interface.
+func (v *UpdateUrlRedirectUrlRedirectUpdateUrlRedirectUpdatePayloadUserErrorsUrlRedirectUserError) GetMessage() string {
+	return v.Message
+}
+
 // UpdateWebPresenceResponse is returned by UpdateWebPresence on success.
 type UpdateWebPresenceResponse struct {
 	// Updates a web presence.
@@ -34977,6 +35493,63 @@ func (v *UpdateWebPresenceWebPresenceUpdateWebPresenceUpdatePayloadWebPresenceMa
 	retval.RootUrls = v.WebPresenceFields.RootUrls
 	return &retval, nil
 }
+
+// Possible error codes that can be returned by `UrlRedirectUserError`.
+type UrlRedirectErrorCode string
+
+const (
+	// Redirect does not exist.
+	UrlRedirectErrorCodeDoesNotExist UrlRedirectErrorCode = "DOES_NOT_EXIST"
+	// Redirect could not be created.
+	UrlRedirectErrorCodeCreateFailed UrlRedirectErrorCode = "CREATE_FAILED"
+	// Redirect could not be updated.
+	UrlRedirectErrorCodeUpdateFailed UrlRedirectErrorCode = "UPDATE_FAILED"
+	// Redirect could not be deleted.
+	UrlRedirectErrorCodeDeleteFailed UrlRedirectErrorCode = "DELETE_FAILED"
+)
+
+var AllUrlRedirectErrorCode = []UrlRedirectErrorCode{
+	UrlRedirectErrorCodeDoesNotExist,
+	UrlRedirectErrorCodeCreateFailed,
+	UrlRedirectErrorCodeUpdateFailed,
+	UrlRedirectErrorCodeDeleteFailed,
+}
+
+// UrlRedirectFields includes the GraphQL fields of UrlRedirect requested by the fragment UrlRedirectFields.
+// The GraphQL type's documentation follows.
+//
+// The URL redirect for the online store.
+type UrlRedirectFields struct {
+	// The ID of the URL redirect.
+	Id string `json:"id"`
+	// The old path to be redirected from. When the user visits this path, they will be redirected to the target location.
+	Path string `json:"path"`
+	// The target location where the user will be redirected to.
+	Target string `json:"target"`
+}
+
+// GetId returns UrlRedirectFields.Id, and is useful for accessing the field via an interface.
+func (v *UrlRedirectFields) GetId() string { return v.Id }
+
+// GetPath returns UrlRedirectFields.Path, and is useful for accessing the field via an interface.
+func (v *UrlRedirectFields) GetPath() string { return v.Path }
+
+// GetTarget returns UrlRedirectFields.Target, and is useful for accessing the field via an interface.
+func (v *UrlRedirectFields) GetTarget() string { return v.Target }
+
+// The input fields to create or update a URL redirect.
+type UrlRedirectInput struct {
+	// The old path to be redirected from. When the user visits this path, they will be redirected to the target location.
+	Path *string `json:"path"`
+	// The target location where the user will be redirected to.
+	Target *string `json:"target"`
+}
+
+// GetPath returns UrlRedirectInput.Path, and is useful for accessing the field via an interface.
+func (v *UrlRedirectInput) GetPath() *string { return v.Path }
+
+// GetTarget returns UrlRedirectInput.Target, and is useful for accessing the field via an interface.
+func (v *UrlRedirectInput) GetTarget() *string { return v.Target }
 
 // TODO(verify): whether reading inventoryItem needs read_inventory; every scope is granted on the dev store.
 type VariantFields struct {
@@ -35586,6 +36159,14 @@ func (v *__CreateSegmentInput) GetName() string { return v.Name }
 // GetQuery returns __CreateSegmentInput.Query, and is useful for accessing the field via an interface.
 func (v *__CreateSegmentInput) GetQuery() string { return v.Query }
 
+// __CreateUrlRedirectInput is used internally by genqlient
+type __CreateUrlRedirectInput struct {
+	UrlRedirect UrlRedirectInput `json:"urlRedirect"`
+}
+
+// GetUrlRedirect returns __CreateUrlRedirectInput.UrlRedirect, and is useful for accessing the field via an interface.
+func (v *__CreateUrlRedirectInput) GetUrlRedirect() UrlRedirectInput { return v.UrlRedirect }
+
 // __CreateWebPresenceInput is used internally by genqlient
 type __CreateWebPresenceInput struct {
 	Input WebPresenceCreateInput `json:"input"`
@@ -35731,6 +36312,14 @@ type __DeleteSegmentInput struct {
 
 // GetId returns __DeleteSegmentInput.Id, and is useful for accessing the field via an interface.
 func (v *__DeleteSegmentInput) GetId() string { return v.Id }
+
+// __DeleteUrlRedirectInput is used internally by genqlient
+type __DeleteUrlRedirectInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __DeleteUrlRedirectInput.Id, and is useful for accessing the field via an interface.
+func (v *__DeleteUrlRedirectInput) GetId() string { return v.Id }
 
 // __DeleteWebPresenceInput is used internally by genqlient
 type __DeleteWebPresenceInput struct {
@@ -36168,6 +36757,14 @@ type __GetShopMetafieldsInput struct {
 // GetAfter returns __GetShopMetafieldsInput.After, and is useful for accessing the field via an interface.
 func (v *__GetShopMetafieldsInput) GetAfter() *string { return v.After }
 
+// __GetUrlRedirectInput is used internally by genqlient
+type __GetUrlRedirectInput struct {
+	Id string `json:"id"`
+}
+
+// GetId returns __GetUrlRedirectInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetUrlRedirectInput) GetId() string { return v.Id }
+
 // __GetVariantMetafieldsInput is used internally by genqlient
 type __GetVariantMetafieldsInput struct {
 	Id    string  `json:"id"`
@@ -36347,6 +36944,18 @@ type __ListSegmentsInput struct {
 
 // GetAfter returns __ListSegmentsInput.After, and is useful for accessing the field via an interface.
 func (v *__ListSegmentsInput) GetAfter() *string { return v.After }
+
+// __ListUrlRedirectsInput is used internally by genqlient
+type __ListUrlRedirectsInput struct {
+	After *string `json:"after"`
+	Query *string `json:"query"`
+}
+
+// GetAfter returns __ListUrlRedirectsInput.After, and is useful for accessing the field via an interface.
+func (v *__ListUrlRedirectsInput) GetAfter() *string { return v.After }
+
+// GetQuery returns __ListUrlRedirectsInput.Query, and is useful for accessing the field via an interface.
+func (v *__ListUrlRedirectsInput) GetQuery() *string { return v.Query }
 
 // __ListWebPresencesInput is used internally by genqlient
 type __ListWebPresencesInput struct {
@@ -36653,6 +37262,18 @@ type __UpdateShopPolicyInput struct {
 
 // GetInput returns __UpdateShopPolicyInput.Input, and is useful for accessing the field via an interface.
 func (v *__UpdateShopPolicyInput) GetInput() ShopPolicyInput { return v.Input }
+
+// __UpdateUrlRedirectInput is used internally by genqlient
+type __UpdateUrlRedirectInput struct {
+	Id          string           `json:"id"`
+	UrlRedirect UrlRedirectInput `json:"urlRedirect"`
+}
+
+// GetId returns __UpdateUrlRedirectInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateUrlRedirectInput) GetId() string { return v.Id }
+
+// GetUrlRedirect returns __UpdateUrlRedirectInput.UrlRedirect, and is useful for accessing the field via an interface.
+func (v *__UpdateUrlRedirectInput) GetUrlRedirect() UrlRedirectInput { return v.UrlRedirect }
 
 // __UpdateWebPresenceInput is used internally by genqlient
 type __UpdateWebPresenceInput struct {
@@ -37926,6 +38547,51 @@ func CreateSegment(
 	return data_, err_
 }
 
+// The mutation executed by CreateUrlRedirect.
+const CreateUrlRedirect_Operation = `
+mutation CreateUrlRedirect ($urlRedirect: UrlRedirectInput!) {
+	urlRedirectCreate(urlRedirect: $urlRedirect) {
+		urlRedirect {
+			... UrlRedirectFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment UrlRedirectFields on UrlRedirect {
+	id
+	path
+	target
+}
+`
+
+func CreateUrlRedirect(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	urlRedirect UrlRedirectInput,
+) (data_ *CreateUrlRedirectResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateUrlRedirect",
+		Query:  CreateUrlRedirect_Operation,
+		Variables: &__CreateUrlRedirectInput{
+			UrlRedirect: urlRedirect,
+		},
+	}
+
+	data_ = &CreateUrlRedirectResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by CreateWebPresence.
 const CreateWebPresence_Operation = `
 mutation CreateWebPresence ($input: WebPresenceCreateInput!) {
@@ -38618,6 +39284,45 @@ func DeleteSegment(
 	}
 
 	data_ = &DeleteSegmentResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteUrlRedirect.
+const DeleteUrlRedirect_Operation = `
+mutation DeleteUrlRedirect ($id: ID!) {
+	urlRedirectDelete(id: $id) {
+		deletedUrlRedirectId
+		userErrors {
+			field
+			message
+			code
+		}
+	}
+}
+`
+
+func DeleteUrlRedirect(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *DeleteUrlRedirectResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteUrlRedirect",
+		Query:  DeleteUrlRedirect_Operation,
+		Variables: &__DeleteUrlRedirectInput{
+			Id: id,
+		},
+	}
+
+	data_ = &DeleteUrlRedirectResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -43228,6 +43933,45 @@ func GetShopMetafields(
 	return data_, err_
 }
 
+// The query executed by GetUrlRedirect.
+const GetUrlRedirect_Operation = `
+query GetUrlRedirect ($id: ID!) {
+	urlRedirect(id: $id) {
+		... UrlRedirectFields
+	}
+}
+fragment UrlRedirectFields on UrlRedirect {
+	id
+	path
+	target
+}
+`
+
+func GetUrlRedirect(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+) (data_ *GetUrlRedirectResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetUrlRedirect",
+		Query:  GetUrlRedirect_Operation,
+		Variables: &__GetUrlRedirectInput{
+			Id: id,
+		},
+	}
+
+	data_ = &GetUrlRedirectResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetVariantMetafields.
 const GetVariantMetafields_Operation = `
 query GetVariantMetafields ($id: ID!, $after: String) {
@@ -46199,6 +46943,54 @@ func ListShopPolicies(
 	return data_, err_
 }
 
+// The query executed by ListUrlRedirects.
+const ListUrlRedirects_Operation = `
+query ListUrlRedirects ($after: String, $query: String) {
+	urlRedirects(first: 250, after: $after, query: $query) {
+		nodes {
+			... UrlRedirectFields
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
+}
+fragment UrlRedirectFields on UrlRedirect {
+	id
+	path
+	target
+}
+`
+
+// Used for the path lookup too: the search matches the whole path, case-insensitively, and the caller compares exactly.
+func ListUrlRedirects(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+	query *string,
+) (data_ *ListUrlRedirectsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "ListUrlRedirects",
+		Query:  ListUrlRedirects_Operation,
+		Variables: &__ListUrlRedirectsInput{
+			After: after,
+			Query: query,
+		},
+	}
+
+	data_ = &ListUrlRedirectsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by ListWebPresences.
 const ListWebPresences_Operation = `
 query ListWebPresences ($after: String) {
@@ -49111,6 +49903,53 @@ func UpdateShopPolicy(
 	}
 
 	data_ = &UpdateShopPolicyResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateUrlRedirect.
+const UpdateUrlRedirect_Operation = `
+mutation UpdateUrlRedirect ($id: ID!, $urlRedirect: UrlRedirectInput!) {
+	urlRedirectUpdate(id: $id, urlRedirect: $urlRedirect) {
+		urlRedirect {
+			... UrlRedirectFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment UrlRedirectFields on UrlRedirect {
+	id
+	path
+	target
+}
+`
+
+func UpdateUrlRedirect(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	urlRedirect UrlRedirectInput,
+) (data_ *UpdateUrlRedirectResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateUrlRedirect",
+		Query:  UpdateUrlRedirect_Operation,
+		Variables: &__UpdateUrlRedirectInput{
+			Id:          id,
+			UrlRedirect: urlRedirect,
+		},
+	}
+
+	data_ = &UpdateUrlRedirectResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

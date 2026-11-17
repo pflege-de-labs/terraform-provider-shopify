@@ -1,8 +1,9 @@
-// Package publication implements the shopify_publication data source.
+// Package publication implements the shopify_publication and shopify_publications data sources.
 package publication
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -76,4 +77,21 @@ func toModel(p *publication) model {
 		m.CatalogID = types.StringValue(id)
 	}
 	return m
+}
+
+// namedSorted drops unnamed publications (market catalogs) and orders by name, then id, for stable plans.
+func namedSorted(pubs []publication) []publication {
+	var out []publication
+	for _, p := range pubs {
+		if p.Name != "" {
+			out = append(out, p)
+		}
+	}
+	sort.SliceStable(out, func(i, j int) bool {
+		if out[i].Name != out[j].Name {
+			return out[i].Name < out[j].Name
+		}
+		return out[i].Id < out[j].Id
+	})
+	return out
 }

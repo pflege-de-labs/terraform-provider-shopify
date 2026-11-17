@@ -12,6 +12,9 @@ FEATURES:
 * **New List Resource:** `shopify_metaobject`
 * **New List Resource:** `shopify_discount_free_shipping`
 * **New List Resource:** `shopify_discount_bxgy`
+* **New Resource:** `shopify_url_redirect` (path to target; canonical input only, `adopt_existing`; volatile)
+* **New List Resource:** `shopify_url_redirect` (optional `query` filter, to copy a store's redirects with `terraform query -generate-config-out`)
+* **New Data Source:** `shopify_publications` (all sales channel publications, to map `publication_ids` to names)
 * **New Data Source:** `shopify_product` (lookup by variant SKU, e.g. for `product_ids` of products Terraform doesn't manage)
 
 ENHANCEMENTS:

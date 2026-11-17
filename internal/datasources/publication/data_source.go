@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
@@ -76,18 +77,8 @@ func (d *DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp 
 		return
 	}
 
-	var pubs []publication
-	err := patterns.Paginate(ctx, 0, d.listPage(ctx), func(p publication) bool {
-		pubs = append(pubs, p)
-		return true
-	})
-	if client.IsAccessDenied(err) {
-		resp.Diagnostics.AddError("Failed to read publications",
-			fmt.Sprintf("The app lacks the read_publications scope: %s", err))
-		return
-	}
-	if err != nil {
-		resp.Diagnostics.AddError("Failed to read publications", err.Error())
+	pubs, err := listAll(ctx, d.client)
+	if !publicationsOK(&resp.Diagnostics, err) {
 		return
 	}
 
@@ -99,9 +90,33 @@ func (d *DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp 
 	resp.Diagnostics.Append(resp.State.Set(ctx, toModel(p))...)
 }
 
-func (d *DataSource) listPage(ctx context.Context) func(after *string) ([]publication, *string, error) {
+// listAll pages every publication; shared with the plural data source.
+func listAll(ctx context.Context, c *client.Client) ([]publication, error) {
+	var pubs []publication
+	err := patterns.Paginate(ctx, 0, listPage(ctx, c), func(p publication) bool {
+		pubs = append(pubs, p)
+		return true
+	})
+	return pubs, err
+}
+
+// publicationsOK reports err as a diagnostic, naming the scope on ACCESS_DENIED.
+func publicationsOK(diags *diag.Diagnostics, err error) bool {
+	if client.IsAccessDenied(err) {
+		diags.AddError("Failed to read publications",
+			fmt.Sprintf("The app lacks the read_publications scope: %s", err))
+		return false
+	}
+	if err != nil {
+		diags.AddError("Failed to read publications", err.Error())
+		return false
+	}
+	return true
+}
+
+func listPage(ctx context.Context, c *client.Client) func(after *string) ([]publication, *string, error) {
 	return func(after *string) ([]publication, *string, error) {
-		res, err := client.ListPublications(ctx, d.client, after)
+		res, err := client.ListPublications(ctx, c, after)
 		if err != nil {
 			return nil, nil, err
 		}

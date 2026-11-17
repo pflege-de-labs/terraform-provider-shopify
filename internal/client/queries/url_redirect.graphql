@@ -1,0 +1,71 @@
+fragment UrlRedirectFields on UrlRedirect {
+  id
+  path
+  target
+}
+
+query GetUrlRedirect(
+  $id: ID!
+) {
+  urlRedirect(id: $id) {
+    ...UrlRedirectFields
+  }
+}
+
+# Used for the path lookup too: the search matches the whole path, case-insensitively, and the caller compares exactly.
+query ListUrlRedirects(
+  $after: String
+  $query: String
+) {
+  urlRedirects(first: 250, after: $after, query: $query) {
+    nodes {
+      ...UrlRedirectFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation CreateUrlRedirect(
+  $urlRedirect: UrlRedirectInput!
+) {
+  urlRedirectCreate(urlRedirect: $urlRedirect) {
+    urlRedirect {
+      ...UrlRedirectFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation UpdateUrlRedirect(
+  $id: ID!
+  $urlRedirect: UrlRedirectInput!
+) {
+  urlRedirectUpdate(id: $id, urlRedirect: $urlRedirect) {
+    urlRedirect {
+      ...UrlRedirectFields
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation DeleteUrlRedirect(
+  $id: ID!
+) {
+  urlRedirectDelete(id: $id) {
+    deletedUrlRedirectId
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}

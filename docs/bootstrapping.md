@@ -38,7 +38,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_products` | `shopify_metafield_definition` resource and data source (owner types `PRODUCT`, `PRODUCTVARIANT`, `COLLECTION`), catalogs, price lists, selling plan groups; products and collections | ✅ definitions (`PRODUCT`), `shopify_product` (core fields, options, variants, publishing, media, `metafields` ⚠ whether `write_products` alone suffices for `metafieldsSet` on a product; every scope is granted on the dev store, so it can't tell), `shopify_collection` (with publishing), data source `shopify_product` (by SKU, `read_products` suffices), rest planned | definitions good; products, collections volatile |
 | (none documented) | `shopify_shop_metafields` (values of `SHOP` metafields) ⚠ TODO(verify): which scope `metafieldsSet` needs for the shop; every scope is granted on the dev store, so it can't tell | ✅ | volatile |
 | `write_metaobject_definitions` | `shopify_metaobject_definition` resource and data source, `shopify_standard_metaobject_definition` | ✅ | good |
-| `write_online_store_navigation` | `shopify_menu`, URL redirects | ✅ menus, redirects planned | menus good; redirects volatile |
+| `write_online_store_navigation` | `shopify_menu`, URL redirects | ✅ menus, redirects | menus good; redirects volatile |
 | `write_locations` | `shopify_location` | ✅ | good |
 | `write_markets` | `shopify_market`, `shopify_web_presence` | ✅ | good |
 | `write_shipping` | `shopify_delivery_profile` (general; custom profiles planned), carrier services | ✅ general profile | good; carrier services are app-owned |
@@ -49,7 +49,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_checkout_branding_settings` | `shopify_checkout_and_accounts_configuration` `branding` ⚠ (maybe not needed: granted together with the scope above on the dev store, so untested alone) | ✅ | volatile |
 | `write_translations` | translations, market localizations | planned | volatile (follows content) |
 | `write_publications` | `publication_ids` on `shopify_product` and `shopify_collection` (publishing to channels; the publications themselves belong to channel apps) ⚠ (whether `write_products` alone suffices is untested: all scopes are granted on the dev store) | ✅ | volatile |
-| `read_publications` (or `write_publications`) | `shopify_publication` data source (publications belong to sales channel apps, not managed; for referencing by name) | ✅ data source | good (read-only) |
+| `read_publications` (or `write_publications`) | `shopify_publication` and `shopify_publications` data sources (publications belong to sales channel apps, not managed; for referencing by name) | ✅ data source | good (read-only) |
 | `read_customers` ⚠ (assumed, unverified: the dev store grants all scopes) | `shopify_customer_account_page` data source (Shopify-created pages; for referencing their GIDs by handle) | ✅ data source | good (read-only) |
 | `write_purchase_options` | selling plan groups (together with `write_products`) | planned | volatile |
 | `write_customers` | `shopify_customer_segment`; metafield definitions for `CUSTOMER` ⚠ | ✅ | segments volatile; definitions good |
