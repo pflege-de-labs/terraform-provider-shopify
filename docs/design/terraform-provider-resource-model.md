@@ -898,9 +898,11 @@ Left out: `supportsFuturePublishing`, `operation`, the product and collection co
 
 **Scopes:** `read_publications` (or `write_publications`). `TODO(verify)`: checked only with both `read_publications` and `read_products` granted.
 
+**Plural: `shopify_publications` (issue #73).** Lists every publication so exported `publication_ids` (raw GIDs, different per store) can be mapped to names. No arguments; one computed attribute `publications`, a list whose elements have exactly the singular's attributes (`id`, `name`, `auto_publish`, `catalog_id`). It reuses the singular's query (`ListPublications`, `publications(first: 250)`, paged), mapping and error handling, so the two can't drift: same `read_publications` scope, `ACCESS_DENIED` reported with the scope name. Publications with an empty name (market catalogs) are skipped. Order: by `name`, then `id` (API order isn't documented as stable, and a stable order keeps plans quiet). No publications gives an empty list, not an error. Data source rather than a list resource because publications aren't managed.
+
 **Fit:** good. Read-only reference; channels come and go with app installs, and the data source reads the current state on every plan.
 
-**Tests:** acceptance: read `Online Store` and check `id` (`^gid://shopify/Publication/`), `catalog_id` (`^gid://shopify/AppCatalog/`) and `auto_publish`; not found. On the dev store all three publications (Online Store, Shop, Point of Sale) have `auto_publish = false`, so the test asserts `false` for the Online Store. Unit: exact match, empty names skipped, the duplicate and not-found messages, mapping.
+**Tests:** acceptance: read `Online Store` and check `id` (`^gid://shopify/Publication/`), `catalog_id` (`^gid://shopify/AppCatalog/`) and `auto_publish`; not found. On the dev store all three publications (Online Store, Shop, Point of Sale) have `auto_publish = false`, so the test asserts `false` for the Online Store. Unit: exact match, empty names skipped, the duplicate and not-found messages, mapping, plural sort and filter. Plural acceptance: Online Store, Point of Sale and Shop appear in that order, with `id`, `catalog_id` and `auto_publish` equal to `data.shopify_publication` for the same names.
 
 ---
 

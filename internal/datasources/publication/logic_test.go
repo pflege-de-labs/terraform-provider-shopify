@@ -110,3 +110,24 @@ func TestToModel_nullCatalog(t *testing.T) {
 		t.Errorf("catalog_id must be null for a nil catalog: %+v", got)
 	}
 }
+
+func TestNamedSorted(t *testing.T) {
+	got := namedSorted([]publication{
+		{Id: "gid://shopify/Publication/3", Name: "Shop"},
+		{Id: "gid://shopify/Publication/9", Name: ""},
+		{Id: "gid://shopify/Publication/2", Name: "Headless"},
+		{Id: "gid://shopify/Publication/1", Name: "Headless"},
+		{Id: "gid://shopify/Publication/4", Name: "Online Store"},
+	})
+	var ids []string
+	for _, p := range got {
+		ids = append(ids, p.Id)
+	}
+	want := "gid://shopify/Publication/1,gid://shopify/Publication/2,gid://shopify/Publication/4,gid://shopify/Publication/3"
+	if strings.Join(ids, ",") != want {
+		t.Errorf("got %v", ids)
+	}
+	if len(namedSorted(nil)) != 0 {
+		t.Error("empty input must give an empty result")
+	}
+}

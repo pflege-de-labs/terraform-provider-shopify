@@ -253,6 +253,7 @@ func (p *ShopifyProvider) DataSources(ctx context.Context) []func() datasource.D
 		fulfillmentservice.NewDataSource,
 		productds.NewDataSource,
 		publicationds.NewDataSource,
+		publicationds.NewListDataSource,
 		customeraccountpageds.NewDataSource,
 		metafielddefinitionds.NewDataSource,
 		metaobjectdefinitionds.NewDataSource,
