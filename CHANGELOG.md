@@ -1,21 +1,21 @@
-## 0.1.3 (Unreleased)
+## 0.2.0 (November 17, 2026)
 
 FEATURES:
 
-* **New Resource:** `shopify_standard_metaobject_definition`
+* **New Resource:** `shopify_discount_bxgy` (buy X get Y: `customer_buys` and `customer_gets` with quantity or amount; code and automatic)
+* **New Resource:** `shopify_discount_free_shipping` (destination, maximum shipping price, minimum requirement, subscription flags; code and automatic)
 * **New Resource:** `shopify_metaobject`
 * **New Resource:** `shopify_shop_metafields` (the shop's own metafield values; one per store)
-* **New List Resource:** `shopify_shop_metafields`
-* **New Resource:** `shopify_discount_free_shipping` (destination, maximum shipping price, minimum requirement, subscription flags; code and automatic)
-* **New Resource:** `shopify_discount_bxgy` (buy X get Y: `customer_buys` and `customer_gets` with quantity or amount; code and automatic)
-* **New List Resource:** `shopify_standard_metaobject_definition`
-* **New List Resource:** `shopify_metaobject`
-* **New List Resource:** `shopify_discount_free_shipping`
-* **New List Resource:** `shopify_discount_bxgy`
+* **New Resource:** `shopify_standard_metaobject_definition`
 * **New Resource:** `shopify_url_redirect` (path to target; canonical input only, `adopt_existing`; volatile)
+* **New List Resource:** `shopify_discount_bxgy`
+* **New List Resource:** `shopify_discount_free_shipping`
+* **New List Resource:** `shopify_metaobject`
+* **New List Resource:** `shopify_shop_metafields`
+* **New List Resource:** `shopify_standard_metaobject_definition`
 * **New List Resource:** `shopify_url_redirect` (optional `query` filter, to copy a store's redirects with `terraform query -generate-config-out`)
-* **New Data Source:** `shopify_publications` (all sales channel publications, to map `publication_ids` to names)
 * **New Data Source:** `shopify_product` (lookup by variant SKU, e.g. for `product_ids` of products Terraform doesn't manage)
+* **New Data Source:** `shopify_publications` (all sales channel publications, to map `publication_ids` to names)
 
 ENHANCEMENTS:
 
@@ -33,7 +33,7 @@ BUG FIXES:
 
 * resource/shopify_discount_basic, list/shopify_discount_basic: a discount whose item selection is empty (e.g. its products were deleted) reads as `product_ids = []` or `collection_ids = []` instead of failing Read, import and the list. Shopify rejects creating such a discount and updating it unless the same change adds items; the error now says so.
 
-## 0.1.2 (Unreleased)
+## 0.1.2 (October 30, 2026)
 
 FEATURES:
 
