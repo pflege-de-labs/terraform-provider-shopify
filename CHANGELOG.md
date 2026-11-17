@@ -10,6 +10,7 @@ FEATURES:
 
 ENHANCEMENTS:
 
+* resource/shopify_collection, list/shopify_collection: new `image` attribute (`src`, `alt_text`, computed `url`). The configured `src` stays in state while the collection still has the image of the last apply; import and the list use the CDN URL, so generated config copies the image to another store.
 * resource/shopify_metafield_definition: owner types `CUSTOMER`, `ORDER`, `DRAFTORDER`, `DISCOUNT`, `COMPANY` and `COMPANY_LOCATION` are covered by acceptance tests and documented with their scopes. The reference app configs add `read_companies` / `write_companies` (B2B stores only, optional).
 * list/shopify_metaobject_definition: skips Shopify's standard definitions (`shopify--…` types), which `shopify_standard_metaobject_definition` lists, so generated config no longer holds ordinary definitions for them.
 * list/shopify_metafield_definition: an empty result comes with a warning, since Shopify returns one instead of an error when the app lacks the owner type's read scope.

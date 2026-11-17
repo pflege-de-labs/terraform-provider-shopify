@@ -4,6 +4,7 @@ package collection
 import (
 	"context"
 	"fmt"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -67,7 +68,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"Membership is managed for collections with at most one non-shareable conditions source, which every collection made in the admin, with the older API or by this provider has. " +
 			"That includes a source another app created; Shopify may reject changes to it. " +
 			"Collections with several sources, a sub-collection or shareable source, variant-level selections or a condition Shopify can't express as input are read without membership: " +
-			"setting `match_type`, `conditions` or `product_ids` for them fails. Exclusions, the product order of `MANUAL` collections, the image and metafields are not managed. " +
+			"setting `match_type`, `conditions` or `product_ids` for them fails. Exclusions, the product order of `MANUAL` collections and metafields are not managed. " +
 			"`publication_ids` publishes it to sales channels; removing an ID unpublishes it there. " +
 			"Destroying a collection deletes it with its publications and translations; the products stay. " +
 			"Menu items pointing at it lose their target, so add `lifecycle { prevent_destroy = true }` to collections that back navigation. " +
@@ -150,6 +151,33 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				Computed:      true,
 				PlanModifiers: []planmodifier.String{patterns.UseStateForUnknownIncludingNull()},
 			},
+			"image": schema.SingleNestedAttribute{
+				MarkdownDescription: "The collection image, shown where the storefront presents the collection. Shopify downloads `src` and serves its own copy from its CDN (`url`). " +
+					"Unset means unmanaged: the image set in the admin is kept, and removing the block leaves the image in place.",
+				Optional:      true,
+				Computed:      true,
+				PlanModifiers: []planmodifier.Object{patterns.UseStateForUnknownIncludingNullObject()},
+				Attributes: map[string]schema.Attribute{
+					"src": schema.StringAttribute{
+						MarkdownDescription: "Public URL Shopify downloads the image from, such as a `shopify_file` URL or another store's CDN URL. " +
+							"Kept as configured while the collection still has the image of the last apply; an image replaced in the admin, or its alt text edited there, shows as a change and is put back. " +
+							"After import it is the CDN URL, so generated config copies the image to another store as long as the source store still has it.",
+						Required:   true,
+						Validators: []validator.String{stringvalidator.RegexMatches(regexp.MustCompile(`^https?://`), "must be an http(s) URL")},
+					},
+					"alt_text": schema.StringAttribute{
+						MarkdownDescription: "Alternative text for the image. Null when none is set." + unmanaged,
+						Optional:            true,
+						Computed:            true,
+						PlanModifiers:       []planmodifier.String{patterns.UseStateForUnknownIncludingNull()},
+					},
+					"url": schema.StringAttribute{
+						MarkdownDescription: "Shopify's CDN URL of the image. Changes when `src` or `alt_text` change.",
+						Computed:            true,
+						PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+					},
+				},
+			},
 			"publication_ids": publishing.Attribute(what),
 			"adopt_existing":  patterns.AdoptExistingAttribute(what),
 		},
@@ -201,6 +229,14 @@ func (r *Resource) ModifyPlan(ctx context.Context, req resource.ModifyPlanReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	// A new src or alt text gives the image a new CDN URL.
+	cfgImg, d := imageOf(ctx, cfg.Image)
+	resp.Diagnostics.Append(d...)
+	stateImg, d := imageOf(ctx, state.Image)
+	resp.Diagnostics.Append(d...)
+	if cfgImg != nil && (cfgImg.AltText.IsUnknown() || imageInput(cfgImg, stateImg) != nil) {
+		resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, path.Root("image").AtName("url"), types.StringUnknown())...)
+	}
 	// Read leaves product_ids null only when the membership can't be managed.
 	if state.ProductIDs.IsNull() && cfg.membershipConfigured() {
 		resp.Diagnostics.AddError("Membership can't be managed",
@@ -238,7 +274,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	}
 	var c *client.CollectionFields
 	if existing != nil {
-		c = r.update(ctx, existing, &cfg, &resp.Diagnostics)
+		c = r.update(ctx, existing, &cfg, readImage(nil, existing.Image, nil), &resp.Diagnostics)
 	} else {
 		c = r.create(ctx, &cfg, &resp.Diagnostics)
 	}
@@ -288,8 +324,10 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	}
 	written, d := patterns.WrittenHTML(ctx, req.Private)
 	resp.Diagnostics.Append(d...)
+	writtenImage, d := patterns.Written(ctx, req.Private, writtenImageKey)
+	resp.Diagnostics.Append(d...)
 	wasManaged := !state.ProductIDs.IsNull() || !state.Conditions.IsNull()
-	d, unsupported := setFromAPI(ctx, &state, c, written, importing)
+	d, unsupported := setFromAPI(ctx, &state, c, written, writtenImage, importing)
 	resp.Diagnostics.Append(d...)
 	// Warn once: on import, or when a collection's membership stops being manageable; ModifyPlan errors if config still sets it.
 	if unsupported != nil && (importing || wasManaged) {
@@ -303,9 +341,12 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 }
 
 func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, cfg model
+	var plan, cfg, state model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	resp.Diagnostics.Append(req.Config.Get(ctx, &cfg)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	prior, d := imageOf(ctx, state.Image)
+	resp.Diagnostics.Append(d...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -323,7 +364,7 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 			return
 		}
 	}
-	c := r.update(ctx, live, &cfg, &resp.Diagnostics)
+	c := r.update(ctx, live, &cfg, prior, &resp.Diagnostics)
 	if !r.finish(ctx, c, &plan, &cfg, &resp.Diagnostics, resp.Private) {
 		return
 	}
@@ -391,6 +432,7 @@ func (r *Resource) create(ctx context.Context, cfg *model, diags *diag.Diagnosti
 		return nil
 	}
 	in := cfg.createInput()
+	diags.Append(cfg.withImage(ctx, &in)...)
 	if changes.Create != nil {
 		in.Sources = []client.CollectionCreateSourceTargetInput{{Source: &client.CollectionCreateConditionsSourceInput{Title: sourceTitle, Inclusion: changes.Create}}}
 	}
@@ -411,7 +453,8 @@ func (r *Resource) create(ctx context.Context, cfg *model, diags *diag.Diagnosti
 }
 
 // update sends collectionUpdate for live with the configured attributes and the membership difference; cfg is the config, as in create.
-func (r *Resource) update(ctx context.Context, live *liveCollection, cfg *model, diags *diag.Diagnostics) *client.CollectionFields {
+// prior is the image Shopify holds as far as we know (state, or the live one when adopting); it decides whether to send cfg's image.
+func (r *Resource) update(ctx context.Context, live *liveCollection, cfg *model, prior *imageModel, diags *diag.Diagnostics) *client.CollectionFields {
 	var mem *membership
 	if cfg.membershipConfigured() {
 		var err error
@@ -425,6 +468,9 @@ func (r *Resource) update(ctx context.Context, live *liveCollection, cfg *model,
 		return nil
 	}
 	in := cfg.updateInput(live.Id)
+	img, d := imageOf(ctx, cfg.Image)
+	diags.Append(d...)
+	in.Image = imageInput(img, prior)
 	switch {
 	case changes.Create != nil:
 		in.SourcesToCreate = []client.CollectionCreateSourceTargetInput{{Source: &client.CollectionCreateConditionsSourceInput{Title: sourceTitle, Inclusion: changes.Create}}}
@@ -475,7 +521,12 @@ func (r *Resource) finish(ctx context.Context, c *client.CollectionFields, plan,
 		diags.AddError("Failed to read the written "+what, err.Error())
 		return false
 	}
-	d, _ := setFromAPI(ctx, plan, l, &c.DescriptionHtml, false)
+	var writtenImage *string
+	if c.Image != nil {
+		writtenImage = &c.Image.Url
+		diags.Append(patterns.RememberWritten(ctx, private, writtenImageKey, c.Image.Url)...)
+	}
+	d, _ := setFromAPI(ctx, plan, l, &c.DescriptionHtml, writtenImage, false)
 	diags.Append(d...)
 	diags.Append(patterns.RememberWrittenHTML(ctx, private, c.DescriptionHtml)...)
 	diags.Append(r.publish(ctx, l, plan, cfg)...)

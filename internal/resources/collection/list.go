@@ -70,7 +70,7 @@ func listResult(ctx context.Context, req list.ListRequest, c *liveCollection) li
 	res.Diagnostics.Append(res.Identity.Set(ctx, patterns.IDIdentity{ID: types.StringValue(c.Id)})...)
 	if req.IncludeResource {
 		m := model{Conditions: conditionsNull(), AdoptExisting: types.BoolValue(false)}
-		d, unsupported := setFromAPI(ctx, &m, c, nil, true)
+		d, unsupported := setFromAPI(ctx, &m, c, nil, nil, true)
 		m.PublicationIDs = publishing.NullIfEmpty(m.PublicationIDs)
 		res.Diagnostics.Append(d...)
 		if unsupported != nil {

@@ -1105,7 +1105,7 @@ Open for that task: whether detaching a file through `productSet` deletes it (de
 - **Paging and cost:** `ProductFields` carries `media(first: 20)`; `GetProductMedia` pages the rest (`first: 250`) in `completeProduct`, like variants and publications. List page of 50: 898 without media, 940 / 947 / 961 with `first: 10 / 20 / 50` (limit 1,000). Only a single first page was exercised on the dev store; the follow-up paging is unit-tested with a fake page source.
 - **List:** results carry `media_ids` when not empty (null otherwise), so generated config holds file GIDs and is tied to the store, like a manual collection's `product_ids`.
 - **Product destroy** (ruling T14d-2 extended to destroy): Delete, and the delete half of a replace, detaches all the live product's media with the same `fileUpdate(referencesToRemove:)` call before `productDelete`, so a file `shopify_file` guards survives (acceptance step: file with `allow_data_deletion = false`, product destroyed, file still there). A failed detach stops before `productDelete`. Delete gets no config, so a write records in private state (`media_managed`) whether `media_ids` was ever set; `false` keeps Shopify's behaviour (probe 1: the files no other product uses are deleted). No record (an imported product not written since) detaches, which keeps files rather than deleting them. **Transition (issue 32):** the record only changes on a write, so `media_ids` going from unset to the live list would plan empty and leave `false`. ModifyPlan therefore marks the computed `media_managed` attribute unknown when config sets `media_ids` and the record is `false`, which makes the plan an update with a warning; the update sends the same list, detaches nothing, and records `true`. `media_managed` equals the record (null until a write); `media_ids` itself can't be the marker, since a planned value must equal its config. The check also runs when `media_ids` is unknown at plan time (a `shopify_file` created in the same apply), so the first plan and the apply-time re-plan agree. An absent record (import) needs no update, since Delete already detaches then. **Sticky (ruling):** once recorded `true`, the record stays `true` when config later leaves `media_ids` unset, since detaching only keeps files in the library while Shopify would delete files another resource may protect; only a product never managed (or created unmanaged) keeps `false`. Import leaves the attribute null, which import tests ignore. The product and `shopify_file` docs say so.
-- **Roadmap:** variant media (`ProductVariantSetInput.file`) and collection images (`CollectionInput.image` takes an `ImageInput`, not a file GID; `TODO(verify)` whether a file URL works there).
+- **Roadmap:** variant media (`ProductVariantSetInput.file`). Collection images are managed by `shopify_collection.image` (§9l, #56).
 
 **Dev store (2026-10-26):** probes created three products (`tf-design-probe-1`, `-2`, `-3`) and published, unpublished and re-statused them; all three were deleted, along with the one image added to `-2`. Two probes landed in `frontpage`, which gained an empty `Untitled Source`; the source was removed again, so `frontpage` is back to `sources: []`, 0 products, `MOST_RELEVANT`. End state equals the start: 0 products, 0 files, 1 collection.
 
@@ -1150,6 +1150,7 @@ resource "shopify_collection" "empfehlungen" {
 | `conditions` | string (JSON) | Optional; unset = unmanaged. A JSON list of `CollectionSourceInclusionConditionInput` objects in the API's camelCase, one key each. See "Conditions" |
 | `product_ids` | set(string) | Optional + Computed, UseStateForUnknown; unset = unmanaged. Products included by hand (the source's `selections`), whatever the conditions say |
 | `source_id` | string | Computed, UseStateForUnknown. The `CollectionConditionsSource` GID that holds `match_type`, `conditions` and `product_ids` |
+| `image` | object | Optional + Computed, UseStateForUnknown; unset = unmanaged (removing the block leaves the image). `src` (Required, public URL), `alt_text` (Optional + Computed, keeps state when unset; unset = unmanaged), `url` (Computed: Shopify's CDN URL). See "Image" |
 | `adopt_existing` | bool | Pattern A, see below |
 
 **Manual and smart collections are one model in 2026-10.** `Collection.ruleSet` is deprecated ("Use `sources` instead"), `collectionCreate` and `collectionUpdate` take only `collection: CollectionCreateInput` / `CollectionUpdateInput` (the legacy `input: CollectionInput` with `ruleSet` and `products` is gone), and `collectionAddProducts`/`collectionRemoveProducts` are deprecated in favour of `collectionUpdate(... inclusion.selectionsToAdd/selectionsToRemove)`. Membership lives in **sources**: a `CollectionConditionsSource` has an inclusion with `conditions` (the old rules) and `selections` (the old manual product list), both at once if wanted, plus exclusions. There are also sub-collection sources and shareable app-owned sources.
@@ -1160,7 +1161,33 @@ resource "shopify_collection" "empfehlungen" {
 - No source: the three attributes read as null / empty; `source_id` null.
 - Exactly one non-shareable `CollectionConditionsSource`, whichever app created it (S13-8: sources created through 2026-10 carry the creating app, and plans run with a read-only app, so app ownership is not checked), target `PRODUCTS`, no variant-level selections and no `Unknown` condition: managed as above.
 - Anything else (several sources, a sub-collection source, a shareable source, `VARIANTS` target, variant selections, a condition Shopify reports as `CollectionSourceInclusionConditionUnknown`): membership is unsupported. If config sets any of the three attributes, Read and plan fail with an error naming the source types; otherwise they stay null and import and list warn that membership is not managed.
-- Not managed in v1: exclusions (conditions and products), sub-collection and shareable sources (`collectionConditionsSource*` mutations), variant selections, the product order of `MANUAL` collections (`collectionReorderProducts`), collection image (with §9k.4), metafield values, translations. All roadmap.
+- Not managed in v1: exclusions (conditions and products), sub-collection and shareable sources (`collectionConditionsSource*` mutations), variant selections, the product order of `MANUAL` collections (`collectionReorderProducts`), metafield values, translations. All roadmap.
+
+**Image (#56, dev store 2026-11-17).** `CollectionCreateInput.image` / `CollectionUpdateInput.image` take an `ImageInput { id, altText, src }`. `Collection.image` is an `Image` (`id`, `url`, `altText`). Probes (throwaway collections, deleted again):
+- The image is in the mutation payload at once, with its CDN URL (`…/collections/1x1.png?v=…`). The URL is stable across reads.
+- Sending the same `src` again keeps the URL: no re-upload.
+- `{ altText }` alone changes only the alt text, and `src` alone keeps the alt text. Both change the `?v=` of the URL and keep the `CollectionImage` id.
+- `image: null` and `image: {}` clear the image. `src: ""` is a GraphQL error.
+- `src` may be another collection's CDN URL: Shopify downloads it and stores its own copy (new file name). So config generated from production copies the image to staging. Without `altText` the alt text reads `null`.
+
+Design:
+- State keeps the configured `src` while Shopify still holds the image it returned at our last write: private state `image_url_written` holds that URL, and Read keeps `src` when the live URL equals it (the keep-or-take rule of `description_html`), otherwise takes the live URL (drift, or import).
+- Update sends `image` only when `src` or a configured `alt_text` differ from state: `{ src, altText? }` when `src` changed, `{ altText }` when only the alt text did. A title edit never touches the image.
+- `url` keeps its state value unless `src` or `alt_text` change (ModifyPlan marks it unknown then).
+- Removing the block stops managing the image (user ruling 2026-11-17); clearing it is not offered.
+- Import and the list take `src = url`: generated config plans import-only and copies the image to another store. A CDN URL whose image was replaced or removed no longer downloads ("failed to download. - file not found", checked), so re-apply such config only while the source store still has the image.
+- An alt text edited in the admin bumps `?v=` like a new image does, and the `CollectionImage` id and file name stay the same either way, so the two can't be told apart. Such an edit shows as a `src` change, and apply puts the configured image and alt text back, which downloads `src` again.
+
+**Implemented (#56, dev store 2026-11-17):** as designed. Acceptance tests cover:
+- adding the block to a collection without an image
+- an empty re-plan, and changing only the alt text (`url` unknown in the plan)
+- a title edit that keeps `url`, and a new `src`
+- an image replaced and an alt text edited through the client: both show as changes and are put back
+- removing the block, which gives an empty plan and keeps the image
+- import by identity with generated config, import by handle, and the list (`src` = CDN URL)
+- `src = shopify_file.<x>.url`
+
+Not tested: an image removed in the admin (`CollectionUpdateInput.image` is `omitempty`, so the client can't send `null`). Unit-tested instead: no prior image means a full `{ src, altText }`.
 
 **Conditions: a JSON attribute, like checkout branding (§9f).** 18 inclusion condition kinds, each with its own relation enum and value shape (strings, `MoneyInput`, `WeightInput`, booleans, metafield definition IDs, taxonomy categories with `includeDescendants`, metaobject IDs). A typed block would need one nested block per kind or a flattened block with kind-specific fields; JSON in the input's own shape keeps Shopify's docs usable one to one, and users write `jsonencode([...])`.
 - Write: sent as is (`# @genqlient(for: "CollectionCreateSourceInclusionInput.conditions", bind: "encoding/json.RawMessage")` and the same for `CollectionUpdateSourceInclusionInput.conditionsToCreate`). Shopify validates kinds and values. ValidateConfig only checks that the value is a JSON list of objects with exactly one key each.

@@ -9,6 +9,10 @@ fragment CollectionFields on Collection {
     title
     description
   }
+  image {
+    url
+    altText
+  }
   ...PublicationsOfPublishable
   # Raw JSON: the provider maps conditions to their input shape, not to 18 generated types.
   # Aliases (`<field>__<kind>`) keep fields with different types apart, as GraphQL requires; the mapping strips them.
@@ -230,6 +234,10 @@ query ListCollections(
 # @genqlient(for: "CollectionCreateInput.descriptionHtml", omitempty: true)
 # @genqlient(for: "CollectionCreateInput.handle", omitempty: true)
 # @genqlient(for: "CollectionCreateInput.image", omitempty: true)
+# Only the changed image fields are sent: altText alone keeps the image, src alone keeps the alt text.
+# @genqlient(for: "ImageInput.id", omitempty: true)
+# @genqlient(for: "ImageInput.altText", omitempty: true)
+# @genqlient(for: "ImageInput.src", omitempty: true)
 # @genqlient(for: "CollectionCreateInput.templateSuffix", omitempty: true)
 # @genqlient(for: "CollectionCreateInput.sortOrder", omitempty: true)
 # @genqlient(for: "CollectionCreateInput.metafields", omitempty: true)

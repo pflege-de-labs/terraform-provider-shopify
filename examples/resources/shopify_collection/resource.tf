@@ -27,6 +27,12 @@ resource "shopify_collection" "empfehlungen" {
   handle      = "empfehlungen"
   title       = "Unsere Empfehlungen"
   product_ids = [shopify_product.bettschutz.id]
+
+  # Shopify downloads src and serves its own copy; removing the block leaves the image in place.
+  image = {
+    src      = shopify_file.empfehlungen_banner.url
+    alt_text = "Unsere Empfehlungen"
+  }
 }
 
 # Every store has frontpage; adopting it manages the title, and destroy leaves it in place.
