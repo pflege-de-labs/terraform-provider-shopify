@@ -65,25 +65,31 @@ func TestParseImportKey(t *testing.T) {
 	}
 }
 
-func TestCheckBasic(t *testing.T) {
+func TestCheckMethod(t *testing.T) {
 	cases := []struct {
-		typename string
-		wantErr  string
+		typename, method, wantErr string
 	}{
-		{"DiscountCodeBasic", ""},
-		{"DiscountAutomaticBasic", ""},
-		{"DiscountCodeBxgy", "the discount is a bxgy discount (DiscountCodeBxgy); shopify_discount_bxgy is not supported yet"},
-		{"DiscountAutomaticFreeShipping", "the discount is a free_shipping discount (DiscountAutomaticFreeShipping); shopify_discount_free_shipping is not supported yet"},
-		{"DiscountCodeApp", "the discount belongs to an app (DiscountCodeApp): its Function's app manages it"},
-		{"DiscountSomethingNew", "unknown discount type DiscountSomethingNew"},
+		{"DiscountCodeBasic", methodBasic, ""},
+		{"DiscountAutomaticBasic", methodBasic, ""},
+		{"DiscountCodeBxgy", methodBxgy, ""},
+		{"DiscountAutomaticBxgy", methodBxgy, ""},
+		{"DiscountCodeFreeShipping", methodFreeShipping, ""},
+		{"DiscountAutomaticFreeShipping", methodFreeShipping, ""},
+		{"DiscountCodeBxgy", methodBasic, "the discount is a bxgy discount (DiscountCodeBxgy); use shopify_discount_bxgy"},
+		{"DiscountAutomaticFreeShipping", methodBasic, "the discount is a free_shipping discount (DiscountAutomaticFreeShipping); use shopify_discount_free_shipping"},
+		{"DiscountCodeBasic", methodBxgy, "the discount is a basic discount (DiscountCodeBasic); use shopify_discount_basic"},
+		{"DiscountCodeBxgy", methodFreeShipping, "use shopify_discount_bxgy"},
+		{"DiscountCodeApp", methodBasic, "the discount belongs to an app (DiscountCodeApp): its Function's app manages it"},
+		{"DiscountCodeApp", methodBxgy, "the discount belongs to an app"},
+		{"DiscountSomethingNew", methodFreeShipping, "unknown discount type DiscountSomethingNew"},
 	}
 	for _, c := range cases {
-		err := checkBasic(c.typename)
+		err := checkMethod(c.typename, c.method)
 		switch {
 		case c.wantErr == "" && err != nil:
-			t.Errorf("%s: unexpected error %v", c.typename, err)
+			t.Errorf("%s as %s: unexpected error %v", c.typename, c.method, err)
 		case c.wantErr != "" && (err == nil || !strings.Contains(err.Error(), c.wantErr)):
-			t.Errorf("%s: got %v, want %q", c.typename, err, c.wantErr)
+			t.Errorf("%s as %s: got %v, want %q", c.typename, c.method, err, c.wantErr)
 		}
 	}
 }
@@ -341,6 +347,13 @@ func TestErrorPath(t *testing.T) {
 		{client.DiscountUserErrorFields{Field: []string{"basicCodeDiscount", "customerGets", "value", "percentage"}}, path.Root("customer_gets").AtName("value"), true},
 		{client.DiscountUserErrorFields{Field: []string{"basicCodeDiscount", "customerGets", "items", "collections", "add", "0"}}, path.Root("customer_gets").AtName("items"), true},
 		{client.DiscountUserErrorFields{Field: []string{"basicCodeDiscount", "context", "customerSegments", "add"}}, path.Root("context"), true},
+		{client.DiscountUserErrorFields{Field: []string{"automaticBxgyDiscount", "customerBuys", "value", "quantity"}}, path.Root("customer_buys"), true},
+		{client.DiscountUserErrorFields{Field: []string{"automaticBxgyDiscount", "customerBuys", "items"}}, path.Root("customer_buys").AtName("items"), true},
+		{client.DiscountUserErrorFields{Field: []string{"bxgyCodeDiscount", "customerGets", "value", "discountOnQuantity"}}, path.Root("customer_gets"), true},
+		{client.DiscountUserErrorFields{Field: []string{"automaticBxgyDiscount", "customerGets"}}, path.Root("customer_gets"), true},
+		{client.DiscountUserErrorFields{Field: []string{"freeShippingCodeDiscount", "destination", "countries"}}, path.Root("destination"), true},
+		{client.DiscountUserErrorFields{Field: []string{"freeShippingAutomaticDiscount", "appliesOnSubscription"}}, path.Root("applies_on_subscription"), true},
+		{client.DiscountUserErrorFields{Field: []string{"freeShippingAutomaticDiscount", "maximumShippingPrice"}}, path.Root("maximum_shipping_price"), true},
 		{client.DiscountUserErrorFields{Field: []string{"basicCodeDiscount", "minimumRequirement", "subtotal"}}, path.Root("minimum_requirement"), true},
 		{client.DiscountUserErrorFields{Code: code(client.DiscountErrorCodeEndDateBeforeStartDate)}, path.Root("ends_at"), true},
 		{client.DiscountUserErrorFields{Code: code(client.DiscountErrorCodeMinimumSubtotalAndQuantityRangeBothPresent)}, path.Root("minimum_requirement"), true},

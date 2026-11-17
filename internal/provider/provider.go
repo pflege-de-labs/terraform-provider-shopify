@@ -210,6 +210,8 @@ func (p *ShopifyProvider) Resources(ctx context.Context) []func() resource.Resou
 		webpresence.NewResource,
 		checkoutandaccountsconfiguration.NewResource,
 		discount.NewBasicResource,
+		discount.NewFreeShippingResource,
+		discount.NewBxgyResource,
 		customersegment.NewResource,
 	}
 }
@@ -237,6 +239,8 @@ func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListR
 		webpresence.NewListResource,
 		checkoutandaccountsconfiguration.NewListResource,
 		discount.NewBasicListResource,
+		discount.NewFreeShippingListResource,
+		discount.NewBxgyListResource,
 		customersegment.NewListResource,
 	}
 }

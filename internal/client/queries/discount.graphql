@@ -73,10 +73,52 @@ fragment DiscountCustomerGetsFields on DiscountCustomerGets {
       }
       appliesOnEachItem
     }
+    ... on DiscountOnQuantity {
+      quantity {
+        quantity
+      }
+      effect {
+        __typename
+        ... on DiscountPercentage {
+          percentage
+        }
+        ... on DiscountAmount {
+          amount {
+            amount
+          }
+        }
+      }
+    }
   }
   # @genqlient(flatten: true)
   items {
     ...DiscountItemsFields
+  }
+}
+
+fragment DiscountCustomerBuysFields on DiscountCustomerBuys {
+  value {
+    __typename
+    ... on DiscountQuantity {
+      quantity
+    }
+    ... on DiscountPurchaseAmount {
+      amount
+    }
+  }
+  # @genqlient(flatten: true)
+  items {
+    ...DiscountItemsFields
+  }
+}
+
+fragment DiscountDestinationFields on DiscountShippingDestinationSelection {
+  __typename
+  ... on DiscountCountries {
+    countries
+  }
+  ... on DiscountCountryAll {
+    allCountries
   }
 }
 
@@ -151,21 +193,129 @@ fragment DiscountNodeFields on DiscountNode {
         ...DiscountMinimumFields
       }
     }
-    # Titles of the other kinds, so a title lookup or a list skip can name the discount.
+    # Free shipping and BXGY carry their own fields; app discounts only a title, so a title lookup or a list skip can name them.
     ... on DiscountCodeBxgy {
       title
+      startsAt
+      endsAt
+      status
+      usageLimit
+      appliesOncePerCustomer
+      codesCount {
+        count
+      }
+      codes(first: 1) {
+        nodes {
+          code
+        }
+      }
+      usesPerOrderLimit
+      # @genqlient(flatten: true)
+      customerBuys {
+        ...DiscountCustomerBuysFields
+      }
+      # @genqlient(flatten: true)
+      customerGets {
+        ...DiscountCustomerGetsFields
+      }
+      # @genqlient(flatten: true)
+      combinesWith {
+        ...DiscountCombinesWithFields
+      }
+      # @genqlient(flatten: true)
+      context {
+        ...DiscountContextFields
+      }
     }
     ... on DiscountCodeFreeShipping {
       title
+      startsAt
+      endsAt
+      status
+      usageLimit
+      appliesOncePerCustomer
+      codesCount {
+        count
+      }
+      codes(first: 1) {
+        nodes {
+          code
+        }
+      }
+      appliesOnOneTimePurchase
+      appliesOnSubscription
+      maximumShippingPrice {
+        amount
+      }
+      # @genqlient(flatten: true)
+      destinationSelection {
+        ...DiscountDestinationFields
+      }
+      # @genqlient(flatten: true)
+      minimumRequirement {
+        ...DiscountMinimumFields
+      }
+      # @genqlient(flatten: true)
+      combinesWith {
+        ...DiscountCombinesWithFields
+      }
+      # @genqlient(flatten: true)
+      context {
+        ...DiscountContextFields
+      }
     }
     ... on DiscountCodeApp {
       title
     }
     ... on DiscountAutomaticBxgy {
       title
+      startsAt
+      endsAt
+      status
+      usesPerOrderLimit
+      # @genqlient(flatten: true)
+      customerBuys {
+        ...DiscountCustomerBuysFields
+      }
+      # @genqlient(flatten: true)
+      customerGets {
+        ...DiscountCustomerGetsFields
+      }
+      # @genqlient(flatten: true)
+      combinesWith {
+        ...DiscountCombinesWithFields
+      }
+      # @genqlient(flatten: true)
+      context {
+        ...DiscountContextFields
+      }
     }
     ... on DiscountAutomaticFreeShipping {
       title
+      startsAt
+      endsAt
+      status
+      appliesOnOneTimePurchase
+      appliesOnSubscription
+      maximumShippingPrice {
+        amount
+      }
+      # @genqlient(flatten: true)
+      destinationSelection {
+        ...DiscountDestinationFields
+      }
+      # @genqlient(flatten: true)
+      minimumRequirement {
+        ...DiscountMinimumFields
+      }
+      # @genqlient(flatten: true)
+      combinesWith {
+        ...DiscountCombinesWithFields
+      }
+      # @genqlient(flatten: true)
+      context {
+        ...DiscountContextFields
+      }
     }
     ... on DiscountAutomaticApp {
       title
@@ -354,6 +504,11 @@ query ListDiscounts(
 # @genqlient(for: "DiscountProductsInput.productVariantsToRemove", omitempty: true)
 # @genqlient(for: "DiscountCollectionsInput.add", omitempty: true)
 # @genqlient(for: "DiscountCollectionsInput.remove", omitempty: true)
+# Shared with buy X get Y, which reaches these types first through basic.
+# @genqlient(for: "DiscountOnQuantityInput.quantity", omitempty: true)
+# @genqlient(for: "DiscountOnQuantityInput.effect", omitempty: true)
+# @genqlient(for: "DiscountEffectInput.percentage", omitempty: true)
+# @genqlient(for: "DiscountEffectInput.amount", omitempty: true)
 mutation CreateDiscountCodeBasic(
   $input: DiscountCodeBasicInput!
 ) {
@@ -411,6 +566,180 @@ mutation UpdateDiscountAutomaticBasic(
   $input: DiscountAutomaticBasicInput!
 ) {
   discountAutomaticBasicUpdate(id: $id, automaticBasicDiscount: $input) {
+    automaticDiscountNode {
+      id
+    }
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+# Omitted keys stay unchanged, so every optional field is omitempty; an unset attribute is never sent.
+# @genqlient(for: "DiscountCodeFreeShippingInput.title", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.startsAt", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.endsAt", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.combinesWith", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.context", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.tags", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.minimumRequirement", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.destination", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.maximumShippingPrice", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.recurringCycleLimit", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.appliesOnOneTimePurchase", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.appliesOnSubscription", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.appliesOncePerCustomer", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.code", omitempty: true)
+# @genqlient(for: "DiscountCodeFreeShippingInput.usageLimit", omitempty: true)
+# @genqlient(for: "DiscountShippingDestinationSelectionInput.all", omitempty: true)
+# @genqlient(for: "DiscountShippingDestinationSelectionInput.countries", omitempty: true)
+# @genqlient(for: "DiscountCountriesInput.add", omitempty: true)
+# @genqlient(for: "DiscountCountriesInput.remove", omitempty: true)
+mutation CreateDiscountCodeFreeShipping(
+  $input: DiscountCodeFreeShippingInput!
+) {
+  discountCodeFreeShippingCreate(freeShippingCodeDiscount: $input) {
+    codeDiscountNode {
+      id
+    }
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+mutation UpdateDiscountCodeFreeShipping(
+  $id: ID!
+  $input: DiscountCodeFreeShippingInput!
+) {
+  discountCodeFreeShippingUpdate(id: $id, freeShippingCodeDiscount: $input) {
+    codeDiscountNode {
+      id
+    }
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+# @genqlient(for: "DiscountAutomaticFreeShippingInput.title", omitempty: true)
+# @genqlient(for: "DiscountAutomaticFreeShippingInput.startsAt", omitempty: true)
+# @genqlient(for: "DiscountAutomaticFreeShippingInput.endsAt", omitempty: true)
+# @genqlient(for: "DiscountAutomaticFreeShippingInput.combinesWith", omitempty: true)
+# @genqlient(for: "DiscountAutomaticFreeShippingInput.context", omitempty: true)
+# @genqlient(for: "DiscountAutomaticFreeShippingInput.tags", omitempty: true)
+# @genqlient(for: "DiscountAutomaticFreeShippingInput.minimumRequirement", omitempty: true)
+# @genqlient(for: "DiscountAutomaticFreeShippingInput.destination", omitempty: true)
+# @genqlient(for: "DiscountAutomaticFreeShippingInput.maximumShippingPrice", omitempty: true)
+# @genqlient(for: "DiscountAutomaticFreeShippingInput.recurringCycleLimit", omitempty: true)
+# @genqlient(for: "DiscountAutomaticFreeShippingInput.appliesOnOneTimePurchase", omitempty: true)
+# @genqlient(for: "DiscountAutomaticFreeShippingInput.appliesOnSubscription", omitempty: true)
+mutation CreateDiscountAutomaticFreeShipping(
+  $input: DiscountAutomaticFreeShippingInput!
+) {
+  discountAutomaticFreeShippingCreate(freeShippingAutomaticDiscount: $input) {
+    automaticDiscountNode {
+      id
+    }
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+mutation UpdateDiscountAutomaticFreeShipping(
+  $id: ID!
+  $input: DiscountAutomaticFreeShippingInput!
+) {
+  discountAutomaticFreeShippingUpdate(id: $id, freeShippingAutomaticDiscount: $input) {
+    automaticDiscountNode {
+      id
+    }
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+# The buys value is not omitempty: switching quantity to amount needs the other one as an explicit null (§9p).
+# @genqlient(for: "DiscountCodeBxgyInput.title", omitempty: true)
+# @genqlient(for: "DiscountCodeBxgyInput.startsAt", omitempty: true)
+# @genqlient(for: "DiscountCodeBxgyInput.endsAt", omitempty: true)
+# @genqlient(for: "DiscountCodeBxgyInput.combinesWith", omitempty: true)
+# @genqlient(for: "DiscountCodeBxgyInput.context", omitempty: true)
+# @genqlient(for: "DiscountCodeBxgyInput.tags", omitempty: true)
+# @genqlient(for: "DiscountCodeBxgyInput.customerBuys", omitempty: true)
+# @genqlient(for: "DiscountCodeBxgyInput.customerGets", omitempty: true)
+# @genqlient(for: "DiscountCodeBxgyInput.usesPerOrderLimit", omitempty: true)
+# @genqlient(for: "DiscountCodeBxgyInput.appliesOncePerCustomer", omitempty: true)
+# @genqlient(for: "DiscountCodeBxgyInput.code", omitempty: true)
+# @genqlient(for: "DiscountCodeBxgyInput.usageLimit", omitempty: true)
+# @genqlient(for: "DiscountCustomerBuysInput.value", omitempty: true)
+# @genqlient(for: "DiscountCustomerBuysInput.items", omitempty: true)
+# @genqlient(for: "DiscountCustomerBuysInput.isOneTimePurchase", omitempty: true)
+# @genqlient(for: "DiscountCustomerBuysInput.isSubscription", omitempty: true)
+mutation CreateDiscountCodeBxgy(
+  $input: DiscountCodeBxgyInput!
+) {
+  discountCodeBxgyCreate(bxgyCodeDiscount: $input) {
+    codeDiscountNode {
+      id
+    }
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+mutation UpdateDiscountCodeBxgy(
+  $id: ID!
+  $input: DiscountCodeBxgyInput!
+) {
+  discountCodeBxgyUpdate(id: $id, bxgyCodeDiscount: $input) {
+    codeDiscountNode {
+      id
+    }
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+# @genqlient(for: "DiscountAutomaticBxgyInput.title", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBxgyInput.startsAt", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBxgyInput.endsAt", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBxgyInput.combinesWith", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBxgyInput.context", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBxgyInput.tags", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBxgyInput.customerBuys", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBxgyInput.customerGets", omitempty: true)
+# @genqlient(for: "DiscountAutomaticBxgyInput.usesPerOrderLimit", omitempty: true)
+mutation CreateDiscountAutomaticBxgy(
+  $input: DiscountAutomaticBxgyInput!
+) {
+  discountAutomaticBxgyCreate(automaticBxgyDiscount: $input) {
+    automaticDiscountNode {
+      id
+    }
+    # @genqlient(flatten: true)
+    userErrors {
+      ...DiscountUserErrorFields
+    }
+  }
+}
+
+mutation UpdateDiscountAutomaticBxgy(
+  $id: ID!
+  $input: DiscountAutomaticBxgyInput!
+) {
+  discountAutomaticBxgyUpdate(id: $id, automaticBxgyDiscount: $input) {
     automaticDiscountNode {
       id
     }

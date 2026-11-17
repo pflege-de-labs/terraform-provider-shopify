@@ -313,12 +313,12 @@ func TestListSkipsOtherMethods(t *testing.T) {
 		{
 			&client.DiscountNodeFieldsDiscountDiscountCodeFreeShipping{Typename: ptr("DiscountCodeFreeShipping"), Title: "Versandfrei"},
 			"Skipping discount Versandfrei (code)",
-			"the discount is a free_shipping discount (DiscountCodeFreeShipping); shopify_discount_free_shipping is not supported yet",
+			"the discount is a free_shipping discount (DiscountCodeFreeShipping); use shopify_discount_free_shipping",
 		},
 		{
 			&client.DiscountNodeFieldsDiscountDiscountAutomaticBxgy{Typename: ptr("DiscountAutomaticBxgy"), Title: "2 for 1"},
 			"Skipping discount 2 for 1 (automatic)",
-			"the discount is a bxgy discount (DiscountAutomaticBxgy); shopify_discount_bxgy is not supported yet",
+			"the discount is a bxgy discount (DiscountAutomaticBxgy); use shopify_discount_bxgy",
 		},
 		{
 			&client.DiscountNodeFieldsDiscountDiscountCodeApp{Typename: ptr("DiscountCodeApp"), Title: "Loyalty"},
@@ -326,14 +326,53 @@ func TestListSkipsOtherMethods(t *testing.T) {
 			"the discount belongs to an app (DiscountCodeApp): its Function's app manages it",
 		},
 	}
-	r := &BasicListResource{} // no client: a skip must return before any API call
 	for _, c := range cases {
-		res, counted := r.result(context.Background(), list.ListRequest{}, &client.DiscountNodeFields{Id: "x", Discount: c.discount})
+		// No client: a skip must return before any API call.
+		res, counted := listResult[basicModel](context.Background(), nil, methodBasic, list.ListRequest{}, &client.DiscountNodeFields{Id: "x", Discount: c.discount})
 		if counted {
 			t.Errorf("%s: a skipped discount must not count toward the limit", c.summary)
 		}
 		if w := res.Diagnostics.Warnings(); len(w) != 1 || res.Diagnostics.HasError() || w[0].Summary() != c.summary || w[0].Detail() != c.detail {
 			t.Errorf("got %v, want one warning %q: %q", res.Diagnostics, c.summary, c.detail)
+		}
+	}
+}
+
+// Each list keeps its own method and skips the others, naming the resource that manages them.
+func TestListDispatchesByMethod(t *testing.T) {
+	skip := func(method string, d client.DiscountNodeFieldsDiscount) string {
+		var res list.ListResult
+		var counted bool
+		raw := &client.DiscountNodeFields{Id: "x", Discount: d}
+		switch method {
+		case methodBasic:
+			res, counted = listResult[basicModel](context.Background(), nil, method, list.ListRequest{}, raw)
+		case methodFreeShipping:
+			res, counted = listResult[freeShippingModel](context.Background(), nil, method, list.ListRequest{}, raw)
+		case methodBxgy:
+			res, counted = listResult[bxgyModel](context.Background(), nil, method, list.ListRequest{}, raw)
+		}
+		if counted || len(res.Diagnostics.Warnings()) != 1 {
+			t.Fatalf("%s: want one warning and no count, got %v", method, res.Diagnostics)
+		}
+		return res.Diagnostics.Warnings()[0].Detail()
+	}
+	basicD := &client.DiscountNodeFieldsDiscountDiscountCodeBasic{Typename: ptr("DiscountCodeBasic"), Title: "B"}
+	bxgyD := &client.DiscountNodeFieldsDiscountDiscountAutomaticBxgy{Typename: ptr("DiscountAutomaticBxgy"), Title: "X"}
+	fsD := &client.DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping{Typename: ptr("DiscountAutomaticFreeShipping"), Title: "F"}
+	for _, c := range []struct {
+		method string
+		d      client.DiscountNodeFieldsDiscount
+		want   string
+	}{
+		{methodFreeShipping, basicD, "use shopify_discount_basic"},
+		{methodFreeShipping, bxgyD, "use shopify_discount_bxgy"},
+		{methodBxgy, basicD, "use shopify_discount_basic"},
+		{methodBxgy, fsD, "use shopify_discount_free_shipping"},
+		{methodBasic, fsD, "use shopify_discount_free_shipping"},
+	} {
+		if got := skip(c.method, c.d); !strings.Contains(got, c.want) {
+			t.Errorf("%s list: got %q, want it to contain %q", c.method, got, c.want)
 		}
 	}
 }

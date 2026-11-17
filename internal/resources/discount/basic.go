@@ -25,12 +25,12 @@ var (
 )
 
 func NewBasicResource() resource.Resource {
-	return &BasicResource{}
+	return &BasicResource{discountResource[basicModel, *basicModel]{method: methodBasic, what: whatBasic}}
 }
 
 // BasicResource manages one amount-off discount on products or the order, as a code or an automatic discount.
 type BasicResource struct {
-	client *client.Client
+	discountResource[basicModel, *basicModel]
 }
 
 type basicModel struct {
@@ -38,6 +38,8 @@ type basicModel struct {
 	CustomerGets       types.Object `tfsdk:"customer_gets"`
 	MinimumRequirement types.Object `tfsdk:"minimum_requirement"`
 }
+
+func (m *basicModel) common() *commonModel { return &m.commonModel }
 
 func (r *BasicResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_discount_basic"
@@ -67,211 +69,14 @@ func (r *BasicResource) Schema(ctx context.Context, req resource.SchemaRequest, 
 	}
 }
 
-func (r *BasicResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
-	if req.ProviderData == nil {
-		return
-	}
-	c, ok := req.ProviderData.(*client.Client)
-	if !ok {
-		resp.Diagnostics.AddError(
-			"Unexpected Resource Configure Type",
-			fmt.Sprintf("Expected *client.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
-		)
-		return
-	}
-	r.client = c
-}
-
-func (r *BasicResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	modifyPlan(ctx, req, resp)
-}
-
-func (r *BasicResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan, cfg basicModel
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-	resp.Diagnostics.Append(req.Config.Get(ctx, &cfg)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	var live *node
-	if plan.AdoptExisting.ValueBool() {
-		isCode, key := naturalKey(&cfg.commonModel)
-		n, err := findByKey(ctx, r.client, isCode, key)
-		if err != nil {
-			resp.Diagnostics.AddError("Failed to look up "+whatBasic, err.Error())
-			return
-		}
-		if n != nil {
-			if err := checkBasic(n.Typename); err != nil {
-				resp.Diagnostics.AddAttributeError(path.Root("adopt_existing"), "Can't adopt the discount", err.Error())
-				return
-			}
-			live = n
-		}
-	}
-	id := r.write(ctx, &cfg, &plan, live, &resp.Diagnostics)
-	if id == "" {
-		return
-	}
-	if !r.finish(ctx, id, &cfg, &plan, &resp.Diagnostics, resp.Private) {
-		// The discount exists, so its ID goes into state: Terraform taints it instead of orphaning it, and Read fills the rest.
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id)...)
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("adopt_existing"), plan.AdoptExisting)...)
-		resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: types.StringValue(id)})...)
-		return
-	}
-	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
-	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
-}
-
-func (r *BasicResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state basicModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	// GID first; fall back to the natural key so a discount recreated in the admin is found again.
-	var n *node
-	var err error
-	if !state.ID.IsNull() && !state.ID.IsUnknown() {
-		if n, err = getNode(ctx, r.client, state.ID.ValueString()); err != nil {
-			resp.Diagnostics.AddError("Failed to read "+whatBasic, err.Error())
-			return
-		}
-	}
-	importing := state.Title.IsNull()
-	if n == nil && !importing {
-		isCode, key := naturalKey(&state.commonModel)
-		if n, err = findByKey(ctx, r.client, isCode, key); err != nil {
-			resp.Diagnostics.AddError("Failed to read "+whatBasic, err.Error())
-			return
-		}
-	}
-	if n == nil {
-		resp.State.RemoveResource(ctx)
-		return
-	}
-	if err := checkBasic(n.Typename); err != nil {
-		resp.Diagnostics.AddError("Wrong discount type", fmt.Sprintf("Discount %s: %s.", n.ID, err))
-		return
-	}
-	if err := resolveCode(ctx, r.client, n, patterns.ConfiguredString(state.Code)); err != nil {
-		resp.Diagnostics.AddError("Failed to read "+whatBasic, err.Error())
-		return
-	}
-	// Set on import, where only the ID is known.
-	if state.AdoptExisting.IsNull() {
-		state.AdoptExisting = types.BoolValue(false)
-	}
-	wasManaged := !state.Context.IsNull()
-	unsupported, d := state.setFromAPI(ctx, n)
-	resp.Diagnostics.Append(d...)
-	// Warn once: on import, or when the context stops being manageable; ModifyPlan errors if config still sets it.
-	if unsupported != "" && (importing || wasManaged) {
-		resp.Diagnostics.AddWarning("Context is not managed", unsupportedContextDetail(unsupported))
-	}
-	resp.Diagnostics.Append(rememberContext(ctx, resp.Private, unsupported)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
-	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: state.ID})...)
-}
-
-func (r *BasicResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan, cfg, state basicModel
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-	resp.Diagnostics.Append(req.Config.Get(ctx, &cfg)...)
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	// Items, context and codes are diffed against the live discount, never against state.
-	live, err := getNode(ctx, r.client, state.ID.ValueString())
-	if err == nil && live != nil {
-		err = resolveCode(ctx, r.client, live, patterns.ConfiguredString(state.Code))
-	}
-	switch {
-	case err != nil:
-		resp.Diagnostics.AddError("Failed to read "+whatBasic+" before the update", err.Error())
-		return
-	case live == nil:
-		resp.Diagnostics.AddError("Failed to update "+whatBasic, fmt.Sprintf("Discount %s no longer exists; refresh to recreate it.", state.ID.ValueString()))
-		return
-	}
-	if err := checkBasic(live.Typename); err != nil {
-		resp.Diagnostics.AddError("Wrong discount type", fmt.Sprintf("Discount %s: %s.", live.ID, err))
-		return
-	}
-	if r.write(ctx, &cfg, &plan, live, &resp.Diagnostics) == "" || !r.finish(ctx, live.ID, &cfg, &plan, &resp.Diagnostics, resp.Private) {
-		return
-	}
-	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
-	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
-}
-
-func (r *BasicResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state basicModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	if state.AdoptExisting.ValueBool() {
-		patterns.WarnRemovedFromStateOnly(&resp.Diagnostics, "discount", "adopt_existing is true")
-		return
-	}
-	resp.Diagnostics.Append(deleteDiscount(ctx, r.client, state.ID.ValueString())...)
-}
-
-// ImportState takes code/<code> or automatic/<title> from `terraform import`, or the GID from an import block with identity.
-func (r *BasicResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	if req.ID != "" {
-		isCode, key, err := parseImportKey(req.ID)
-		if err != nil {
-			resp.Diagnostics.AddError("Invalid import key", err.Error())
-			return
-		}
-		n, err := findByKey(ctx, r.client, isCode, key)
-		if err != nil {
-			resp.Diagnostics.AddError("Failed to import "+whatBasic, err.Error())
-			return
-		}
-		if n == nil {
-			resp.Diagnostics.AddError("Discount not found", fmt.Sprintf("No discount matches %q.", req.ID))
-			return
-		}
-		// Read fills in the rest by GID; the code lets it keep the one imported by when the discount has several.
-		resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), n.ID)...)
-		if isCode {
-			resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("code"), key)...)
-		}
-		return
-	}
-	var id patterns.IDIdentity
-	resp.Diagnostics.Append(req.Identity.Get(ctx, &id)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), id.ID)...)
-	resp.Diagnostics.Append(resp.Identity.Set(ctx, id)...)
-}
-
-// naturalKey is the code of a code discount, or the title of an automatic one.
-func naturalKey(m *commonModel) (bool, string) {
-	if !m.Code.IsNull() {
-		return true, m.Code.ValueString()
-	}
-	return false, m.Title.ValueString()
-}
-
-// write creates the discount, or updates live; cfg is the config, so unset attributes are never sent. It returns the GID, or "" on error.
-func (r *BasicResource) write(ctx context.Context, cfg, plan *basicModel, live *node, diags *diag.Diagnostics) string {
+// write: see kindModel.
+func (cfg *basicModel) write(ctx context.Context, c *client.Client, plan *basicModel, live *node, diags *diag.Diagnostics) string {
 	cfg.takeDefaults(&plan.commonModel)
 	cfg.CustomerGets = plan.CustomerGets
 	isCode := !cfg.Code.IsNull()
-	summary := "Failed to create " + whatBasic
+	summary := writeSummary(whatBasic, live)
 	if live != nil {
-		isCode, summary = live.IsCode, "Failed to update "+whatBasic
+		isCode = live.IsCode
 	}
 	var id *string
 	var errs []client.DiscountUserErrorFields
@@ -283,7 +88,7 @@ func (r *BasicResource) write(ctx context.Context, cfg, plan *basicModel, live *
 		}
 		if live == nil {
 			var res *client.CreateDiscountCodeBasicResponse
-			if res, err = client.CreateDiscountCodeBasic(ctx, r.client, in); err == nil && res.DiscountCodeBasicCreate != nil {
+			if res, err = client.CreateDiscountCodeBasic(ctx, c, in); err == nil && res.DiscountCodeBasicCreate != nil {
 				errs = res.DiscountCodeBasicCreate.UserErrors
 				if n := res.DiscountCodeBasicCreate.CodeDiscountNode; n != nil {
 					id = &n.Id
@@ -291,7 +96,7 @@ func (r *BasicResource) write(ctx context.Context, cfg, plan *basicModel, live *
 			}
 		} else {
 			var res *client.UpdateDiscountCodeBasicResponse
-			if res, err = client.UpdateDiscountCodeBasic(ctx, r.client, live.ID, in); err == nil && res.DiscountCodeBasicUpdate != nil {
+			if res, err = client.UpdateDiscountCodeBasic(ctx, c, live.ID, in); err == nil && res.DiscountCodeBasicUpdate != nil {
 				errs = res.DiscountCodeBasicUpdate.UserErrors
 				if n := res.DiscountCodeBasicUpdate.CodeDiscountNode; n != nil {
 					id = &n.Id
@@ -305,7 +110,7 @@ func (r *BasicResource) write(ctx context.Context, cfg, plan *basicModel, live *
 		}
 		if live == nil {
 			var res *client.CreateDiscountAutomaticBasicResponse
-			if res, err = client.CreateDiscountAutomaticBasic(ctx, r.client, in); err == nil && res.DiscountAutomaticBasicCreate != nil {
+			if res, err = client.CreateDiscountAutomaticBasic(ctx, c, in); err == nil && res.DiscountAutomaticBasicCreate != nil {
 				errs = res.DiscountAutomaticBasicCreate.UserErrors
 				if n := res.DiscountAutomaticBasicCreate.AutomaticDiscountNode; n != nil {
 					id = &n.Id
@@ -313,7 +118,7 @@ func (r *BasicResource) write(ctx context.Context, cfg, plan *basicModel, live *
 			}
 		} else {
 			var res *client.UpdateDiscountAutomaticBasicResponse
-			if res, err = client.UpdateDiscountAutomaticBasic(ctx, r.client, live.ID, in); err == nil && res.DiscountAutomaticBasicUpdate != nil {
+			if res, err = client.UpdateDiscountAutomaticBasic(ctx, c, live.ID, in); err == nil && res.DiscountAutomaticBasicUpdate != nil {
 				errs = res.DiscountAutomaticBasicUpdate.UserErrors
 				if n := res.DiscountAutomaticBasicUpdate.AutomaticDiscountNode; n != nil {
 					id = &n.Id
@@ -321,42 +126,14 @@ func (r *BasicResource) write(ctx context.Context, cfg, plan *basicModel, live *
 			}
 		}
 	}
-	if err != nil {
-		diags.AddError(summary, err.Error())
-		return ""
-	}
-	if diags.Append(userErrorDiags(summary, errs)...); diags.HasError() {
+	out := writeOutcome(diags, summary, err, errs, id)
+	if out == "" && err == nil {
 		var cg customerGetsSel
 		if d := plan.CustomerGets.As(ctx, &cg, basetypes.ObjectAsOptions{}); !d.HasError() && cg.Items.empty() {
 			diags.AddAttributeError(path.Root("customer_gets").AtName("items"), summary, emptySelectionHint)
 		}
-		return ""
 	}
-	if id == nil {
-		diags.AddError(summary, "Shopify returned no discount.")
-		return ""
-	}
-	return *id
-}
-
-// finish reads the written discount back into plan; it reports whether that worked.
-func (r *BasicResource) finish(ctx context.Context, id string, cfg, plan *basicModel, diags *diag.Diagnostics, private patterns.PrivateSetter) bool {
-	n, err := getNode(ctx, r.client, id)
-	if err == nil && n != nil {
-		err = resolveCode(ctx, r.client, n, patterns.ConfiguredString(cfg.Code))
-	}
-	switch {
-	case err != nil:
-		diags.AddError("Failed to read the written "+whatBasic, err.Error())
-		return false
-	case n == nil:
-		diags.AddError("Failed to read the written "+whatBasic, fmt.Sprintf("Discount %s disappeared after the write.", id))
-		return false
-	}
-	unsupported, d := plan.setFromAPI(ctx, n)
-	diags.Append(d...)
-	diags.Append(rememberContext(ctx, private, unsupported)...)
-	return !diags.HasError()
+	return out
 }
 
 // inputs maps the configured attributes against live (nil on create).

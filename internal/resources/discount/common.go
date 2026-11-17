@@ -57,9 +57,8 @@ var typenames = map[string]struct {
 	"DiscountAutomaticApp":          {methodApp, false},
 }
 
-// checkBasic fails unless typename is a basic discount, naming the resource that manages it.
-func checkBasic(typename string) error {
-	const want = methodBasic
+// checkMethod fails unless typename is a discount of the wanted method, naming the resource that manages it.
+func checkMethod(typename, want string) error {
 	t, ok := typenames[typename]
 	switch {
 	case !ok:
@@ -67,7 +66,7 @@ func checkBasic(typename string) error {
 	case t.method == methodApp:
 		return fmt.Errorf("the discount belongs to an app (%s): its Function's app manages it", typename)
 	case t.method != want:
-		return fmt.Errorf("the discount is a %s discount (%s); shopify_discount_%s is not supported yet", t.method, typename, t.method)
+		return fmt.Errorf("the discount is a %s discount (%s); use shopify_discount_%s", t.method, typename, t.method)
 	}
 	return nil
 }
@@ -97,6 +96,14 @@ type node struct {
 	Context                client.DiscountContextFields
 	CustomerGets           *client.DiscountCustomerGetsFields
 	Minimum                *client.DiscountMinimumFields
+
+	// Free shipping only.
+	Destination                                     client.DiscountDestinationFields
+	MaximumShippingPrice                            *string
+	AppliesOnOneTimePurchase, AppliesOnSubscription bool
+	// Buy X get Y only; CustomerGets is shared with basic.
+	CustomerBuys      *client.DiscountCustomerBuysFields
+	UsesPerOrderLimit *int
 }
 
 func nodeOf(n *client.DiscountNodeFields) (*node, error) {
@@ -114,20 +121,55 @@ func nodeOf(n *client.DiscountNodeFields) (*node, error) {
 		out.Title, out.StartsAt, out.EndsAt, out.Status = d.Title, d.StartsAt, d.EndsAt, string(d.Status)
 		out.UsageLimit, out.AppliesOncePerCustomer = d.UsageLimit, d.AppliesOncePerCustomer
 		out.CombinesWith, out.Context, out.CustomerGets, out.Minimum = d.CombinesWith, d.Context, &d.CustomerGets, d.MinimumRequirement
-		if len(d.Codes.Nodes) > 0 {
-			out.Code = &d.Codes.Nodes[0].Code
-			out.CodesCount = 1
-		}
-		if d.CodesCount != nil {
-			out.CodesCount = d.CodesCount.Count
-		}
+		setCodes(out, d.Codes.Nodes, d.CodesCount)
 	case *client.DiscountNodeFieldsDiscountDiscountAutomaticBasic:
 		out.Title, out.StartsAt, out.EndsAt, out.Status = d.Title, d.StartsAt, d.EndsAt, string(d.Status)
 		out.CombinesWith, out.Context, out.CustomerGets, out.Minimum = d.CombinesWith, d.Context, &d.CustomerGets, d.MinimumRequirement
+	case *client.DiscountNodeFieldsDiscountDiscountCodeFreeShipping:
+		out.Title, out.StartsAt, out.EndsAt, out.Status = d.Title, d.StartsAt, d.EndsAt, string(d.Status)
+		out.UsageLimit, out.AppliesOncePerCustomer = d.UsageLimit, d.AppliesOncePerCustomer
+		out.CombinesWith, out.Context, out.Minimum, out.Destination = d.CombinesWith, d.Context, d.MinimumRequirement, d.DestinationSelection
+		out.AppliesOnOneTimePurchase, out.AppliesOnSubscription = d.AppliesOnOneTimePurchase, d.AppliesOnSubscription
+		if d.MaximumShippingPrice != nil {
+			out.MaximumShippingPrice = &d.MaximumShippingPrice.Amount
+		}
+		setCodes(out, d.Codes.Nodes, d.CodesCount)
+	case *client.DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping:
+		out.Title, out.StartsAt, out.EndsAt, out.Status = d.Title, d.StartsAt, d.EndsAt, string(d.Status)
+		out.CombinesWith, out.Context, out.Minimum, out.Destination = d.CombinesWith, d.Context, d.MinimumRequirement, d.DestinationSelection
+		out.AppliesOnOneTimePurchase, out.AppliesOnSubscription = d.AppliesOnOneTimePurchase, d.AppliesOnSubscription
+		if d.MaximumShippingPrice != nil {
+			out.MaximumShippingPrice = &d.MaximumShippingPrice.Amount
+		}
+	case *client.DiscountNodeFieldsDiscountDiscountCodeBxgy:
+		out.Title, out.StartsAt, out.EndsAt, out.Status = d.Title, d.StartsAt, d.EndsAt, string(d.Status)
+		out.UsageLimit, out.AppliesOncePerCustomer, out.UsesPerOrderLimit = d.UsageLimit, d.AppliesOncePerCustomer, d.UsesPerOrderLimit
+		out.CombinesWith, out.Context, out.CustomerBuys, out.CustomerGets = d.CombinesWith, d.Context, &d.CustomerBuys, &d.CustomerGets
+		setCodes(out, d.Codes.Nodes, d.CodesCount)
+	case *client.DiscountNodeFieldsDiscountDiscountAutomaticBxgy:
+		out.Title, out.StartsAt, out.EndsAt, out.Status, out.UsesPerOrderLimit = d.Title, d.StartsAt, d.EndsAt, string(d.Status), d.UsesPerOrderLimit
+		out.CombinesWith, out.Context, out.CustomerBuys, out.CustomerGets = d.CombinesWith, d.Context, &d.CustomerBuys, &d.CustomerGets
 	case interface{ GetTitle() string }:
 		out.Title = d.GetTitle()
 	}
 	return out, nil
+}
+
+// setCodes takes the first code and the number of codes of a code discount; genqlient types them per kind.
+func setCodes[N any, PN interface {
+	*N
+	GetCode() string
+}, C any, PC interface {
+	*C
+	GetCount() int
+}](n *node, codes []N, count *C) {
+	if len(codes) > 0 {
+		c := PN(&codes[0]).GetCode()
+		n.Code, n.CodesCount = &c, 1
+	}
+	if count != nil {
+		n.CodesCount = PC(count).GetCount()
+	}
 }
 
 func displayName(n *node) string {
@@ -505,8 +547,9 @@ func errorPath(e client.DiscountUserErrorFields) (path.Path, bool) {
 		return path.Empty(), false
 	}
 	p := path.Root(name)
-	// Deeper input fields (add/remove lists) have no attribute of their own.
-	if name == "customer_gets" && len(e.Field) > 2 && (e.Field[2] == "value" || e.Field[2] == "items") {
+	// Deeper input fields (add/remove lists) have no attribute of their own; buy X get Y has no value object.
+	bxgy := strings.Contains(strings.ToLower(e.Field[0]), "bxgy")
+	if (name == "customer_gets" || name == "customer_buys") && len(e.Field) > 2 && (e.Field[2] == "items" || (e.Field[2] == "value" && !bxgy)) {
 		p = p.AtName(e.Field[2])
 	}
 	return p, true
@@ -516,6 +559,8 @@ var inputAttributes = map[string]string{
 	"title": "title", "code": "code", "startsAt": "starts_at", "endsAt": "ends_at", "context": "context",
 	"combinesWith": "combines_with", "usageLimit": "usage_limit", "appliesOncePerCustomer": "applies_once_per_customer",
 	"customerGets": "customer_gets", "minimumRequirement": "minimum_requirement",
+	"destination": "destination", "maximumShippingPrice": "maximum_shipping_price", "appliesOnOneTimePurchase": "applies_on_one_time_purchase",
+	"appliesOnSubscription": "applies_on_subscription", "customerBuys": "customer_buys", "usesPerOrderLimit": "uses_per_order_limit",
 }
 
 // userErrorDiags keeps each message, with extraInfo appended.
