@@ -62,6 +62,10 @@ resource "shopify_product" "bettschutz" {
       inventory_policy = "DENY"
       tracked          = true
       weight           = { value = 0.4, unit = "KILOGRAMS" }
+      # Variant metafields work like the product's; a variant without `metafields` is unmanaged.
+      metafields = {
+        "custom.pack_size" = { type = "number_integer", value = "10" }
+      }
     },
     { option_values = { "Größe" = "M" }, price = "24.90", compare_at_price = "29.90" },
   ]
@@ -117,7 +121,7 @@ resource "shopify_product" "temporary" {
 - `status` (String) `ACTIVE`, `DRAFT`, `ARCHIVED` or `UNLISTED`. A new product is `ACTIVE` when this is unset. Unset means unmanaged: the value set in the admin is kept.
 - `tags` (Set of String) Tags. Shopify trims them, drops case-insensitive duplicates and sorts them, so tags with surrounding whitespace or duplicates are rejected. `[]` clears the tags. Unset means unmanaged: the value set in the admin is kept.
 - `template_suffix` (String) Theme template suffix, such as `special` for `product.special.json`. Unset means unmanaged: the value set in the admin is kept.
-- `variants` (Attributes List) Variants in position order, each identified by its option values (not its SKU). Required when `options` is set. **Removing a variant, or an option or option value its variants use, deletes those variants with their inventory items and stock;** such a change fails unless `allow_data_deletion = true`. Inventory quantities, cost, unit prices, variant metafields and media are not managed. (see [below for nested schema](#nestedatt--variants))
+- `variants` (Attributes List) Variants in position order, each identified by its option values (not its SKU). Required when `options` is set. **Removing a variant, or an option or option value its variants use, deletes those variants with their inventory items and stock;** such a change fails unless `allow_data_deletion = true`. Inventory quantities, cost, unit prices and media are not managed. (see [below for nested schema](#nestedatt--variants))
 - `vendor` (String) The vendor. Shopify uses the shop name when a new product has none. Unset means unmanaged: the value set in the admin is kept.
 
 ### Read-Only
@@ -155,6 +159,7 @@ Optional:
 - `barcodes` (Attributes List) Barcodes; `[]` clears them. Unset means unmanaged. (see [below for nested schema](#nestedatt--variants--barcodes))
 - `compare_at_price` (String) Compare-at price as a decimal string, null when there is none. It can't be cleared here yet. Unset means unmanaged.
 - `inventory_policy` (String) `DENY` stops selling when out of stock, `CONTINUE` keeps selling. Unset means unmanaged.
+- `metafields` (Attributes Map) Metafield values of the variant, keyed `namespace.key` (a namespace of 3-255 and a key of 2-64 letters, digits, hyphens or underscores; the key is split on the first dot). Only the keys listed here are managed: a key removed from the map stops being managed and keeps its value in Shopify. Unset means no metafield is managed. `type` is a [metafield type](https://shopify.dev/docs/apps/build/custom-data/metafields/list-of-data-types) such as `single_line_text_field` or `list.product_reference`; `value` is Shopify's string form: plain text as is, numbers and booleans as strings, list and JSON types as a JSON string (use `jsonencode()`). Shopify rewrites some values (`007` becomes `7`, `TRUE` becomes `true`, JSON is minified); the configured text is kept while it means the same. `value = ""` deletes the metafield, which then reads as `""`. Reference types hold store-specific GIDs, so set them from resource references (`shopify_metaobject.x.id`), not literals. App-owned namespaces (`app--…`) and the SEO metafields `global.title_tag` and `global.description_tag` (use the SEO attributes) are rejected, and import and listing skip them. A metafield with a definition must be written with the definition's type. Writing needs the owner's `write_*` scope (`write_products` for products, not verified alone, see `docs/bootstrapping.md`). (see [below for nested schema](#nestedatt--variants--metafields))
 - `price` (String) Price as a decimal string. Compared numerically, so `"10"` matches Shopify's `"10.00"`. Unset means unmanaged.
 - `requires_shipping` (Boolean) Whether the variant is shipped. Unset means unmanaged.
 - `sku` (String) SKU, null when there is none. Not an identity: SKUs can be empty or repeated. Unset means unmanaged.
@@ -177,6 +182,15 @@ Required:
 Optional:
 
 - `type` (String) `UPC`, `EAN`, `ISBN`, `GTIN`, `ASIN` or `NS_PID`; null when not set.
+
+
+<a id="nestedatt--variants--metafields"></a>
+### Nested Schema for `variants.metafields`
+
+Required:
+
+- `type` (String) Metafield type.
+- `value` (String) Value in Shopify's string form; `""` deletes the metafield.
 
 
 <a id="nestedatt--variants--weight"></a>

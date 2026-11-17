@@ -99,11 +99,11 @@ func TestSetFromAPIMedia(t *testing.T) {
 
 func TestListModelMedia(t *testing.T) {
 	ctx := context.Background()
-	m, _ := listModel(ctx, withMedia(), nil)
+	m, _ := listModel(ctx, withMedia(), nil, nil)
 	if !m.MediaIDs.IsNull() {
 		t.Errorf("media_ids = %s, want null so generated config leaves media unmanaged", m.MediaIDs)
 	}
-	m, _ = listModel(ctx, withMedia("a"), nil)
+	m, _ = listModel(ctx, withMedia("a"), nil, nil)
 	if !m.MediaIDs.Equal(mediaList(t, "a")) {
 		t.Errorf("media_ids = %s, want [a]", m.MediaIDs)
 	}

@@ -18528,6 +18528,156 @@ type GetShopShopPrimaryDomain struct {
 // GetHost returns GetShopShopPrimaryDomain.Host, and is useful for accessing the field via an interface.
 func (v *GetShopShopPrimaryDomain) GetHost() string { return v.Host }
 
+// GetVariantMetafieldsProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type GetVariantMetafieldsProductVariant struct {
+	// A list of [custom fields](https://shopify.dev/docs/apps/build/custom-data)
+	// that a merchant associates with a Shopify resource.
+	Metafields GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection `json:"metafields"`
+}
+
+// GetMetafields returns GetVariantMetafieldsProductVariant.Metafields, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariant) GetMetafields() GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection {
+	return v.Metafields
+}
+
+// GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection includes the requested fields of the GraphQL type MetafieldConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Metafields.
+type GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection struct {
+	// A list of nodes that are contained in MetafieldEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection) GetNodes() []GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection) GetPageInfo() GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin-graphql/latest/interfaces/HasMetafields).
+// Some examples of the data that metafields enable you to store are specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a value along with type information for that value.
+type GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield struct {
+	// The container for a group of metafields that the metafield is associated with.
+	Namespace string `json:"namespace"`
+	// The unique identifier for the metafield within its namespace.
+	Key string `json:"key"`
+	// The type of data that's stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type string `json:"type"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield) GetNamespace() string {
+	return v.Namespace
+}
+
+// GetKey returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield.Key, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield) GetKey() string {
+	return v.Key
+}
+
+// GetType returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield.Type, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield) GetType() string {
+	return v.Type
+}
+
+// GetValue returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield) GetValue() string {
+	return v.Value
+}
+
+// GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetVariantMetafieldsResponse is returned by GetVariantMetafields on success.
+type GetVariantMetafieldsResponse struct {
+	// Retrieves a [product variant](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) by its ID.
+	//
+	// A product variant is a specific version of a
+	// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) that comes in more than
+	// one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+	// such as size or color. For example, if a merchant sells t-shirts with options for size and color,
+	// then a small, blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+	//
+	// Use the `productVariant` query when you need to:
+	//
+	// - Access essential product variant data (for example, title, price, image, and metafields).
+	// - Build product detail pages and manage inventory.
+	// - Handle international sales with localized pricing and content.
+	// - Manage product variants that are part of a bundle or selling plan.
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	ProductVariant *GetVariantMetafieldsProductVariant `json:"productVariant"`
+}
+
+// GetProductVariant returns GetVariantMetafieldsResponse.ProductVariant, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsResponse) GetProductVariant() *GetVariantMetafieldsProductVariant {
+	return v.ProductVariant
+}
+
 // GetWebPresenceResponse is returned by GetWebPresence on success.
 type GetWebPresenceResponse struct {
 	// Returns a specific node (any object that implements the
@@ -33528,6 +33678,18 @@ type __GetShopMetafieldsInput struct {
 // GetAfter returns __GetShopMetafieldsInput.After, and is useful for accessing the field via an interface.
 func (v *__GetShopMetafieldsInput) GetAfter() *string { return v.After }
 
+// __GetVariantMetafieldsInput is used internally by genqlient
+type __GetVariantMetafieldsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetVariantMetafieldsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetVariantMetafieldsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetVariantMetafieldsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetVariantMetafieldsInput) GetAfter() *string { return v.After }
+
 // __GetWebPresenceInput is used internally by genqlient
 type __GetWebPresenceInput struct {
 	Id string `json:"id"`
@@ -40190,6 +40352,54 @@ func GetShopMetafields(
 	}
 
 	data_ = &GetShopMetafieldsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetVariantMetafields.
+const GetVariantMetafields_Operation = `
+query GetVariantMetafields ($id: ID!, $after: String) {
+	productVariant(id: $id) {
+		metafields(first: 250, after: $after) {
+			nodes {
+				namespace
+				key
+				type
+				value
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// Variants get their own query: metafields inside the product query would blow its cost limit (§9k.1, §9v).
+func GetVariantMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetVariantMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetVariantMetafields",
+		Query:  GetVariantMetafields_Operation,
+		Variables: &__GetVariantMetafieldsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetVariantMetafieldsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

@@ -81,6 +81,27 @@ query GetBlogMetafields(
   }
 }
 
+# Variants get their own query: metafields inside the product query would blow its cost limit (§9k.1, §9v).
+query GetVariantMetafields(
+  $id: ID!
+  $after: String
+) {
+  productVariant(id: $id) {
+    metafields(first: 250, after: $after) {
+      nodes {
+        namespace
+        key
+        type
+        value
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
 # An explicit null compareDigest means "only create": the update of an existing metafield fails with a stale-digest error.
 # @genqlient(for: "MetafieldsSetInput.compareDigest", omitempty: true)
 mutation SetMetafields(

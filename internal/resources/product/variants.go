@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/metafields"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 )
 
@@ -41,6 +42,7 @@ type variantModel struct {
 	Tracked          types.Bool   `tfsdk:"tracked"`
 	RequiresShipping types.Bool   `tfsdk:"requires_shipping"`
 	Weight           types.Object `tfsdk:"weight"`
+	Metafields       types.Map    `tfsdk:"metafields"`
 }
 
 type barcodeModel struct {
@@ -70,6 +72,7 @@ var (
 		"tracked":           types.BoolType,
 		"requires_shipping": types.BoolType,
 		"weight":            types.ObjectType{AttrTypes: weightAttrTypes},
+		"metafields":        metafields.MapType,
 	}
 	variantType = types.ObjectType{AttrTypes: variantAttrTypes}
 )
@@ -209,6 +212,11 @@ func variantFromAPI(ctx context.Context, v *client.VariantFields, c combo, prior
 		Tracked:          types.BoolValue(v.InventoryItem.Tracked),
 		RequiresShipping: types.BoolValue(v.InventoryItem.RequiresShipping),
 		Weight:           types.ObjectNull(weightAttrTypes),
+		Metafields:       metafields.Null(),
+	}
+	// The values are refreshed by fillVariantMetafields; this carries which keys are managed across the matching.
+	if !prior.Metafields.IsNull() && !prior.Metafields.IsUnknown() {
+		out.Metafields = prior.Metafields
 	}
 	if v.Sku == nil && prior.SKU.ValueString() == "" && !prior.SKU.IsNull() && !prior.SKU.IsUnknown() {
 		out.SKU = prior.SKU
@@ -384,6 +392,7 @@ var unknownVariant = variantModel{
 	Tracked:          types.BoolUnknown(),
 	RequiresShipping: types.BoolUnknown(),
 	Weight:           types.ObjectUnknown(weightAttrTypes),
+	Metafields:       metafields.Null(),
 }
 
 // carryForward fills computed and unset fields of a configured variant from the variant it keeps (or unknownVariant).

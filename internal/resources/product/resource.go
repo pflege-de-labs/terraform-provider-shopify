@@ -209,7 +209,7 @@ func variantsAttribute() schema.ListNestedAttribute {
 	return schema.ListNestedAttribute{
 		MarkdownDescription: "Variants in position order, each identified by its option values (not its SKU). Required when `options` is set. " +
 			"**Removing a variant, or an option or option value its variants use, deletes those variants with their inventory items and stock;** such a change fails unless `allow_data_deletion = true`. " +
-			"Inventory quantities, cost, unit prices, variant metafields and media are not managed.",
+			"Inventory quantities, cost, unit prices and media are not managed.",
 		Optional:      true,
 		Computed:      true,
 		PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
@@ -251,6 +251,7 @@ func variantsAttribute() schema.ListNestedAttribute {
 			"taxable":           schema.BoolAttribute{MarkdownDescription: "Whether taxes are charged." + unmanaged, Optional: true, Computed: true},
 			"tracked":           schema.BoolAttribute{MarkdownDescription: "Whether Shopify tracks inventory for the variant." + unmanaged, Optional: true, Computed: true},
 			"requires_shipping": schema.BoolAttribute{MarkdownDescription: "Whether the variant is shipped." + unmanaged, Optional: true, Computed: true},
+			"metafields":        metafields.Attribute("variant"),
 			"weight": schema.SingleNestedAttribute{
 				MarkdownDescription: "Shipping weight, used by weight-based shipping rates." + unmanaged,
 				Optional:            true,
@@ -457,6 +458,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	if importing || !state.Metafields.IsNull() {
 		resp.Diagnostics.Append(readMetafields(ctx, r.client, &state, p.Id, importing)...)
 	}
+	resp.Diagnostics.Append(r.readVariantMetafields(ctx, &state, p, importing)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -610,6 +612,7 @@ func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFi
 	}
 	diags.Append(rememberMediaManaged(ctx, private, managed)...)
 	diags.Append(r.writeMetafields(ctx, p.Id, plan, cfg)...)
+	diags.Append(r.writeVariantMetafields(ctx, plan)...)
 	diags.Append(r.publish(ctx, p, plan, cfg)...)
 	return true
 }
