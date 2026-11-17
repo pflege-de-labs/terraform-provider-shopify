@@ -1815,6 +1815,8 @@ Decision 2026-11-17. A shop's configuration has to reference products that Terra
 
 **Tests:** unit: exact matching, not found, duplicates. Acceptance: a product with two variants, lookup by one SKU (a prefix of the other), not found, and a SKU shared by both variants.
 
+---
+
 ## 10. Not covered
 
 Since 2026-10-23 the provider aims to cover every store object the Admin API can manage; remaining types are planned in [[implementation-plan]] Phase 2. Not covered:
