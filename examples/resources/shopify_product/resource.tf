@@ -25,6 +25,14 @@ resource "shopify_product" "bettschutz" {
   # so does destroying the product. Unset leaves the media to the admin, and destroy to Shopify.
   media_ids = [shopify_file.bettschutz_photo.id]
 
+  # Only the keys listed here are managed; a removed key keeps its value. value = "" deletes the metafield.
+  # Reference types hold store-specific GIDs, so set them from resource references.
+  metafields = {
+    "custom.material" = { type = "single_line_text_field", value = "Baumwolle" }
+    "custom.washable" = { type = "boolean", value = "true" }
+    "custom.sizes"    = { type = "list.single_line_text_field", value = jsonencode(["S", "M"]) }
+  }
+
   options = [
     { name = "Größe", values = ["S", "M"] },
   ]

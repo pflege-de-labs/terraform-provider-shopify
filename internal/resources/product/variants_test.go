@@ -279,14 +279,14 @@ func TestBuildInputLinkedOptionCoreOnly(t *testing.T) {
 
 func TestListModelLinkedOption(t *testing.T) {
 	ctx := context.Background()
-	m, d := listModel(ctx, linkedSizeSM())
+	m, d := listModel(ctx, linkedSizeSM(), nil)
 	if d.HasError() {
 		t.Fatal(d)
 	}
 	if !m.Options.IsNull() || !m.Variants.IsNull() || m.Handle.ValueString() != "h" {
 		t.Errorf("linked product listed with options %s, variants %s, handle %s; want options and variants null", m.Options, m.Variants, m.Handle)
 	}
-	m, _ = listModel(ctx, sizeSM())
+	m, _ = listModel(ctx, sizeSM(), nil)
 	if m.Options.IsNull() || m.Variants.IsNull() {
 		t.Errorf("unlinked product listed without options or variants")
 	}

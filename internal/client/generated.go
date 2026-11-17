@@ -6776,6 +6776,54 @@ func (v *DeleteMetafieldDefinitionResponse) GetMetafieldDefinitionDelete() *Dele
 	return v.MetafieldDefinitionDelete
 }
 
+// DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayload includes the requested fields of the GraphQL type MetafieldsDeletePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `metafieldsDelete` mutation.
+type DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayload struct {
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayloadUserErrorsUserError `json:"userErrors"`
+}
+
+// GetUserErrors returns DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayload) GetUserErrors() []DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayloadUserErrorsUserError {
+	return v.UserErrors
+}
+
+// DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayloadUserErrorsUserError includes the requested fields of the GraphQL type UserError.
+// The GraphQL type's documentation follows.
+//
+// An error in the input of a mutation. Mutations return `UserError` objects to indicate validation failures, such as invalid field values or business logic violations, that prevent the operation from completing.
+type DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayloadUserErrorsUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayloadUserErrorsUserError.Field, and is useful for accessing the field via an interface.
+func (v *DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayloadUserErrorsUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayloadUserErrorsUserError.Message, and is useful for accessing the field via an interface.
+func (v *DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayloadUserErrorsUserError) GetMessage() string {
+	return v.Message
+}
+
+// DeleteMetafieldsResponse is returned by DeleteMetafields on success.
+type DeleteMetafieldsResponse struct {
+	// Deletes [`Metafield`](https://shopify.dev/docs/api/admin-graphql/current/objects/Metafield) objects in bulk by specifying combinations of owner ID, namespace, and key.
+	//
+	// Returns the identifiers of successfully deleted metafields. If a specified metafield doesn't exist, then the mutation still succeeds but returns `null` for that identifier in the response.
+	MetafieldsDelete *DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayload `json:"metafieldsDelete"`
+}
+
+// GetMetafieldsDelete returns DeleteMetafieldsResponse.MetafieldsDelete, and is useful for accessing the field via an interface.
+func (v *DeleteMetafieldsResponse) GetMetafieldsDelete() *DeleteMetafieldsMetafieldsDeleteMetafieldsDeletePayload {
+	return v.MetafieldsDelete
+}
+
 // DeleteMetaobjectDefinitionMetaobjectDefinitionDeleteMetaobjectDefinitionDeletePayload includes the requested fields of the GraphQL type MetaobjectDefinitionDeletePayload.
 // The GraphQL type's documentation follows.
 //
@@ -17160,6 +17208,131 @@ type GetProductMediaResponse struct {
 // GetProduct returns GetProductMediaResponse.Product, and is useful for accessing the field via an interface.
 func (v *GetProductMediaResponse) GetProduct() *GetProductMediaProduct { return v.Product }
 
+// GetProductMetafieldsProduct includes the requested fields of the GraphQL type Product.
+// The GraphQL type's documentation follows.
+//
+// The `Product` object lets you manage products in a merchant’s store.
+//
+// Products are the goods and services that merchants offer to customers. They can include various details such as title, description, price, images, and options such as size or color.
+// You can use [product variants](https://shopify.dev/docs/api/admin-graphql/latest/objects/productvariant) to create or update different versions of the same product.
+// You can also add or update product [media](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/media).
+// Products can be organized by grouping them into a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/collection).
+//
+// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components),
+// including limitations and considerations.
+type GetProductMetafieldsProduct struct {
+	// A list of [custom fields](https://shopify.dev/docs/apps/build/custom-data)
+	// that a merchant associates with a Shopify resource.
+	Metafields GetProductMetafieldsProductMetafieldsMetafieldConnection `json:"metafields"`
+}
+
+// GetMetafields returns GetProductMetafieldsProduct.Metafields, and is useful for accessing the field via an interface.
+func (v *GetProductMetafieldsProduct) GetMetafields() GetProductMetafieldsProductMetafieldsMetafieldConnection {
+	return v.Metafields
+}
+
+// GetProductMetafieldsProductMetafieldsMetafieldConnection includes the requested fields of the GraphQL type MetafieldConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Metafields.
+type GetProductMetafieldsProductMetafieldsMetafieldConnection struct {
+	// A list of nodes that are contained in MetafieldEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetProductMetafieldsProductMetafieldsMetafieldConnectionNodesMetafield `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetProductMetafieldsProductMetafieldsMetafieldConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetProductMetafieldsProductMetafieldsMetafieldConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetProductMetafieldsProductMetafieldsMetafieldConnection) GetNodes() []GetProductMetafieldsProductMetafieldsMetafieldConnectionNodesMetafield {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetProductMetafieldsProductMetafieldsMetafieldConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetProductMetafieldsProductMetafieldsMetafieldConnection) GetPageInfo() GetProductMetafieldsProductMetafieldsMetafieldConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetProductMetafieldsProductMetafieldsMetafieldConnectionNodesMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin-graphql/latest/interfaces/HasMetafields).
+// Some examples of the data that metafields enable you to store are specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a value along with type information for that value.
+type GetProductMetafieldsProductMetafieldsMetafieldConnectionNodesMetafield struct {
+	// The container for a group of metafields that the metafield is associated with.
+	Namespace string `json:"namespace"`
+	// The unique identifier for the metafield within its namespace.
+	Key string `json:"key"`
+	// The type of data that's stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type string `json:"type"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns GetProductMetafieldsProductMetafieldsMetafieldConnectionNodesMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *GetProductMetafieldsProductMetafieldsMetafieldConnectionNodesMetafield) GetNamespace() string {
+	return v.Namespace
+}
+
+// GetKey returns GetProductMetafieldsProductMetafieldsMetafieldConnectionNodesMetafield.Key, and is useful for accessing the field via an interface.
+func (v *GetProductMetafieldsProductMetafieldsMetafieldConnectionNodesMetafield) GetKey() string {
+	return v.Key
+}
+
+// GetType returns GetProductMetafieldsProductMetafieldsMetafieldConnectionNodesMetafield.Type, and is useful for accessing the field via an interface.
+func (v *GetProductMetafieldsProductMetafieldsMetafieldConnectionNodesMetafield) GetType() string {
+	return v.Type
+}
+
+// GetValue returns GetProductMetafieldsProductMetafieldsMetafieldConnectionNodesMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetProductMetafieldsProductMetafieldsMetafieldConnectionNodesMetafield) GetValue() string {
+	return v.Value
+}
+
+// GetProductMetafieldsProductMetafieldsMetafieldConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetProductMetafieldsProductMetafieldsMetafieldConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetProductMetafieldsProductMetafieldsMetafieldConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetProductMetafieldsProductMetafieldsMetafieldConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetProductMetafieldsProductMetafieldsMetafieldConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetProductMetafieldsProductMetafieldsMetafieldConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetProductMetafieldsResponse is returned by GetProductMetafields on success.
+type GetProductMetafieldsResponse struct {
+	// Retrieves a [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) by its ID.
+	// A product is an item that a merchant can sell in their store.
+	//
+	// Use the `product` query when you need to:
+	//
+	// - Access essential product data (for example, title, description, price, images, SEO metadata, and metafields).
+	// - Build product detail pages and manage inventory.
+	// - Handle international sales with localized pricing and content.
+	// - Manage product variants and product options.
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	Product *GetProductMetafieldsProduct `json:"product"`
+}
+
+// GetProduct returns GetProductMetafieldsResponse.Product, and is useful for accessing the field via an interface.
+func (v *GetProductMetafieldsResponse) GetProduct() *GetProductMetafieldsProduct { return v.Product }
+
 // GetProductProduct includes the requested fields of the GraphQL type Product.
 // The GraphQL type's documentation follows.
 //
@@ -23713,6 +23886,25 @@ func (v *MetafieldDefinitionValidationInput) GetName() string { return v.Name }
 // GetValue returns MetafieldDefinitionValidationInput.Value, and is useful for accessing the field via an interface.
 func (v *MetafieldDefinitionValidationInput) GetValue() string { return v.Value }
 
+// The input fields that identify metafields.
+type MetafieldIdentifierInput struct {
+	// The unique ID of the resource that the metafield is attached to.
+	OwnerId string `json:"ownerId"`
+	// The namespace of the metafield.
+	Namespace string `json:"namespace"`
+	// The key of the metafield.
+	Key string `json:"key"`
+}
+
+// GetOwnerId returns MetafieldIdentifierInput.OwnerId, and is useful for accessing the field via an interface.
+func (v *MetafieldIdentifierInput) GetOwnerId() string { return v.OwnerId }
+
+// GetNamespace returns MetafieldIdentifierInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MetafieldIdentifierInput) GetNamespace() string { return v.Namespace }
+
+// GetKey returns MetafieldIdentifierInput.Key, and is useful for accessing the field via an interface.
+func (v *MetafieldIdentifierInput) GetKey() string { return v.Key }
+
 // The input fields to use to create or update a metafield through a mutation on the owning resource.
 // An alternative way to create or update a metafield is by using the
 // [metafieldsSet](https://shopify.dev/api/admin-graphql/latest/mutations/metafieldsSet) mutation.
@@ -23873,6 +24065,104 @@ const (
 var AllMetafieldStorefrontAccessInput = []MetafieldStorefrontAccessInput{
 	MetafieldStorefrontAccessInputPublicRead,
 	MetafieldStorefrontAccessInputNone,
+}
+
+// The input fields for a metafield value to set.
+type MetafieldsSetInput struct {
+	// The unique ID of the resource that the metafield is attached to.
+	OwnerId string `json:"ownerId"`
+	// The container for a group of metafields that the metafield is or will be associated with. Used in tandem
+	// with `key` to lookup a metafield on a resource, preventing conflicts with other metafields with the
+	// same `key`. If omitted the app-reserved namespace will be used.
+	//
+	// Must be 3-255 characters long and can contain alphanumeric, hyphen, and underscore characters.
+	Namespace *string `json:"namespace"`
+	// The unique identifier for a metafield within its namespace.
+	//
+	// Must be 2-64 characters long and can contain alphanumeric, hyphen, and underscore characters.
+	Key string `json:"key"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+	// The `compareDigest` value obtained from a previous query. Provide this with updates to ensure the metafield is modified safely.
+	CompareDigest *string `json:"compareDigest,omitempty"`
+	// The type of data that's stored in the metafield.
+	// The type must be one of the [supported types](https://shopify.dev/apps/metafields/types).
+	//
+	// Required when there's no corresponding definition for the given `namespace`, `key`, and
+	// owner resource type (derived from `ownerId`).
+	Type *string `json:"type"`
+}
+
+// GetOwnerId returns MetafieldsSetInput.OwnerId, and is useful for accessing the field via an interface.
+func (v *MetafieldsSetInput) GetOwnerId() string { return v.OwnerId }
+
+// GetNamespace returns MetafieldsSetInput.Namespace, and is useful for accessing the field via an interface.
+func (v *MetafieldsSetInput) GetNamespace() *string { return v.Namespace }
+
+// GetKey returns MetafieldsSetInput.Key, and is useful for accessing the field via an interface.
+func (v *MetafieldsSetInput) GetKey() string { return v.Key }
+
+// GetValue returns MetafieldsSetInput.Value, and is useful for accessing the field via an interface.
+func (v *MetafieldsSetInput) GetValue() string { return v.Value }
+
+// GetCompareDigest returns MetafieldsSetInput.CompareDigest, and is useful for accessing the field via an interface.
+func (v *MetafieldsSetInput) GetCompareDigest() *string { return v.CompareDigest }
+
+// GetType returns MetafieldsSetInput.Type, and is useful for accessing the field via an interface.
+func (v *MetafieldsSetInput) GetType() *string { return v.Type }
+
+// Possible error codes that can be returned by `MetafieldsSetUserError`.
+type MetafieldsSetUserErrorCode string
+
+const (
+	// The metafield violates a capability restriction.
+	MetafieldsSetUserErrorCodeCapabilityViolation MetafieldsSetUserErrorCode = "CAPABILITY_VIOLATION"
+	// The metafield has been modified since it was loaded.
+	MetafieldsSetUserErrorCodeStaleObject MetafieldsSetUserErrorCode = "STALE_OBJECT"
+	// The compareDigest is invalid.
+	MetafieldsSetUserErrorCodeInvalidCompareDigest MetafieldsSetUserErrorCode = "INVALID_COMPARE_DIGEST"
+	// The type is invalid.
+	MetafieldsSetUserErrorCodeInvalidType MetafieldsSetUserErrorCode = "INVALID_TYPE"
+	// The value is invalid for the metafield type or for the definition options.
+	MetafieldsSetUserErrorCodeInvalidValue MetafieldsSetUserErrorCode = "INVALID_VALUE"
+	// ApiPermission metafields can only be created or updated by the app owner.
+	MetafieldsSetUserErrorCodeAppNotAuthorized MetafieldsSetUserErrorCode = "APP_NOT_AUTHORIZED"
+	// The input value isn't included in the list.
+	MetafieldsSetUserErrorCodeInclusion MetafieldsSetUserErrorCode = "INCLUSION"
+	// The input value is already taken.
+	MetafieldsSetUserErrorCodeTaken MetafieldsSetUserErrorCode = "TAKEN"
+	// The input value needs to be blank.
+	MetafieldsSetUserErrorCodePresent MetafieldsSetUserErrorCode = "PRESENT"
+	// The input value is blank.
+	MetafieldsSetUserErrorCodeBlank MetafieldsSetUserErrorCode = "BLANK"
+	// The input value is too long.
+	MetafieldsSetUserErrorCodeTooLong MetafieldsSetUserErrorCode = "TOO_LONG"
+	// The input value is too short.
+	MetafieldsSetUserErrorCodeTooShort MetafieldsSetUserErrorCode = "TOO_SHORT"
+	// The input value should be less than or equal to the maximum value allowed.
+	MetafieldsSetUserErrorCodeLessThanOrEqualTo MetafieldsSetUserErrorCode = "LESS_THAN_OR_EQUAL_TO"
+	// The input value is invalid.
+	MetafieldsSetUserErrorCodeInvalid MetafieldsSetUserErrorCode = "INVALID"
+	// An internal error occurred.
+	MetafieldsSetUserErrorCodeInternalError MetafieldsSetUserErrorCode = "INTERNAL_ERROR"
+)
+
+var AllMetafieldsSetUserErrorCode = []MetafieldsSetUserErrorCode{
+	MetafieldsSetUserErrorCodeCapabilityViolation,
+	MetafieldsSetUserErrorCodeStaleObject,
+	MetafieldsSetUserErrorCodeInvalidCompareDigest,
+	MetafieldsSetUserErrorCodeInvalidType,
+	MetafieldsSetUserErrorCodeInvalidValue,
+	MetafieldsSetUserErrorCodeAppNotAuthorized,
+	MetafieldsSetUserErrorCodeInclusion,
+	MetafieldsSetUserErrorCodeTaken,
+	MetafieldsSetUserErrorCodePresent,
+	MetafieldsSetUserErrorCodeBlank,
+	MetafieldsSetUserErrorCodeTooLong,
+	MetafieldsSetUserErrorCodeTooShort,
+	MetafieldsSetUserErrorCodeLessThanOrEqualTo,
+	MetafieldsSetUserErrorCodeInvalid,
+	MetafieldsSetUserErrorCodeInternalError,
 }
 
 // The input fields that set access permissions for the definition's metaobjects.
@@ -27875,6 +28165,101 @@ func (v *SegmentFields) GetName() string { return v.Name }
 
 // GetQuery returns SegmentFields.Query, and is useful for accessing the field via an interface.
 func (v *SegmentFields) GetQuery() string { return v.Query }
+
+// SetMetafieldsMetafieldsSetMetafieldsSetPayload includes the requested fields of the GraphQL type MetafieldsSetPayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `metafieldsSet` mutation.
+type SetMetafieldsMetafieldsSetMetafieldsSetPayload struct {
+	// The list of metafields that were set.
+	Metafields []SetMetafieldsMetafieldsSetMetafieldsSetPayloadMetafieldsMetafield `json:"metafields"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []SetMetafieldsMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError `json:"userErrors"`
+}
+
+// GetMetafields returns SetMetafieldsMetafieldsSetMetafieldsSetPayload.Metafields, and is useful for accessing the field via an interface.
+func (v *SetMetafieldsMetafieldsSetMetafieldsSetPayload) GetMetafields() []SetMetafieldsMetafieldsSetMetafieldsSetPayloadMetafieldsMetafield {
+	return v.Metafields
+}
+
+// GetUserErrors returns SetMetafieldsMetafieldsSetMetafieldsSetPayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *SetMetafieldsMetafieldsSetMetafieldsSetPayload) GetUserErrors() []SetMetafieldsMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError {
+	return v.UserErrors
+}
+
+// SetMetafieldsMetafieldsSetMetafieldsSetPayloadMetafieldsMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin-graphql/latest/interfaces/HasMetafields).
+// Some examples of the data that metafields enable you to store are specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a value along with type information for that value.
+type SetMetafieldsMetafieldsSetMetafieldsSetPayloadMetafieldsMetafield struct {
+	// The unique identifier for the metafield within its namespace.
+	Key string `json:"key"`
+}
+
+// GetKey returns SetMetafieldsMetafieldsSetMetafieldsSetPayloadMetafieldsMetafield.Key, and is useful for accessing the field via an interface.
+func (v *SetMetafieldsMetafieldsSetMetafieldsSetPayloadMetafieldsMetafield) GetKey() string {
+	return v.Key
+}
+
+// SetMetafieldsMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError includes the requested fields of the GraphQL type MetafieldsSetUserError.
+// The GraphQL type's documentation follows.
+//
+// An error that occurs during the execution of `MetafieldsSet`.
+type SetMetafieldsMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+	// The error code.
+	Code *MetafieldsSetUserErrorCode `json:"code"`
+	// The index of the array element that's causing the error.
+	ElementIndex *int `json:"elementIndex"`
+}
+
+// GetField returns SetMetafieldsMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError.Field, and is useful for accessing the field via an interface.
+func (v *SetMetafieldsMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns SetMetafieldsMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError.Message, and is useful for accessing the field via an interface.
+func (v *SetMetafieldsMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError) GetMessage() string {
+	return v.Message
+}
+
+// GetCode returns SetMetafieldsMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError.Code, and is useful for accessing the field via an interface.
+func (v *SetMetafieldsMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError) GetCode() *MetafieldsSetUserErrorCode {
+	return v.Code
+}
+
+// GetElementIndex returns SetMetafieldsMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError.ElementIndex, and is useful for accessing the field via an interface.
+func (v *SetMetafieldsMetafieldsSetMetafieldsSetPayloadUserErrorsMetafieldsSetUserError) GetElementIndex() *int {
+	return v.ElementIndex
+}
+
+// SetMetafieldsResponse is returned by SetMetafields on success.
+type SetMetafieldsResponse struct {
+	// Sets metafield values. Metafield values will be set regardless if they were previously created or not.
+	//
+	// Allows a maximum of 25 metafields to be set at a time, with a maximum total request payload size of 10MB.
+	//
+	// This operation is atomic, meaning no changes are persisted if an error is encountered.
+	//
+	// As of `2024-07`, this operation supports compare-and-set functionality to better handle concurrent requests.
+	// If `compareDigest` is set for any metafield, the mutation will only set that metafield if the persisted metafield value matches the digest used on `compareDigest`.
+	// If the metafield doesn't exist yet, but you want to guarantee that the operation will run in a safe manner, set `compareDigest` to `null`.
+	// The `compareDigest` value can be acquired by querying the metafield object and selecting `compareDigest` as a field.
+	// If the `compareDigest` value does not match the digest for the persisted value, the mutation will return an error.
+	// You can opt out of write guarantees by not sending `compareDigest` in the request.
+	MetafieldsSet *SetMetafieldsMetafieldsSetMetafieldsSetPayload `json:"metafieldsSet"`
+}
+
+// GetMetafieldsSet returns SetMetafieldsResponse.MetafieldsSet, and is useful for accessing the field via an interface.
+func (v *SetMetafieldsResponse) GetMetafieldsSet() *SetMetafieldsMetafieldsSetMetafieldsSetPayload {
+	return v.MetafieldsSet
+}
 
 // SetProductProductSetProductSetPayload includes the requested fields of the GraphQL type ProductSetPayload.
 // The GraphQL type's documentation follows.
@@ -32179,6 +32564,14 @@ func (v *__DeleteMetafieldDefinitionInput) GetDeleteAllAssociatedMetafields() bo
 	return v.DeleteAllAssociatedMetafields
 }
 
+// __DeleteMetafieldsInput is used internally by genqlient
+type __DeleteMetafieldsInput struct {
+	Metafields []MetafieldIdentifierInput `json:"metafields"`
+}
+
+// GetMetafields returns __DeleteMetafieldsInput.Metafields, and is useful for accessing the field via an interface.
+func (v *__DeleteMetafieldsInput) GetMetafields() []MetafieldIdentifierInput { return v.Metafields }
+
 // __DeleteMetaobjectDefinitionInput is used internally by genqlient
 type __DeleteMetaobjectDefinitionInput struct {
 	Id string `json:"id"`
@@ -32567,6 +32960,18 @@ func (v *__GetProductMediaInput) GetId() string { return v.Id }
 // GetAfter returns __GetProductMediaInput.After, and is useful for accessing the field via an interface.
 func (v *__GetProductMediaInput) GetAfter() *string { return v.After }
 
+// __GetProductMetafieldsInput is used internally by genqlient
+type __GetProductMetafieldsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetProductMetafieldsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetProductMetafieldsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetProductMetafieldsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetProductMetafieldsInput) GetAfter() *string { return v.After }
+
 // __GetProductPublicationsInput is used internally by genqlient
 type __GetProductPublicationsInput struct {
 	Id    string  `json:"id"`
@@ -32786,6 +33191,14 @@ func (v *__PublishPublishableInput) GetId() string { return v.Id }
 
 // GetInput returns __PublishPublishableInput.Input, and is useful for accessing the field via an interface.
 func (v *__PublishPublishableInput) GetInput() []PublicationInput { return v.Input }
+
+// __SetMetafieldsInput is used internally by genqlient
+type __SetMetafieldsInput struct {
+	Metafields []MetafieldsSetInput `json:"metafields"`
+}
+
+// GetMetafields returns __SetMetafieldsInput.Metafields, and is useful for accessing the field via an interface.
+func (v *__SetMetafieldsInput) GetMetafields() []MetafieldsSetInput { return v.Metafields }
 
 // __SetProductInput is used internally by genqlient
 type __SetProductInput struct {
@@ -34565,6 +34978,43 @@ func DeleteMetafieldDefinition(
 	}
 
 	data_ = &DeleteMetafieldDefinitionResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by DeleteMetafields.
+const DeleteMetafields_Operation = `
+mutation DeleteMetafields ($metafields: [MetafieldIdentifierInput!]!) {
+	metafieldsDelete(metafields: $metafields) {
+		userErrors {
+			field
+			message
+		}
+	}
+}
+`
+
+func DeleteMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	metafields []MetafieldIdentifierInput,
+) (data_ *DeleteMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "DeleteMetafields",
+		Query:  DeleteMetafields_Operation,
+		Variables: &__DeleteMetafieldsInput{
+			Metafields: metafields,
+		},
+	}
+
+	data_ = &DeleteMetafieldsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -38788,6 +39238,54 @@ func GetProductMedia(
 	return data_, err_
 }
 
+// The query executed by GetProductMetafields.
+const GetProductMetafields_Operation = `
+query GetProductMetafields ($id: ID!, $after: String) {
+	product(id: $id) {
+		metafields(first: 250, after: $after) {
+			nodes {
+				namespace
+				key
+				type
+				value
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// Pages a product's metafields; the shared internal/metafields package takes the page function, so other owners add their own query.
+func GetProductMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetProductMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetProductMetafields",
+		Query:  GetProductMetafields_Operation,
+		Variables: &__GetProductMetafieldsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetProductMetafieldsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetProductPublications.
 const GetProductPublications_Operation = `
 query GetProductPublications ($id: ID!, $after: String) {
@@ -41876,6 +42374,49 @@ func PublishPublishable(
 	}
 
 	data_ = &PublishPublishableResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by SetMetafields.
+const SetMetafields_Operation = `
+mutation SetMetafields ($metafields: [MetafieldsSetInput!]!) {
+	metafieldsSet(metafields: $metafields) {
+		metafields {
+			key
+		}
+		userErrors {
+			field
+			message
+			code
+			elementIndex
+		}
+	}
+}
+`
+
+// An explicit null compareDigest means "only create": the update of an existing metafield fails with a stale-digest error.
+func SetMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	metafields []MetafieldsSetInput,
+) (data_ *SetMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "SetMetafields",
+		Query:  SetMetafields_Operation,
+		Variables: &__SetMetafieldsInput{
+			Metafields: metafields,
+		},
+	}
+
+	data_ = &SetMetafieldsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
