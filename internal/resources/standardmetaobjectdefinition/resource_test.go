@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
+	sdkacctest "github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/plancheck"
@@ -50,6 +52,29 @@ func lookup(t *testing.T, typ string) *client.MetaobjectDefinitionFields {
 	return &res.MetaobjectDefinitionByType.MetaobjectDefinitionFields
 }
 
+func deleteDef(t *testing.T, id string) {
+	t.Helper()
+	res, err := client.DeleteMetaobjectDefinition(context.Background(), acctest.Client(t), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if errs := res.MetaobjectDefinitionDelete.UserErrors; len(errs) > 0 {
+		t.Fatalf("deleting %s: %+v", id, errs)
+	}
+}
+
+func enable(t *testing.T, typ string) string {
+	t.Helper()
+	res, err := client.EnableStandardMetaobjectDefinition(context.Background(), acctest.Client(t), typ)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if errs := res.StandardMetaobjectDefinitionEnable.UserErrors; len(errs) > 0 {
+		t.Fatalf("enabling %s: %+v", typ, errs)
+	}
+	return res.StandardMetaobjectDefinitionEnable.MetaobjectDefinition.Id
+}
+
 // checkKept fails unless destroy left the definition enabled, with this GID when one is given.
 func checkKept(t *testing.T, typ, id string) resource.TestCheckFunc {
 	return func(*terraform.State) error {
@@ -67,15 +92,8 @@ func TestAccStandardMetaobjectDefinition_basic(t *testing.T) {
 		t.Fatalf("%s is already enabled on the dev store; delete it in the admin if it is a leftover of an aborted run", material)
 	}
 	t.Cleanup(func() {
-		d := lookup(t, material)
-		if d == nil {
-			return
-		}
-		res, err := client.DeleteMetaobjectDefinition(context.Background(), acctest.Client(t), d.Id)
-		if err != nil {
-			t.Error(err)
-		} else if len(res.MetaobjectDefinitionDelete.UserErrors) > 0 {
-			t.Errorf("deleting %s: %+v", material, res.MetaobjectDefinitionDelete.UserErrors)
+		if d := lookup(t, material); d != nil {
+			deleteDef(t, d.Id)
 		}
 	})
 	expectIdentity := statecheck.ExpectIdentity(addr, map[string]knownvalue.Check{"id": knownvalue.StringRegexp(gidRe)})
@@ -110,6 +128,75 @@ func TestAccStandardMetaobjectDefinition_basic(t *testing.T) {
 			},
 			{ResourceName: addr, ImportState: true, ImportStateId: material, ImportStateVerify: true},
 		},
+	})
+}
+
+// Read re-adopts a type re-enabled outside Terraform under its new GID, and plans a create once it is gone.
+func TestAccStandardMetaobjectDefinition_drift(t *testing.T) {
+	acctest.Setup(t)
+	if lookup(t, material) != nil {
+		t.Fatalf("%s is already enabled on the dev store; delete it in the admin if it is a leftover of an aborted run", material)
+	}
+	t.Cleanup(func() {
+		if d := lookup(t, material); d != nil {
+			deleteDef(t, d.Id)
+		}
+	})
+	var reenabled string
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkKept(t, material, ""),
+		Steps: []resource.TestStep{
+			{Config: config(material)},
+			{
+				PreConfig: func() {
+					old := lookup(t, material).Id
+					deleteDef(t, old)
+					if reenabled = enable(t, material); reenabled == old {
+						t.Fatal("re-enabling kept the GID; this step no longer tests the fallback by type")
+					}
+				},
+				Config:           config(material),
+				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}},
+				Check:            resource.TestCheckResourceAttrPtr(addr, "id", &reenabled),
+			},
+			{
+				PreConfig: func() { deleteDef(t, lookup(t, material).Id) },
+				Config:    config(material),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(addr, plancheck.ResourceActionCreate)},
+				},
+			},
+		},
+	})
+}
+
+// A merchant definition is not taken over: import fails and points to shopify_metaobject_definition.
+func TestAccStandardMetaobjectDefinition_notStandard(t *testing.T) {
+	acctest.Setup(t)
+	typ := "tfacc_" + strings.ToLower(sdkacctest.RandStringFromCharSet(8, sdkacctest.CharSetAlpha))
+	res, err := client.CreateMetaobjectDefinition(context.Background(), acctest.Client(t), client.MetaobjectDefinitionCreateInput{
+		Type:             typ,
+		FieldDefinitions: []client.MetaobjectFieldDefinitionCreateInput{{Key: "title", Type: "single_line_text_field"}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if errs := res.MetaobjectDefinitionCreate.UserErrors; len(errs) > 0 {
+		t.Fatalf("creating %s: %+v", typ, errs)
+	}
+	t.Cleanup(func() { deleteDef(t, res.MetaobjectDefinitionCreate.MetaobjectDefinition.Id) })
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		Steps: []resource.TestStep{{
+			Config:        config(typ),
+			ResourceName:  addr,
+			ImportState:   true,
+			ImportStateId: typ,
+			ExpectError:   regexp.MustCompile(`has no standard template`),
+		}},
 	})
 }
 

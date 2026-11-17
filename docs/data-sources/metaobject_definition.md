@@ -3,12 +3,12 @@
 page_title: "shopify_metaobject_definition Data Source - shopify"
 subcategory: ""
 description: |-
-  Reads a metaobject definition and its fields by type. Use it for definitions owned by Shopify (shopify--…) or by an app, which can't be imported into shopify_metaobject_definition; it works for merchant-owned definitions too. Fails if no such definition exists.
+  Reads a metaobject definition and its fields by type. Use it for definitions owned by Shopify (shopify--…) or by an app, which can't be imported into shopify_metaobject_definition; it works for merchant-owned definitions too. Fails if no such definition exists. To turn a Shopify standard definition on, use shopify_standard_metaobject_definition.
 ---
 
 # shopify_metaobject_definition (Data Source)
 
-Reads a metaobject definition and its fields by type. Use it for definitions owned by Shopify (`shopify--…`) or by an app, which can't be imported into `shopify_metaobject_definition`; it works for merchant-owned definitions too. Fails if no such definition exists.
+Reads a metaobject definition and its fields by type. Use it for definitions owned by Shopify (`shopify--…`) or by an app, which can't be imported into `shopify_metaobject_definition`; it works for merchant-owned definitions too. Fails if no such definition exists. To turn a Shopify standard definition on, use `shopify_standard_metaobject_definition`.
 
 ## Example Usage
 

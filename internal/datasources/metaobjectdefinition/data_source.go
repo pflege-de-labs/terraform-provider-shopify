@@ -39,7 +39,8 @@ func (d *DataSource) Schema(ctx context.Context, req datasource.SchemaRequest, r
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Reads a metaobject definition and its fields by type. " +
 			"Use it for definitions owned by Shopify (`shopify--…`) or by an app, which can't be imported into `shopify_metaobject_definition`; " +
-			"it works for merchant-owned definitions too. Fails if no such definition exists.",
+			"it works for merchant-owned definitions too. Fails if no such definition exists. " +
+			"To turn a Shopify standard definition on, use `shopify_standard_metaobject_definition`.",
 		Attributes: map[string]schema.Attribute{
 			"id":               computedString("Metaobject definition GID."),
 			"type":             schema.StringAttribute{MarkdownDescription: "Definition type, e.g. `shopify--material`, exactly as the API returns it.", Required: true},

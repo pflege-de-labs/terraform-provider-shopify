@@ -1682,6 +1682,16 @@ Everything else (name, fields, access, capabilities) comes from Shopify's templa
 - (c) an unknown type fails with `Record not found`.
 - (d) the list contains `shopify--knowledge-base-fact`, and the `shopify_metaobject_definition` list doesn't.
 
+**Implemented (§9s, verified on the dev store, 2026-11-17):**
+- Create, Read, Delete, import and the list work as specified.
+- Acceptance tests cover (a) to (d), plus two more paths:
+  - Drift: `shopify--material` deleted and re-enabled through the client is re-adopted under its new GID with an empty plan. Once deleted, the next plan is a create.
+  - Rejection: importing a merchant definition fails with "has no standard template".
+- Inverting the ordinary list's filter makes (d) fail, so the test does catch the filter.
+- Both tests that enable `shopify--material` delete it in cleanup.
+- ⚠ The dev store has only one standard type, so it is the only proof that every `shopify--*` definition has `standardTemplate` set. Production has 26 such definitions: at the first production `terraform query`, check that the `shopify_metaobject_definition` list emits no `shopify--*` type.
+- `TODO(verify)`: the destroy warning's wording in the CLI output. No test asserts it.
+
 ---
 
 ## 10. Not covered
