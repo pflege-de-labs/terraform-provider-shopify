@@ -35,7 +35,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | Scope | Resource types | Status | Fit |
 |---|---|---|---|
 | none | `shopify_shop` data source | ✅ | |
-| `write_products` | `shopify_metafield_definition` resource and data source (owner types `PRODUCT`, `PRODUCTVARIANT`, `COLLECTION`), catalogs, price lists, selling plan groups; products and collections | ✅ definitions (`PRODUCT`), `shopify_product` (core fields, options, variants, publishing, media), `shopify_collection` (with publishing), data source `shopify_product` (by SKU, `read_products` suffices), rest planned | definitions good; products, collections volatile |
+| `write_products` | `shopify_metafield_definition` resource and data source (owner types `PRODUCT`, `PRODUCTVARIANT`, `COLLECTION`), catalogs, price lists, selling plan groups; products and collections | ✅ definitions (`PRODUCT`), `shopify_product` (core fields, options, variants, publishing, media, `metafields` ⚠ whether `write_products` alone suffices for `metafieldsSet` on a product; every scope is granted on the dev store, so it can't tell), `shopify_collection` (with publishing), data source `shopify_product` (by SKU, `read_products` suffices), rest planned | definitions good; products, collections volatile |
 | `write_metaobject_definitions` | `shopify_metaobject_definition` resource and data source, `shopify_standard_metaobject_definition` | ✅ | good |
 | `write_online_store_navigation` | `shopify_menu`, URL redirects | ✅ menus, redirects planned | menus good; redirects volatile |
 | `write_locations` | `shopify_location` | ✅ | good |

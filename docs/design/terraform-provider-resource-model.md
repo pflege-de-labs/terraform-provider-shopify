@@ -960,7 +960,7 @@ Import key: the handle (`bettschutzeinlage`). Handles are unique per shop (`prod
 **Writes go through `productSet` (synchronous), never `productCreate`/`productUpdate`.** One mutation covers the core fields, options and variants, so §9k.2 extends the same call instead of adding a second write path.
 - Create: `productSet(input)` without `identifier`; a taken handle fails with `HANDLE_NOT_UNIQUE`, mapped to `handle`. With `adopt_existing = true`, Create looks the handle up first and, if found, writes the config with `identifier: { id }`.
 - Update: `productSet(identifier: { id }, input)`. `ProductSetInput` has no `id`; the identifier alone selects the product, and a new `handle` in `input` renames it in place (checked). With `identifier: { handle }`, `input.handle` is required (`MISSING_FIELD_REQUIRED`), so the provider never uses the handle identifier.
-- **Omit, don't empty:** keys left out of `ProductSetInput` are unchanged, list fields included: omitting `metafields`, `collections`, `productOptions` and `variants` kept all of them (checked). `tags`, `metafields` and `collections` given as a list are replaced as a whole. The provider sends only attributes that are set in config, and never sends `collections` (§9l owns membership), `metafields` (metafield values are a separate roadmap type), `files` unless `media_ids` is set (§9k.4), `requiresSellingPlan`, `claimOwnership` or `combinedListingRole`.
+- **Omit, don't empty:** keys left out of `ProductSetInput` are unchanged, list fields included: omitting `metafields`, `collections`, `productOptions` and `variants` kept all of them (checked). `tags`, `metafields` and `collections` given as a list are replaced as a whole. The provider sends only attributes that are set in config, and never sends `collections` (§9l owns membership), `metafields` inside `productSet` (they go through `metafieldsSet` after it, §9v: `productSet` would replace all of them), `files` unless `media_ids` is set (§9k.4), `requiresSellingPlan`, `claimOwnership` or `combinedListingRole`.
 - `redirectNewHandle` is not sent: a handle change creates no URL redirect (checked: none was created). URL redirects are a roadmap type.
 - Large products: `synchronous: true` may time out for products with many variants; Shopify's answer is `synchronous: false` plus `productOperation` polling. The schema names no threshold ("may be desirable depending on the input complexity/size, and should be used if you are experiencing timeouts"; default limit 2,048 variants per product). Checked on the dev store (2026-10-27, throwaway product `tf-acc-probe-large-…`, deleted again): a synchronous `productSet` creating a product with 3 options (12 × 12 × 14 values) and 2,016 variants returned after 21 s, and re-sending all 2,016 variants with a new price took 16 s, both without userErrors, about a third of the client's 60 s HTTP timeout; `productDelete` took 1 s. So a product near the variant limit doesn't need the async mode on its own; v1 stays synchronous only. A timeout under production load can't be ruled out from the dev store; it would surface as a transport error, which the client does not retry.
 
@@ -971,10 +971,11 @@ Import key: the handle (`bettschutzeinlage`). Handles are unique per shop (`prod
 **Pattern B: deleting a product destroys data.** `productDelete` removes the product's variants and their inventory items with all stock levels, media not used by another product, option values, publications, metafield values and translations (schema description). Checked on the dev store: after `productDelete`, the product's only `MediaImage` was gone from `files`, and the variant's `InventoryItem` returned `null` a few seconds later. Completed orders and refunds keep their copy of the product data; draft orders lose the reference (schema). So Delete, or a replace that would delete (only `gift_card` forces one), fails unless `allow_data_deletion = true`; ModifyPlan warns on a planned replace. With `media_ids` managed, Delete detaches the media first and they survive (§9k.4). The docs suggest `status = "ARCHIVED"` instead of destroy, and `lifecycle { prevent_destroy = true }`. A missing product on delete (`Product does not exist`, plain `UserError`, `field = ["id"]`, checked) means already gone: removed from state without error.
 
 Notes:
-- **Not managed in v1** (left out of `ProductSetInput`, so admin values stay): metafield values (roadmap type; `metafields` would replace all of them), translations (roadmap), inventory quantities (`inventoryQuantities`; inventory levels are a roadmap type), collections (§9l), selling plans (`requiresSellingPlan`, `productJoinSellingPlanGroups`; selling plan groups are on the roadmap), combined listings and bundles (`combinedListingRole`, `productBundle*`), `claimOwnership`, `giftCardTemplateSuffix`. Deprecated fields (`bodyHtml`, `productCategory`, `customProductType`, `productChangeStatus`, `productPublish`, `productCreateMedia`, `productByHandle`) are not used.
+- **Not managed in v1** (left out of `ProductSetInput`, so admin values stay): variant metafield values (product metafields are managed through `metafields`, §9v), translations (roadmap), inventory quantities (`inventoryQuantities`; inventory levels are a roadmap type), collections (§9l), selling plans (`requiresSellingPlan`, `productJoinSellingPlanGroups`; selling plan groups are on the roadmap), combined listings and bundles (`combinedListingRole`, `productBundle*`), `claimOwnership`, `giftCardTemplateSuffix`. Deprecated fields (`bodyHtml`, `productCategory`, `customProductType`, `productChangeStatus`, `productPublish`, `productCreateMedia`, `productByHandle`) are not used.
 - The dev store put two of three new `DRAFT` probe products into its `frontpage` collection without being asked (an `ACTIVE` one stayed out). `TODO(verify)`: the cause. The product never reads or writes collections, so it doesn't drift; a `shopify_collection` for `frontpage` would (§9l).
 - **genqlient:** `Money` needs a string binding in `internal/client/genqlient.yaml` (like `Decimal`); `HTML` and `Decimal` already have one.
 - Errors: `ProductSetUserError` (`code`, `field` relative to `input`): `HANDLE_NOT_UNIQUE` (`handle`), `INVALID_PRODUCT`, `INVALID_INPUT`, `PRODUCT_DOES_NOT_EXIST` (Read handles the gone case before writing), `PRODUCT_SUSPENDED`, `GIFT_CARDS_NOT_ACTIVATED` / `GIFT_CARD_ATTRIBUTE_CANNOT_BE_CHANGED` (`gift_card`), `CAPABILITY_VIOLATION`, `GENERIC_ERROR`, plus the option and variant codes in §9k.2. `productDelete`: plain `UserError`. None is retried.
+- **Metafield values (§9v, #57):** the optional `metafields` attribute manages product metafields through `metafieldsSet` and `metafieldsDelete` after `productSet`; `productSet` itself never carries them.
 - **Fit: volatile.** The description says so: products are usually owned by merchants or a PIM; managing them here means every admin edit to a managed attribute is reverted on the next apply. Unset attributes stay unmanaged to keep that small.
 - **Scopes:** `read_products` / `write_products` (`docs/bootstrapping.md` already lists products). `TODO(verify)`: whether `read_inventory` is needed for the `inventoryItem` fields read in §9k.2; every scope is granted on the dev store, so it can't tell.
 - **Review Focus 1:** acceptance step reads the product back through the client after an adopted product's destroy and expects it unchanged. **Review Focus 2:** set `vendor` in one step, leave it out in the next, change it through the client in between: the config without `vendor` plans empty.
@@ -1160,7 +1161,7 @@ resource "shopify_collection" "empfehlungen" {
 - No source: the three attributes read as null / empty; `source_id` null.
 - Exactly one non-shareable `CollectionConditionsSource`, whichever app created it (S13-8: sources created through 2026-10 carry the creating app, and plans run with a read-only app, so app ownership is not checked), target `PRODUCTS`, no variant-level selections and no `Unknown` condition: managed as above.
 - Anything else (several sources, a sub-collection source, a shareable source, `VARIANTS` target, variant selections, a condition Shopify reports as `CollectionSourceInclusionConditionUnknown`): membership is unsupported. If config sets any of the three attributes, Read and plan fail with an error naming the source types; otherwise they stay null and import and list warn that membership is not managed.
-- Not managed in v1: exclusions (conditions and products), sub-collection and shareable sources (`collectionConditionsSource*` mutations), variant selections, the product order of `MANUAL` collections (`collectionReorderProducts`), collection image (with §9k.4), metafield values, translations. All roadmap.
+- Not managed in v1: exclusions (conditions and products), sub-collection and shareable sources (`collectionConditionsSource*` mutations), variant selections, the product order of `MANUAL` collections (`collectionReorderProducts`), collection image (with §9k.4), translations. All roadmap. Metafield values get a `metafields` attribute (§9v), planned for collections after products.
 
 **Conditions: a JSON attribute, like checkout branding (§9f).** 18 inclusion condition kinds, each with its own relation enum and value shape (strings, `MoneyInput`, `WeightInput`, booleans, metafield definition IDs, taxonomy categories with `includeDescendants`, metaobject IDs). A typed block would need one nested block per kind or a flattened block with kind-specific fields; JSON in the input's own shape keeps Shopify's docs usable one to one, and users write `jsonencode([...])`.
 - Write: sent as is (`# @genqlient(for: "CollectionCreateSourceInclusionInput.conditions", bind: "encoding/json.RawMessage")` and the same for `CollectionUpdateSourceInclusionInput.conditionsToCreate`). Shopify validates kinds and values. ValidateConfig only checks that the value is a JSON list of objects with exactly one key each.
@@ -1238,7 +1239,7 @@ Import key: the handle (`impressum`). Handles are unique per shop: a taken handl
 
 Notes:
 - Uses `page(id:)`, `pages(first:, query:)`, `pageCreate(page:)`, `pageUpdate(id:, page:)`, `pageDelete(id:)`.
-- Update sends only changed attributes. Never sent: `metafields` (metafield values are a roadmap type), `publishDate`, `redirectNewHandle` (a handle change creates no redirect; URL redirects are a roadmap type). Renaming the handle in place works (checked).
+- Update sends only changed attributes. Never sent: `metafields` (a `metafields` attribute on pages is planned, §9v), `publishDate`, `redirectNewHandle` (a handle change creates no redirect; URL redirects are a roadmap type). Renaming the handle in place works (checked).
 - genqlient: `body` has the `HTML` scalar, already bound to `string`.
 - Errors (`PageCreateUserError` / `PageUpdateUserError`, `field` relative to `page`): `TAKEN` (`handle`), `BLANK` (`title`), `TOO_LONG`, `TOO_SHORT`, `TOO_BIG` (`body`), `INVALID`, `INVALID_PUBLISH_DATE` (can't happen, `publishDate` is never sent), `INVALID_VALUE` / `INVALID_TYPE` (metafields, never sent), `NOT_FOUND`. `pageDelete`: `NOT_FOUND`. None is retried.
 - **Fit: volatile.** The description says so: page texts are usually maintained in the admin; with `body` unset, Terraform can own the handle, title and template while editors own the text.
@@ -1300,7 +1301,7 @@ Import key: the handle (`news`). Read: `blog(id:)` first; if it is gone, `blogs(
 
 Notes:
 - Uses `blog(id:)`, `blogs(first:, query:)`, `blogCreate(blog:)`, `blogUpdate(id:, blog:)`, `blogDelete(id:)`. Update sends only changed attributes.
-- Never sent: `metafields`, `redirectNewHandle`, `redirectArticles` (both default `false`; URL redirects are a roadmap type). Renaming a blog therefore changes its article URLs without redirects; the docs say so.
+- Never sent: `metafields` (a `metafields` attribute is planned, §9v), `redirectNewHandle`, `redirectArticles` (both default `false`; URL redirects are a roadmap type). Renaming a blog therefore changes its article URLs without redirects; the docs say so.
 - Not exposed: `feed` (legacy FeedBurner settings, `null` on the dev store), `tags` (derived from articles), `articlesCount` (only used by the Pattern B check).
 - Errors (`BlogCreateUserError` / `BlogUpdateUserError`, `field` relative to `blog`): `BLANK` (`title`), `INVALID`, `TOO_LONG`, `INCLUSION` (`comment_policy`), `INVALID_VALUE` / `INVALID_TYPE` (metafields, never sent), `NOT_FOUND`. `blogDelete`: `NOT_FOUND`. There is no `TAKEN`: see the handle check above. None is retried.
 - **Fit: good.** A blog's settings are stable configuration; articles, the content, are not managed (roadmap). The description says so, and that destroying a blog with articles needs `allow_data_deletion`.
@@ -1814,6 +1815,56 @@ Decision 2026-11-17. A shop's configuration has to reference products that Terra
 **Fit:** good. Read-only, resolved on every plan, so a product recreated in the admin with the same SKU is picked up.
 
 **Tests:** unit: exact matching, not found, duplicates. Acceptance: a product with two variants, lookup by one SKU (a prefix of the other), not found, and a SKU shared by both variants.
+
+## 9v. Metafield values
+
+Decision 2026-11-17 (#57). Metafield values are an optional `metafields` attribute on the owning resource, not a type of their own. Step 1 is `shopify_product` (product level; variants, collections and the other owners follow). The shared code is `internal/metafields`; each owner adds its page query and wiring.
+
+```hcl
+resource "shopify_product" "x" {
+  handle = "bettschutzeinlage"
+  title  = "Bettschutzeinlage"
+  metafields = {
+    "custom.material" = { type = "single_line_text_field", value = "Baumwolle" }
+    "custom.sizes"    = { type = "list.single_line_text_field", value = jsonencode(["S", "M"]) }
+    "custom.maker"    = { type = "metaobject_reference", value = shopify_metaobject.maker.id }
+  }
+}
+```
+
+**Attribute.** `metafields = map(object({ type = string, value = string }))`, keyed `namespace.key`, split on the first dot (namespaces and keys can't contain dots). Optional only, not Computed, like collection `conditions`. `type` is required per entry.
+
+**Managed keys.**
+- Only the keys in config are managed. A key removed from the map stops being managed and keeps its value (same rule as `shopify_metaobject` fields, §9t). There is no flag to delete unlisted keys.
+- `value = ""` deletes the metafield (`metafieldsDelete`). A managed key the API doesn't return reads as `""`, so a deleted or admin-deleted one plans as set or as nothing, never as a perpetual diff.
+- Keys in app-owned namespaces (`app--*`, also `$app…`) are rejected by a validator; import and the list skip them. So are `global.title_tag` and `global.description_tag`: Shopify exposes `seo_title` and `seo_description` as these metafields (an import showed them), and those attributes own them.
+- Reference values are store-specific GIDs. The docs say config must take them from resource references (`shopify_metaobject.x.id`), not literals.
+
+**Read.** Unset in state: only on import (`handle` is null) the map is filled with every key outside app namespaces; an empty result stays null. Set in state: only the managed keys are read, and a value Shopify merely reformatted keeps the configured text (`patterns.ValueEqual`, moved from the metaobject package; the type must match too). Otherwise the API value is taken, which shows as drift. An unset attribute is never read, so no extra call is made for it.
+
+**Write.** After `productSet` (never inside it: `productSet(metafields:)` would replace all values) and after the product is read back. Update and Create read the live metafields, diff the managed keys (`metafields.Plan`) and send only the changed ones: values through `metafieldsSet` in chunks of 25, `""` through `metafieldsDelete`. `type` is sent with every value. The write comes before publishing. A failure after Create leaves the product in state, tainted (as for publishing); after Update the state keeps what the product really has. `compareDigest` is omitted from the input: an explicit `null` means "only create" and fails for an existing metafield with a stale-digest error (found by the acceptance test).
+
+**userErrors.** `["metafields", "<i>", "value"]` with `elementIndex` null, `<i>` the position in the call. It maps to `metafields["namespace.key"]` (chunk offset is accounted for); other errors map to `metafields`. `metafieldsSet` is atomic: one invalid entry writes nothing from its call (checked). Entries of an earlier chunk stay written.
+
+**List.** `completeProduct` can't hold metafields (the generated `ProductFields` has no slot, and the product list page is near the cost limit, see §9k.1 List), so the list runs `GetProductMetafields` per product as its own paged query (`first: 250`, requested cost 14, actual 4 for 11 values). The map stays null when empty, so generated config plans as import-only.
+
+**Dev store probes (2026-11-17).**
+- Normalisation, same as metaobject fields (§9t): `number_integer` `007` becomes `7`, `number_decimal` `1.50` becomes `1.5`, `boolean` `TRUE` becomes `true`; `json` and `list.*` are minified (`[ 1 , "2" ]` as `list.number_integer` becomes `[1,2]`: strings are coerced to numbers in a list); `date`, `url`, `color` (`#FF00aa`) come back as sent.
+- ⚠ Not equal under `ValueEqual`, so they show a perpetual diff unless written in Shopify's form: `money` (`{"amount":"5.0",…}` returns `"5.00"`, a string) and `weight` (`unit` `kg` returns `KILOGRAMS`; `value` `2` returns `2.0`, which does compare equal). `rating` kept `1.0`/`3.0`. Write money amounts with two decimals and units as the enum.
+- `metafieldsSet` works without a definition when `type` is given; without `type` it fails (`BLANK`, `metafields.0.type`) unless a definition supplies it. The provider always sends `type`, so one that differs from the definition's fails with `INVALID_TYPE` ("must be consistent with the definition's type").
+- `value = ""` is refused by `metafieldsSet` (`INVALID_VALUE`, "Value must be an integer." / "Value can't be blank."), hence the delete path.
+- `metafieldsDelete` of a missing key succeeds (`deletedMetafields: [null]`, no userError), so it is idempotent. TODO(verify): its per-call limit; the provider chunks at 25.
+- `metafieldsSet` with 26 entries fails (`LESS_THAN_OR_EQUAL_TO`, "Exceeded the maximum metafields input limit of 25.").
+- Key length: minimum 2 characters (`TOO_SHORT`); the key validator checks 3-255 for the namespace and 2-64 for the key (schema description).
+- Read cost: `metafields(first: 250)` on a product with 11 values requested 14 and cost 4.
+
+**Scope.** `write_products` (already granted). ⚠ Whether it alone suffices for `metafieldsSet` on a product is unverified (every scope is granted on the dev store); noted in `docs/bootstrapping.md`.
+
+**Fit: volatile.** Merchants and apps edit metafield values constantly. Managing only the listed keys keeps that small.
+
+**Tests.** Unit: key split and validator, `ValueEqual` (moved), read merge for import, prior and missing keys, set and delete diff, 25-chunking, userErrors index to path. Acceptance (`internal/resources/product`): create, update, delete with `""`, drop a key, unmanaged edit (empty plan), managed edit (drift), invalid value, import by key and the generated config, list, and a `metaobject_reference` to a `shopify_metaobject` in the same config.
+
+---
 
 ---
 
