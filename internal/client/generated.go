@@ -35140,7 +35140,7 @@ func FindPages(
 // The query executed by FindProductVariantsBySku.
 const FindProductVariantsBySku_Operation = `
 query FindProductVariantsBySku ($query: String!, $after: String) {
-	productVariants(first: 250, after: $after, query: $query) {
+	productVariants(first: 25, after: $after, query: $query) {
 		nodes {
 			id
 			sku

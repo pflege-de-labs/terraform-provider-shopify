@@ -1799,6 +1799,22 @@ So:
 
 ---
 
+## 9u. Data source: `shopify_product` (by SKU)
+
+Decision 2026-11-17. A shop's configuration has to reference products that Terraform doesn't manage, such as the hand-picked products of a manual collection (`product_ids`). Product GIDs differ per shop, so a module shared by several shops can't hard-code them. The SKU is the key the shops share. §9k says a SKU is "not an identity" because it can be empty or repeated; the data source treats it as a key only where it is unique and fails otherwise, so a shop with duplicate SKUs gets an error, never a guess.
+
+**Arguments (Required):** `sku`, non-empty, matched exactly (case-sensitive) against `ProductVariant.sku`.
+
+**Attributes (all Computed):** `id` (product GID, what `product_ids` takes), `variant_id`, `handle`, `title`.
+
+**Lookup:** `productVariants(query: "sku:\"<sku>\"")`, paged by 25. The search is fuzzy (it can return other SKUs), so the result is filtered by exact SKU.
+
+**Errors:** no variant with the SKU; more than one variant with it, even inside one product, each listed with its product handle. `read_products` missing: reported with the scope name. `TODO(verify)`: the search index lags edits by seconds (the acceptance test waits for it), and the scope denial is unobserved since the dev store grants every scope.
+
+**Fit:** good. Read-only, resolved on every plan, so a product recreated in the admin with the same SKU is picked up.
+
+**Tests:** unit: exact matching, not found, duplicates. Acceptance: a product with two variants, lookup by one SKU (a prefix of the other), not found, and a SKU shared by both variants.
+
 ## 10. Not covered
 
 Since 2026-10-23 the provider aims to cover every store object the Admin API can manage; remaining types are planned in [[implementation-plan]] Phase 2. Not covered:

@@ -10,6 +10,7 @@ import (
 
 	sdkacctest "github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/acctest"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
@@ -44,6 +45,34 @@ func waitIndexed(t *testing.T, sku string, want int) {
 	t.Fatalf("SKU %s not indexed after 60s", sku)
 }
 
+// cleanup deletes the test product when the test ends, whatever state it is in.
+func cleanup(t *testing.T, handle string) {
+	t.Helper()
+	t.Cleanup(func() {
+		c := acctest.Client(t)
+		res, err := client.GetProductByHandle(context.Background(), c, handle)
+		if err != nil || res.ProductByIdentifier == nil {
+			return
+		}
+		if _, err := client.DeleteProduct(context.Background(), c, res.ProductByIdentifier.Id); err != nil {
+			t.Error(err)
+		}
+	})
+}
+
+func checkGone(t *testing.T, handle string) resource.TestCheckFunc {
+	return func(*terraform.State) error {
+		res, err := client.GetProductByHandle(context.Background(), acctest.Client(t), handle)
+		if err != nil {
+			return err
+		}
+		if res.ProductByIdentifier != nil {
+			return fmt.Errorf("product %s still exists", handle)
+		}
+		return nil
+	}
+}
+
 func TestAccProductDataSource_sku(t *testing.T) {
 	suffix := strings.ToUpper(sdkacctest.RandStringFromCharSet(6, sdkacctest.CharSetAlphaNum))
 	handle, sku, dup := "tf-acc-product-ds-"+strings.ToLower(suffix), "TF-DS-"+suffix, "TF-DS-DUP-"+suffix
@@ -51,8 +80,9 @@ func TestAccProductDataSource_sku(t *testing.T) {
 	lookup := func(s string) string { return fmt.Sprintf("data \"shopify_product\" \"test\" {\n  sku = %q\n}\n", s) }
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { acctest.PreCheck(t) },
+		PreCheck:                 func() { acctest.PreCheck(t); cleanup(t, handle) }, // PreCheck runs only with TF_ACC set
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		CheckDestroy:             checkGone(t, handle),
 		Steps: []resource.TestStep{
 			{Config: created},
 			{
@@ -66,12 +96,12 @@ func TestAccProductDataSource_sku(t *testing.T) {
 				),
 			},
 			// The search for sku also returns sku-M; only the exact SKU may match.
-			{Config: created + lookup("TF-DS-MISSING-"+suffix), ExpectError: regexp.MustCompile(`no product variant has SKU`)},
+			{Config: created + lookup("TF-DS-MISSING-"+suffix), ExpectError: regexp.MustCompile(`no\s+product\s+variant\s+has\s+SKU`)},
 			{Config: product(handle, fmt.Sprintf(`[{ option_values = { Size = "S" }, sku = %q }, { option_values = { Size = "M" }, sku = %q }]`, dup, dup))},
 			{
 				PreConfig:   func() { waitIndexed(t, dup, 2) },
 				Config:      product(handle, fmt.Sprintf(`[{ option_values = { Size = "S" }, sku = %q }, { option_values = { Size = "M" }, sku = %q }]`, dup, dup)) + lookup(dup),
-				ExpectError: regexp.MustCompile(`2 product variants have SKU`),
+				ExpectError: regexp.MustCompile(`2\s+product\s+variants\s+have\s+SKU`),
 			},
 		},
 	})

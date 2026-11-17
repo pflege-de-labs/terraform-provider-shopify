@@ -79,6 +79,7 @@ func (d *DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp 
 		vs = append(vs, v)
 		return true
 	})
+	// TODO(verify): scope and index lag from Shopify docs; the dev store grants all scopes.
 	if client.IsAccessDenied(err) {
 		resp.Diagnostics.AddError("Failed to read product variants",
 			fmt.Sprintf("The app lacks the read_products scope: %s", err))
