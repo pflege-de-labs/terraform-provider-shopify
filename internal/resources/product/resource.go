@@ -22,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/metafields"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/publishing"
 )
@@ -161,6 +162,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"variants":        variantsAttribute(),
 			"publication_ids": publishing.Attribute(what),
 			"media_ids":       mediaIDsAttribute(),
+			"metafields":      metafields.Attribute(what),
 			"media_managed": schema.BoolAttribute{
 				MarkdownDescription: "Whether the provider has managed `media_ids` (sticky once true), mirroring what a destroy reads. Not a setting: it turns a change from unset to set `media_ids` into an update that records it.",
 				Computed:            true,
@@ -442,6 +444,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	}
 
 	// Set on import, where only the ID is known.
+	importing := state.Handle.IsNull()
 	if state.AdoptExisting.IsNull() {
 		state.AdoptExisting = types.BoolValue(false)
 	}
@@ -451,6 +454,12 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	written, d := patterns.WrittenHTML(ctx, req.Private)
 	resp.Diagnostics.Append(d...)
 	resp.Diagnostics.Append(setFromAPI(ctx, &state, p, written)...)
+	if importing || !state.Metafields.IsNull() {
+		resp.Diagnostics.Append(readMetafields(ctx, r.client, &state, p.Id, importing)...)
+	}
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: state.ID})...)
 }
@@ -600,6 +609,7 @@ func (r *Resource) write(ctx context.Context, id *string, live *client.ProductFi
 		plan.MediaManaged = types.BoolValue(managed)
 	}
 	diags.Append(rememberMediaManaged(ctx, private, managed)...)
+	diags.Append(r.writeMetafields(ctx, p.Id, plan, cfg)...)
 	diags.Append(r.publish(ctx, p, plan, cfg)...)
 	return true
 }

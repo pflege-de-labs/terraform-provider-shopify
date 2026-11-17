@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/metafields"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/publishing"
 )
@@ -35,8 +36,8 @@ func (r *ListResource) ListResourceConfigSchema(ctx context.Context, req list.Li
 
 func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *list.ListResultsStream) {
 	stream.Results = func(push func(list.ListResult) bool) {
-		err := patterns.Paginate(ctx, req.Limit, listPage(ctx, r.client), func(p client.ProductFields) bool {
-			return push(listResult(ctx, req, &p))
+		err := patterns.Paginate(ctx, req.Limit, listPage(ctx, r.client), func(p listed) bool {
+			return push(listResult(ctx, req, &p.ProductFields, p.metafields))
 		})
 		if err != nil {
 			var diags diag.Diagnostics
@@ -46,17 +47,27 @@ func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *l
 	}
 }
 
-func listPage(ctx context.Context, c *client.Client) func(after *string) ([]client.ProductFields, *string, error) {
-	return func(after *string) ([]client.ProductFields, *string, error) {
+// listed is a product with its metafields, which come from their own query to keep the page query under the cost limit.
+type listed struct {
+	client.ProductFields
+	metafields []metafields.Live
+}
+
+func listPage(ctx context.Context, c *client.Client) func(after *string) ([]listed, *string, error) {
+	return func(after *string) ([]listed, *string, error) {
 		res, err := client.ListProducts(ctx, c, after)
 		if err != nil {
 			return nil, nil, err
 		}
 		conn := res.Products
-		nodes := make([]client.ProductFields, len(conn.Nodes))
+		nodes := make([]listed, len(conn.Nodes))
 		for i, n := range conn.Nodes {
-			nodes[i] = n.ProductFields
-			if err := completeProduct(ctx, c, &nodes[i]); err != nil {
+			nodes[i].ProductFields = n.ProductFields
+			if err := completeProduct(ctx, c, &nodes[i].ProductFields); err != nil {
+				return nil, nil, err
+			}
+			var err error
+			if nodes[i].metafields, err = metafields.List(ctx, metafieldPage(ctx, c, n.Id)); err != nil {
 				return nil, nil, err
 			}
 		}
@@ -65,12 +76,12 @@ func listPage(ctx context.Context, c *client.Client) func(after *string) ([]clie
 }
 
 // listResult fills the resource as Read would; provider-only attributes get their schema defaults.
-func listResult(ctx context.Context, req list.ListRequest, p *client.ProductFields) list.ListResult {
+func listResult(ctx context.Context, req list.ListRequest, p *client.ProductFields, mf []metafields.Live) list.ListResult {
 	res := req.NewListResult(ctx)
 	res.DisplayName = displayName(p)
 	res.Diagnostics.Append(res.Identity.Set(ctx, patterns.IDIdentity{ID: types.StringValue(p.Id)})...)
 	if req.IncludeResource {
-		m, d := listModel(ctx, p)
+		m, d := listModel(ctx, p, mf)
 		res.Diagnostics.Append(d...)
 		res.Diagnostics.Append(res.Resource.Set(ctx, &m)...)
 	}
@@ -78,9 +89,12 @@ func listResult(ctx context.Context, req list.ListRequest, p *client.ProductFiel
 }
 
 // listModel is what Read would set, minus options and variants of a product with a linked option, which can't be managed.
-func listModel(ctx context.Context, p *client.ProductFields) (model, diag.Diagnostics) {
+func listModel(ctx context.Context, p *client.ProductFields, mf []metafields.Live) (model, diag.Diagnostics) {
 	m := model{AdoptExisting: types.BoolValue(false), AllowDataDeletion: types.BoolValue(false)}
 	diags := setFromAPI(ctx, &m, p, nil)
+	var d diag.Diagnostics
+	m.Metafields, d = metafields.ToValue(ctx, metafields.Read(nil, mf), true)
+	diags.Append(d...)
 	m.PublicationIDs = publishing.NullIfEmpty(m.PublicationIDs)
 	if len(m.MediaIDs.Elements()) == 0 {
 		m.MediaIDs = types.ListNull(types.StringType)
