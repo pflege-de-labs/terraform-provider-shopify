@@ -114,7 +114,7 @@ Status 2026-10-27: steps 7-11 merged (#25-#29), step 13 in review. Counts are st
   - `shopify_catalog` (3 / 5, channel app catalogs only; design in resource model §9i).
   - `shopify_discount_free_shipping` and `shopify_discount_bxgy`: check the kinds of production's 7 discounts at first import. App discounts are not creatable here.
   - `shopify_file` uploads of local files (staged uploads), needed for videos and 3D models, which take a multipart POST rather than a PUT (resource model §9o).
-  - Variant media and collection images.
+  - Variant media (collection images: done, #56).
   - Articles (0 / 0), return policy profiles (1 / 1), custom delivery profiles, carrier services, URL redirects, price lists, selling plan groups and all step 12 types (0 / 0).
   - Translations, market localizations, inventory levels (not counted; single locale `de`).
 - **Post-merge fixes:** the `media_managed` residual on product destroy, the flaky parallel `make testacc` (web presence and shop locale tests both toggle locale `fr`), and the fix-later groups and 13 open `TODO(verify)` listed in the report.
