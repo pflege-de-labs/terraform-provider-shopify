@@ -38,7 +38,7 @@ The last run lost its ledger because it was git-ignored inside a worktree. This 
 
 - **D1: dev store scopes.** The dev store token has only the six original scopes (checked 2026-10-23: `write_locations, write_markets, write_metaobject_definitions, write_online_store_navigation, write_products, write_shipping`). Acceptance tests for new types need the full set from `app/shopify.app.toml`: deploy it to the dev app and reinstall on the dev store ([[dev-store-scope-reinstall]]). Without it, only discovery (Phase A) can run.
 - **D2: which types to build. Decided 2026-10-23:** every in-scope type with a count > 0 on staging or production, in Phase 2 step order. The rest stays on the roadmap: the wrap-up task marks them in the Phase 2 table of [[implementation-plan]].
-- **D3: Shopify-owned and app-owned objects. Decided 2026-10-23:** category definitions, `$app:` definitions and fulfillment services of other apps are excluded from import as before; the list resource still lists them.
+- **D3: Shopify-owned and app-owned objects. Decided 2026-10-23:** category definitions, `$app:` definitions and fulfillment services of other apps are excluded from import as before; the list resource still lists them. Revised by D7 (resource model §9s): standard metaobject definitions have their own resource, and the `shopify_metaobject_definition` list skips them.
 
 ## Review Focus
 
