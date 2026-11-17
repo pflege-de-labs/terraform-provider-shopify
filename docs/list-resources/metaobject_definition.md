@@ -3,12 +3,12 @@
 page_title: "shopify_metaobject_definition List Resource - shopify"
 subcategory: ""
 description: |-
-  Lists all metaobject definitions of the store.
+  Lists the metaobject definitions of the store, except Shopify's standard definitions (shopify--… types): shopify_standard_metaobject_definition lists those.
 ---
 
 # shopify_metaobject_definition (List Resource)
 
-Lists all metaobject definitions of the store.
+Lists the metaobject definitions of the store, except Shopify's standard definitions (`shopify--…` types): `shopify_standard_metaobject_definition` lists those.
 
 ## Example Usage
 

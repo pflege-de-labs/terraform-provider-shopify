@@ -729,7 +729,7 @@ Leaf equality: numbers numerically, `#RRGGBB` strings case-insensitively, everyt
 
 ## 9g. Data sources for Shopify-owned definitions
 
-Decision D4 (2026-10-26). Shopify's standard definitions (`shopify.*` metafield definitions, `shopify--*` metaobject definitions) and app-owned ones (`checkoutblocks.*` on ORDER and SHOP, `$app:…` types) are excluded from import (D3): Terraform must not manage them. Configuration still needs to read them, for example to point a metaobject reference validation at a standard definition. Lookup by natural key also works for merchant-owned definitions.
+Decision D4 (2026-10-26). Shopify's standard definitions (`shopify.*` metafield definitions, `shopify--*` metaobject definitions) and app-owned ones (`checkoutblocks.*` on ORDER and SHOP, `$app:…` types) are excluded from import (D3): Terraform must not manage them. Configuration still needs to read them, for example to point a metaobject reference validation at a standard definition. Lookup by natural key also works for merchant-owned definitions. D7 (§9s) revises this for standard metaobject definitions: `shopify_standard_metaobject_definition` turns them on, and the data source still reads them.
 
 ```hcl
 data "shopify_metafield_definition" "material" {
@@ -1639,6 +1639,58 @@ data "shopify_metaobject" "material_baumwolle" {
 **Dev store (2026-10-26):** read-only; one standard definition with entries, `shopify--knowledge-base-fact` (2 entries, `delivery_countries` and `shipping_policy`, 18 fields each, most without a value).
 
 **Implemented (§9r, verified on the dev store, 2026-10-27):** the lookup, mapping and errors are as specified; `type` and `handle` are echoed from the configuration. Acceptance tests cover the three cases of the Tests paragraph: (a) creates the entry through the client between two steps (the definition first, then the entry and the data source), checks every attribute and the null `summary` field through an output (`fields["summary"] == null`), and deletes the entry in a last step before the definition goes; (b) reads `shopify--knowledge-base-fact` / `delivery_countries` and compares `id`, `display_name` and the field count with a direct API read, with `status` unset; (c) not found, matching the `no metaobject <type>/<handle>` message. Unit tests cover the mapping (null values, the publishable status) and the message text. Still `TODO(verify)`: the access-denied path, which no test reaches because the dev store has every scope. The queries bind GraphQL `JSON` to `json.RawMessage` in `genqlient.yaml`, only because `MetaobjectCreateInput.values` needs a binding to compile; it is never sent. `CreateMetaobject` / `DeleteMetaobject` exist for the tests only.
+
+---
+
+## 9s. Resource: `shopify_standard_metaobject_definition`
+
+Decision D7 (2026-11-17, #53, #48) revises D3/D4 for metaobjects. All of production's metaobject entries (about 40, §9r) are in Shopify's standard definitions (`shopify--*`), and staging has none. To copy them, Terraform has to turn the standard definitions on (this resource) and manage the entries (`shopify_metaobject`, #48, in any type, standard ones included). Standard *metafield* definitions and app-owned objects are unchanged: D3/D4 still apply to them. The `shopify_metaobject_definition` list skips standard definitions, which belong to this resource, so generated config doesn't create ordinary definitions for `shopify--*` types.
+
+```hcl
+resource "shopify_standard_metaobject_definition" "material" {
+  type = "shopify--material"
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `MetaobjectDefinition` GID. Computed, UseStateForUnknown |
+| `type` | string | Required, import key, RequiresReplace. The template's type, as the API returns it |
+
+Everything else (name, fields, access, capabilities) comes from Shopify's template. Read it with the `shopify_metaobject_definition` data source (§9g).
+
+**Create:** `standardMetaobjectDefinitionEnable(type)`. This is Pattern A without `adopt_existing`: enabling is idempotent, so an already-enabled type is adopted as is. Enabling changes nothing in it, and there is no input to conflict. An unknown type gives `RECORD_NOT_FOUND` on `type`.
+
+**Read:** `metaobjectDefinition(id:)` first, then `metaobjectDefinitionByType(type:)`, so a type disabled and re-enabled outside Terraform is found again under its new GID (`MutableIdentity`). If the definition is gone, it's removed from state. If the definition has no `standardTemplate`, Read and import fail with an error pointing to `shopify_metaobject_definition`.
+
+**Delete:** removes the resource from state only, with a warning. Deleting the definition would delete every entry in it, and entries are often edited in the admin. To turn a standard definition off, use the admin.
+
+**List:** `metaobjectDefinitions` filtered to `standardTemplate != null`. `DisplayName` is the type. There is no query that lists templates that aren't enabled.
+
+**Scope:** `write_metaobject_definitions`, already in `app/shopify.app.toml`. `TODO(verify)`: this has only been checked with every scope granted.
+
+**Fit:** good. Turning on a standard definition is store configuration.
+
+**Dev store (2026-11-17):**
+- `shopify--knowledge-base-fact` is enabled (2 entries, `standardTemplate` set, `createdByApp` "Shopify Web").
+- `standardMetaobjectDefinitionEnable(type: "shopify--material")` returned the definition with the same `type`. A second call returned the same GID with no `userErrors`.
+- `metaobjectDefinitionDelete` removed the empty definition again.
+
+**Tests:** acceptance:
+- (a) enable `shopify--material`, import by type, check identity. Destroy leaves the definition, and the test deletes it through the client.
+- (b) adopt `shopify--knowledge-base-fact`: same GID as a direct read, and still there after destroy.
+- (c) an unknown type fails with `Record not found`.
+- (d) the list contains `shopify--knowledge-base-fact`, and the `shopify_metaobject_definition` list doesn't.
+
+**Implemented (§9s, verified on the dev store, 2026-11-17):**
+- Create, Read, Delete, import and the list work as specified.
+- Acceptance tests cover (a) to (d), plus two more paths:
+  - Drift: `shopify--material` deleted and re-enabled through the client is re-adopted under its new GID with an empty plan. Once deleted, the next plan is a create.
+  - Rejection: importing a merchant definition fails with "has no standard template".
+- Inverting the ordinary list's filter makes (d) fail, so the test does catch the filter.
+- Both tests that enable `shopify--material` delete it in cleanup.
+- ⚠ The dev store has only one standard type, so it is the only proof that every `shopify--*` definition has `standardTemplate` set. Production has 26 such definitions: at the first production `terraform query`, check that the `shopify_metaobject_definition` list emits no `shopify--*` type.
+- `TODO(verify)`: the destroy warning's wording in the CLI output. No test asserts it.
 
 ---
 
