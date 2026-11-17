@@ -1151,6 +1151,7 @@ resource "shopify_collection" "empfehlungen" {
 | `conditions` | string (JSON) | Optional; unset = unmanaged. A JSON list of `CollectionSourceInclusionConditionInput` objects in the API's camelCase, one key each. See "Conditions" |
 | `product_ids` | set(string) | Optional + Computed, UseStateForUnknown; unset = unmanaged. Products included by hand (the source's `selections`), whatever the conditions say |
 | `source_id` | string | Computed, UseStateForUnknown. The `CollectionConditionsSource` GID that holds `match_type`, `conditions` and `product_ids` |
+| `metafields` | map(object) | Optional; unset = unmanaged. Metafield values, as on products (§9v) |
 | `image` | object | Optional + Computed, UseStateForUnknown; unset = unmanaged (removing the block leaves the image). `src` (Required, public URL), `alt_text` (Optional + Computed, keeps state when unset; unset = unmanaged), `url` (Computed: Shopify's CDN URL). See "Image" |
 | `adopt_existing` | bool | Pattern A, see below |
 
@@ -1845,7 +1846,7 @@ Decision 2026-11-17. A shop's configuration has to reference products that Terra
 
 ## 9v. Metafield values
 
-Decision 2026-11-17 (#57). Metafield values are an optional `metafields` attribute on the owning resource, not a type of their own. Step 1 is `shopify_product` (product level; variants, collections and the other owners follow). The shared code is `internal/metafields`; each owner adds its page query and wiring.
+Decision 2026-11-17 (#57). Metafield values are an optional `metafields` attribute on the owning resource, not a type of their own. Step 1 is `shopify_product` (product level; variants, collections and the other owners follow). Step 2 is `shopify_collection` (#63): the same wiring, with metafields written after `collectionCreate` / `collectionUpdate` and read by `GetCollectionMetafields`. The list reads them per listed collection. The shared code is `internal/metafields`; each owner adds its page query and wiring.
 
 ```hcl
 resource "shopify_product" "x" {

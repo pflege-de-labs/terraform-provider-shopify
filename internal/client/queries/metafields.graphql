@@ -19,6 +19,26 @@ query GetProductMetafields(
   }
 }
 
+query GetCollectionMetafields(
+  $id: ID!
+  $after: String
+) {
+  collection(id: $id) {
+    metafields(first: 250, after: $after) {
+      nodes {
+        namespace
+        key
+        type
+        value
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
 # An explicit null compareDigest means "only create": the update of an existing metafield fails with a stale-digest error.
 # @genqlient(for: "MetafieldsSetInput.compareDigest", omitempty: true)
 mutation SetMetafields(

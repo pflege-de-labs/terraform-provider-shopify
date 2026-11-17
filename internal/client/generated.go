@@ -13688,6 +13688,153 @@ func (v *GetCollectionCollection) __premarshalJSON() (*__premarshalGetCollection
 	return &retval, nil
 }
 
+// GetCollectionMetafieldsCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type GetCollectionMetafieldsCollection struct {
+	// A list of [custom fields](https://shopify.dev/docs/apps/build/custom-data)
+	// that a merchant associates with a Shopify resource.
+	Metafields GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection `json:"metafields"`
+}
+
+// GetMetafields returns GetCollectionMetafieldsCollection.Metafields, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollection) GetMetafields() GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection {
+	return v.Metafields
+}
+
+// GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection includes the requested fields of the GraphQL type MetafieldConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Metafields.
+type GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection struct {
+	// A list of nodes that are contained in MetafieldEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection) GetNodes() []GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection) GetPageInfo() GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin-graphql/latest/interfaces/HasMetafields).
+// Some examples of the data that metafields enable you to store are specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a value along with type information for that value.
+type GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield struct {
+	// The container for a group of metafields that the metafield is associated with.
+	Namespace string `json:"namespace"`
+	// The unique identifier for the metafield within its namespace.
+	Key string `json:"key"`
+	// The type of data that's stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type string `json:"type"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield) GetNamespace() string {
+	return v.Namespace
+}
+
+// GetKey returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield.Key, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield) GetKey() string {
+	return v.Key
+}
+
+// GetType returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield.Type, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield) GetType() string {
+	return v.Type
+}
+
+// GetValue returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield) GetValue() string {
+	return v.Value
+}
+
+// GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetCollectionMetafieldsResponse is returned by GetCollectionMetafields on success.
+type GetCollectionMetafieldsResponse struct {
+	// Retrieves a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) by its ID.
+	// A collection represents a grouping of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// that merchants can display and sell as a group in their [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	//
+	// Use the `collection` query when you need to:
+	//
+	// - Manage collection publishing across sales channels
+	// - Access collection metadata and SEO information
+	// - Work with collection conditions and product relationships
+	//
+	// A collection determines which products it includes through conditions that automatically include
+	// products that match, and through manual selections of individual products. Each collection has
+	// associated metadata including title, description, handle, image, and
+	// [metafields](https://shopify.dev/docs/apps/build/custom-data/metafields).
+	Collection *GetCollectionMetafieldsCollection `json:"collection"`
+}
+
+// GetCollection returns GetCollectionMetafieldsResponse.Collection, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsResponse) GetCollection() *GetCollectionMetafieldsCollection {
+	return v.Collection
+}
+
 // GetCollectionPublicationsCollection includes the requested fields of the GraphQL type Collection.
 // The GraphQL type's documentation follows.
 //
@@ -32750,6 +32897,18 @@ type __GetCollectionInput struct {
 // GetId returns __GetCollectionInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetCollectionInput) GetId() string { return v.Id }
 
+// __GetCollectionMetafieldsInput is used internally by genqlient
+type __GetCollectionMetafieldsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetCollectionMetafieldsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetCollectionMetafieldsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetCollectionMetafieldsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetCollectionMetafieldsInput) GetAfter() *string { return v.After }
+
 // __GetCollectionPublicationsInput is used internally by genqlient
 type __GetCollectionPublicationsInput struct {
 	Id    string  `json:"id"`
@@ -37521,6 +37680,53 @@ func GetCollectionByHandle(
 	}
 
 	data_ = &GetCollectionByHandleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetCollectionMetafields.
+const GetCollectionMetafields_Operation = `
+query GetCollectionMetafields ($id: ID!, $after: String) {
+	collection(id: $id) {
+		metafields(first: 250, after: $after) {
+			nodes {
+				namespace
+				key
+				type
+				value
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+func GetCollectionMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetCollectionMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCollectionMetafields",
+		Query:  GetCollectionMetafields_Operation,
+		Variables: &__GetCollectionMetafieldsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetCollectionMetafieldsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

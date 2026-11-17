@@ -18,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/metafields"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/publishing"
 )
@@ -68,7 +69,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 			"Membership is managed for collections with at most one non-shareable conditions source, which every collection made in the admin, with the older API or by this provider has. " +
 			"That includes a source another app created; Shopify may reject changes to it. " +
 			"Collections with several sources, a sub-collection or shareable source, variant-level selections or a condition Shopify can't express as input are read without membership: " +
-			"setting `match_type`, `conditions` or `product_ids` for them fails. Exclusions, the product order of `MANUAL` collections and metafields are not managed. " +
+			"setting `match_type`, `conditions` or `product_ids` for them fails. Exclusions and the product order of `MANUAL` collections are not managed. " +
 			"`publication_ids` publishes it to sales channels; removing an ID unpublishes it there. " +
 			"Destroying a collection deletes it with its publications and translations; the products stay. " +
 			"Menu items pointing at it lose their target, so add `lifecycle { prevent_destroy = true }` to collections that back navigation. " +
@@ -178,6 +179,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 					},
 				},
 			},
+			"metafields":      metafields.Attribute(what),
 			"publication_ids": publishing.Attribute(what),
 			"adopt_existing":  patterns.AdoptExistingAttribute(what),
 		},
@@ -329,6 +331,9 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	wasManaged := !state.ProductIDs.IsNull() || !state.Conditions.IsNull()
 	d, unsupported := setFromAPI(ctx, &state, c, written, writtenImage, importing)
 	resp.Diagnostics.Append(d...)
+	if importing || !state.Metafields.IsNull() {
+		resp.Diagnostics.Append(readMetafields(ctx, r.client, &state, c.Id, importing)...)
+	}
 	// Warn once: on import, or when a collection's membership stops being manageable; ModifyPlan errors if config still sets it.
 	if unsupported != nil && (importing || wasManaged) {
 		resp.Diagnostics.AddWarning("Membership is not managed", unsupportedDetail(unsupported))
@@ -529,6 +534,7 @@ func (r *Resource) finish(ctx context.Context, c *client.CollectionFields, plan,
 	d, _ := setFromAPI(ctx, plan, l, &c.DescriptionHtml, writtenImage, false)
 	diags.Append(d...)
 	diags.Append(patterns.RememberWrittenHTML(ctx, private, c.DescriptionHtml)...)
+	diags.Append(r.writeMetafields(ctx, c.Id, plan, cfg)...)
 	diags.Append(r.publish(ctx, l, plan, cfg)...)
 	return true
 }
