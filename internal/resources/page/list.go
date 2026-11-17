@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/metafields"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 )
 
@@ -32,8 +33,8 @@ func (r *ListResource) ListResourceConfigSchema(ctx context.Context, req list.Li
 
 func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *list.ListResultsStream) {
 	stream.Results = func(push func(list.ListResult) bool) {
-		err := patterns.Paginate(ctx, req.Limit, listPage(ctx, r.client), func(p *client.PageFields) bool {
-			return push(listResult(ctx, req, p))
+		err := patterns.Paginate(ctx, req.Limit, listPage(ctx, r.client), func(p listed) bool {
+			return push(listResult(ctx, req, &p.PageFields, p.metafields))
 		})
 		if err != nil {
 			var diags diag.Diagnostics
@@ -43,29 +44,41 @@ func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *l
 	}
 }
 
-func listPage(ctx context.Context, c *client.Client) func(after *string) ([]*client.PageFields, *string, error) {
-	return func(after *string) ([]*client.PageFields, *string, error) {
+// listed is a page with its metafields, which come from their own query.
+type listed struct {
+	client.PageFields
+	metafields []metafields.Live
+}
+
+func listPage(ctx context.Context, c *client.Client) func(after *string) ([]listed, *string, error) {
+	return func(after *string) ([]listed, *string, error) {
 		res, err := client.ListPages(ctx, c, after)
 		if err != nil {
 			return nil, nil, err
 		}
 		conn := res.Pages
-		nodes := make([]*client.PageFields, len(conn.Nodes))
-		for i := range conn.Nodes {
-			nodes[i] = &conn.Nodes[i].PageFields
+		nodes := make([]listed, len(conn.Nodes))
+		for i, n := range conn.Nodes {
+			nodes[i].PageFields = n.PageFields
+			if nodes[i].metafields, err = metafields.List(ctx, metafieldPage(ctx, c, n.Id)); err != nil {
+				return nil, nil, err
+			}
 		}
 		return nodes, patterns.NextCursor(conn.PageInfo.HasNextPage, conn.PageInfo.EndCursor), nil
 	}
 }
 
 // listResult fills the resource as an import would; provider-only attributes get their schema defaults.
-func listResult(ctx context.Context, req list.ListRequest, p *client.PageFields) list.ListResult {
+func listResult(ctx context.Context, req list.ListRequest, p *client.PageFields, mf []metafields.Live) list.ListResult {
 	res := req.NewListResult(ctx)
 	res.DisplayName = fmt.Sprintf("%s (%s)", p.Title, p.Handle)
 	res.Diagnostics.Append(res.Identity.Set(ctx, patterns.IDIdentity{ID: types.StringValue(p.Id)})...)
 	if req.IncludeResource {
 		m := model{AdoptExisting: types.BoolValue(false)}
 		setFromAPI(&m, p, nil)
+		var d diag.Diagnostics
+		m.Metafields, d = metafields.ToValue(ctx, metafields.Read(nil, mf), true)
+		res.Diagnostics.Append(d...)
 		res.Diagnostics.Append(res.Resource.Set(ctx, &m)...)
 	}
 	return res

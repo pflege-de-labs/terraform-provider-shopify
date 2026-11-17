@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/metafields"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 )
 
@@ -53,7 +54,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 		MarkdownDescription: "An online store page: handle, title, body and template. " +
 			"**A poor fit for Terraform unless you bootstrap a store or keep a few pages in a repository:** page texts (imprint, about us, landing pages) are usually maintained in the admin by people outside the infrastructure team, " +
 			"and every admin edit to a managed attribute is reverted on the next apply. Leave `body` unset and Terraform owns the handle, title and template while editors own the text. " +
-			"Pages are visible on the online store only; `published` is the switch. Scheduled publishing (`publishDate`), metafield values and URL redirects are not managed: " +
+			"Pages are visible on the online store only; `published` is the switch. Scheduled publishing (`publishDate`) and URL redirects are not managed: " +
 			"a scheduled page reads as `published = false`, and a config with `published = true` publishes it at the next apply. " +
 			"Destroying a page deletes it with its metafield values and translations, and menu items pointing at it may lose their target. " +
 			"A page that already has the handle, such as `contact` which every store has, needs `adopt_existing = true`; destroy then leaves it in place. " +
@@ -92,6 +93,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				Computed:            true,
 				PlanModifiers:       []planmodifier.String{patterns.UseStateForUnknownIncludingNull()},
 			},
+			"metafields":     metafields.Attribute(what),
 			"adopt_existing": patterns.AdoptExistingAttribute(what),
 		},
 	}
@@ -149,6 +151,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 	}
 	setFromAPI(&plan, p, &p.Body)
 	resp.Diagnostics.Append(patterns.RememberWrittenHTML(ctx, resp.Private, p.Body)...)
+	resp.Diagnostics.Append(r.writeMetafields(ctx, p.Id, &plan, &cfg)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
@@ -182,12 +185,19 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	}
 
 	// Set on import, where only the ID is known.
+	importing := state.Handle.IsNull()
 	if state.AdoptExisting.IsNull() {
 		state.AdoptExisting = types.BoolValue(false)
 	}
 	written, d := patterns.WrittenHTML(ctx, req.Private)
 	resp.Diagnostics.Append(d...)
 	setFromAPI(&state, p, written)
+	if importing || !state.Metafields.IsNull() {
+		resp.Diagnostics.Append(readMetafields(ctx, r.client, &state, p.Id, importing)...)
+	}
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: state.ID})...)
 }
@@ -201,17 +211,15 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 		return
 	}
 	in, has := cfg.updateInput(&state)
-	if !has {
-		// Only adopt_existing changed.
-		resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
-		return
+	if has {
+		p := r.update(ctx, plan.ID.ValueString(), in, &resp.Diagnostics)
+		if p == nil {
+			return
+		}
+		setFromAPI(&plan, p, &p.Body)
+		resp.Diagnostics.Append(patterns.RememberWrittenHTML(ctx, resp.Private, p.Body)...)
 	}
-	p := r.update(ctx, plan.ID.ValueString(), in, &resp.Diagnostics)
-	if p == nil {
-		return
-	}
-	setFromAPI(&plan, p, &p.Body)
-	resp.Diagnostics.Append(patterns.RememberWrittenHTML(ctx, resp.Private, p.Body)...)
+	resp.Diagnostics.Append(r.writeMetafields(ctx, plan.ID.ValueString(), &plan, &cfg)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }

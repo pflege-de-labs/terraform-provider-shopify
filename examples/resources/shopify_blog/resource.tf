@@ -15,3 +15,12 @@ resource "shopify_blog" "magazin" {
   # Destroying a blog with articles deletes them; set this and apply before destroying.
   allow_data_deletion = false
 }
+
+# Only the listed metafields are managed; set value = "" to delete one.
+resource "shopify_blog" "ratgeber" {
+  handle = "ratgeber"
+  title  = "Ratgeber"
+  metafields = {
+    "custom.intro" = { type = "single_line_text_field", value = "Tipps und Anleitungen" }
+  }
+}
