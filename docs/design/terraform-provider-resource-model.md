@@ -65,6 +65,7 @@ provider "shopify" {
 | `shopify_file` | `<filename>`, e.g. `logo.png` (unique per shop); an external video by its URL, see §9o |
 | `shopify_discount_basic`, `shopify_discount_free_shipping`, `shopify_discount_bxgy` | `code/<code>` for code discounts (codes are unique per shop), `automatic/<title>` for automatic ones (titles are unique among them), see §9p |
 | `shopify_customer_segment` | `<name>` (unique per shop; Shopify suffixes a taken name, see §9q) |
+| `shopify_url_redirect` | `<path>`, e.g. `/old-page` (unique per shop, lower case; a taken path is an error, see §9x) |
 
 - Read looks up by GID first. If the GID is gone, it falls back to the natural key, so a manual recreate in the admin doesn't break state.
 
@@ -1939,6 +1940,53 @@ resource "shopify_shop_metafields" "this" {
 - **Tests.** Acceptance: create, "007" kept as written, unmanaged edit (empty plan), managed edit (drift, restore), `""` deletes, destroy keeps the values, import by key and by identity with generated config, list. Each test has its own namespace and deletes its keys, since destroy keeps them.
 
 ---
+
+---
+
+## 9x. Resource: `shopify_url_redirect`
+
+Decision 2026-11-17 (#49). Use case: copy a production store's redirects to staging with `terraform query -generate-config-out` and apply. A redirect is `path` to `target`; nothing else.
+
+```hcl
+resource "shopify_url_redirect" "old_page" {
+  path           = "/old-page"
+  target         = "/pages/new-page" # or an absolute URL
+  adopt_existing = false
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `UrlRedirect` GID. Computed, UseStateForUnknown |
+| `path` | string | Required, import key. Updatable in place (GID kept, checked). Validated in canonical form, see below |
+| `target` | string | Required. Validated in canonical form, see below |
+| `adopt_existing` | bool | Pattern A, see below |
+
+No `allow_data_deletion`: a redirect holds no data that config can't restore (as for pages, §9m). Import key: the path. `MutableIdentity` is set (Read re-adopts by path). **Fit: volatile**: redirects are created by the admin and by apps, and Shopify offers to create one whenever a handle changes there.
+
+**Probes (dev store, 2026-11-17).** Throwaway tests with raw GraphQL; every redirect deleted again.
+- **Duplicate path** is an error, not an overwrite and not a second redirect: `CREATE_FAILED` / `UPDATE_FAILED`, `field: ["urlRedirect","path"]`, "Path has already been taken". `UrlRedirectErrorCode` has no uniqueness code, so the message is the only signal. Create looks the path up first anyway, to support `adopt_existing`.
+- **Path normalisation** (Shopify rewrites, no error): lower-cased (also the query string); trailing slash removed (`/a/` and `/a/?x=B` become `/a` and `/a?x=b`); leading slash added; a full URL loses scheme and host; `#fragment` dropped; leading and trailing whitespace trimmed; `.`/`..` segments resolved; spaces, control and non-ASCII characters percent-encoded with lower-case hex (`/zz probé` becomes `/zz%20prob%c3%a9`), a bare `%` becomes `%25`. Kept as given: a query string, `//`, `+`, valid `%xx` (lower-cased). `/` and the empty string fail with "Path can't be blank".
+- **Target**: `/` or an absolute URL, kept as given (case, trailing slash, query, fragment, `//host/x`, even `ftp://`). `foo`, `foo/bar`, `example.com/x`, `mailto:` fail with "Target is invalid"; empty fails "can't be blank"; equal to the path fails "Target can't be the same as path" (not when only case or a trailing slash differs). Rewritten: whitespace trimmed, spaces and non-ASCII percent-encoded (non-ASCII with upper-case hex), scheme and host lower-cased, a default port dropped, a missing path after the host becomes `/` (`https://example.com?x=1` becomes `https://example.com/?x=1`).
+- **Search** `urlRedirects(query: "path:\"<p>\"")` matches the whole path, case-insensitively, including `%xx`, `+` and the query string; prefixes, a missing leading slash and un-normalised input (`/a/`, `/e/../f`) match nothing. New redirects were found by the first lookup after the mutation returned (no lag seen). `target:"/y"` matches too.
+- **Cost:** `urlRedirects(first: 250)` requested 13 (a filtered lookup actually cost 2); `urlRedirectCreate`, `Update` and `Delete` cost 10 each. Throttle bucket 20000, restore 1000/s.
+- **Delete** of a missing ID: `DOES_NOT_EXIST` ("Redirect does not exist"), treated as already gone.
+
+**Validators: canonical input only**, so nothing is rewritten after apply (Terraform would report an inconsistent result).
+- `path`: starts with `/`; characters only `!` to `~` (no whitespace, control or non-ASCII; write those percent-encoded); no upper-case letters; `%` followed by two lower-case hex digits; before any `?`, no trailing `/` (so not `/` alone), no `.` or `..` segment; no `#`.
+- `target`: non-empty; characters only `!` to `~`; starts with `/`, or is `<scheme>://<host>/...` with a lower-case scheme and host and a `/` right after the host (a bare host is rewritten to `host/`). A default port (`:443` for `https`, `:80` for `http`) is rejected, since Shopify drops it. Equal path and target are rejected by Shopify at apply, mapped to `target`.
+- Every path Shopify stores is canonical by the rules above, so import and the list pass the validators. Redirects whose stored path or target still fail them (not seen) are skipped by the list, and don't count toward its limit.
+
+**Pattern A: `adopt_existing`.** Create looks the path up (`urlRedirects(first: 250, query: "path:\"<path>\"")`, exact compare, paged). Found without `adopt_existing`: error "Redirect already exists", nothing created. Found with it: the target is updated when it differs, and destroy only removes it from state, with a warning.
+
+Notes:
+- Uses `urlRedirect(id:)`, `urlRedirects`, `urlRedirectCreate(urlRedirect:)`, `urlRedirectUpdate(id:, urlRedirect:)`, `urlRedirectDelete(id:)`. `UrlRedirectInput` is `{ path, target }`; update sends both.
+- This provider creates no redirects itself: no resource sends `redirectNewHandle`. Bulk operations and `UrlRedirectImport` are not used.
+- Errors: `UrlRedirectErrorCode` `CREATE_FAILED`, `UPDATE_FAILED`, `DELETE_FAILED`, `DOES_NOT_EXIST`; `field` is `["urlRedirect","path"|"target"]`. None is retried.
+- **Scopes:** `read_online_store_navigation` / `write_online_store_navigation`.
+- **Testing:** paths `/tf-acc-redirect-<random>`. Unit tests first: `errorPath`, search query quoting, exact match, `goneOnDelete`, both validators.
+
+**List:** optional `query` (a Shopify search filter such as `path:...` or `target:...`, to copy in parts). `urlRedirects(first: 250)`, paged, honours the limit. `DisplayName`: `<path> -> <target>`.
 
 ---
 
