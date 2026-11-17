@@ -952,7 +952,9 @@ type CollectionFields struct {
 	// The suffix of the Liquid template being used to show the collection in an online store. For example, if the value is `custom`, then the collection is using the `collection.custom.liquid` template. If the value is `null`, then the collection is using the default `collection.liquid` template.
 	TemplateSuffix *string `json:"templateSuffix"`
 	// If the default SEO fields for page title and description have been modified, contains the modified information.
-	Seo                                 CollectionFieldsSeoSEO `json:"seo"`
+	Seo CollectionFieldsSeoSEO `json:"seo"`
+	// The image associated with the collection.
+	Image                               *CollectionFieldsImage `json:"image"`
 	PublicationsOfPublishableCollection `json:"-"`
 	// The sources that provide products for this collection. Each source represents a way products are included in the collection, such as through conditions and rules.
 	Sources json.RawMessage `json:"sources"`
@@ -978,6 +980,9 @@ func (v *CollectionFields) GetTemplateSuffix() *string { return v.TemplateSuffix
 
 // GetSeo returns CollectionFields.Seo, and is useful for accessing the field via an interface.
 func (v *CollectionFields) GetSeo() CollectionFieldsSeoSEO { return v.Seo }
+
+// GetImage returns CollectionFields.Image, and is useful for accessing the field via an interface.
+func (v *CollectionFields) GetImage() *CollectionFieldsImage { return v.Image }
 
 // GetSources returns CollectionFields.Sources, and is useful for accessing the field via an interface.
 func (v *CollectionFields) GetSources() json.RawMessage { return v.Sources }
@@ -1027,6 +1032,8 @@ type __premarshalCollectionFields struct {
 
 	Seo CollectionFieldsSeoSEO `json:"seo"`
 
+	Image *CollectionFieldsImage `json:"image"`
+
 	Sources json.RawMessage `json:"sources"`
 
 	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
@@ -1050,10 +1057,34 @@ func (v *CollectionFields) __premarshalJSON() (*__premarshalCollectionFields, er
 	retval.SortOrder = v.SortOrder
 	retval.TemplateSuffix = v.TemplateSuffix
 	retval.Seo = v.Seo
+	retval.Image = v.Image
 	retval.Sources = v.Sources
 	retval.ResourcePublicationsV2 = v.PublicationsOfPublishableCollection.ResourcePublicationsV2
 	return &retval, nil
 }
+
+// CollectionFieldsImage includes the requested fields of the GraphQL type Image.
+// The GraphQL type's documentation follows.
+//
+// Represents an image resource.
+type CollectionFieldsImage struct {
+	// The location of the image as a URL.
+	//
+	// If no transform options are specified, then the original image will be preserved including any pre-applied transforms.
+	//
+	// All transformation options are considered "best-effort". Any transformation that the original image type doesn't support will be ignored.
+	//
+	// If you need multiple variations of the same image, then you can use [GraphQL aliases](https://graphql.org/learn/queries/#aliases).
+	Url string `json:"url"`
+	// A word or phrase to share the nature or contents of an image.
+	AltText *string `json:"altText"`
+}
+
+// GetUrl returns CollectionFieldsImage.Url, and is useful for accessing the field via an interface.
+func (v *CollectionFieldsImage) GetUrl() string { return v.Url }
+
+// GetAltText returns CollectionFieldsImage.AltText, and is useful for accessing the field via an interface.
+func (v *CollectionFieldsImage) GetAltText() *string { return v.AltText }
 
 // CollectionFieldsSeoSEO includes the requested fields of the GraphQL type SEO.
 // The GraphQL type's documentation follows.
@@ -3895,6 +3926,11 @@ func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetS
 	return v.CollectionFields.Seo
 }
 
+// GetImage returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.Image, and is useful for accessing the field via an interface.
+func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetImage() *CollectionFieldsImage {
+	return v.CollectionFields.Image
+}
+
 // GetSources returns CreateCollectionCollectionCreateCollectionCreatePayloadCollection.Sources, and is useful for accessing the field via an interface.
 func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) GetSources() json.RawMessage {
 	return v.CollectionFields.Sources
@@ -3945,6 +3981,8 @@ type __premarshalCreateCollectionCollectionCreateCollectionCreatePayloadCollecti
 
 	Seo CollectionFieldsSeoSEO `json:"seo"`
 
+	Image *CollectionFieldsImage `json:"image"`
+
 	Sources json.RawMessage `json:"sources"`
 
 	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
@@ -3968,6 +4006,7 @@ func (v *CreateCollectionCollectionCreateCollectionCreatePayloadCollection) __pr
 	retval.SortOrder = v.CollectionFields.SortOrder
 	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
 	retval.Seo = v.CollectionFields.Seo
+	retval.Image = v.CollectionFields.Image
 	retval.Sources = v.CollectionFields.Sources
 	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
 	return &retval, nil
@@ -13363,6 +13402,11 @@ func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetSeo() Collect
 	return v.CollectionFields.Seo
 }
 
+// GetImage returns GetCollectionByHandleCollectionByIdentifierCollection.Image, and is useful for accessing the field via an interface.
+func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetImage() *CollectionFieldsImage {
+	return v.CollectionFields.Image
+}
+
 // GetSources returns GetCollectionByHandleCollectionByIdentifierCollection.Sources, and is useful for accessing the field via an interface.
 func (v *GetCollectionByHandleCollectionByIdentifierCollection) GetSources() json.RawMessage {
 	return v.CollectionFields.Sources
@@ -13413,6 +13457,8 @@ type __premarshalGetCollectionByHandleCollectionByIdentifierCollection struct {
 
 	Seo CollectionFieldsSeoSEO `json:"seo"`
 
+	Image *CollectionFieldsImage `json:"image"`
+
 	Sources json.RawMessage `json:"sources"`
 
 	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
@@ -13436,6 +13482,7 @@ func (v *GetCollectionByHandleCollectionByIdentifierCollection) __premarshalJSON
 	retval.SortOrder = v.CollectionFields.SortOrder
 	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
 	retval.Seo = v.CollectionFields.Seo
+	retval.Image = v.CollectionFields.Image
 	retval.Sources = v.CollectionFields.Sources
 	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
 	return &retval, nil
@@ -13511,6 +13558,9 @@ func (v *GetCollectionCollection) GetTemplateSuffix() *string {
 // GetSeo returns GetCollectionCollection.Seo, and is useful for accessing the field via an interface.
 func (v *GetCollectionCollection) GetSeo() CollectionFieldsSeoSEO { return v.CollectionFields.Seo }
 
+// GetImage returns GetCollectionCollection.Image, and is useful for accessing the field via an interface.
+func (v *GetCollectionCollection) GetImage() *CollectionFieldsImage { return v.CollectionFields.Image }
+
 // GetSources returns GetCollectionCollection.Sources, and is useful for accessing the field via an interface.
 func (v *GetCollectionCollection) GetSources() json.RawMessage { return v.CollectionFields.Sources }
 
@@ -13559,6 +13609,8 @@ type __premarshalGetCollectionCollection struct {
 
 	Seo CollectionFieldsSeoSEO `json:"seo"`
 
+	Image *CollectionFieldsImage `json:"image"`
+
 	Sources json.RawMessage `json:"sources"`
 
 	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
@@ -13582,6 +13634,7 @@ func (v *GetCollectionCollection) __premarshalJSON() (*__premarshalGetCollection
 	retval.SortOrder = v.CollectionFields.SortOrder
 	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
 	retval.Seo = v.CollectionFields.Seo
+	retval.Image = v.CollectionFields.Image
 	retval.Sources = v.CollectionFields.Sources
 	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
 	return &retval, nil
@@ -17838,11 +17891,11 @@ func (v *GetWebPresenceResponse) GetNode() json.RawMessage { return v.Node }
 // The input fields for an image.
 type ImageInput struct {
 	// A globally-unique ID.
-	Id *string `json:"id"`
+	Id *string `json:"id,omitempty"`
 	// A word or phrase to share the nature or contents of an image.
-	AltText *string `json:"altText"`
+	AltText *string `json:"altText,omitempty"`
 	// The URL of the image. May be a staged upload URL.
-	Src *string `json:"src"`
+	Src *string `json:"src,omitempty"`
 }
 
 // GetId returns ImageInput.Id, and is useful for accessing the field via an interface.
@@ -18331,6 +18384,11 @@ func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetSeo()
 	return v.CollectionFields.Seo
 }
 
+// GetImage returns ListCollectionsCollectionsCollectionConnectionNodesCollection.Image, and is useful for accessing the field via an interface.
+func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetImage() *CollectionFieldsImage {
+	return v.CollectionFields.Image
+}
+
 // GetSources returns ListCollectionsCollectionsCollectionConnectionNodesCollection.Sources, and is useful for accessing the field via an interface.
 func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) GetSources() json.RawMessage {
 	return v.CollectionFields.Sources
@@ -18381,6 +18439,8 @@ type __premarshalListCollectionsCollectionsCollectionConnectionNodesCollection s
 
 	Seo CollectionFieldsSeoSEO `json:"seo"`
 
+	Image *CollectionFieldsImage `json:"image"`
+
 	Sources json.RawMessage `json:"sources"`
 
 	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
@@ -18404,6 +18464,7 @@ func (v *ListCollectionsCollectionsCollectionConnectionNodesCollection) __premar
 	retval.SortOrder = v.CollectionFields.SortOrder
 	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
 	retval.Seo = v.CollectionFields.Seo
+	retval.Image = v.CollectionFields.Image
 	retval.Sources = v.CollectionFields.Sources
 	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
 	return &retval, nil
@@ -29275,6 +29336,11 @@ func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetS
 	return v.CollectionFields.Seo
 }
 
+// GetImage returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.Image, and is useful for accessing the field via an interface.
+func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetImage() *CollectionFieldsImage {
+	return v.CollectionFields.Image
+}
+
 // GetSources returns UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection.Sources, and is useful for accessing the field via an interface.
 func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) GetSources() json.RawMessage {
 	return v.CollectionFields.Sources
@@ -29325,6 +29391,8 @@ type __premarshalUpdateCollectionCollectionUpdateCollectionUpdatePayloadCollecti
 
 	Seo CollectionFieldsSeoSEO `json:"seo"`
 
+	Image *CollectionFieldsImage `json:"image"`
+
 	Sources json.RawMessage `json:"sources"`
 
 	ResourcePublicationsV2 PublicationsOfPublishableResourcePublicationsV2ResourcePublicationV2Connection `json:"resourcePublicationsV2"`
@@ -29348,6 +29416,7 @@ func (v *UpdateCollectionCollectionUpdateCollectionUpdatePayloadCollection) __pr
 	retval.SortOrder = v.CollectionFields.SortOrder
 	retval.TemplateSuffix = v.CollectionFields.TemplateSuffix
 	retval.Seo = v.CollectionFields.Seo
+	retval.Image = v.CollectionFields.Image
 	retval.Sources = v.CollectionFields.Sources
 	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
 	return &retval, nil
@@ -33226,6 +33295,10 @@ fragment CollectionFields on Collection {
 		title
 		description
 	}
+	image {
+		url
+		altText
+	}
 	... PublicationsOfPublishable
 	sources {
 		__typename
@@ -33392,6 +33465,7 @@ fragment PublicationsOfPublishable on Publishable {
 `
 
 // Omitted keys stay unchanged, so every optional field is omitempty; conditions are raw JSON in the input's own shape.
+// Only the changed image fields are sent: altText alone keeps the image, src alone keeps the alt text.
 func CreateCollection(
 	ctx_ context.Context,
 	client_ graphql.Client,
@@ -36601,6 +36675,10 @@ fragment CollectionFields on Collection {
 		title
 		description
 	}
+	image {
+		url
+		altText
+	}
 	... PublicationsOfPublishable
 	sources {
 		__typename
@@ -36808,6 +36886,10 @@ fragment CollectionFields on Collection {
 	seo {
 		title
 		description
+	}
+	image {
+		url
+		altText
 	}
 	... PublicationsOfPublishable
 	sources {
@@ -40328,6 +40410,10 @@ fragment CollectionFields on Collection {
 		title
 		description
 	}
+	image {
+		url
+		altText
+	}
 	... PublicationsOfPublishable
 	sources {
 		__typename
@@ -43367,6 +43453,10 @@ fragment CollectionFields on Collection {
 	seo {
 		title
 		description
+	}
+	image {
+		url
+		altText
 	}
 	... PublicationsOfPublishable
 	sources {

@@ -76,24 +76,34 @@ type PrivateGetter interface {
 
 // RememberWrittenHTML stores the HTML Shopify returned at a write, for KeepOrTake.
 func RememberWrittenHTML(ctx context.Context, private PrivateSetter, html string) diag.Diagnostics {
-	raw, err := json.Marshal(html)
-	if err != nil {
-		var diags diag.Diagnostics
-		diags.AddError("Failed to remember the description", err.Error())
-		return diags
-	}
-	return private.SetKey(ctx, WrittenHTMLKey, raw)
+	return RememberWritten(ctx, private, WrittenHTMLKey, html)
 }
 
 // WrittenHTML returns the stored HTML, or nil when none was stored (import).
 func WrittenHTML(ctx context.Context, private PrivateGetter) (*string, diag.Diagnostics) {
-	raw, diags := private.GetKey(ctx, WrittenHTMLKey)
+	return Written(ctx, private, WrittenHTMLKey)
+}
+
+// RememberWritten stores under key a value Shopify returned at a write, for KeepOrTake.
+func RememberWritten(ctx context.Context, private PrivateSetter, key, value string) diag.Diagnostics {
+	raw, err := json.Marshal(value)
+	if err != nil {
+		var diags diag.Diagnostics
+		diags.AddError("Failed to remember "+key, err.Error())
+		return diags
+	}
+	return private.SetKey(ctx, key, raw)
+}
+
+// Written returns the value stored under key, or nil when none was stored (import).
+func Written(ctx context.Context, private PrivateGetter, key string) (*string, diag.Diagnostics) {
+	raw, diags := private.GetKey(ctx, key)
 	if diags.HasError() || len(raw) == 0 {
 		return nil, diags
 	}
 	var s string
 	if err := json.Unmarshal(raw, &s); err != nil {
-		diags.AddError("Failed to read the remembered description", err.Error())
+		diags.AddError("Failed to read the remembered "+key, err.Error())
 		return nil, diags
 	}
 	return &s, diags

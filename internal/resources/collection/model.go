@@ -41,6 +41,7 @@ type model struct {
 	Conditions      conditionsValue `tfsdk:"conditions"`
 	ProductIDs      types.Set       `tfsdk:"product_ids"`
 	SourceID        types.String    `tfsdk:"source_id"`
+	Image           types.Object    `tfsdk:"image"`
 	PublicationIDs  types.Set       `tfsdk:"publication_ids"`
 	AdoptExisting   types.Bool      `tfsdk:"adopt_existing"`
 }
@@ -89,7 +90,14 @@ func (m *model) createInput() client.CollectionCreateInput {
 	return in
 }
 
-// updateInput is createInput for the collection with the given ID.
+// withImage adds the configured image to a create input; an unset image is unmanaged.
+func (m *model) withImage(ctx context.Context, in *client.CollectionCreateInput) diag.Diagnostics {
+	cfg, diags := imageOf(ctx, m.Image)
+	in.Image = imageInput(cfg, nil)
+	return diags
+}
+
+// updateInput is createInput for the collection with the given ID, without the image, which is sent only when it differs.
 func (m *model) updateInput(id string) client.CollectionUpdateInput {
 	c := m.createInput()
 	return client.CollectionUpdateInput{
@@ -98,11 +106,15 @@ func (m *model) updateInput(id string) client.CollectionUpdateInput {
 	}
 }
 
-// setFromAPI copies the live collection into m. written is the description Shopify returned at our last write, if known.
+// setFromAPI copies the live collection into m. written and writtenImage are the description and image URL Shopify returned at our last write, if known.
 // importing fills conditions from live; otherwise they are only refreshed while managed.
 // It returns why membership can't be managed, if it can't; the three membership attributes are then null.
-func setFromAPI(ctx context.Context, m *model, c *liveCollection, written *string, importing bool) (diag.Diagnostics, error) {
+func setFromAPI(ctx context.Context, m *model, c *liveCollection, written, writtenImage *string, importing bool) (diag.Diagnostics, error) {
 	var diags diag.Diagnostics
+	prior, d := imageOf(ctx, m.Image)
+	diags.Append(d...)
+	m.Image, d = imageObject(readImage(prior, c.Image, writtenImage))
+	diags.Append(d...)
 	m.ID = types.StringValue(c.Id)
 	m.Handle = types.StringValue(c.Handle)
 	m.Title = types.StringValue(c.Title)
@@ -127,7 +139,6 @@ func setFromAPI(ctx context.Context, m *model, c *liveCollection, written *strin
 		m.SourceID = types.StringValue(mem.SourceID)
 	}
 	m.MatchType = types.StringPointerValue(mem.MatchType)
-	var d diag.Diagnostics
 	m.ProductIDs, d = types.SetValueFrom(ctx, types.StringType, mem.ProductIDs)
 	diags.Append(d...)
 	if !m.Conditions.IsNull() || (importing && len(mem.Conditions) > 0) {
