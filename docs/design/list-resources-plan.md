@@ -16,7 +16,7 @@
 ## Global Constraints
 
 - Admin API version stays **2026-10**. No new Go dependencies; framework and testing versions stay as in `go.mod`.
-- Scope stays as in CLAUDE.md. Anything listed there as out of scope (app config/extensions/Functions, themes, products/collections/pages/discounts/metaobject entries, store creation, plan, billing, payments, domains, staff) is **not** implemented, even if discovery finds it. Phase-3 candidates (shop policies, checkout and branding) need an explicit decision first.
+- Scope stays as in CLAUDE.md. Anything listed there as out of scope (app config/extensions/Functions, themes, products/collections/pages/discounts/metaobject entries, store creation, plan, billing, payments, domains, staff) is **not** implemented, even if discovery finds it. (Superseded for content types by the 2026-10-23 scope decision in CLAUDE.md; metaobject entries by D7, resource model §9t.) Phase-3 candidates (shop policies, checkout and branding) need an explicit decision first.
 - `terraform import` with a string ID keeps taking the natural key, never a GID.
 - Discovery and `terraform query` in CI run only with the read-only `<env>-plan` apps. No write credentials, no mutations.
 - Discovery output may contain handles, names and counts, never tokens or metafield/metaobject values.

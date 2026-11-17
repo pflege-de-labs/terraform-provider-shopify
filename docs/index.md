@@ -59,6 +59,7 @@ The app needs the Admin API access scopes for the resource types you use. Grant 
 | `write_locales` | `shopify_shop_locale` |
 | `write_content` | `shopify_page`, `shopify_blog` |
 | `write_files` | `shopify_file` |
+| `write_metaobjects` | `shopify_metaobject` |
 
 The [scope table in the bootstrapping guide](https://github.com/pflege-de-labs/terraform-provider-shopify/blob/main/docs/bootstrapping.md#2-release-a-version) is the complete and authoritative list, including the scopes for policies, privacy, checkout and the data sources. A scope change takes effect on a store only after the app is released and reinstalled there.
 
@@ -84,7 +85,7 @@ Ordinary resources (menus, pages, blogs, collections, products, files, shop loca
 
 ### Guarded deletes: `allow_data_deletion`
 
-Deleting some objects deletes the data stored in them: metafield and metaobject definitions (and their fields), locations, and also products, blogs, files and shop locales. These resources have `allow_data_deletion`, default `false`. A delete, or a replacement that would delete, fails with an error unless it is `true`. The value must already be `true` **in state** when the delete runs, so set it in a separate apply first. A plan-time warning tells you when a change forces a replacement or removes a metaobject field. For production, also add `lifecycle { prevent_destroy = true }`.
+Deleting some objects deletes the data stored in them: metafield and metaobject definitions (and their fields), locations, and also products, blogs, files, metaobject entries and shop locales. These resources have `allow_data_deletion`, default `false`. A delete, or a replacement that would delete, fails with an error unless it is `true`. The value must already be `true` **in state** when the delete runs, so set it in a separate apply first. A plan-time warning tells you when a change forces a replacement or removes a metaobject field. For production, also add `lifecycle { prevent_destroy = true }`.
 
 ### Volatile types
 

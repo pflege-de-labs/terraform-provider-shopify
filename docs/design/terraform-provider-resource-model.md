@@ -1598,7 +1598,7 @@ Notes:
 
 ## 9r. Data source: `shopify_metaobject`
 
-Decision D4 (2026-10-26). Discovery found no metaobjects on staging and about 40 on production, all in Shopify's standard definitions (`shopify--*`). Metaobject entries are content; managing them is a roadmap type (`write_metaobjects`). Configuration still needs to point at single entries, for example a metafield value or a collection condition that references a metaobject (§9l), so the data source reads one entry by type and handle. Lookup by key works for merchant-owned types too.
+Decision D4 (2026-10-26). Discovery found no metaobjects on staging and about 40 on production, all in Shopify's standard definitions (`shopify--*`). Metaobject entries are content; `shopify_metaobject` (§9t, D7) manages them. Configuration still needs to point at single entries, for example a metafield value or a collection condition that references a metaobject (§9l), so the data source reads one entry by type and handle. Lookup by key works for merchant-owned types too.
 
 ```hcl
 data "shopify_metaobject" "material_baumwolle" {
@@ -1622,7 +1622,7 @@ data "shopify_metaobject" "material_baumwolle" {
 | `status` | string | `capabilities.publishable.status` | `ACTIVE` or `DRAFT` when the definition has the publishable capability; null otherwise (null for the dev store's entries, checked) |
 | `updated_at` | string | `updatedAt` | RFC 3339 |
 
-**Map, not a list of objects.** §9g gives metaobject *definitions* a computed `field` list so it can be fed back into the resource with `dynamic "field"`. Entries have no resource yet (roadmap), and the use is a value lookup by key, which a map makes direct. A field's type is not exposed: it comes from the definition (`data.shopify_metaobject_definition.<x>.field`). Left out: `fields[].jsonValue` and `values` (the same data as JSON), `references`, `thumbnailField`, `createdBy*`, `referencedBy`, `capabilities.onlineStore` (template suffix, only with the online store capability).
+**Map, not a list of objects.** §9g gives metaobject *definitions* a computed `field` list so it can be fed back into the resource with `dynamic "field"`. The use is a value lookup by key, which a map makes direct. A field's type is not exposed: it comes from the definition (`data.shopify_metaobject_definition.<x>.field`). Left out: `fields[].jsonValue` and `values` (the same data as JSON), `references`, `thumbnailField`, `createdBy*`, `referencedBy`, `capabilities.onlineStore` (template suffix, only with the online store capability).
 
 **Lookup:** `metaobjectByHandle(handle: { type, handle })`, one direct call (checked: `{ type: "shopify--knowledge-base-fact", handle: "delivery_countries" }` returned the entry). There is no fallback by GID and nothing is written beyond the read.
 
@@ -1638,7 +1638,7 @@ data "shopify_metaobject" "material_baumwolle" {
 
 **Dev store (2026-10-26):** read-only; one standard definition with entries, `shopify--knowledge-base-fact` (2 entries, `delivery_countries` and `shipping_policy`, 18 fields each, most without a value).
 
-**Implemented (§9r, verified on the dev store, 2026-10-27):** the lookup, mapping and errors are as specified; `type` and `handle` are echoed from the configuration. Acceptance tests cover the three cases of the Tests paragraph: (a) creates the entry through the client between two steps (the definition first, then the entry and the data source), checks every attribute and the null `summary` field through an output (`fields["summary"] == null`), and deletes the entry in a last step before the definition goes; (b) reads `shopify--knowledge-base-fact` / `delivery_countries` and compares `id`, `display_name` and the field count with a direct API read, with `status` unset; (c) not found, matching the `no metaobject <type>/<handle>` message. Unit tests cover the mapping (null values, the publishable status) and the message text. Still `TODO(verify)`: the access-denied path, which no test reaches because the dev store has every scope. The queries bind GraphQL `JSON` to `json.RawMessage` in `genqlient.yaml`, only because `MetaobjectCreateInput.values` needs a binding to compile; it is never sent. `CreateMetaobject` / `DeleteMetaobject` exist for the tests only.
+**Implemented (§9r, verified on the dev store, 2026-10-27):** the lookup, mapping and errors are as specified; `type` and `handle` are echoed from the configuration. Acceptance tests cover the three cases of the Tests paragraph: (a) creates the entry through the client between two steps (the definition first, then the entry and the data source), checks every attribute and the null `summary` field through an output (`fields["summary"] == null`), and deletes the entry in a last step before the definition goes; (b) reads `shopify--knowledge-base-fact` / `delivery_countries` and compares `id`, `display_name` and the field count with a direct API read, with `status` unset; (c) not found, matching the `no metaobject <type>/<handle>` message. Unit tests cover the mapping (null values, the publishable status) and the message text. Still `TODO(verify)`: the access-denied path, which no test reaches because the dev store has every scope. The queries bind GraphQL `JSON` to `json.RawMessage` in `genqlient.yaml`, only because `MetaobjectCreateInput.values` needs a binding to compile; it is never sent. `CreateMetaobject` and `DeleteMetaobject` were for the tests only until `shopify_metaobject` (§9t) used them.
 
 ---
 
@@ -1691,6 +1691,111 @@ Everything else (name, fields, access, capabilities) comes from Shopify's templa
 - Both tests that enable `shopify--material` delete it in cleanup.
 - ⚠ The dev store has only one standard type, so it is the only proof that every `shopify--*` definition has `standardTemplate` set. Production has 26 such definitions: at the first production `terraform query`, check that the `shopify_metaobject_definition` list emits no `shopify--*` type.
 - `TODO(verify)`: the destroy warning's wording in the CLI output. No test asserts it.
+
+---
+
+## 9t. Resource: `shopify_metaobject`
+
+Decision D7 (§9s, #48). One metaobject entry, in any type: merchant, standard (`shopify--*`, enabled with §9s) or the provider's own app (`$app:…`). The use case is copying production's entries to staging with `terraform query -generate-config-out`. Entries are content, so the type is volatile.
+
+```hcl
+resource "shopify_metaobject" "baumwolle" {
+  type   = shopify_standard_metaobject_definition.material.type
+  handle = "baumwolle"
+  fields = {
+    label = "Baumwolle"
+  }
+}
+```
+
+| Attribute | Type | Behaviour |
+|---|---|---|
+| `id` | string | `Metaobject` GID. Computed, UseStateForUnknown |
+| `type` | string | Required, RequiresReplace (an entry can't change type). Kept as configured, so `$app:<name>` works (§9r). Taken from the API only on import |
+| `handle` | string | Required, natural key. Updatable in place (`MetaobjectUpdateInput.handle`, no redirect) |
+| `fields` | map(string) | Required. Field key → value, in Shopify's string form (§9r): plain text as is, references as GIDs, numbers and booleans as strings, list and JSON types as a JSON string. Only keys in the map are managed. `""` clears a value |
+| `status` | string | `ACTIVE` or `DRAFT`, only for types with the publishable capability (`CAPABILITY_NOT_ENABLED` otherwise). Optional + Computed, `UseStateForUnknownIncludingNull`. Unset means not managed: nothing is sent, and a new entry is `DRAFT` |
+| `display_name` | string | Computed. Changes with the display field |
+| `adopt_existing` | bool | Pattern A, default `false` |
+| `allow_data_deletion` | bool | Pattern B, default `false` |
+
+**Values (dev store, 2026-11-17).** Shopify rewrites some values:
+- Numbers and booleans: `007` becomes `7`, `1.50` becomes `1.5`, and `TRUE` becomes `true`.
+- JSON, list and rich text values are minified. Key order and `2.0` are kept.
+- Multi-line text (`\r\n`) and colours (`#FFAA00`) come back as sent.
+- Writing `""` clears a field, which then reads as `null`.
+
+So:
+- **Create and Update** write the planned map to state, not the API's values.
+- **Read** keeps a state value when it is equivalent to the API value, and otherwise takes the API value (drift). Equivalence goes by the field's `type` (`MetaobjectField.type`):
+  - `number_integer` and `number_decimal` compare numerically.
+  - `boolean` compares as a boolean.
+  - `json`, `rich_text_field`, `list.*` and the measurement and money types compare as decoded JSON. ⚠ Only `json`, `rich_text_field`, `list.single_line_text_field` and `list.number_integer` were probed. `dimension`, `volume`, `weight`, `rating`, `money`, `link`, `date_time` and reference types weren't: an unexpected rewrite there shows as a perpetual diff.
+  - Everything else compares exactly.
+  - `""` and `null` are equivalent.
+- A managed key the API no longer returns (a field removed from the definition) is dropped from state.
+
+**Unmanaged keys.** A key removed from `fields` stops being managed and its value stays. Update sends only the managed keys whose value changed. Other fields aren't touched: `metaobjectUpdate` leaves fields it isn't given alone (checked).
+
+**Create:** look up `metaobjectByHandle(type, handle)` first.
+- If the entry exists and `adopt_existing` is false: error.
+- If it exists and `adopt_existing` is true: update the differing managed keys and `status`.
+- Otherwise `metaobjectCreate`. Shopify gives a taken handle a suffix instead of failing (`probe-a` becomes `probe-a-1`), so a suffixed result means a lost race. The duplicate is deleted and the error reported, as for blogs (§9n).
+
+**Read:** `metaobject(id:)` first (`null` once deleted), then `metaobjectByHandle`. A gone entry is removed from state. `MutableIdentity`. After import (`fields` null in state), every field with a value is taken, so generated config holds all of them.
+
+**Update:** `metaobjectUpdate` with the changed handle, the changed managed keys, and `status` when it is configured and differs. A taken handle fails with `TAKEN` (no suffix on update, checked).
+
+**Delete:**
+- With `adopt_existing`: remove from state only, with a warning.
+- Otherwise the guard comes first: an entry can be referenced from metafields, other entries and collection conditions, and deleting it breaks every reference. So it is always guarded, like `shopify_file`. An entry that is already gone is not an error: `RECORD_NOT_FOUND` on delete.
+
+**userErrors:**
+- `["metaobject","fields","<i>"]` comes with `elementKey` (the field key), which maps to `fields["<key>"]`. This covers invalid values and unknown keys (`UNDEFINED_OBJECT_FIELD`).
+- `["metaobject","handle"]` maps to `handle` (`INVALID`, `TAKEN`).
+- `["metaobject","capabilities","publishable"]` maps to `status`.
+
+**Import:** `<type>/<handle>` (`patterns.SplitImportKey`; neither part can contain `/`).
+
+**List:**
+- Optional `type` setting. Without it, the list walks every metaobject definition except app-owned ones (`app--*`, D3, the provider's own app included; list those with `type`), then `metaobjects(type:, first: 50)` paged for each. A type deleted in between lists as empty (checked).
+- Shopify lower-cases handles (`Gross` is stored as `gross`, checked), so listed handles pass `HandleValidator`.
+- `DisplayName` is `<type>/<handle>`.
+- Results carry `type`, `handle`, every field with a value, and `status`.
+- The limit counts across types.
+
+**References:** reference values are GIDs, which exist only on the store they came from. Config generated from production must have them replaced by references to resources or data sources before it is applied to staging. The provider doesn't rewrite them, and the import guide says so.
+
+**Scope:** `write_metaobjects`, already in `app/shopify.app.toml`.
+
+**Fit:** volatile. Entries are content and are often edited in the admin.
+
+**Tests:**
+- Unit:
+  - value equivalence (the probe's pairs)
+  - merging API fields into state
+  - userErrors mapping (`elementKey`)
+  - splitting the import key
+- Acceptance, each test on its own random `tfacc_` type:
+  - create, update of fields, handle and status, refresh, import (identity and key), list
+  - adopt
+  - the deletion guard
+  - drift: a field edited through the client shows in the plan
+  - an unmanaged key edited through the client does not show in the plan
+
+**Implemented (§9t, verified on the dev store, 2026-11-17):**
+- Behaviour is as specified. Acceptance tests cover every Tests item, plus:
+  - an invalid value (`Value must be an integer`) and an unknown key
+  - clearing a value with `""`, which stays stable
+  - a list both filtered by type and unfiltered
+- `TestAccMetaobject_standardType` covers the use case of #48. It creates, imports and lists an entry in `shopify--knowledge-base-fact`, which `shopify_standard_metaobject_definition` adopts. Its required fields are `title` and `published`. `shopify--usage-type` needs a `product_taxonomy_value_reference`, and other standard templates may too.
+- `TestAccMetaobject_basic` also covers the Read fallback: an entry deleted and recreated through the client is found again under its new GID, with an empty plan.
+- Finding: `display_name` has no plan modifier, so an update that only changes `adopt_existing` or `allow_data_deletion` copies it from state. Without that, the apply ended with an unknown value.
+- Terraform doesn't show the attribute path of a field error in the CLI. The `fields["<key>"]` mapping is covered by `TestErrorPath` only.
+- Not tested:
+  - The lost-race path (a suffixed handle on create, then the duplicate deleted). No test can force the race.
+  - `$app:` types. As in §9r, the configured spelling is kept, but an identity import takes the API's `app--<id>--…` spelling, so a config written with `$app:` would plan a replace after such an import. `TODO(verify)`.
+  - A real production export with references.
 
 ---
 

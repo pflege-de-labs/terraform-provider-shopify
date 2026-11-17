@@ -105,7 +105,7 @@ Status 2026-10-27: steps 7-11 merged (#25-#29), step 13 in review. Counts are st
 | 10 | Fulfillment services | `shipping`, `fulfillments` | good; app-owned | ✅ data source `shopify_fulfillment_service`. Roadmap: custom delivery profiles (0 / 0), carrier services (0 / 0) |
 | 11 | Publications, catalogs, URL redirects, price lists, selling plan groups | `online_store_navigation`, `publications`, `products`, `purchase_options` | volatile | ✅ data source `shopify_publication`. Roadmap: `shopify_catalog` (3 / 5, all channel app catalogs; design §9i kept), URL redirects, price lists, selling plan groups (0 / 0) |
 | 12 | Payment and delivery customizations, validations, cart transforms, fulfillment constraint rules | matching `*_customizations`, `validations`, `cart_transforms`, `fulfillment_constraint_rules` | good | Roadmap: 0 / 0 on both stores |
-| 13 | Content | `products`, `content`, `discounts`, `metaobjects`, `files`, `customers`, `inventory` | volatile | ✅ `shopify_product` (options, variants, publishing, `media_ids`), `shopify_collection`, `shopify_page`, `shopify_blog`, `shopify_file` (URL sources), `shopify_discount_basic`, `shopify_customer_segment`, data source `shopify_metaobject`. Roadmap: see below |
+| 13 | Content | `products`, `content`, `discounts`, `metaobjects`, `files`, `customers`, `inventory` | volatile | ✅ `shopify_product` (options, variants, publishing, `media_ids`), `shopify_collection`, `shopify_page`, `shopify_blog`, `shopify_file` (URL sources), `shopify_discount_basic`, `shopify_customer_segment`, `shopify_metaobject` (resource and data source; D7, resource model §9t). Roadmap: see below |
 
 ## Roadmap
 

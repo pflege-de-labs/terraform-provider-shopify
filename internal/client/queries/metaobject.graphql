@@ -1,9 +1,12 @@
 fragment MetaobjectFields on Metaobject {
   id
+  type
+  handle
   displayName
   updatedAt
   fields {
     key
+    type
     value
   }
   capabilities {
@@ -22,7 +25,6 @@ query GetMetaobjectByHandle(
   }
 }
 
-# Used by the data source's acceptance tests to make an entry; the provider has no metaobject resource yet.
 # Shopify rejects an explicit null onlineStore on a type without that capability.
 # @genqlient(for: "MetaobjectCapabilityDataInput.onlineStore", omitempty: true)
 # @genqlient(for: "MetaobjectCreateInput.handle", omitempty: true)
@@ -39,6 +41,54 @@ mutation CreateMetaobject(
       field
       message
       code
+      elementKey
+    }
+  }
+}
+
+query GetMetaobject(
+  $id: ID!
+) {
+  metaobject(id: $id) {
+    ...MetaobjectFields
+  }
+}
+
+# 50 per page keeps the cost low for types with many fields.
+query ListMetaobjects($objectType: String!, $after: String) {
+  metaobjects(type: $objectType, first: 50, after: $after) {
+    # @genqlient(flatten: true)
+    nodes {
+      ...MetaobjectFields
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# Only changed values are sent; unset inputs must be omitted, not sent as null.
+# @genqlient(for: "MetaobjectUpdateInput.handle", omitempty: true)
+# @genqlient(for: "MetaobjectUpdateInput.fields", omitempty: true)
+# @genqlient(for: "MetaobjectUpdateInput.capabilities", omitempty: true)
+# @genqlient(for: "MetaobjectUpdateInput.redirectNewHandle", omitempty: true)
+# @genqlient(for: "MetaobjectUpdateInput.values", omitempty: true)
+# @genqlient(for: "MetaobjectCapabilityDataInput.publishable", omitempty: true)
+# @genqlient(for: "MetaobjectCapabilityDataInput.onlineStore", omitempty: true)
+mutation UpdateMetaobject(
+  $id: ID!
+  $metaobject: MetaobjectUpdateInput!
+) {
+  metaobjectUpdate(id: $id, metaobject: $metaobject) {
+    metaobject {
+      ...MetaobjectFields
+    }
+    userErrors {
+      field
+      message
+      code
+      elementKey
     }
   }
 }
