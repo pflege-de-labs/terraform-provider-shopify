@@ -10,6 +10,7 @@ FEATURES:
 
 ENHANCEMENTS:
 
+* resource/shopify_product, list/shopify_product: new optional `metafields` attribute, a map of `namespace.key` to `{ type, value }`. Only the listed keys are managed, `value = ""` deletes one, and import and the list take every key outside app namespaces. Reference values must come from resource references, since their GIDs differ per store.
 * resource/shopify_metafield_definition: owner types `CUSTOMER`, `ORDER`, `DRAFTORDER`, `DISCOUNT`, `COMPANY` and `COMPANY_LOCATION` are covered by acceptance tests and documented with their scopes. The reference app configs add `read_companies` / `write_companies` (B2B stores only, optional).
 * list/shopify_metaobject_definition: skips Shopify's standard definitions (`shopify--…` types), which `shopify_standard_metaobject_definition` lists, so generated config no longer holds ordinary definitions for them.
 * list/shopify_metafield_definition: an empty result comes with a warning, since Shopify returns one instead of an error when the app lacks the owner type's read scope.

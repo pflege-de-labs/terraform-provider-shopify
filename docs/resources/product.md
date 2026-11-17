@@ -40,6 +40,14 @@ resource "shopify_product" "bettschutz" {
   # so does destroying the product. Unset leaves the media to the admin, and destroy to Shopify.
   media_ids = [shopify_file.bettschutz_photo.id]
 
+  # Only the keys listed here are managed; a removed key keeps its value. value = "" deletes the metafield.
+  # Reference types hold store-specific GIDs, so set them from resource references.
+  metafields = {
+    "custom.material" = { type = "single_line_text_field", value = "Baumwolle" }
+    "custom.washable" = { type = "boolean", value = "true" }
+    "custom.sizes"    = { type = "list.single_line_text_field", value = jsonencode(["S", "M"]) }
+  }
+
   options = [
     { name = "Größe", values = ["S", "M"] },
   ]
@@ -100,6 +108,7 @@ resource "shopify_product" "temporary" {
 - `description_html` (String) The description as HTML. Shopify repairs malformed HTML; the configured text is kept while Shopify still holds what it returned at the last apply, so the repair is no diff, but a later admin edit is. Unset means unmanaged: the value set in the admin is kept.
 - `gift_card` (Boolean) Whether this is a gift card product, a catalogue entry; issued gift cards are not managed. Shopify can't change it, so changing it replaces the product and deletes its data. Unset means unmanaged: the value set in the admin is kept.
 - `media_ids` (List of String) File GIDs of the product's media in position order, usually `shopify_file.<name>.id`. Images, videos, 3D models and external videos only: a `content_type = "FILE"` file can't be product media. Removing an ID, or `[]`, detaches the file from the product and keeps it in the media library; media attached in the admin but not listed are detached the same way. Unset means unmanaged: the media set in the admin are kept, and a destroy lets Shopify delete the media no other product uses. Set, a destroy or replace detaches all the product's media first, so they stay in the library.
+- `metafields` (Attributes Map) Metafield values of the product, keyed `namespace.key` (a namespace of 3-255 and a key of 2-64 letters, digits, hyphens or underscores; the key is split on the first dot). Only the keys listed here are managed: a key removed from the map stops being managed and keeps its value in Shopify. Unset means no metafield is managed. `type` is a [metafield type](https://shopify.dev/docs/apps/build/custom-data/metafields/list-of-data-types) such as `single_line_text_field` or `list.product_reference`; `value` is Shopify's string form: plain text as is, numbers and booleans as strings, list and JSON types as a JSON string (use `jsonencode()`). Shopify rewrites some values (`007` becomes `7`, `TRUE` becomes `true`, JSON is minified); the configured text is kept while it means the same. `value = ""` deletes the metafield, which then reads as `""`. Reference types hold store-specific GIDs, so set them from resource references (`shopify_metaobject.x.id`), not literals. App-owned namespaces (`app--…`) and the SEO metafields `global.title_tag` and `global.description_tag` (use the SEO attributes) are rejected, and import and listing skip them. A metafield with a definition must be written with the definition's type. Writing needs the owner's `write_*` scope (`write_products` for products, not verified alone, see `docs/bootstrapping.md`). (see [below for nested schema](#nestedatt--metafields))
 - `options` (Attributes List) Options in position order, at most 3, each with its values in position order. Set together with `variants`; when both are unset they are unmanaged. `[]` is a product without options, which has one default variant. A new option or value name at the same position is a rename: its variants and their stock carry over to the new name, matched by position. A new name at another position counts as removing the old value and adding a new one, so rename and reorder in separate applies. Dropping an option while adding one at a different position deletes and recreates every variant, guarded by `allow_data_deletion`. To really replace an option, remove it in one apply and add the new one in the next. A product with an option linked to a metafield (such as a category metafield) can't have its options and variants managed yet; they are read only, and setting them fails. (see [below for nested schema](#nestedatt--options))
 - `product_type` (String) Free-text product type, an empty string when none is set. Unset means unmanaged: the value set in the admin is kept.
 - `publication_ids` (Set of String) `Publication` GIDs of the sales channels this product is published to, usually from `data.shopify_publication`. **Removing an ID unpublishes the product from that channel: it disappears there for customers**, so check the plan before applying. A new product is published nowhere until this is set. A channel that publishes automatically (`auto_publish`) and isn't listed here is unpublished again. Only sales channel publications are supported; the publication of a market catalog is rejected. Scheduled publishing is not supported. Unset means unmanaged: publications set in the admin are kept. `[]` unpublishes everywhere. Needs the `write_publications` scope.
@@ -115,6 +124,15 @@ resource "shopify_product" "temporary" {
 
 - `id` (String) Product GID.
 - `media_managed` (Boolean) Whether the provider has managed `media_ids` (sticky once true), mirroring what a destroy reads. Not a setting: it turns a change from unset to set `media_ids` into an update that records it.
+
+<a id="nestedatt--metafields"></a>
+### Nested Schema for `metafields`
+
+Required:
+
+- `type` (String) Metafield type.
+- `value` (String) Value in Shopify's string form; `""` deletes the metafield.
+
 
 <a id="nestedatt--options"></a>
 ### Nested Schema for `options`

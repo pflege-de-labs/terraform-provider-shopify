@@ -1,0 +1,49 @@
+# Pages a product's metafields; the shared internal/metafields package takes the page function, so other owners add their own query.
+query GetProductMetafields(
+  $id: ID!
+  $after: String
+) {
+  product(id: $id) {
+    metafields(first: 250, after: $after) {
+      nodes {
+        namespace
+        key
+        type
+        value
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+# An explicit null compareDigest means "only create": the update of an existing metafield fails with a stale-digest error.
+# @genqlient(for: "MetafieldsSetInput.compareDigest", omitempty: true)
+mutation SetMetafields(
+  $metafields: [MetafieldsSetInput!]!
+) {
+  metafieldsSet(metafields: $metafields) {
+    metafields {
+      key
+    }
+    userErrors {
+      field
+      message
+      code
+      elementIndex
+    }
+  }
+}
+
+mutation DeleteMetafields(
+  $metafields: [MetafieldIdentifierInput!]!
+) {
+  metafieldsDelete(metafields: $metafields) {
+    userErrors {
+      field
+      message
+    }
+  }
+}
