@@ -1266,7 +1266,7 @@ Import key: the handle (`impressum`). Handles are unique per shop: a taken handl
 
 Notes:
 - Uses `page(id:)`, `pages(first:, query:)`, `pageCreate(page:)`, `pageUpdate(id:, page:)`, `pageDelete(id:)`.
-- Update sends only changed attributes. Never sent: `metafields` (a `metafields` attribute on pages is planned, §9v), `publishDate`, `redirectNewHandle` (a handle change creates no redirect; URL redirects are a roadmap type). Renaming the handle in place works (checked).
+- Update sends only changed attributes. Never sent in `pageCreate` / `pageUpdate`: `metafields` (the optional `metafields` attribute writes through `metafieldsSet` afterwards, §9v), `publishDate`, `redirectNewHandle` (a handle change creates no redirect; URL redirects are a roadmap type). Renaming the handle in place works (checked).
 - genqlient: `body` has the `HTML` scalar, already bound to `string`.
 - Errors (`PageCreateUserError` / `PageUpdateUserError`, `field` relative to `page`): `TAKEN` (`handle`), `BLANK` (`title`), `TOO_LONG`, `TOO_SHORT`, `TOO_BIG` (`body`), `INVALID`, `INVALID_PUBLISH_DATE` (can't happen, `publishDate` is never sent), `INVALID_VALUE` / `INVALID_TYPE` (metafields, never sent), `NOT_FOUND`. `pageDelete`: `NOT_FOUND`. None is retried.
 - **Fit: volatile.** The description says so: page texts are usually maintained in the admin; with `body` unset, Terraform can own the handle, title and template while editors own the text.
@@ -1328,7 +1328,7 @@ Import key: the handle (`news`). Read: `blog(id:)` first; if it is gone, `blogs(
 
 Notes:
 - Uses `blog(id:)`, `blogs(first:, query:)`, `blogCreate(blog:)`, `blogUpdate(id:, blog:)`, `blogDelete(id:)`. Update sends only changed attributes.
-- Never sent: `metafields` (a `metafields` attribute is planned, §9v), `redirectNewHandle`, `redirectArticles` (both default `false`; URL redirects are a roadmap type). Renaming a blog therefore changes its article URLs without redirects; the docs say so.
+- Never sent in `blogCreate` / `blogUpdate`: `metafields` (the optional `metafields` attribute writes through `metafieldsSet` afterwards, §9v), `redirectNewHandle`, `redirectArticles` (both default `false`; URL redirects are a roadmap type). Renaming a blog therefore changes its article URLs without redirects; the docs say so.
 - Not exposed: `feed` (legacy FeedBurner settings, `null` on the dev store), `tags` (derived from articles), `articlesCount` (only used by the Pattern B check).
 - Errors (`BlogCreateUserError` / `BlogUpdateUserError`, `field` relative to `blog`): `BLANK` (`title`), `INVALID`, `TOO_LONG`, `INCLUSION` (`comment_policy`), `INVALID_VALUE` / `INVALID_TYPE` (metafields, never sent), `NOT_FOUND`. `blogDelete`: `NOT_FOUND`. There is no `TAKEN`: see the handle check above. None is retried.
 - **Fit: good.** A blog's settings are stable configuration; articles, the content, are not managed (roadmap). The description says so, and that destroying a blog with articles needs `allow_data_deletion`.
@@ -1845,7 +1845,7 @@ Decision 2026-11-17. A shop's configuration has to reference products that Terra
 
 ## 9v. Metafield values
 
-Decision 2026-11-17 (#57). Metafield values are an optional `metafields` attribute on the owning resource, not a type of their own. Step 1 is `shopify_product` (product level; variants, collections and the other owners follow). The shared code is `internal/metafields`; each owner adds its page query and wiring.
+Decision 2026-11-17 (#57). Metafield values are an optional `metafields` attribute on the owning resource, not a type of their own. Step 1 is `shopify_product` (product level; variants, collections and the other owners follow). `shopify_page` and `shopify_blog` follow with identical semantics (2026-11-17, #63). The shared code is `internal/metafields`; each owner adds its page query and wiring.
 
 ```hcl
 resource "shopify_product" "x" {
@@ -1884,6 +1884,8 @@ resource "shopify_product" "x" {
 - `metafieldsSet` with 26 entries fails (`LESS_THAN_OR_EQUAL_TO`, "Exceeded the maximum metafields input limit of 25.").
 - Key length: minimum 2 characters (`TOO_SHORT`); the key validator checks 3-255 for the namespace and 2-64 for the key (schema description).
 - Read cost: `metafields(first: 250)` on a product with 11 values requested 14 and cost 4.
+
+**Pages and blogs (#63).** Same attribute, `metafields.go` wiring and acceptance tests per owner (`GetPageMetafields`, `GetBlogMetafields`). Probe on the dev store: a fresh page and blog expose no metafields (no `global.title_tag` or similar), so the shared skip list is unchanged. The write also runs when only `metafields` changed (no `pageUpdate` / `blogUpdate` is sent then). Scope is `write_content` (already granted); whether it alone suffices for `metafieldsSet` on pages is unverified (TODO(verify)).
 
 **Scope.** `write_products` (already granted). ⚠ Whether it alone suffices for `metafieldsSet` on a product is unverified (every scope is granted on the dev store); noted in `docs/bootstrapping.md`.
 

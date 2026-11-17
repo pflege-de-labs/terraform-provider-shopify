@@ -15,6 +15,7 @@ type model struct {
 	Published      types.Bool   `tfsdk:"published"`
 	TemplateSuffix types.String `tfsdk:"template_suffix"`
 	AdoptExisting  types.Bool   `tfsdk:"adopt_existing"`
+	Metafields     types.Map    `tfsdk:"metafields"`
 }
 
 // createInput maps the configured attributes; unset ones are not sent, so they keep Shopify's defaults.

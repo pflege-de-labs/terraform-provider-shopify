@@ -41,7 +41,7 @@ query ListPages(
   }
 }
 
-# publishDate and metafields are never sent: scheduled publishing fights isPublished, metafield values are a roadmap type.
+# publishDate is never sent (scheduled publishing fights isPublished) and metafields go through metafieldsSet, not the input.
 # @genqlient(for: "PageCreateInput.handle", omitempty: true)
 # @genqlient(for: "PageCreateInput.body", omitempty: true)
 # @genqlient(for: "PageCreateInput.isPublished", omitempty: true)

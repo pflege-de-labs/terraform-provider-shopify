@@ -13282,6 +13282,115 @@ func (v *GetBlogBlog) __premarshalJSON() (*__premarshalGetBlogBlog, error) {
 	return &retval, nil
 }
 
+// GetBlogMetafieldsBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type GetBlogMetafieldsBlog struct {
+	// A list of [custom fields](https://shopify.dev/docs/apps/build/custom-data)
+	// that a merchant associates with a Shopify resource.
+	Metafields GetBlogMetafieldsBlogMetafieldsMetafieldConnection `json:"metafields"`
+}
+
+// GetMetafields returns GetBlogMetafieldsBlog.Metafields, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlog) GetMetafields() GetBlogMetafieldsBlogMetafieldsMetafieldConnection {
+	return v.Metafields
+}
+
+// GetBlogMetafieldsBlogMetafieldsMetafieldConnection includes the requested fields of the GraphQL type MetafieldConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Metafields.
+type GetBlogMetafieldsBlogMetafieldsMetafieldConnection struct {
+	// A list of nodes that are contained in MetafieldEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetBlogMetafieldsBlogMetafieldsMetafieldConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnection) GetNodes() []GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetBlogMetafieldsBlogMetafieldsMetafieldConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnection) GetPageInfo() GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin-graphql/latest/interfaces/HasMetafields).
+// Some examples of the data that metafields enable you to store are specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a value along with type information for that value.
+type GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield struct {
+	// The container for a group of metafields that the metafield is associated with.
+	Namespace string `json:"namespace"`
+	// The unique identifier for the metafield within its namespace.
+	Key string `json:"key"`
+	// The type of data that's stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type string `json:"type"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield) GetNamespace() string {
+	return v.Namespace
+}
+
+// GetKey returns GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield.Key, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield) GetKey() string {
+	return v.Key
+}
+
+// GetType returns GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield.Type, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield) GetType() string {
+	return v.Type
+}
+
+// GetValue returns GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield) GetValue() string {
+	return v.Value
+}
+
+// GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetBlogMetafieldsResponse is returned by GetBlogMetafields on success.
+type GetBlogMetafieldsResponse struct {
+	// Returns a `Blog` resource by ID.
+	Blog *GetBlogMetafieldsBlog `json:"blog"`
+}
+
+// GetBlog returns GetBlogMetafieldsResponse.Blog, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsResponse) GetBlog() *GetBlogMetafieldsBlog { return v.Blog }
+
 // GetBlogResponse is returned by GetBlog on success.
 type GetBlogResponse struct {
 	// Returns a `Blog` resource by ID.
@@ -16644,6 +16753,115 @@ type GetMetaobjectResponse struct {
 
 // GetMetaobject returns GetMetaobjectResponse.Metaobject, and is useful for accessing the field via an interface.
 func (v *GetMetaobjectResponse) GetMetaobject() *GetMetaobjectMetaobject { return v.Metaobject }
+
+// GetPageMetafieldsPage includes the requested fields of the GraphQL type Page.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type GetPageMetafieldsPage struct {
+	// A list of [custom fields](https://shopify.dev/docs/apps/build/custom-data)
+	// that a merchant associates with a Shopify resource.
+	Metafields GetPageMetafieldsPageMetafieldsMetafieldConnection `json:"metafields"`
+}
+
+// GetMetafields returns GetPageMetafieldsPage.Metafields, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPage) GetMetafields() GetPageMetafieldsPageMetafieldsMetafieldConnection {
+	return v.Metafields
+}
+
+// GetPageMetafieldsPageMetafieldsMetafieldConnection includes the requested fields of the GraphQL type MetafieldConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Metafields.
+type GetPageMetafieldsPageMetafieldsMetafieldConnection struct {
+	// A list of nodes that are contained in MetafieldEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetPageMetafieldsPageMetafieldsMetafieldConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnection) GetNodes() []GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetPageMetafieldsPageMetafieldsMetafieldConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnection) GetPageInfo() GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin-graphql/latest/interfaces/HasMetafields).
+// Some examples of the data that metafields enable you to store are specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a value along with type information for that value.
+type GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield struct {
+	// The container for a group of metafields that the metafield is associated with.
+	Namespace string `json:"namespace"`
+	// The unique identifier for the metafield within its namespace.
+	Key string `json:"key"`
+	// The type of data that's stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type string `json:"type"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield) GetNamespace() string {
+	return v.Namespace
+}
+
+// GetKey returns GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield.Key, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield) GetKey() string {
+	return v.Key
+}
+
+// GetType returns GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield.Type, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield) GetType() string {
+	return v.Type
+}
+
+// GetValue returns GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield) GetValue() string {
+	return v.Value
+}
+
+// GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetPageMetafieldsResponse is returned by GetPageMetafields on success.
+type GetPageMetafieldsResponse struct {
+	// Returns a `Page` resource by ID.
+	Page *GetPageMetafieldsPage `json:"page"`
+}
+
+// GetPage returns GetPageMetafieldsResponse.Page, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsResponse) GetPage() *GetPageMetafieldsPage { return v.Page }
 
 // GetPagePage includes the requested fields of the GraphQL type Page.
 // The GraphQL type's documentation follows.
@@ -32726,6 +32944,18 @@ type __GetBlogInput struct {
 // GetId returns __GetBlogInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetBlogInput) GetId() string { return v.Id }
 
+// __GetBlogMetafieldsInput is used internally by genqlient
+type __GetBlogMetafieldsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetBlogMetafieldsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetBlogMetafieldsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetBlogMetafieldsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetBlogMetafieldsInput) GetAfter() *string { return v.After }
+
 // __GetCheckoutAndAccountsConfigurationInput is used internally by genqlient
 type __GetCheckoutAndAccountsConfigurationInput struct {
 	Id string `json:"id"`
@@ -32931,6 +33161,18 @@ type __GetPageInput struct {
 
 // GetId returns __GetPageInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetPageInput) GetId() string { return v.Id }
+
+// __GetPageMetafieldsInput is used internally by genqlient
+type __GetPageMetafieldsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetPageMetafieldsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetPageMetafieldsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetPageMetafieldsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetPageMetafieldsInput) GetAfter() *string { return v.After }
 
 // __GetProductByHandleInput is used internally by genqlient
 type __GetProductByHandleInput struct {
@@ -33658,7 +33900,7 @@ fragment BlogFields on Blog {
 }
 `
 
-// metafields is never sent: metafield values are a roadmap type.
+// metafields are never sent here: they go through metafieldsSet (resource model 9v).
 func CreateBlog(
 	ctx_ context.Context,
 	client_ graphql.Client,
@@ -34442,7 +34684,7 @@ fragment PageFields on Page {
 }
 `
 
-// publishDate and metafields are never sent: scheduled publishing fights isPublished, metafield values are a roadmap type.
+// publishDate is never sent (scheduled publishing fights isPublished) and metafields go through metafieldsSet, not the input.
 func CreatePage(
 	ctx_ context.Context,
 	client_ graphql.Client,
@@ -35811,6 +36053,54 @@ func GetBlogArticlesCount(
 	}
 
 	data_ = &GetBlogArticlesCountResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetBlogMetafields.
+const GetBlogMetafields_Operation = `
+query GetBlogMetafields ($id: ID!, $after: String) {
+	blog(id: $id) {
+		metafields(first: 250, after: $after) {
+			nodes {
+				namespace
+				key
+				type
+				value
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// Pages a blog's metafields.
+func GetBlogMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetBlogMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetBlogMetafields",
+		Query:  GetBlogMetafields_Operation,
+		Variables: &__GetBlogMetafieldsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetBlogMetafieldsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -38873,6 +39163,54 @@ func GetPage(
 	}
 
 	data_ = &GetPageResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetPageMetafields.
+const GetPageMetafields_Operation = `
+query GetPageMetafields ($id: ID!, $after: String) {
+	page(id: $id) {
+		metafields(first: 250, after: $after) {
+			nodes {
+				namespace
+				key
+				type
+				value
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// Pages a page's metafields.
+func GetPageMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetPageMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetPageMetafields",
+		Query:  GetPageMetafields_Operation,
+		Variables: &__GetPageMetafieldsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetPageMetafieldsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

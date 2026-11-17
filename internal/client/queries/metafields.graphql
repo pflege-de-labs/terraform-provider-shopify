@@ -19,6 +19,48 @@ query GetProductMetafields(
   }
 }
 
+# Pages a page's metafields.
+query GetPageMetafields(
+  $id: ID!
+  $after: String
+) {
+  page(id: $id) {
+    metafields(first: 250, after: $after) {
+      nodes {
+        namespace
+        key
+        type
+        value
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+# Pages a blog's metafields.
+query GetBlogMetafields(
+  $id: ID!
+  $after: String
+) {
+  blog(id: $id) {
+    metafields(first: 250, after: $after) {
+      nodes {
+        namespace
+        key
+        type
+        value
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
 # An explicit null compareDigest means "only create": the update of an existing metafield fails with a stale-digest error.
 # @genqlient(for: "MetafieldsSetInput.compareDigest", omitempty: true)
 mutation SetMetafields(

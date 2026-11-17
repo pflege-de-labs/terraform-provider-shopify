@@ -16,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/metafields"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/patterns"
 )
 
@@ -85,6 +86,7 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 				Computed:            true,
 				PlanModifiers:       []planmodifier.String{patterns.UseStateForUnknownIncludingNull()},
 			},
+			"metafields":          metafields.Attribute(what),
 			"adopt_existing":      patterns.AdoptExistingAttribute(what),
 			"allow_data_deletion": patterns.AllowDataDeletionAttribute(what),
 		},
@@ -145,6 +147,7 @@ func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp 
 		return
 	}
 	setFromAPI(&plan, b)
+	resp.Diagnostics.Append(r.writeMetafields(ctx, b.Id, &plan, &cfg)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
@@ -178,6 +181,7 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 	}
 
 	// Set on import, where only the ID is known.
+	importing := state.Handle.IsNull()
 	if state.AdoptExisting.IsNull() {
 		state.AdoptExisting = types.BoolValue(false)
 	}
@@ -185,6 +189,12 @@ func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *res
 		state.AllowDataDeletion = types.BoolValue(false)
 	}
 	setFromAPI(&state, b)
+	if importing || !state.Metafields.IsNull() {
+		resp.Diagnostics.Append(readMetafields(ctx, r.client, &state, b.Id, importing)...)
+	}
+	if resp.Diagnostics.HasError() {
+		return
+	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: state.ID})...)
 }
@@ -199,7 +209,8 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 	}
 	in, has := cfg.updateInput(&state)
 	if !has {
-		// Only adopt_existing or allow_data_deletion changed.
+		// Only provider-side attributes or metafields changed.
+		resp.Diagnostics.Append(r.writeMetafields(ctx, plan.ID.ValueString(), &plan, &cfg)...)
 		resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 		return
 	}
@@ -228,6 +239,7 @@ func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp 
 			resp.Diagnostics.AddAttributeError(path.Root("handle"), "Blog handle was changed by Shopify", err.Error())
 		}
 	}
+	resp.Diagnostics.Append(r.writeMetafields(ctx, b.Id, &plan, &cfg)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 	resp.Diagnostics.Append(resp.Identity.Set(ctx, patterns.IDIdentity{ID: plan.ID})...)
 }
