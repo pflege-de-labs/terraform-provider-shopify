@@ -1638,7 +1638,7 @@ data "shopify_metaobject" "material_baumwolle" {
 
 **Dev store (2026-10-26):** read-only; one standard definition with entries, `shopify--knowledge-base-fact` (2 entries, `delivery_countries` and `shipping_policy`, 18 fields each, most without a value).
 
-**Implemented (§9r, verified on the dev store, 2026-10-27):** the lookup, mapping and errors are as specified; `type` and `handle` are echoed from the configuration. Acceptance tests cover the three cases of the Tests paragraph: (a) creates the entry through the client between two steps (the definition first, then the entry and the data source), checks every attribute and the null `summary` field through an output (`fields["summary"] == null`), and deletes the entry in a last step before the definition goes; (b) reads `shopify--knowledge-base-fact` / `delivery_countries` and compares `id`, `display_name` and the field count with a direct API read, with `status` unset; (c) not found, matching the `no metaobject <type>/<handle>` message. Unit tests cover the mapping (null values, the publishable status) and the message text. Still `TODO(verify)`: the access-denied path, which no test reaches because the dev store has every scope. The queries bind GraphQL `JSON` to `json.RawMessage` in `genqlient.yaml`, only because `MetaobjectCreateInput.values` needs a binding to compile; it is never sent. `CreateMetaobject` / `DeleteMetaobject` exist for the tests only.
+**Implemented (§9r, verified on the dev store, 2026-10-27):** the lookup, mapping and errors are as specified; `type` and `handle` are echoed from the configuration. Acceptance tests cover the three cases of the Tests paragraph: (a) creates the entry through the client between two steps (the definition first, then the entry and the data source), checks every attribute and the null `summary` field through an output (`fields["summary"] == null`), and deletes the entry in a last step before the definition goes; (b) reads `shopify--knowledge-base-fact` / `delivery_countries` and compares `id`, `display_name` and the field count with a direct API read, with `status` unset; (c) not found, matching the `no metaobject <type>/<handle>` message. Unit tests cover the mapping (null values, the publishable status) and the message text. Still `TODO(verify)`: the access-denied path, which no test reaches because the dev store has every scope. The queries bind GraphQL `JSON` to `json.RawMessage` in `genqlient.yaml`, only because `MetaobjectCreateInput.values` needs a binding to compile; it is never sent. `CreateMetaobject` and `DeleteMetaobject` were for the tests only until `shopify_metaobject` (§9t) used them.
 
 ---
 
@@ -1730,7 +1730,7 @@ So:
 - **Read** keeps a state value when it is equivalent to the API value, and otherwise takes the API value (drift). Equivalence goes by the field's `type` (`MetaobjectField.type`):
   - `number_integer` and `number_decimal` compare numerically.
   - `boolean` compares as a boolean.
-  - `json`, `rich_text_field`, `list.*` and the measurement and money types compare as decoded JSON.
+  - `json`, `rich_text_field`, `list.*` and the measurement and money types compare as decoded JSON. ⚠ Only `json`, `rich_text_field`, `list.single_line_text_field` and `list.number_integer` were probed. `dimension`, `volume`, `weight`, `rating`, `money`, `link`, `date_time` and reference types weren't: an unexpected rewrite there shows as a perpetual diff.
   - Everything else compares exactly.
   - `""` and `null` are equivalent.
 - A managed key the API no longer returns (a field removed from the definition) is dropped from state.
@@ -1758,7 +1758,8 @@ So:
 **Import:** `<type>/<handle>` (`patterns.SplitImportKey`; neither part can contain `/`).
 
 **List:**
-- Optional `type` setting. Without it, the list walks every metaobject definition except app-owned ones (`app--*`, D3), then `metaobjects(type:, first: 50)` paged for each.
+- Optional `type` setting. Without it, the list walks every metaobject definition except app-owned ones (`app--*`, D3, the provider's own app included; list those with `type`), then `metaobjects(type:, first: 50)` paged for each. A type deleted in between lists as empty (checked).
+- Shopify lower-cases handles (`Gross` is stored as `gross`, checked), so listed handles pass `HandleValidator`.
 - `DisplayName` is `<type>/<handle>`.
 - Results carry `type`, `handle`, every field with a value, and `status`.
 - The limit counts across types.
@@ -1787,6 +1788,8 @@ So:
   - an invalid value (`Value must be an integer`) and an unknown key
   - clearing a value with `""`, which stays stable
   - a list both filtered by type and unfiltered
+- `TestAccMetaobject_standardType` covers the use case of #48. It creates, imports and lists an entry in `shopify--knowledge-base-fact`, which `shopify_standard_metaobject_definition` adopts. Its required fields are `title` and `published`. `shopify--usage-type` needs a `product_taxonomy_value_reference`, and other standard templates may too.
+- `TestAccMetaobject_basic` also covers the Read fallback: an entry deleted and recreated through the client is found again under its new GID, with an empty plan.
 - Finding: `display_name` has no plan modifier, so an update that only changes `adopt_existing` or `allow_data_deletion` copies it from state. Without that, the apply ended with an unknown value.
 - Terraform doesn't show the attribute path of a field error in the CLI. The `fields["<key>"]` mapping is covered by `TestErrorPath` only.
 - Not tested:

@@ -107,11 +107,17 @@ func setField(t *testing.T, typ, handle, key, value string) {
 	}
 }
 
-func createEntry(t *testing.T, typ, handle, title string) string {
+// createEntry makes an entry through the client, as the admin would; status is sent unless empty.
+func createEntry(t *testing.T, typ, handle string, fields map[string]string, status client.MetaobjectStatus) string {
 	t.Helper()
-	res, err := client.CreateMetaobject(context.Background(), acctest.Client(t), client.MetaobjectCreateInput{
-		Type: typ, Handle: &handle, Fields: []client.MetaobjectFieldInput{{Key: "title", Value: title}},
-	})
+	in := client.MetaobjectCreateInput{Type: typ, Handle: &handle}
+	for k, v := range fields {
+		in.Fields = append(in.Fields, client.MetaobjectFieldInput{Key: k, Value: v})
+	}
+	if status != "" {
+		in.Capabilities = &client.MetaobjectCapabilityDataInput{Publishable: &client.MetaobjectCapabilityDataPublishableInput{Status: status}}
+	}
+	res, err := client.CreateMetaobject(context.Background(), acctest.Client(t), in)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -119,6 +125,17 @@ func createEntry(t *testing.T, typ, handle, title string) string {
 		t.Fatalf("creating %s/%s: %+v", typ, handle, errs)
 	}
 	return res.MetaobjectCreate.Metaobject.Id
+}
+
+func deleteEntry(t *testing.T, id string) {
+	t.Helper()
+	res, err := client.DeleteMetaobject(context.Background(), acctest.Client(t), id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if errs := res.MetaobjectDelete.UserErrors; len(errs) > 0 {
+		t.Fatalf("deleting %s: %+v", id, errs)
+	}
 }
 
 func checkGone(t *testing.T, typ string, handles ...string) resource.TestCheckFunc {
@@ -157,6 +174,7 @@ func TestAccMetaobject_basic(t *testing.T) {
   }
 `)
 	expectIdentity := statecheck.ExpectIdentity(addr, map[string]knownvalue.Check{"id": knownvalue.StringRegexp(gidRe)})
+	var recreated string
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
@@ -209,6 +227,20 @@ func TestAccMetaobject_basic(t *testing.T) {
 				PreConfig:        func() { setField(t, typ, "zwei", "note", "admin note") },
 				Config:           second,
 				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}},
+			},
+			{
+				// An entry recreated outside Terraform is found again by type and handle, under its new GID.
+				PreConfig: func() {
+					old := lookup(t, typ, "zwei").Id
+					deleteEntry(t, old)
+					recreated = createEntry(t, typ, "zwei", map[string]string{"title": "Zwei", "num": "8", "tags": `["y"]`}, client.MetaobjectStatusActive)
+					if recreated == old {
+						t.Fatal("recreating kept the GID; this step no longer tests the fallback")
+					}
+				},
+				Config:           second,
+				ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}},
+				Check:            resource.TestCheckResourceAttrPtr(addr, "id", &recreated),
 			},
 			{RefreshState: true},
 			{
@@ -316,7 +348,7 @@ func TestAccMetaobject_adopt(t *testing.T) {
 		Steps: []resource.TestStep{
 			{Config: definition(typ)},
 			{
-				PreConfig:   func() { id = createEntry(t, typ, "da", "Schon da") },
+				PreConfig:   func() { id = createEntry(t, typ, "da", map[string]string{"title": "Schon da"}, "") },
 				Config:      entry(typ, body(false)),
 				ExpectError: regexp.MustCompile(`adopt_existing = true`),
 			},
@@ -393,6 +425,86 @@ list "shopify_metaobject" "all" {
 					// The unfiltered list walks every type, this one included.
 					querycheck.ExpectResourceDisplayName("shopify_metaobject.all",
 						queryfilter.ByDisplayName(knownvalue.StringExact(typ+"/gelistet")), knownvalue.StringExact(typ+"/gelistet")),
+				},
+			},
+		},
+	})
+}
+
+// The use case of #48: an entry in a Shopify standard type, enabled by shopify_standard_metaobject_definition.
+// shopify--knowledge-base-fact is enabled on the dev store already, so it is only adopted and stays after destroy.
+func TestAccMetaobject_standardType(t *testing.T) {
+	acctest.Setup(t)
+	const typ = "shopify--knowledge-base-fact"
+	res, err := client.GetMetaobjectDefinitionByType(context.Background(), acctest.Client(t), typ)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.MetaobjectDefinitionByType == nil {
+		t.Skipf("%s is not enabled on the dev store", typ)
+	}
+	handle := "tfacc-" + strings.ToLower(sdkacctest.RandStringFromCharSet(8, sdkacctest.CharSetAlpha))
+	// Values in Shopify's stored form, so import verifies them exactly.
+	cfg := fmt.Sprintf(`
+resource "shopify_standard_metaobject_definition" "kbf" {
+  type = %q
+}
+
+resource "shopify_metaobject" "test" {
+  type                = shopify_standard_metaobject_definition.kbf.type
+  handle              = %q
+  allow_data_deletion = true
+  fields = {
+    title             = "TF acceptance test"
+    published         = "false"
+    value_number      = "1.5"
+    value_string_list = jsonencode(["a", "b"])
+  }
+}
+`, typ, handle)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { acctest.PreCheck(t) },
+		ProtoV6ProviderFactories: acctest.ProtoV6ProviderFactories,
+		TerraformVersionChecks:   []tfversion.TerraformVersionCheck{tfversion.SkipBelow(tfversion.Version1_14_0)},
+		CheckDestroy:             checkGone(t, typ, handle),
+		Steps: []resource.TestStep{
+			{
+				Config: cfg,
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(addr, tfjsonpath.New("type"), knownvalue.StringExact(typ)),
+					statecheck.ExpectKnownValue(addr, tfjsonpath.New("display_name"), knownvalue.StringExact("TF acceptance test")),
+					// The type has no publishable capability.
+					statecheck.ExpectKnownValue(addr, tfjsonpath.New("status"), knownvalue.Null()),
+				},
+			},
+			{Config: cfg, ConfigPlanChecks: resource.ConfigPlanChecks{PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()}}},
+			{
+				ResourceName:            addr,
+				ImportState:             true,
+				ImportStateId:           typ + "/" + handle,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"allow_data_deletion"},
+			},
+			{
+				Query: true,
+				Config: fmt.Sprintf(`
+provider "shopify" {}
+
+list "shopify_metaobject" "kbf" {
+  provider         = shopify
+  include_resource = true
+  config {
+    type = %q
+  }
+}
+`, typ),
+				QueryResultChecks: []querycheck.QueryResultCheck{
+					querycheck.ExpectResourceKnownValues("shopify_metaobject.kbf",
+						queryfilter.ByDisplayName(knownvalue.StringExact(typ+"/"+handle)),
+						[]querycheck.KnownValueCheck{
+							{Path: field("value_string_list"), KnownValue: knownvalue.StringExact(`["a","b"]`)},
+							{Path: tfjsonpath.New("fields"), KnownValue: knownvalue.MapSizeExact(4)},
+						}),
 				},
 			},
 		},

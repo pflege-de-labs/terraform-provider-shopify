@@ -9,7 +9,7 @@ import (
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
 )
 
-// Pairs from the dev store probe (2026-11-17): what was written, and what Shopify returned.
+// The number, boolean, json, list and rich text pairs are from the dev store probe (2026-11-17); the rest follow the rules in resource model §9t.
 func TestValueEqual(t *testing.T) {
 	cases := []struct {
 		typ, written, read string
