@@ -47,6 +47,10 @@ resource "shopify_product" "bettschutz" {
       inventory_policy = "DENY"
       tracked          = true
       weight           = { value = 0.4, unit = "KILOGRAMS" }
+      # Variant metafields work like the product's; a variant without `metafields` is unmanaged.
+      metafields = {
+        "custom.pack_size" = { type = "number_integer", value = "10" }
+      }
     },
     { option_values = { "Größe" = "M" }, price = "24.90", compare_at_price = "29.90" },
   ]
