@@ -47,3 +47,24 @@ mutation DeleteMetafields(
     }
   }
 }
+
+# Pages the shop's own metafields; the shop ID comes in the same call because it is the owner ID for writes.
+query GetShopMetafields(
+  $after: String
+) {
+  shop {
+    id
+    metafields(first: 250, after: $after) {
+      nodes {
+        namespace
+        key
+        type
+        value
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}

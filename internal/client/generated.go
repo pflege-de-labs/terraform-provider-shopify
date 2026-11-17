@@ -17963,6 +17963,121 @@ func (v *GetSegmentSegment) __premarshalJSON() (*__premarshalGetSegmentSegment, 
 	return &retval, nil
 }
 
+// GetShopMetafieldsResponse is returned by GetShopMetafields on success.
+type GetShopMetafieldsResponse struct {
+	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
+	// business and store management settings for the shop.
+	Shop GetShopMetafieldsShop `json:"shop"`
+}
+
+// GetShop returns GetShopMetafieldsResponse.Shop, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsResponse) GetShop() GetShopMetafieldsShop { return v.Shop }
+
+// GetShopMetafieldsShop includes the requested fields of the GraphQL type Shop.
+// The GraphQL type's documentation follows.
+//
+// The central configuration and settings hub for a Shopify store. Access business information, operational preferences, feature availability, and store-wide settings that control how the shop operates.
+//
+// Includes core business details like the shop name, contact emails, billing address, and currency settings. The shop configuration determines customer account requirements, available sales channels, enabled features, payment settings, and policy documents. Also provides access to shop-level resources such as staff members, fulfillment services, navigation settings, and storefront access tokens.
+type GetShopMetafieldsShop struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A list of [custom fields](https://shopify.dev/docs/apps/build/custom-data)
+	// that a merchant associates with a Shopify resource.
+	Metafields GetShopMetafieldsShopMetafieldsMetafieldConnection `json:"metafields"`
+}
+
+// GetId returns GetShopMetafieldsShop.Id, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShop) GetId() string { return v.Id }
+
+// GetMetafields returns GetShopMetafieldsShop.Metafields, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShop) GetMetafields() GetShopMetafieldsShopMetafieldsMetafieldConnection {
+	return v.Metafields
+}
+
+// GetShopMetafieldsShopMetafieldsMetafieldConnection includes the requested fields of the GraphQL type MetafieldConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Metafields.
+type GetShopMetafieldsShopMetafieldsMetafieldConnection struct {
+	// A list of nodes that are contained in MetafieldEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetShopMetafieldsShopMetafieldsMetafieldConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnection) GetNodes() []GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetShopMetafieldsShopMetafieldsMetafieldConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnection) GetPageInfo() GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin-graphql/latest/interfaces/HasMetafields).
+// Some examples of the data that metafields enable you to store are specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a value along with type information for that value.
+type GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield struct {
+	// The container for a group of metafields that the metafield is associated with.
+	Namespace string `json:"namespace"`
+	// The unique identifier for the metafield within its namespace.
+	Key string `json:"key"`
+	// The type of data that's stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type string `json:"type"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield) GetNamespace() string {
+	return v.Namespace
+}
+
+// GetKey returns GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield.Key, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield) GetKey() string {
+	return v.Key
+}
+
+// GetType returns GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield.Type, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield) GetType() string {
+	return v.Type
+}
+
+// GetValue returns GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield) GetValue() string {
+	return v.Value
+}
+
+// GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
 // GetShopResponse is returned by GetShop on success.
 type GetShopResponse struct {
 	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
@@ -33004,6 +33119,14 @@ type __GetSegmentInput struct {
 // GetId returns __GetSegmentInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetSegmentInput) GetId() string { return v.Id }
 
+// __GetShopMetafieldsInput is used internally by genqlient
+type __GetShopMetafieldsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __GetShopMetafieldsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetShopMetafieldsInput) GetAfter() *string { return v.After }
+
 // __GetWebPresenceInput is used internally by genqlient
 type __GetWebPresenceInput struct {
 	Id string `json:"id"`
@@ -39476,6 +39599,53 @@ func GetShop(
 	}
 
 	data_ = &GetShopResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetShopMetafields.
+const GetShopMetafields_Operation = `
+query GetShopMetafields ($after: String) {
+	shop {
+		id
+		metafields(first: 250, after: $after) {
+			nodes {
+				namespace
+				key
+				type
+				value
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// Pages the shop's own metafields; the shop ID comes in the same call because it is the owner ID for writes.
+func GetShopMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *GetShopMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetShopMetafields",
+		Query:  GetShopMetafields_Operation,
+		Variables: &__GetShopMetafieldsInput{
+			After: after,
+		},
+	}
+
+	data_ = &GetShopMetafieldsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
