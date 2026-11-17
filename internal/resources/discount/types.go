@@ -58,3 +58,10 @@ func (v rfc3339Validator) ValidateString(ctx context.Context, req validator.Stri
 		resp.Diagnostics.AddAttributeError(req.Path, "Invalid time", "Must be "+v.Description(ctx)+": "+err.Error())
 	}
 }
+
+type decimalValue = patterns.JSONValue[decimalEquality]
+
+var (
+	decimalString = patterns.JSONString[decimalEquality]
+	decimalNull   = patterns.JSONNull[decimalEquality]
+)

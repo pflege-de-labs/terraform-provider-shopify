@@ -28,6 +28,11 @@ resource "shopify_collection" "empfehlungen" {
   title       = "Unsere Empfehlungen"
   product_ids = [shopify_product.bettschutz.id]
 
+  # Only these keys are managed; value = "" deletes one.
+  metafields = {
+    "custom.subtitle" = { type = "single_line_text_field", value = "Von uns ausgewählt" }
+  }
+
   # Shopify downloads src and serves its own copy; removing the block leaves the image in place.
   image = {
     src      = shopify_file.empfehlungen_banner.url

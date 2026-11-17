@@ -42,6 +42,7 @@ type model struct {
 	ProductIDs      types.Set       `tfsdk:"product_ids"`
 	SourceID        types.String    `tfsdk:"source_id"`
 	Image           types.Object    `tfsdk:"image"`
+	Metafields      types.Map       `tfsdk:"metafields"`
 	PublicationIDs  types.Set       `tfsdk:"publication_ids"`
 	AdoptExisting   types.Bool      `tfsdk:"adopt_existing"`
 }

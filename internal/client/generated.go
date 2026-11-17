@@ -4134,6 +4134,123 @@ func (v *CreateDiscountAutomaticBasicResponse) GetDiscountAutomaticBasicCreate()
 	return v.DiscountAutomaticBasicCreate
 }
 
+// CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayload includes the requested fields of the GraphQL type DiscountAutomaticBxgyCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountAutomaticBxgyCreate` mutation.
+type CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayload struct {
+	// The automatic discount that was created.
+	AutomaticDiscountNode *CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode `json:"automaticDiscountNode"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetAutomaticDiscountNode returns CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayload.AutomaticDiscountNode, and is useful for accessing the field via an interface.
+func (v *CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayload) GetAutomaticDiscountNode() *CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode {
+	return v.AutomaticDiscountNode
+}
+
+// GetUserErrors returns CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode includes the requested fields of the GraphQL type DiscountAutomaticNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticNode` object enables you to manage [automatic discounts](https://help.shopify.com/manual/discounts/discount-types#automatic-discounts) that are applied when an order meets specific criteria. You can create amount off, free shipping, or buy X get Y automatic discounts. For example, you can offer customers a free shipping discount that applies when conditions are met. Or you can offer customers a buy X get Y discount that's automatically applied when customers spend a specified amount of money, or a specified quantity of products.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode.Id, and is useful for accessing the field via an interface.
+func (v *CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode) GetId() string {
+	return v.Id
+}
+
+// CreateDiscountAutomaticBxgyResponse is returned by CreateDiscountAutomaticBxgy on success.
+type CreateDiscountAutomaticBxgyResponse struct {
+	// Creates a
+	// [buy X get Y discount (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+	// that's automatically applied on a cart and at checkout.
+	//
+	// > Note:
+	// > To create code discounts, use the
+	// [`discountCodeBxgyCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountCodeBxgyCreate)
+	// mutation.
+	DiscountAutomaticBxgyCreate *CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayload `json:"discountAutomaticBxgyCreate"`
+}
+
+// GetDiscountAutomaticBxgyCreate returns CreateDiscountAutomaticBxgyResponse.DiscountAutomaticBxgyCreate, and is useful for accessing the field via an interface.
+func (v *CreateDiscountAutomaticBxgyResponse) GetDiscountAutomaticBxgyCreate() *CreateDiscountAutomaticBxgyDiscountAutomaticBxgyCreateDiscountAutomaticBxgyCreatePayload {
+	return v.DiscountAutomaticBxgyCreate
+}
+
+// CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayload includes the requested fields of the GraphQL type DiscountAutomaticFreeShippingCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountAutomaticFreeShippingCreate` mutation.
+type CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayload struct {
+	// The automatic free shipping discount that was created.
+	AutomaticDiscountNode *CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode `json:"automaticDiscountNode"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetAutomaticDiscountNode returns CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayload.AutomaticDiscountNode, and is useful for accessing the field via an interface.
+func (v *CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayload) GetAutomaticDiscountNode() *CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode {
+	return v.AutomaticDiscountNode
+}
+
+// GetUserErrors returns CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode includes the requested fields of the GraphQL type DiscountAutomaticNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticNode` object enables you to manage [automatic discounts](https://help.shopify.com/manual/discounts/discount-types#automatic-discounts) that are applied when an order meets specific criteria. You can create amount off, free shipping, or buy X get Y automatic discounts. For example, you can offer customers a free shipping discount that applies when conditions are met. Or you can offer customers a buy X get Y discount that's automatically applied when customers spend a specified amount of money, or a specified quantity of products.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode.Id, and is useful for accessing the field via an interface.
+func (v *CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayloadAutomaticDiscountNodeDiscountAutomaticNode) GetId() string {
+	return v.Id
+}
+
+// CreateDiscountAutomaticFreeShippingResponse is returned by CreateDiscountAutomaticFreeShipping on success.
+type CreateDiscountAutomaticFreeShippingResponse struct {
+	// Creates automatic free shipping discounts that apply to qualifying orders without requiring discount codes. These promotions automatically activate when customers meet specified criteria, streamlining the checkout experience.
+	//
+	// For example, a store might create an automatic free shipping discount for orders over variable pricing to encourage larger purchases, or offer free shipping to specific customer segments during promotional periods.
+	//
+	// Use `DiscountAutomaticFreeShippingCreate` to:
+	// - Set up code-free shipping promotions
+	// - Create order value-based shipping incentives
+	// - Target specific customer groups with shipping benefits
+	// - Establish location-based shipping discounts
+	//
+	// The mutation validates discount configuration and returns the created automatic discount node along with any configuration errors that need resolution.
+	//
+	// Learn more about [automatic discounts](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticNode).
+	DiscountAutomaticFreeShippingCreate *CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayload `json:"discountAutomaticFreeShippingCreate"`
+}
+
+// GetDiscountAutomaticFreeShippingCreate returns CreateDiscountAutomaticFreeShippingResponse.DiscountAutomaticFreeShippingCreate, and is useful for accessing the field via an interface.
+func (v *CreateDiscountAutomaticFreeShippingResponse) GetDiscountAutomaticFreeShippingCreate() *CreateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingCreateDiscountAutomaticFreeShippingCreatePayload {
+	return v.DiscountAutomaticFreeShippingCreate
+}
+
 // CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayload includes the requested fields of the GraphQL type DiscountCodeBasicCreatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -4184,6 +4301,114 @@ type CreateDiscountCodeBasicResponse struct {
 // GetDiscountCodeBasicCreate returns CreateDiscountCodeBasicResponse.DiscountCodeBasicCreate, and is useful for accessing the field via an interface.
 func (v *CreateDiscountCodeBasicResponse) GetDiscountCodeBasicCreate() *CreateDiscountCodeBasicDiscountCodeBasicCreateDiscountCodeBasicCreatePayload {
 	return v.DiscountCodeBasicCreate
+}
+
+// CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayload includes the requested fields of the GraphQL type DiscountCodeBxgyCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountCodeBxgyCreate` mutation.
+type CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayload struct {
+	// The code discount that was created.
+	CodeDiscountNode *CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayloadCodeDiscountNodeDiscountCodeNode `json:"codeDiscountNode"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetCodeDiscountNode returns CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayload.CodeDiscountNode, and is useful for accessing the field via an interface.
+func (v *CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayload) GetCodeDiscountNode() *CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayloadCodeDiscountNodeDiscountCodeNode {
+	return v.CodeDiscountNode
+}
+
+// GetUserErrors returns CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayloadCodeDiscountNodeDiscountCodeNode includes the requested fields of the GraphQL type DiscountCodeNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeNode` object enables you to manage [code discounts](https://help.shopify.com/manual/discounts/discount-types#discount-codes) that are applied when customers enter a code at checkout. For example, you can offer discounts where customers have to enter a code to redeem an amount off discount on products, variants, or collections in a store. Or, you can offer discounts where customers have to enter a code to get free shipping. Merchants can create and share discount codes individually with customers.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayloadCodeDiscountNodeDiscountCodeNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayloadCodeDiscountNodeDiscountCodeNode.Id, and is useful for accessing the field via an interface.
+func (v *CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayloadCodeDiscountNodeDiscountCodeNode) GetId() string {
+	return v.Id
+}
+
+// CreateDiscountCodeBxgyResponse is returned by CreateDiscountCodeBxgy on success.
+type CreateDiscountCodeBxgyResponse struct {
+	// Creates a
+	// [buy X get Y discount (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+	// that's applied on a cart and at checkout when a customer enters a code.
+	//
+	// > Note:
+	// > To create discounts that are automatically applied on a cart and at checkout, use the
+	// [`discountAutomaticBxgyCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountAutomaticBxgyCreate)
+	// mutation.
+	DiscountCodeBxgyCreate *CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayload `json:"discountCodeBxgyCreate"`
+}
+
+// GetDiscountCodeBxgyCreate returns CreateDiscountCodeBxgyResponse.DiscountCodeBxgyCreate, and is useful for accessing the field via an interface.
+func (v *CreateDiscountCodeBxgyResponse) GetDiscountCodeBxgyCreate() *CreateDiscountCodeBxgyDiscountCodeBxgyCreateDiscountCodeBxgyCreatePayload {
+	return v.DiscountCodeBxgyCreate
+}
+
+// CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayload includes the requested fields of the GraphQL type DiscountCodeFreeShippingCreatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountCodeFreeShippingCreate` mutation.
+type CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayload struct {
+	// The discount code that was created.
+	CodeDiscountNode *CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayloadCodeDiscountNodeDiscountCodeNode `json:"codeDiscountNode"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetCodeDiscountNode returns CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayload.CodeDiscountNode, and is useful for accessing the field via an interface.
+func (v *CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayload) GetCodeDiscountNode() *CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayloadCodeDiscountNodeDiscountCodeNode {
+	return v.CodeDiscountNode
+}
+
+// GetUserErrors returns CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayloadCodeDiscountNodeDiscountCodeNode includes the requested fields of the GraphQL type DiscountCodeNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeNode` object enables you to manage [code discounts](https://help.shopify.com/manual/discounts/discount-types#discount-codes) that are applied when customers enter a code at checkout. For example, you can offer discounts where customers have to enter a code to redeem an amount off discount on products, variants, or collections in a store. Or, you can offer discounts where customers have to enter a code to get free shipping. Merchants can create and share discount codes individually with customers.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayloadCodeDiscountNodeDiscountCodeNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayloadCodeDiscountNodeDiscountCodeNode.Id, and is useful for accessing the field via an interface.
+func (v *CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayloadCodeDiscountNodeDiscountCodeNode) GetId() string {
+	return v.Id
+}
+
+// CreateDiscountCodeFreeShippingResponse is returned by CreateDiscountCodeFreeShipping on success.
+type CreateDiscountCodeFreeShippingResponse struct {
+	// Creates an [free shipping discount](https://help.shopify.com/manual/discounts/discount-types/free-shipping) that's applied on a cart and at checkout when a customer enters a code.
+	//
+	// > Note:
+	// > To create discounts that are automatically applied on a cart and at checkout, use the [`discountAutomaticFreeShippingCreate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountAutomaticFreeShippingCreate) mutation.
+	DiscountCodeFreeShippingCreate *CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayload `json:"discountCodeFreeShippingCreate"`
+}
+
+// GetDiscountCodeFreeShippingCreate returns CreateDiscountCodeFreeShippingResponse.DiscountCodeFreeShippingCreate, and is useful for accessing the field via an interface.
+func (v *CreateDiscountCodeFreeShippingResponse) GetDiscountCodeFreeShippingCreate() *CreateDiscountCodeFreeShippingDiscountCodeFreeShippingCreateDiscountCodeFreeShippingCreatePayload {
+	return v.DiscountCodeFreeShippingCreate
 }
 
 // CreateFileFileCreateFileCreatePayload includes the requested fields of the GraphQL type FileCreatePayload.
@@ -9304,6 +9529,196 @@ func (v *DiscountAutomaticBasicInput) GetCustomerGets() *DiscountCustomerGetsInp
 // GetRecurringCycleLimit returns DiscountAutomaticBasicInput.RecurringCycleLimit, and is useful for accessing the field via an interface.
 func (v *DiscountAutomaticBasicInput) GetRecurringCycleLimit() *int { return v.RecurringCycleLimit }
 
+// The input fields for creating or updating a
+// [buy X get Y discount (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+// that's automatically applied on a cart and at checkout.
+//
+// When creating, required fields are:
+// - `customerBuys`
+// - `customerGets`
+// - `startsAt`
+// - `title`
+type DiscountAutomaticBxgyInput struct {
+	// The
+	// [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// that you can use in combination with
+	// [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types),
+	// and the product discount tags that determine which product discounts can apply
+	// together on the same cart line.
+	CombinesWith *DiscountCombinesWithInput `json:"combinesWith,omitempty"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title *string `json:"title,omitempty"`
+	// The date and time when the discount becomes active and is available to customers.
+	StartsAt *string `json:"startsAt,omitempty"`
+	// The date and time when the discount expires and is no longer available to customers.
+	// For discounts without a fixed expiration date, specify `null`.
+	EndsAt *string `json:"endsAt,omitempty"`
+	// The context defining which buyers can use the discount.
+	// You can target specific customer IDs, customer segments, or make the discount available to all buyers.
+	// Discounts automatically apply on Point of Sale (POS) for Pro locations when the context is not set to ALL.
+	Context *DiscountContextInput `json:"context,omitempty"`
+	// A list of searchable keywords that are associated with the discount.
+	//
+	// Use these tags on product discounts to determine which other product discounts can
+	// apply to the same cart line when you configure
+	// `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+	//
+	// For example, you can apply a `loyalty` tag to discounts
+	// that are associated with a loyalty program.
+	//
+	// Updating `tags` overwrites any existing tags that were previously added to the discount.
+	// To add new tags without overwriting existing tags, use the
+	// [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// mutation.
+	Tags []string `json:"tags,omitempty"`
+	// The maximum number of times that the discount can be applied to an order.
+	UsesPerOrderLimit *string `json:"usesPerOrderLimit,omitempty"`
+	// The items eligible for the discount and the required quantity of each to receive the discount.
+	CustomerBuys *DiscountCustomerBuysInput `json:"customerBuys,omitempty"`
+	// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+	CustomerGets *DiscountCustomerGetsInput `json:"customerGets,omitempty"`
+}
+
+// GetCombinesWith returns DiscountAutomaticBxgyInput.CombinesWith, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBxgyInput) GetCombinesWith() *DiscountCombinesWithInput {
+	return v.CombinesWith
+}
+
+// GetTitle returns DiscountAutomaticBxgyInput.Title, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBxgyInput) GetTitle() *string { return v.Title }
+
+// GetStartsAt returns DiscountAutomaticBxgyInput.StartsAt, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBxgyInput) GetStartsAt() *string { return v.StartsAt }
+
+// GetEndsAt returns DiscountAutomaticBxgyInput.EndsAt, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBxgyInput) GetEndsAt() *string { return v.EndsAt }
+
+// GetContext returns DiscountAutomaticBxgyInput.Context, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBxgyInput) GetContext() *DiscountContextInput { return v.Context }
+
+// GetTags returns DiscountAutomaticBxgyInput.Tags, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBxgyInput) GetTags() []string { return v.Tags }
+
+// GetUsesPerOrderLimit returns DiscountAutomaticBxgyInput.UsesPerOrderLimit, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBxgyInput) GetUsesPerOrderLimit() *string { return v.UsesPerOrderLimit }
+
+// GetCustomerBuys returns DiscountAutomaticBxgyInput.CustomerBuys, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBxgyInput) GetCustomerBuys() *DiscountCustomerBuysInput {
+	return v.CustomerBuys
+}
+
+// GetCustomerGets returns DiscountAutomaticBxgyInput.CustomerGets, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticBxgyInput) GetCustomerGets() *DiscountCustomerGetsInput {
+	return v.CustomerGets
+}
+
+// The input fields for creating or updating a
+// [free shipping discount](https://help.shopify.com/manual/discounts/discount-types/free-shipping)
+// that's automatically applied on a cart and at checkout.
+//
+// When creating, required fields are:
+// - `startsAt`
+// - `title`
+type DiscountAutomaticFreeShippingInput struct {
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title *string `json:"title,omitempty"`
+	// The date and time when the discount becomes active and is available to customers.
+	StartsAt *string `json:"startsAt,omitempty"`
+	// The date and time when the discount expires and is no longer available to customers.
+	// For discounts without a fixed expiration date, specify `null`.
+	EndsAt *string `json:"endsAt,omitempty"`
+	// The context defining which buyers can use the discount.
+	// You can target specific customer IDs, customer segments, or make the discount available to all buyers.
+	// Discounts automatically apply on Point of Sale (POS) for Pro locations when the context is not set to ALL.
+	Context *DiscountContextInput `json:"context,omitempty"`
+	// The
+	// [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// that you can use in combination with the shipping discount.
+	CombinesWith *DiscountCombinesWithInput `json:"combinesWith,omitempty"`
+	// A list of searchable keywords that are associated with the discount.
+	//
+	// Use these tags on product discounts to determine which other product discounts can
+	// apply to the same cart line when you configure
+	// `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+	//
+	// For example, you can apply a `loyalty` tag to discounts
+	// that are associated with a loyalty program.
+	//
+	// Updating `tags` overwrites any existing tags that were previously added to the discount.
+	// To add new tags without overwriting existing tags, use the
+	// [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// mutation.
+	Tags []string `json:"tags,omitempty"`
+	// The minimum subtotal or quantity of items that are required for the discount to be applied.
+	MinimumRequirement *DiscountMinimumRequirementInput `json:"minimumRequirement,omitempty"`
+	// A list of destinations where the discount will apply.
+	Destination *DiscountShippingDestinationSelectionInput `json:"destination,omitempty"`
+	// The maximum shipping price that qualifies for the discount.
+	MaximumShippingPrice *string `json:"maximumShippingPrice,omitempty"`
+	// Whether the discount applies on regular one-time-purchase items.
+	AppliesOnOneTimePurchase *bool `json:"appliesOnOneTimePurchase,omitempty"`
+	// Whether the discount applies on subscription items.
+	// [Subscriptions](https://shopify.dev/docs/apps/launch/billing/subscription-billing/offer-subscription-discounts)
+	// enable customers to purchase products
+	// on a recurring basis.
+	AppliesOnSubscription *bool `json:"appliesOnSubscription,omitempty"`
+	// The number of billing cycles for which the discount can be applied,
+	// which is useful for subscription-based discounts. For example, if you set this field
+	// to `3`, then the discount only applies to the first three billing cycles of a
+	// subscription. If you specify `0`, then the discount applies indefinitely.
+	RecurringCycleLimit *int `json:"recurringCycleLimit,omitempty"`
+}
+
+// GetTitle returns DiscountAutomaticFreeShippingInput.Title, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticFreeShippingInput) GetTitle() *string { return v.Title }
+
+// GetStartsAt returns DiscountAutomaticFreeShippingInput.StartsAt, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticFreeShippingInput) GetStartsAt() *string { return v.StartsAt }
+
+// GetEndsAt returns DiscountAutomaticFreeShippingInput.EndsAt, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticFreeShippingInput) GetEndsAt() *string { return v.EndsAt }
+
+// GetContext returns DiscountAutomaticFreeShippingInput.Context, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticFreeShippingInput) GetContext() *DiscountContextInput { return v.Context }
+
+// GetCombinesWith returns DiscountAutomaticFreeShippingInput.CombinesWith, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticFreeShippingInput) GetCombinesWith() *DiscountCombinesWithInput {
+	return v.CombinesWith
+}
+
+// GetTags returns DiscountAutomaticFreeShippingInput.Tags, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticFreeShippingInput) GetTags() []string { return v.Tags }
+
+// GetMinimumRequirement returns DiscountAutomaticFreeShippingInput.MinimumRequirement, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticFreeShippingInput) GetMinimumRequirement() *DiscountMinimumRequirementInput {
+	return v.MinimumRequirement
+}
+
+// GetDestination returns DiscountAutomaticFreeShippingInput.Destination, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticFreeShippingInput) GetDestination() *DiscountShippingDestinationSelectionInput {
+	return v.Destination
+}
+
+// GetMaximumShippingPrice returns DiscountAutomaticFreeShippingInput.MaximumShippingPrice, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticFreeShippingInput) GetMaximumShippingPrice() *string {
+	return v.MaximumShippingPrice
+}
+
+// GetAppliesOnOneTimePurchase returns DiscountAutomaticFreeShippingInput.AppliesOnOneTimePurchase, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticFreeShippingInput) GetAppliesOnOneTimePurchase() *bool {
+	return v.AppliesOnOneTimePurchase
+}
+
+// GetAppliesOnSubscription returns DiscountAutomaticFreeShippingInput.AppliesOnSubscription, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticFreeShippingInput) GetAppliesOnSubscription() *bool {
+	return v.AppliesOnSubscription
+}
+
+// GetRecurringCycleLimit returns DiscountAutomaticFreeShippingInput.RecurringCycleLimit, and is useful for accessing the field via an interface.
+func (v *DiscountAutomaticFreeShippingInput) GetRecurringCycleLimit() *int {
+	return v.RecurringCycleLimit
+}
+
 // All buyers are eligible for the discount.
 type DiscountBuyerSelection string
 
@@ -9408,6 +9823,220 @@ func (v *DiscountCodeBasicInput) GetCustomerGets() *DiscountCustomerGetsInput { 
 
 // GetRecurringCycleLimit returns DiscountCodeBasicInput.RecurringCycleLimit, and is useful for accessing the field via an interface.
 func (v *DiscountCodeBasicInput) GetRecurringCycleLimit() *int { return v.RecurringCycleLimit }
+
+// The input fields for creating or updating a
+// [buy X get Y discount (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+// that's applied on a cart and at checkout when a customer enters a code.
+//
+// When creating, required fields are:
+// - `code`
+// - `context` (or deprecated `customerSelection`)
+// - `customerBuys`
+// - `customerGets`
+// - `startsAt`
+// - `title`
+type DiscountCodeBxgyInput struct {
+	// The
+	// [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// that you can use in combination with
+	// [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types),
+	// and the product discount tags that determine which product discounts can apply
+	// together on the same cart line.
+	CombinesWith *DiscountCombinesWithInput `json:"combinesWith,omitempty"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title *string `json:"title,omitempty"`
+	// The date and time when the discount becomes active and is available to customers.
+	StartsAt *string `json:"startsAt,omitempty"`
+	// The date and time when the discount expires and is no longer available to customers.
+	// For discounts without a fixed expiration date, specify `null`.
+	EndsAt *string `json:"endsAt,omitempty"`
+	// Whether a customer can only use the discount once.
+	AppliesOncePerCustomer *bool `json:"appliesOncePerCustomer,omitempty"`
+	// The code that customers use to apply the discount.
+	Code *string `json:"code,omitempty"`
+	// The maximum number of times the discount can be redeemed.
+	// For unlimited usage, specify `null`.
+	UsageLimit *int `json:"usageLimit,omitempty"`
+	// The context defining which buyers can use the discount.
+	// You can target specific customer IDs, customer segments, or make the discount available to all buyers.
+	Context *DiscountContextInput `json:"context,omitempty"`
+	// A list of searchable keywords that are associated with the discount.
+	//
+	// Use these tags on product discounts to determine which other product discounts can
+	// apply to the same cart line when you configure
+	// `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+	//
+	// For example, you can apply a `loyalty` tag to discounts
+	// that are associated with a loyalty program.
+	//
+	// Updating `tags` overwrites any existing tags that were previously added to the discount.
+	// To add new tags without overwriting existing tags, use the
+	// [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// mutation.
+	Tags []string `json:"tags,omitempty"`
+	// The items eligible for the discount and the required quantity of each to receive the discount.
+	CustomerBuys *DiscountCustomerBuysInput `json:"customerBuys,omitempty"`
+	// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+	CustomerGets *DiscountCustomerGetsInput `json:"customerGets,omitempty"`
+	// The maximum number of times that the discount can be applied to an order.
+	UsesPerOrderLimit *int `json:"usesPerOrderLimit,omitempty"`
+}
+
+// GetCombinesWith returns DiscountCodeBxgyInput.CombinesWith, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBxgyInput) GetCombinesWith() *DiscountCombinesWithInput { return v.CombinesWith }
+
+// GetTitle returns DiscountCodeBxgyInput.Title, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBxgyInput) GetTitle() *string { return v.Title }
+
+// GetStartsAt returns DiscountCodeBxgyInput.StartsAt, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBxgyInput) GetStartsAt() *string { return v.StartsAt }
+
+// GetEndsAt returns DiscountCodeBxgyInput.EndsAt, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBxgyInput) GetEndsAt() *string { return v.EndsAt }
+
+// GetAppliesOncePerCustomer returns DiscountCodeBxgyInput.AppliesOncePerCustomer, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBxgyInput) GetAppliesOncePerCustomer() *bool { return v.AppliesOncePerCustomer }
+
+// GetCode returns DiscountCodeBxgyInput.Code, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBxgyInput) GetCode() *string { return v.Code }
+
+// GetUsageLimit returns DiscountCodeBxgyInput.UsageLimit, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBxgyInput) GetUsageLimit() *int { return v.UsageLimit }
+
+// GetContext returns DiscountCodeBxgyInput.Context, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBxgyInput) GetContext() *DiscountContextInput { return v.Context }
+
+// GetTags returns DiscountCodeBxgyInput.Tags, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBxgyInput) GetTags() []string { return v.Tags }
+
+// GetCustomerBuys returns DiscountCodeBxgyInput.CustomerBuys, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBxgyInput) GetCustomerBuys() *DiscountCustomerBuysInput { return v.CustomerBuys }
+
+// GetCustomerGets returns DiscountCodeBxgyInput.CustomerGets, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBxgyInput) GetCustomerGets() *DiscountCustomerGetsInput { return v.CustomerGets }
+
+// GetUsesPerOrderLimit returns DiscountCodeBxgyInput.UsesPerOrderLimit, and is useful for accessing the field via an interface.
+func (v *DiscountCodeBxgyInput) GetUsesPerOrderLimit() *int { return v.UsesPerOrderLimit }
+
+// The input fields for creating or updating a [free shipping discount](https://help.shopify.com/manual/discounts/discount-types/free-shipping) that's applied on a cart and at checkout when a customer enters a code.
+//
+// When creating, required fields are:
+// - `code`
+// - `context` (or deprecated `customerSelection`)
+// - `startsAt`
+// - `title`
+type DiscountCodeFreeShippingInput struct {
+	// The
+	// [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// that you can use in combination with the shipping discount.
+	CombinesWith *DiscountCombinesWithInput `json:"combinesWith,omitempty"`
+	// The discount's name that displays to merchants in the Shopify admin and to customers.
+	Title *string `json:"title,omitempty"`
+	// The date and time when the discount becomes active and is available to customers.
+	StartsAt *string `json:"startsAt,omitempty"`
+	// The date and time when the discount expires and is no longer available to customers.
+	// For discounts without a fixed expiration date, specify `null`.
+	EndsAt *string `json:"endsAt,omitempty"`
+	// Whether a customer can only use the discount once.
+	AppliesOncePerCustomer *bool `json:"appliesOncePerCustomer,omitempty"`
+	// The code that customers use to apply the discount.
+	Code *string `json:"code,omitempty"`
+	// The maximum number of times the discount can be redeemed.
+	// For unlimited usage, specify `null`.
+	UsageLimit *int `json:"usageLimit,omitempty"`
+	// The context defining which buyers can use the discount.
+	// You can target specific customer IDs, customer segments, or make the discount available to all buyers.
+	Context *DiscountContextInput `json:"context,omitempty"`
+	// A list of searchable keywords that are associated with the discount.
+	//
+	// Use these tags on product discounts to determine which other product discounts can
+	// apply to the same cart line when you configure
+	// `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+	//
+	// For example, you can apply a `loyalty` tag to discounts
+	// that are associated with a loyalty program.
+	//
+	// Updating `tags` overwrites any existing tags that were previously added to the discount.
+	// To add new tags without overwriting existing tags, use the
+	// [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+	// mutation.
+	Tags []string `json:"tags,omitempty"`
+	// The minimum subtotal or quantity of items that are required for the discount to be applied.
+	MinimumRequirement *DiscountMinimumRequirementInput `json:"minimumRequirement,omitempty"`
+	// The shipping destinations where the free shipping discount can be applied. You can specify whether the discount applies to all countries, or specify individual countries.
+	Destination *DiscountShippingDestinationSelectionInput `json:"destination,omitempty"`
+	// The maximum shipping price, in the shop's currency, that qualifies for free shipping.
+	// <br/><br/>
+	// For example, if set to 20.00, then only shipping rates that cost $20.00 or less will be made free. To apply the discount to all shipping rates, specify `null`.
+	MaximumShippingPrice *string `json:"maximumShippingPrice,omitempty"`
+	// The number of billing cycles for which the discount can be applied, which is useful for subscription-based discounts.
+	// <br/><br/>
+	// For example, if set to `3`, then the discount only applies to the first three billing cycles of a subscription. If set to `0`, then the discount applies indefinitely.
+	RecurringCycleLimit *int `json:"recurringCycleLimit,omitempty"`
+	// Whether the discount applies on one-time purchases. A one-time purchase is a transaction where you pay a single time for a product, without any ongoing commitments or recurring charges.
+	AppliesOnOneTimePurchase *bool `json:"appliesOnOneTimePurchase,omitempty"`
+	// Whether the discount applies on subscription items. [Subscriptions](https://shopify.dev/docs/apps/launch/billing/subscription-billing/offer-subscription-discounts) enable customers to purchase products on a recurring basis.
+	AppliesOnSubscription *bool `json:"appliesOnSubscription,omitempty"`
+}
+
+// GetCombinesWith returns DiscountCodeFreeShippingInput.CombinesWith, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetCombinesWith() *DiscountCombinesWithInput {
+	return v.CombinesWith
+}
+
+// GetTitle returns DiscountCodeFreeShippingInput.Title, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetTitle() *string { return v.Title }
+
+// GetStartsAt returns DiscountCodeFreeShippingInput.StartsAt, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetStartsAt() *string { return v.StartsAt }
+
+// GetEndsAt returns DiscountCodeFreeShippingInput.EndsAt, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetEndsAt() *string { return v.EndsAt }
+
+// GetAppliesOncePerCustomer returns DiscountCodeFreeShippingInput.AppliesOncePerCustomer, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetAppliesOncePerCustomer() *bool {
+	return v.AppliesOncePerCustomer
+}
+
+// GetCode returns DiscountCodeFreeShippingInput.Code, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetCode() *string { return v.Code }
+
+// GetUsageLimit returns DiscountCodeFreeShippingInput.UsageLimit, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetUsageLimit() *int { return v.UsageLimit }
+
+// GetContext returns DiscountCodeFreeShippingInput.Context, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetContext() *DiscountContextInput { return v.Context }
+
+// GetTags returns DiscountCodeFreeShippingInput.Tags, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetTags() []string { return v.Tags }
+
+// GetMinimumRequirement returns DiscountCodeFreeShippingInput.MinimumRequirement, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetMinimumRequirement() *DiscountMinimumRequirementInput {
+	return v.MinimumRequirement
+}
+
+// GetDestination returns DiscountCodeFreeShippingInput.Destination, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetDestination() *DiscountShippingDestinationSelectionInput {
+	return v.Destination
+}
+
+// GetMaximumShippingPrice returns DiscountCodeFreeShippingInput.MaximumShippingPrice, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetMaximumShippingPrice() *string {
+	return v.MaximumShippingPrice
+}
+
+// GetRecurringCycleLimit returns DiscountCodeFreeShippingInput.RecurringCycleLimit, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetRecurringCycleLimit() *int { return v.RecurringCycleLimit }
+
+// GetAppliesOnOneTimePurchase returns DiscountCodeFreeShippingInput.AppliesOnOneTimePurchase, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetAppliesOnOneTimePurchase() *bool {
+	return v.AppliesOnOneTimePurchase
+}
+
+// GetAppliesOnSubscription returns DiscountCodeFreeShippingInput.AppliesOnSubscription, and is useful for accessing the field via an interface.
+func (v *DiscountCodeFreeShippingInput) GetAppliesOnSubscription() *bool {
+	return v.AppliesOnSubscription
+}
 
 // The input fields for collections attached to a discount.
 type DiscountCollectionsInput struct {
@@ -9791,6 +10420,282 @@ func (v *DiscountContextInput) GetCustomerSegments() *DiscountCustomerSegmentsIn
 // GetMarkets returns DiscountContextInput.Markets, and is useful for accessing the field via an interface.
 func (v *DiscountContextInput) GetMarkets() *DiscountMarketsInput { return v.Markets }
 
+// The input fields for a list of countries to add or remove from the free shipping discount.
+type DiscountCountriesInput struct {
+	// The country codes to add to the list of countries where the discount applies.
+	Add []CountryCode `json:"add,omitempty"`
+	// The country codes to remove from the list of countries where the discount applies.
+	Remove []CountryCode `json:"remove,omitempty"`
+}
+
+// GetAdd returns DiscountCountriesInput.Add, and is useful for accessing the field via an interface.
+func (v *DiscountCountriesInput) GetAdd() []CountryCode { return v.Add }
+
+// GetRemove returns DiscountCountriesInput.Remove, and is useful for accessing the field via an interface.
+func (v *DiscountCountriesInput) GetRemove() []CountryCode { return v.Remove }
+
+// DiscountCustomerBuysFields includes the GraphQL fields of DiscountCustomerBuys requested by the fragment DiscountCustomerBuysFields.
+// The GraphQL type's documentation follows.
+//
+// The prerequisite items and prerequisite value that a customer must have on the order for the discount to be applicable.
+type DiscountCustomerBuysFields struct {
+	// The prerequisite value.
+	Value DiscountCustomerBuysFieldsValueDiscountCustomerBuysValue `json:"-"`
+	// The items required for the discount to be applicable.
+	Items DiscountItemsFields `json:"-"`
+}
+
+// GetValue returns DiscountCustomerBuysFields.Value, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerBuysFields) GetValue() DiscountCustomerBuysFieldsValueDiscountCustomerBuysValue {
+	return v.Value
+}
+
+// GetItems returns DiscountCustomerBuysFields.Items, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerBuysFields) GetItems() DiscountItemsFields { return v.Items }
+
+func (v *DiscountCustomerBuysFields) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DiscountCustomerBuysFields
+		Value json.RawMessage `json:"value"`
+		Items json.RawMessage `json:"items"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DiscountCustomerBuysFields = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Value
+		src := firstPass.Value
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountCustomerBuysFieldsValueDiscountCustomerBuysValue(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountCustomerBuysFields.Value: %w", err)
+			}
+		}
+	}
+
+	{
+		dst := &v.Items
+		src := firstPass.Items
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountItemsFields(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountCustomerBuysFields.Items: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDiscountCustomerBuysFields struct {
+	Value json.RawMessage `json:"value"`
+
+	Items json.RawMessage `json:"items"`
+}
+
+func (v *DiscountCustomerBuysFields) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DiscountCustomerBuysFields) __premarshalJSON() (*__premarshalDiscountCustomerBuysFields, error) {
+	var retval __premarshalDiscountCustomerBuysFields
+
+	{
+
+		dst := &retval.Value
+		src := v.Value
+		var err error
+		*dst, err = __marshalDiscountCustomerBuysFieldsValueDiscountCustomerBuysValue(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountCustomerBuysFields.Value: %w", err)
+		}
+	}
+	{
+
+		dst := &retval.Items
+		src := v.Items
+		var err error
+		*dst, err = __marshalDiscountItemsFields(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountCustomerBuysFields.Items: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// DiscountCustomerBuysFieldsValueDiscountCustomerBuysValue includes the requested fields of the GraphQL interface DiscountCustomerBuysValue.
+//
+// DiscountCustomerBuysFieldsValueDiscountCustomerBuysValue is implemented by the following types:
+// DiscountCustomerBuysFieldsValueDiscountPurchaseAmount
+// DiscountCustomerBuysFieldsValueDiscountQuantity
+// The GraphQL type's documentation follows.
+//
+// The prerequisite for the discount to be applicable. For example, the discount might require a customer to buy a minimum quantity of select items. Alternatively, the discount might require a customer to spend a minimum amount on select items.
+type DiscountCustomerBuysFieldsValueDiscountCustomerBuysValue interface {
+	implementsGraphQLInterfaceDiscountCustomerBuysFieldsValueDiscountCustomerBuysValue()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DiscountCustomerBuysFieldsValueDiscountPurchaseAmount) implementsGraphQLInterfaceDiscountCustomerBuysFieldsValueDiscountCustomerBuysValue() {
+}
+func (v *DiscountCustomerBuysFieldsValueDiscountQuantity) implementsGraphQLInterfaceDiscountCustomerBuysFieldsValueDiscountCustomerBuysValue() {
+}
+
+func __unmarshalDiscountCustomerBuysFieldsValueDiscountCustomerBuysValue(b []byte, v *DiscountCustomerBuysFieldsValueDiscountCustomerBuysValue) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DiscountPurchaseAmount":
+		*v = new(DiscountCustomerBuysFieldsValueDiscountPurchaseAmount)
+		return json.Unmarshal(b, *v)
+	case "DiscountQuantity":
+		*v = new(DiscountCustomerBuysFieldsValueDiscountQuantity)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DiscountCustomerBuysValue.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DiscountCustomerBuysFieldsValueDiscountCustomerBuysValue: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDiscountCustomerBuysFieldsValueDiscountCustomerBuysValue(v *DiscountCustomerBuysFieldsValueDiscountCustomerBuysValue) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DiscountCustomerBuysFieldsValueDiscountPurchaseAmount:
+		typename = "DiscountPurchaseAmount"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountCustomerBuysFieldsValueDiscountPurchaseAmount
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountCustomerBuysFieldsValueDiscountQuantity:
+		typename = "DiscountQuantity"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountCustomerBuysFieldsValueDiscountQuantity
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DiscountCustomerBuysFieldsValueDiscountCustomerBuysValue: "%T"`, v)
+	}
+}
+
+// DiscountCustomerBuysFieldsValueDiscountPurchaseAmount includes the requested fields of the GraphQL type DiscountPurchaseAmount.
+// The GraphQL type's documentation follows.
+//
+// A purchase amount in the context of a discount. This object can be used to define the minimum purchase amount required for a discount to be applicable.
+type DiscountCustomerBuysFieldsValueDiscountPurchaseAmount struct {
+	Typename *string `json:"__typename"`
+	// The purchase amount in decimal format.
+	Amount string `json:"amount"`
+}
+
+// GetTypename returns DiscountCustomerBuysFieldsValueDiscountPurchaseAmount.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerBuysFieldsValueDiscountPurchaseAmount) GetTypename() *string {
+	return v.Typename
+}
+
+// GetAmount returns DiscountCustomerBuysFieldsValueDiscountPurchaseAmount.Amount, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerBuysFieldsValueDiscountPurchaseAmount) GetAmount() string { return v.Amount }
+
+// DiscountCustomerBuysFieldsValueDiscountQuantity includes the requested fields of the GraphQL type DiscountQuantity.
+// The GraphQL type's documentation follows.
+//
+// Defines a quantity threshold for discount eligibility or application. This simple object specifies the number of items required to trigger or calculate discount benefits.
+//
+// For example, a "Buy 3, Get 1 Free" promotion would use DiscountQuantity to define the minimum purchase quantity of 3 items, or a bulk discount might specify quantity tiers like 10+ items for wholesale pricing.
+//
+// The quantity value determines how discounts interact with cart contents, whether setting minimum purchase requirements or defining quantity-based discount calculations.
+type DiscountCustomerBuysFieldsValueDiscountQuantity struct {
+	Typename *string `json:"__typename"`
+	// The quantity of items.
+	Quantity string `json:"quantity"`
+}
+
+// GetTypename returns DiscountCustomerBuysFieldsValueDiscountQuantity.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerBuysFieldsValueDiscountQuantity) GetTypename() *string { return v.Typename }
+
+// GetQuantity returns DiscountCustomerBuysFieldsValueDiscountQuantity.Quantity, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerBuysFieldsValueDiscountQuantity) GetQuantity() string { return v.Quantity }
+
+// The input fields for prerequisite items and quantity for the discount.
+type DiscountCustomerBuysInput struct {
+	// The quantity of prerequisite items.
+	Value *DiscountCustomerBuysValueInput `json:"value,omitempty"`
+	// The IDs of items that the customer buys. The items can be either collections or products.
+	Items *DiscountItemsInput `json:"items,omitempty"`
+	// If the discount is applicable when a customer buys a one-time purchase.
+	IsOneTimePurchase *bool `json:"isOneTimePurchase,omitempty"`
+	// If the discount is applicable when a customer buys a subscription purchase.
+	IsSubscription *bool `json:"isSubscription,omitempty"`
+}
+
+// GetValue returns DiscountCustomerBuysInput.Value, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerBuysInput) GetValue() *DiscountCustomerBuysValueInput { return v.Value }
+
+// GetItems returns DiscountCustomerBuysInput.Items, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerBuysInput) GetItems() *DiscountItemsInput { return v.Items }
+
+// GetIsOneTimePurchase returns DiscountCustomerBuysInput.IsOneTimePurchase, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerBuysInput) GetIsOneTimePurchase() *bool { return v.IsOneTimePurchase }
+
+// GetIsSubscription returns DiscountCustomerBuysInput.IsSubscription, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerBuysInput) GetIsSubscription() *bool { return v.IsSubscription }
+
+// The input fields for prerequisite quantity or minimum purchase amount required for the discount.
+type DiscountCustomerBuysValueInput struct {
+	// The quantity of prerequisite items.
+	Quantity *string `json:"quantity"`
+	// The prerequisite minimum purchase amount required for the discount to be applicable.
+	Amount *string `json:"amount"`
+}
+
+// GetQuantity returns DiscountCustomerBuysValueInput.Quantity, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerBuysValueInput) GetQuantity() *string { return v.Quantity }
+
+// GetAmount returns DiscountCustomerBuysValueInput.Amount, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerBuysValueInput) GetAmount() *string { return v.Amount }
+
 // DiscountCustomerGetsFields includes the GraphQL fields of DiscountCustomerGets requested by the fragment DiscountCustomerGetsFields.
 // The GraphQL type's documentation follows.
 //
@@ -10010,10 +10915,14 @@ func __marshalDiscountCustomerGetsFieldsValueDiscountCustomerGetsValue(v *Discou
 	case *DiscountCustomerGetsFieldsValueDiscountOnQuantity:
 		typename = "DiscountOnQuantity"
 
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
 		result := struct {
 			TypeName string `json:"__typename"`
-			*DiscountCustomerGetsFieldsValueDiscountOnQuantity
-		}{typename, v}
+			*__premarshalDiscountCustomerGetsFieldsValueDiscountOnQuantity
+		}{typename, premarshaled}
 		return json.Marshal(result)
 	case *DiscountCustomerGetsFieldsValueDiscountPercentage:
 		typename = "DiscountPercentage"
@@ -10041,10 +10950,246 @@ func __marshalDiscountCustomerGetsFieldsValueDiscountCustomerGetsValue(v *Discou
 // The configuration combines quantity requirements with discount effects, allowing merchants to create sophisticated pricing rules that reward larger purchases and increase average order values.
 type DiscountCustomerGetsFieldsValueDiscountOnQuantity struct {
 	Typename *string `json:"__typename"`
+	// The number of items being discounted. The customer must have at least this many items of specified products or product variants in their order to be eligible for the discount.
+	Quantity DiscountCustomerGetsFieldsValueDiscountOnQuantityQuantityDiscountQuantity `json:"quantity"`
+	// The discount's effect on qualifying items.
+	Effect DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect `json:"-"`
 }
 
 // GetTypename returns DiscountCustomerGetsFieldsValueDiscountOnQuantity.Typename, and is useful for accessing the field via an interface.
 func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantity) GetTypename() *string { return v.Typename }
+
+// GetQuantity returns DiscountCustomerGetsFieldsValueDiscountOnQuantity.Quantity, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantity) GetQuantity() DiscountCustomerGetsFieldsValueDiscountOnQuantityQuantityDiscountQuantity {
+	return v.Quantity
+}
+
+// GetEffect returns DiscountCustomerGetsFieldsValueDiscountOnQuantity.Effect, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantity) GetEffect() DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect {
+	return v.Effect
+}
+
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantity) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DiscountCustomerGetsFieldsValueDiscountOnQuantity
+		Effect json.RawMessage `json:"effect"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DiscountCustomerGetsFieldsValueDiscountOnQuantity = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Effect
+		src := firstPass.Effect
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountCustomerGetsFieldsValueDiscountOnQuantity.Effect: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDiscountCustomerGetsFieldsValueDiscountOnQuantity struct {
+	Typename *string `json:"__typename"`
+
+	Quantity DiscountCustomerGetsFieldsValueDiscountOnQuantityQuantityDiscountQuantity `json:"quantity"`
+
+	Effect json.RawMessage `json:"effect"`
+}
+
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantity) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantity) __premarshalJSON() (*__premarshalDiscountCustomerGetsFieldsValueDiscountOnQuantity, error) {
+	var retval __premarshalDiscountCustomerGetsFieldsValueDiscountOnQuantity
+
+	retval.Typename = v.Typename
+	retval.Quantity = v.Quantity
+	{
+
+		dst := &retval.Effect
+		src := v.Effect
+		var err error
+		*dst, err = __marshalDiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountCustomerGetsFieldsValueDiscountOnQuantity.Effect: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmount includes the requested fields of the GraphQL type DiscountAmount.
+// The GraphQL type's documentation follows.
+//
+// The fixed amount value of a discount, and whether the amount is applied to each entitled item or spread evenly across the entitled items.
+type DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmount struct {
+	Typename *string `json:"__typename"`
+	// The value of the discount.
+	Amount DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmountAmountMoneyV2 `json:"amount"`
+}
+
+// GetTypename returns DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmount.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmount) GetTypename() *string {
+	return v.Typename
+}
+
+// GetAmount returns DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmount.Amount, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmount) GetAmount() DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmountAmountMoneyV2 {
+	return v.Amount
+}
+
+// DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmountAmountMoneyV2 includes the requested fields of the GraphQL type MoneyV2.
+// The GraphQL type's documentation follows.
+//
+// A precise monetary value and its associated currency. Combines a decimal amount with a three-letter currency code to express prices, costs, and other financial values throughout the API. For example, 12.99 USD.
+type DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmountAmountMoneyV2 struct {
+	// A monetary value in decimal format, allowing for precise representation of cents or fractional
+	// currency. For example, 12.99.
+	Amount string `json:"amount"`
+}
+
+// GetAmount returns DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmountAmountMoneyV2.Amount, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmountAmountMoneyV2) GetAmount() string {
+	return v.Amount
+}
+
+// DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect includes the requested fields of the GraphQL interface DiscountEffect.
+//
+// DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect is implemented by the following types:
+// DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmount
+// DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountPercentage
+// The GraphQL type's documentation follows.
+//
+// The type of discount that will be applied. Currently, only a percentage discount is supported.
+type DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect interface {
+	implementsGraphQLInterfaceDiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmount) implementsGraphQLInterfaceDiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect() {
+}
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountPercentage) implementsGraphQLInterfaceDiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect() {
+}
+
+func __unmarshalDiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect(b []byte, v *DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DiscountAmount":
+		*v = new(DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmount)
+		return json.Unmarshal(b, *v)
+	case "DiscountPercentage":
+		*v = new(DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountPercentage)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DiscountEffect.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect(v *DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmount:
+		typename = "DiscountAmount"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountAmount
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountPercentage:
+		typename = "DiscountPercentage"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountPercentage
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountEffect: "%T"`, v)
+	}
+}
+
+// DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountPercentage includes the requested fields of the GraphQL type DiscountPercentage.
+// The GraphQL type's documentation follows.
+//
+// Creates percentage-based discounts that reduce item prices by a specified percentage amount. This gives merchants a flexible way to offer proportional savings that automatically scale with order value.
+//
+// For example, a "20% off all winter clothing" promotion would use this object to apply consistent percentage savings across different price points.
+//
+// Learn more about [discount types](https://help.shopify.com/manual/discounts/).
+type DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountPercentage struct {
+	Typename *string `json:"__typename"`
+	// The percentage value of the discount.
+	Percentage float64 `json:"percentage"`
+}
+
+// GetTypename returns DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountPercentage.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountPercentage) GetTypename() *string {
+	return v.Typename
+}
+
+// GetPercentage returns DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountPercentage.Percentage, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantityEffectDiscountPercentage) GetPercentage() float64 {
+	return v.Percentage
+}
+
+// DiscountCustomerGetsFieldsValueDiscountOnQuantityQuantityDiscountQuantity includes the requested fields of the GraphQL type DiscountQuantity.
+// The GraphQL type's documentation follows.
+//
+// Defines a quantity threshold for discount eligibility or application. This simple object specifies the number of items required to trigger or calculate discount benefits.
+//
+// For example, a "Buy 3, Get 1 Free" promotion would use DiscountQuantity to define the minimum purchase quantity of 3 items, or a bulk discount might specify quantity tiers like 10+ items for wholesale pricing.
+//
+// The quantity value determines how discounts interact with cart contents, whether setting minimum purchase requirements or defining quantity-based discount calculations.
+type DiscountCustomerGetsFieldsValueDiscountOnQuantityQuantityDiscountQuantity struct {
+	// The quantity of items.
+	Quantity string `json:"quantity"`
+}
+
+// GetQuantity returns DiscountCustomerGetsFieldsValueDiscountOnQuantityQuantityDiscountQuantity.Quantity, and is useful for accessing the field via an interface.
+func (v *DiscountCustomerGetsFieldsValueDiscountOnQuantityQuantityDiscountQuantity) GetQuantity() string {
+	return v.Quantity
+}
 
 // DiscountCustomerGetsFieldsValueDiscountPercentage includes the requested fields of the GraphQL type DiscountPercentage.
 // The GraphQL type's documentation follows.
@@ -10152,12 +11297,120 @@ func (v *DiscountCustomersInput) GetAdd() []string { return v.Add }
 // GetRemove returns DiscountCustomersInput.Remove, and is useful for accessing the field via an interface.
 func (v *DiscountCustomersInput) GetRemove() []string { return v.Remove }
 
+// DiscountDestinationFields includes the GraphQL fields of DiscountShippingDestinationSelection requested by the fragment DiscountDestinationFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to target the eligible countries of an order's shipping destination for which the discount applies. For example, the discount might be applicable when shipping to all countries, or only to a set of countries.
+//
+// DiscountDestinationFields is implemented by the following types:
+// DiscountDestinationFieldsDiscountCountries
+// DiscountDestinationFieldsDiscountCountryAll
+type DiscountDestinationFields interface {
+	implementsGraphQLInterfaceDiscountDestinationFields()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() *string
+}
+
+func (v *DiscountDestinationFieldsDiscountCountries) implementsGraphQLInterfaceDiscountDestinationFields() {
+}
+func (v *DiscountDestinationFieldsDiscountCountryAll) implementsGraphQLInterfaceDiscountDestinationFields() {
+}
+
+func __unmarshalDiscountDestinationFields(b []byte, v *DiscountDestinationFields) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "DiscountCountries":
+		*v = new(DiscountDestinationFieldsDiscountCountries)
+		return json.Unmarshal(b, *v)
+	case "DiscountCountryAll":
+		*v = new(DiscountDestinationFieldsDiscountCountryAll)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing DiscountShippingDestinationSelection.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for DiscountDestinationFields: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalDiscountDestinationFields(v *DiscountDestinationFields) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *DiscountDestinationFieldsDiscountCountries:
+		typename = "DiscountCountries"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountDestinationFieldsDiscountCountries
+		}{typename, v}
+		return json.Marshal(result)
+	case *DiscountDestinationFieldsDiscountCountryAll:
+		typename = "DiscountCountryAll"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*DiscountDestinationFieldsDiscountCountryAll
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for DiscountDestinationFields: "%T"`, v)
+	}
+}
+
+// DiscountDestinationFields includes the GraphQL fields of DiscountCountries requested by the fragment DiscountDestinationFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to target the eligible countries of an order's shipping destination for which the discount applies. For example, the discount might be applicable when shipping to all countries, or only to a set of countries.
+type DiscountDestinationFieldsDiscountCountries struct {
+	Typename *string `json:"__typename"`
+	// The codes for the countries where the discount can be applied.
+	Countries []CountryCode `json:"countries"`
+}
+
+// GetTypename returns DiscountDestinationFieldsDiscountCountries.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountDestinationFieldsDiscountCountries) GetTypename() *string { return v.Typename }
+
+// GetCountries returns DiscountDestinationFieldsDiscountCountries.Countries, and is useful for accessing the field via an interface.
+func (v *DiscountDestinationFieldsDiscountCountries) GetCountries() []CountryCode { return v.Countries }
+
+// DiscountDestinationFields includes the GraphQL fields of DiscountCountryAll requested by the fragment DiscountDestinationFields.
+// The GraphQL type's documentation follows.
+//
+// The type used to target the eligible countries of an order's shipping destination for which the discount applies. For example, the discount might be applicable when shipping to all countries, or only to a set of countries.
+type DiscountDestinationFieldsDiscountCountryAll struct {
+	Typename *string `json:"__typename"`
+	// Whether the discount can be applied to all countries as shipping destination. This value is always `true`.
+	AllCountries bool `json:"allCountries"`
+}
+
+// GetTypename returns DiscountDestinationFieldsDiscountCountryAll.Typename, and is useful for accessing the field via an interface.
+func (v *DiscountDestinationFieldsDiscountCountryAll) GetTypename() *string { return v.Typename }
+
+// GetAllCountries returns DiscountDestinationFieldsDiscountCountryAll.AllCountries, and is useful for accessing the field via an interface.
+func (v *DiscountDestinationFieldsDiscountCountryAll) GetAllCountries() bool { return v.AllCountries }
+
 // The input fields for how the discount will be applied. Currently, only percentage off is supported.
 type DiscountEffectInput struct {
 	// The percentage value of the discount. Value must be between 0.00 - 1.00.
-	Percentage *float64 `json:"percentage"`
+	Percentage *float64 `json:"percentage,omitempty"`
 	// The value of the discount.
-	Amount *string `json:"amount"`
+	Amount *string `json:"amount,omitempty"`
 }
 
 // GetPercentage returns DiscountEffectInput.Percentage, and is useful for accessing the field via an interface.
@@ -11060,18 +12313,26 @@ func __marshalDiscountNodeFieldsDiscount(v *DiscountNodeFieldsDiscount) ([]byte,
 	case *DiscountNodeFieldsDiscountDiscountAutomaticBxgy:
 		typename = "DiscountAutomaticBxgy"
 
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
 		result := struct {
 			TypeName string `json:"__typename"`
-			*DiscountNodeFieldsDiscountDiscountAutomaticBxgy
-		}{typename, v}
+			*__premarshalDiscountNodeFieldsDiscountDiscountAutomaticBxgy
+		}{typename, premarshaled}
 		return json.Marshal(result)
 	case *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping:
 		typename = "DiscountAutomaticFreeShipping"
 
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
 		result := struct {
 			TypeName string `json:"__typename"`
-			*DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping
-		}{typename, v}
+			*__premarshalDiscountNodeFieldsDiscountDiscountAutomaticFreeShipping
+		}{typename, premarshaled}
 		return json.Marshal(result)
 	case *DiscountNodeFieldsDiscountDiscountCodeApp:
 		typename = "DiscountCodeApp"
@@ -11096,18 +12357,26 @@ func __marshalDiscountNodeFieldsDiscount(v *DiscountNodeFieldsDiscount) ([]byte,
 	case *DiscountNodeFieldsDiscountDiscountCodeBxgy:
 		typename = "DiscountCodeBxgy"
 
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
 		result := struct {
 			TypeName string `json:"__typename"`
-			*DiscountNodeFieldsDiscountDiscountCodeBxgy
-		}{typename, v}
+			*__premarshalDiscountNodeFieldsDiscountDiscountCodeBxgy
+		}{typename, premarshaled}
 		return json.Marshal(result)
 	case *DiscountNodeFieldsDiscountDiscountCodeFreeShipping:
 		typename = "DiscountCodeFreeShipping"
 
+		premarshaled, err := v.__premarshalJSON()
+		if err != nil {
+			return nil, err
+		}
 		result := struct {
 			TypeName string `json:"__typename"`
-			*DiscountNodeFieldsDiscountDiscountCodeFreeShipping
-		}{typename, v}
+			*__premarshalDiscountNodeFieldsDiscountDiscountCodeFreeShipping
+		}{typename, premarshaled}
 		return json.Marshal(result)
 	case nil:
 		return []byte("null"), nil
@@ -11373,6 +12642,27 @@ type DiscountNodeFieldsDiscountDiscountAutomaticBxgy struct {
 	Typename *string `json:"__typename"`
 	// The discount's name that displays to merchants in the Shopify admin and to customers.
 	Title string `json:"title"`
+	// The date and time when the discount becomes active and is available to customers.
+	StartsAt string `json:"startsAt"`
+	// The date and time when the discount expires and is no longer available to customers.
+	// For discounts without a fixed expiration date, specify `null`.
+	EndsAt *string `json:"endsAt"`
+	// The status of the discount that describes its availability,
+	// expiration, or pending activation.
+	Status DiscountStatus `json:"status"`
+	// The maximum number of times that the discount can be applied to an order.
+	UsesPerOrderLimit *int `json:"usesPerOrderLimit"`
+	// The items eligible for the discount and the required quantity of each to receive the discount.
+	CustomerBuys DiscountCustomerBuysFields `json:"customerBuys"`
+	// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+	CustomerGets DiscountCustomerGetsFields `json:"customerGets"`
+	// The
+	// [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// that you can use in combination with
+	// [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+	CombinesWith DiscountCombinesWithFields `json:"combinesWith"`
+	// The context defining which buyers can use the discount.
+	Context DiscountContextFields `json:"-"`
 }
 
 // GetTypename returns DiscountNodeFieldsDiscountDiscountAutomaticBxgy.Typename, and is useful for accessing the field via an interface.
@@ -11380,6 +12670,130 @@ func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) GetTypename() *string 
 
 // GetTitle returns DiscountNodeFieldsDiscountDiscountAutomaticBxgy.Title, and is useful for accessing the field via an interface.
 func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) GetTitle() string { return v.Title }
+
+// GetStartsAt returns DiscountNodeFieldsDiscountDiscountAutomaticBxgy.StartsAt, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) GetStartsAt() string { return v.StartsAt }
+
+// GetEndsAt returns DiscountNodeFieldsDiscountDiscountAutomaticBxgy.EndsAt, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) GetEndsAt() *string { return v.EndsAt }
+
+// GetStatus returns DiscountNodeFieldsDiscountDiscountAutomaticBxgy.Status, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) GetStatus() DiscountStatus { return v.Status }
+
+// GetUsesPerOrderLimit returns DiscountNodeFieldsDiscountDiscountAutomaticBxgy.UsesPerOrderLimit, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) GetUsesPerOrderLimit() *int {
+	return v.UsesPerOrderLimit
+}
+
+// GetCustomerBuys returns DiscountNodeFieldsDiscountDiscountAutomaticBxgy.CustomerBuys, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) GetCustomerBuys() DiscountCustomerBuysFields {
+	return v.CustomerBuys
+}
+
+// GetCustomerGets returns DiscountNodeFieldsDiscountDiscountAutomaticBxgy.CustomerGets, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) GetCustomerGets() DiscountCustomerGetsFields {
+	return v.CustomerGets
+}
+
+// GetCombinesWith returns DiscountNodeFieldsDiscountDiscountAutomaticBxgy.CombinesWith, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) GetCombinesWith() DiscountCombinesWithFields {
+	return v.CombinesWith
+}
+
+// GetContext returns DiscountNodeFieldsDiscountDiscountAutomaticBxgy.Context, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) GetContext() DiscountContextFields {
+	return v.Context
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DiscountNodeFieldsDiscountDiscountAutomaticBxgy
+		Context json.RawMessage `json:"context"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DiscountNodeFieldsDiscountDiscountAutomaticBxgy = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Context
+		src := firstPass.Context
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountContextFields(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFieldsDiscountDiscountAutomaticBxgy.Context: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDiscountNodeFieldsDiscountDiscountAutomaticBxgy struct {
+	Typename *string `json:"__typename"`
+
+	Title string `json:"title"`
+
+	StartsAt string `json:"startsAt"`
+
+	EndsAt *string `json:"endsAt"`
+
+	Status DiscountStatus `json:"status"`
+
+	UsesPerOrderLimit *int `json:"usesPerOrderLimit"`
+
+	CustomerBuys DiscountCustomerBuysFields `json:"customerBuys"`
+
+	CustomerGets DiscountCustomerGetsFields `json:"customerGets"`
+
+	CombinesWith DiscountCombinesWithFields `json:"combinesWith"`
+
+	Context json.RawMessage `json:"context"`
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticBxgy) __premarshalJSON() (*__premarshalDiscountNodeFieldsDiscountDiscountAutomaticBxgy, error) {
+	var retval __premarshalDiscountNodeFieldsDiscountDiscountAutomaticBxgy
+
+	retval.Typename = v.Typename
+	retval.Title = v.Title
+	retval.StartsAt = v.StartsAt
+	retval.EndsAt = v.EndsAt
+	retval.Status = v.Status
+	retval.UsesPerOrderLimit = v.UsesPerOrderLimit
+	retval.CustomerBuys = v.CustomerBuys
+	retval.CustomerGets = v.CustomerGets
+	retval.CombinesWith = v.CombinesWith
+	{
+
+		dst := &retval.Context
+		src := v.Context
+		var err error
+		*dst, err = __marshalDiscountContextFields(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountNodeFieldsDiscountDiscountAutomaticBxgy.Context: %w", err)
+		}
+	}
+	return &retval, nil
+}
 
 // DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping includes the requested fields of the GraphQL type DiscountAutomaticFreeShipping.
 // The GraphQL type's documentation follows.
@@ -11407,6 +12821,41 @@ type DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping struct {
 	Typename *string `json:"__typename"`
 	// The discount's name that displays to merchants in the Shopify admin and to customers.
 	Title string `json:"title"`
+	// The date and time when the discount becomes active and is available to customers.
+	StartsAt string `json:"startsAt"`
+	// The date and time when the discount expires and is no longer available to customers.
+	// For discounts without a fixed expiration date, specify `null`.
+	EndsAt *string `json:"endsAt"`
+	// The status of the discount that describes its availability,
+	// expiration, or pending activation.
+	Status DiscountStatus `json:"status"`
+	// Whether the discount applies on one-time purchases.
+	// A one-time purchase is a transaction where you pay a
+	// single time for a product, without any ongoing
+	// commitments or recurring charges.
+	AppliesOnOneTimePurchase bool `json:"appliesOnOneTimePurchase"`
+	// Whether the discount applies on subscription items.
+	// [Subscriptions](https://shopify.dev/docs/apps/launch/billing/subscription-billing/offer-subscription-discounts)
+	// enable customers to purchase products
+	// on a recurring basis.
+	AppliesOnSubscription bool `json:"appliesOnSubscription"`
+	// The maximum shipping price amount accepted to qualify for the discount.
+	MaximumShippingPrice *DiscountNodeFieldsDiscountDiscountAutomaticFreeShippingMaximumShippingPriceMoneyV2 `json:"maximumShippingPrice"`
+	// The countries that qualify for the discount.
+	// You can define
+	// [a list of countries](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCountries)
+	// or specify [all countries](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCountryAll)
+	// to be eligible for the discount.
+	DestinationSelection DiscountDestinationFields `json:"-"`
+	// The minimum subtotal or quantity of items that are required for the discount to be applied.
+	MinimumRequirement *DiscountMinimumFields `json:"-"`
+	// The
+	// [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// that you can use in combination with
+	// [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+	CombinesWith DiscountCombinesWithFields `json:"combinesWith"`
+	// The context defining which buyers can use the discount.
+	Context DiscountContextFields `json:"-"`
 }
 
 // GetTypename returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.Typename, and is useful for accessing the field via an interface.
@@ -11416,6 +12865,220 @@ func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetTypename() 
 
 // GetTitle returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.Title, and is useful for accessing the field via an interface.
 func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetTitle() string { return v.Title }
+
+// GetStartsAt returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.StartsAt, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetStartsAt() string {
+	return v.StartsAt
+}
+
+// GetEndsAt returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.EndsAt, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetEndsAt() *string {
+	return v.EndsAt
+}
+
+// GetStatus returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.Status, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetStatus() DiscountStatus {
+	return v.Status
+}
+
+// GetAppliesOnOneTimePurchase returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.AppliesOnOneTimePurchase, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetAppliesOnOneTimePurchase() bool {
+	return v.AppliesOnOneTimePurchase
+}
+
+// GetAppliesOnSubscription returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.AppliesOnSubscription, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetAppliesOnSubscription() bool {
+	return v.AppliesOnSubscription
+}
+
+// GetMaximumShippingPrice returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.MaximumShippingPrice, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetMaximumShippingPrice() *DiscountNodeFieldsDiscountDiscountAutomaticFreeShippingMaximumShippingPriceMoneyV2 {
+	return v.MaximumShippingPrice
+}
+
+// GetDestinationSelection returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.DestinationSelection, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetDestinationSelection() DiscountDestinationFields {
+	return v.DestinationSelection
+}
+
+// GetMinimumRequirement returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.MinimumRequirement, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetMinimumRequirement() *DiscountMinimumFields {
+	return v.MinimumRequirement
+}
+
+// GetCombinesWith returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.CombinesWith, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetCombinesWith() DiscountCombinesWithFields {
+	return v.CombinesWith
+}
+
+// GetContext returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.Context, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) GetContext() DiscountContextFields {
+	return v.Context
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping
+		DestinationSelection json.RawMessage `json:"destinationSelection"`
+		MinimumRequirement   json.RawMessage `json:"minimumRequirement"`
+		Context              json.RawMessage `json:"context"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.DestinationSelection
+		src := firstPass.DestinationSelection
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountDestinationFields(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.DestinationSelection: %w", err)
+			}
+		}
+	}
+
+	{
+		dst := &v.MinimumRequirement
+		src := firstPass.MinimumRequirement
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(DiscountMinimumFields)
+			err = __unmarshalDiscountMinimumFields(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.MinimumRequirement: %w", err)
+			}
+		}
+	}
+
+	{
+		dst := &v.Context
+		src := firstPass.Context
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountContextFields(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.Context: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDiscountNodeFieldsDiscountDiscountAutomaticFreeShipping struct {
+	Typename *string `json:"__typename"`
+
+	Title string `json:"title"`
+
+	StartsAt string `json:"startsAt"`
+
+	EndsAt *string `json:"endsAt"`
+
+	Status DiscountStatus `json:"status"`
+
+	AppliesOnOneTimePurchase bool `json:"appliesOnOneTimePurchase"`
+
+	AppliesOnSubscription bool `json:"appliesOnSubscription"`
+
+	MaximumShippingPrice *DiscountNodeFieldsDiscountDiscountAutomaticFreeShippingMaximumShippingPriceMoneyV2 `json:"maximumShippingPrice"`
+
+	DestinationSelection json.RawMessage `json:"destinationSelection"`
+
+	MinimumRequirement json.RawMessage `json:"minimumRequirement"`
+
+	CombinesWith DiscountCombinesWithFields `json:"combinesWith"`
+
+	Context json.RawMessage `json:"context"`
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping) __premarshalJSON() (*__premarshalDiscountNodeFieldsDiscountDiscountAutomaticFreeShipping, error) {
+	var retval __premarshalDiscountNodeFieldsDiscountDiscountAutomaticFreeShipping
+
+	retval.Typename = v.Typename
+	retval.Title = v.Title
+	retval.StartsAt = v.StartsAt
+	retval.EndsAt = v.EndsAt
+	retval.Status = v.Status
+	retval.AppliesOnOneTimePurchase = v.AppliesOnOneTimePurchase
+	retval.AppliesOnSubscription = v.AppliesOnSubscription
+	retval.MaximumShippingPrice = v.MaximumShippingPrice
+	{
+
+		dst := &retval.DestinationSelection
+		src := v.DestinationSelection
+		var err error
+		*dst, err = __marshalDiscountDestinationFields(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.DestinationSelection: %w", err)
+		}
+	}
+	{
+
+		dst := &retval.MinimumRequirement
+		src := v.MinimumRequirement
+		if src != nil {
+			var err error
+			*dst, err = __marshalDiscountMinimumFields(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.MinimumRequirement: %w", err)
+			}
+		}
+	}
+	retval.CombinesWith = v.CombinesWith
+	{
+
+		dst := &retval.Context
+		src := v.Context
+		var err error
+		*dst, err = __marshalDiscountContextFields(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountNodeFieldsDiscountDiscountAutomaticFreeShipping.Context: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// DiscountNodeFieldsDiscountDiscountAutomaticFreeShippingMaximumShippingPriceMoneyV2 includes the requested fields of the GraphQL type MoneyV2.
+// The GraphQL type's documentation follows.
+//
+// A precise monetary value and its associated currency. Combines a decimal amount with a three-letter currency code to express prices, costs, and other financial values throughout the API. For example, 12.99 USD.
+type DiscountNodeFieldsDiscountDiscountAutomaticFreeShippingMaximumShippingPriceMoneyV2 struct {
+	// A monetary value in decimal format, allowing for precise representation of cents or fractional
+	// currency. For example, 12.99.
+	Amount string `json:"amount"`
+}
+
+// GetAmount returns DiscountNodeFieldsDiscountDiscountAutomaticFreeShippingMaximumShippingPriceMoneyV2.Amount, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountAutomaticFreeShippingMaximumShippingPriceMoneyV2) GetAmount() string {
+	return v.Amount
+}
 
 // DiscountNodeFieldsDiscountDiscountCodeApp includes the requested fields of the GraphQL type DiscountCodeApp.
 // The GraphQL type's documentation follows.
@@ -11745,6 +13408,36 @@ type DiscountNodeFieldsDiscountDiscountCodeBxgy struct {
 	Typename *string `json:"__typename"`
 	// The discount's name that displays to merchants in the Shopify admin and to customers.
 	Title string `json:"title"`
+	// The date and time when the discount becomes active and is available to customers.
+	StartsAt string `json:"startsAt"`
+	// The date and time when the discount expires and is no longer available to customers.
+	// For discounts without a fixed expiration date, specify `null`.
+	EndsAt *string `json:"endsAt"`
+	// The status of the discount that describes its availability,
+	// expiration, or pending activation.
+	Status DiscountStatus `json:"status"`
+	// The maximum number of times the discount can be redeemed.
+	// For unlimited usage, specify `null`.
+	UsageLimit *int `json:"usageLimit"`
+	// Whether a customer can only use the discount once.
+	AppliesOncePerCustomer bool `json:"appliesOncePerCustomer"`
+	// The number of codes that a customer can use to redeem the discount.
+	CodesCount *DiscountNodeFieldsDiscountDiscountCodeBxgyCodesCount `json:"codesCount"`
+	// A list codes that customers can use to redeem the discount.
+	Codes DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnection `json:"codes"`
+	// The maximum number of times that the discount can be applied to an order.
+	UsesPerOrderLimit *int `json:"usesPerOrderLimit"`
+	// The items eligible for the discount and the required quantity of each to receive the discount.
+	CustomerBuys DiscountCustomerBuysFields `json:"customerBuys"`
+	// The items in the order that qualify for the discount, their quantities, and the total value of the discount.
+	CustomerGets DiscountCustomerGetsFields `json:"customerGets"`
+	// The
+	// [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// that you can use in combination with
+	// [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+	CombinesWith DiscountCombinesWithFields `json:"combinesWith"`
+	// The context defining which buyers can use the discount.
+	Context DiscountContextFields `json:"-"`
 }
 
 // GetTypename returns DiscountNodeFieldsDiscountDiscountCodeBxgy.Typename, and is useful for accessing the field via an interface.
@@ -11752,6 +13445,200 @@ func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetTypename() *string { ret
 
 // GetTitle returns DiscountNodeFieldsDiscountDiscountCodeBxgy.Title, and is useful for accessing the field via an interface.
 func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetTitle() string { return v.Title }
+
+// GetStartsAt returns DiscountNodeFieldsDiscountDiscountCodeBxgy.StartsAt, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetStartsAt() string { return v.StartsAt }
+
+// GetEndsAt returns DiscountNodeFieldsDiscountDiscountCodeBxgy.EndsAt, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetEndsAt() *string { return v.EndsAt }
+
+// GetStatus returns DiscountNodeFieldsDiscountDiscountCodeBxgy.Status, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetStatus() DiscountStatus { return v.Status }
+
+// GetUsageLimit returns DiscountNodeFieldsDiscountDiscountCodeBxgy.UsageLimit, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetUsageLimit() *int { return v.UsageLimit }
+
+// GetAppliesOncePerCustomer returns DiscountNodeFieldsDiscountDiscountCodeBxgy.AppliesOncePerCustomer, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetAppliesOncePerCustomer() bool {
+	return v.AppliesOncePerCustomer
+}
+
+// GetCodesCount returns DiscountNodeFieldsDiscountDiscountCodeBxgy.CodesCount, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetCodesCount() *DiscountNodeFieldsDiscountDiscountCodeBxgyCodesCount {
+	return v.CodesCount
+}
+
+// GetCodes returns DiscountNodeFieldsDiscountDiscountCodeBxgy.Codes, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetCodes() DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnection {
+	return v.Codes
+}
+
+// GetUsesPerOrderLimit returns DiscountNodeFieldsDiscountDiscountCodeBxgy.UsesPerOrderLimit, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetUsesPerOrderLimit() *int {
+	return v.UsesPerOrderLimit
+}
+
+// GetCustomerBuys returns DiscountNodeFieldsDiscountDiscountCodeBxgy.CustomerBuys, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetCustomerBuys() DiscountCustomerBuysFields {
+	return v.CustomerBuys
+}
+
+// GetCustomerGets returns DiscountNodeFieldsDiscountDiscountCodeBxgy.CustomerGets, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetCustomerGets() DiscountCustomerGetsFields {
+	return v.CustomerGets
+}
+
+// GetCombinesWith returns DiscountNodeFieldsDiscountDiscountCodeBxgy.CombinesWith, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetCombinesWith() DiscountCombinesWithFields {
+	return v.CombinesWith
+}
+
+// GetContext returns DiscountNodeFieldsDiscountDiscountCodeBxgy.Context, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) GetContext() DiscountContextFields {
+	return v.Context
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DiscountNodeFieldsDiscountDiscountCodeBxgy
+		Context json.RawMessage `json:"context"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DiscountNodeFieldsDiscountDiscountCodeBxgy = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Context
+		src := firstPass.Context
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountContextFields(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFieldsDiscountDiscountCodeBxgy.Context: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDiscountNodeFieldsDiscountDiscountCodeBxgy struct {
+	Typename *string `json:"__typename"`
+
+	Title string `json:"title"`
+
+	StartsAt string `json:"startsAt"`
+
+	EndsAt *string `json:"endsAt"`
+
+	Status DiscountStatus `json:"status"`
+
+	UsageLimit *int `json:"usageLimit"`
+
+	AppliesOncePerCustomer bool `json:"appliesOncePerCustomer"`
+
+	CodesCount *DiscountNodeFieldsDiscountDiscountCodeBxgyCodesCount `json:"codesCount"`
+
+	Codes DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnection `json:"codes"`
+
+	UsesPerOrderLimit *int `json:"usesPerOrderLimit"`
+
+	CustomerBuys DiscountCustomerBuysFields `json:"customerBuys"`
+
+	CustomerGets DiscountCustomerGetsFields `json:"customerGets"`
+
+	CombinesWith DiscountCombinesWithFields `json:"combinesWith"`
+
+	Context json.RawMessage `json:"context"`
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgy) __premarshalJSON() (*__premarshalDiscountNodeFieldsDiscountDiscountCodeBxgy, error) {
+	var retval __premarshalDiscountNodeFieldsDiscountDiscountCodeBxgy
+
+	retval.Typename = v.Typename
+	retval.Title = v.Title
+	retval.StartsAt = v.StartsAt
+	retval.EndsAt = v.EndsAt
+	retval.Status = v.Status
+	retval.UsageLimit = v.UsageLimit
+	retval.AppliesOncePerCustomer = v.AppliesOncePerCustomer
+	retval.CodesCount = v.CodesCount
+	retval.Codes = v.Codes
+	retval.UsesPerOrderLimit = v.UsesPerOrderLimit
+	retval.CustomerBuys = v.CustomerBuys
+	retval.CustomerGets = v.CustomerGets
+	retval.CombinesWith = v.CombinesWith
+	{
+
+		dst := &retval.Context
+		src := v.Context
+		var err error
+		*dst, err = __marshalDiscountContextFields(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountNodeFieldsDiscountDiscountCodeBxgy.Context: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// DiscountNodeFieldsDiscountDiscountCodeBxgyCodesCount includes the requested fields of the GraphQL type Count.
+// The GraphQL type's documentation follows.
+//
+// A numeric count with precision information indicating whether the count is exact or an estimate.
+type DiscountNodeFieldsDiscountDiscountCodeBxgyCodesCount struct {
+	// The count of elements.
+	Count int `json:"count"`
+}
+
+// GetCount returns DiscountNodeFieldsDiscountDiscountCodeBxgyCodesCount.Count, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgyCodesCount) GetCount() int { return v.Count }
+
+// DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnection includes the requested fields of the GraphQL type DiscountRedeemCodeConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple DiscountRedeemCodes.
+type DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnection struct {
+	// A list of nodes that are contained in DiscountRedeemCodeEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode `json:"nodes"`
+}
+
+// GetNodes returns DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnection) GetNodes() []DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode {
+	return v.Nodes
+}
+
+// DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode includes the requested fields of the GraphQL type DiscountRedeemCode.
+// The GraphQL type's documentation follows.
+//
+// A code that a customer can use at checkout to receive a discount. For example, a customer can use the redeem code 'SUMMER20' at checkout to receive a 20% discount on their entire order.
+type DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode struct {
+	// The code that a customer can use at checkout to receive a discount.
+	Code string `json:"code"`
+}
+
+// GetCode returns DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode.Code, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeBxgyCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode) GetCode() string {
+	return v.Code
+}
 
 // DiscountNodeFieldsDiscountDiscountCodeFreeShipping includes the requested fields of the GraphQL type DiscountCodeFreeShipping.
 // The GraphQL type's documentation follows.
@@ -11778,6 +13665,50 @@ type DiscountNodeFieldsDiscountDiscountCodeFreeShipping struct {
 	Typename *string `json:"__typename"`
 	// The discount's name that displays to merchants in the Shopify admin and to customers.
 	Title string `json:"title"`
+	// The date and time when the discount becomes active and is available to customers.
+	StartsAt string `json:"startsAt"`
+	// The date and time when the discount expires and is no longer available to customers.
+	// For discounts without a fixed expiration date, specify `null`.
+	EndsAt *string `json:"endsAt"`
+	// The status of the discount that describes its availability,
+	// expiration, or pending activation.
+	Status DiscountStatus `json:"status"`
+	// The maximum number of times the discount can be redeemed.
+	// For unlimited usage, specify `null`.
+	UsageLimit *int `json:"usageLimit"`
+	// Whether a customer can only use the discount once.
+	AppliesOncePerCustomer bool `json:"appliesOncePerCustomer"`
+	// The number of codes that a customer can use to redeem the discount.
+	CodesCount *DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesCount `json:"codesCount"`
+	// A list codes that customers can use to redeem the discount.
+	Codes DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnection `json:"codes"`
+	// Whether the discount applies on one-time purchases.
+	// A one-time purchase is a transaction where you pay a
+	// single time for a product, without any ongoing
+	// commitments or recurring charges.
+	AppliesOnOneTimePurchase bool `json:"appliesOnOneTimePurchase"`
+	// Whether the discount applies on subscription items.
+	// [Subscriptions](https://shopify.dev/docs/apps/launch/billing/subscription-billing/offer-subscription-discounts)
+	// enable customers to purchase products
+	// on a recurring basis.
+	AppliesOnSubscription bool `json:"appliesOnSubscription"`
+	// The maximum shipping price amount accepted to qualify for the discount.
+	MaximumShippingPrice *DiscountNodeFieldsDiscountDiscountCodeFreeShippingMaximumShippingPriceMoneyV2 `json:"maximumShippingPrice"`
+	// The countries that qualify for the discount.
+	// You can define
+	// [a list of countries](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCountries)
+	// or specify [all countries](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountCountryAll)
+	// to be eligible for the discount.
+	DestinationSelection DiscountDestinationFields `json:"-"`
+	// The minimum subtotal or quantity of items that are required for the discount to be applied.
+	MinimumRequirement *DiscountMinimumFields `json:"-"`
+	// The
+	// [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+	// that you can use in combination with
+	// [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+	CombinesWith DiscountCombinesWithFields `json:"combinesWith"`
+	// The context defining which buyers can use the discount.
+	Context DiscountContextFields `json:"-"`
 }
 
 // GetTypename returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.Typename, and is useful for accessing the field via an interface.
@@ -11786,12 +13717,294 @@ func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetTypename() *stri
 // GetTitle returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.Title, and is useful for accessing the field via an interface.
 func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetTitle() string { return v.Title }
 
+// GetStartsAt returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.StartsAt, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetStartsAt() string { return v.StartsAt }
+
+// GetEndsAt returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.EndsAt, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetEndsAt() *string { return v.EndsAt }
+
+// GetStatus returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.Status, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetStatus() DiscountStatus {
+	return v.Status
+}
+
+// GetUsageLimit returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.UsageLimit, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetUsageLimit() *int {
+	return v.UsageLimit
+}
+
+// GetAppliesOncePerCustomer returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.AppliesOncePerCustomer, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetAppliesOncePerCustomer() bool {
+	return v.AppliesOncePerCustomer
+}
+
+// GetCodesCount returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.CodesCount, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetCodesCount() *DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesCount {
+	return v.CodesCount
+}
+
+// GetCodes returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.Codes, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetCodes() DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnection {
+	return v.Codes
+}
+
+// GetAppliesOnOneTimePurchase returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.AppliesOnOneTimePurchase, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetAppliesOnOneTimePurchase() bool {
+	return v.AppliesOnOneTimePurchase
+}
+
+// GetAppliesOnSubscription returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.AppliesOnSubscription, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetAppliesOnSubscription() bool {
+	return v.AppliesOnSubscription
+}
+
+// GetMaximumShippingPrice returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.MaximumShippingPrice, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetMaximumShippingPrice() *DiscountNodeFieldsDiscountDiscountCodeFreeShippingMaximumShippingPriceMoneyV2 {
+	return v.MaximumShippingPrice
+}
+
+// GetDestinationSelection returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.DestinationSelection, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetDestinationSelection() DiscountDestinationFields {
+	return v.DestinationSelection
+}
+
+// GetMinimumRequirement returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.MinimumRequirement, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetMinimumRequirement() *DiscountMinimumFields {
+	return v.MinimumRequirement
+}
+
+// GetCombinesWith returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.CombinesWith, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetCombinesWith() DiscountCombinesWithFields {
+	return v.CombinesWith
+}
+
+// GetContext returns DiscountNodeFieldsDiscountDiscountCodeFreeShipping.Context, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) GetContext() DiscountContextFields {
+	return v.Context
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*DiscountNodeFieldsDiscountDiscountCodeFreeShipping
+		DestinationSelection json.RawMessage `json:"destinationSelection"`
+		MinimumRequirement   json.RawMessage `json:"minimumRequirement"`
+		Context              json.RawMessage `json:"context"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.DiscountNodeFieldsDiscountDiscountCodeFreeShipping = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.DestinationSelection
+		src := firstPass.DestinationSelection
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountDestinationFields(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFieldsDiscountDiscountCodeFreeShipping.DestinationSelection: %w", err)
+			}
+		}
+	}
+
+	{
+		dst := &v.MinimumRequirement
+		src := firstPass.MinimumRequirement
+		if len(src) != 0 && string(src) != "null" {
+			*dst = new(DiscountMinimumFields)
+			err = __unmarshalDiscountMinimumFields(
+				src, *dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFieldsDiscountDiscountCodeFreeShipping.MinimumRequirement: %w", err)
+			}
+		}
+	}
+
+	{
+		dst := &v.Context
+		src := firstPass.Context
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalDiscountContextFields(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal DiscountNodeFieldsDiscountDiscountCodeFreeShipping.Context: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalDiscountNodeFieldsDiscountDiscountCodeFreeShipping struct {
+	Typename *string `json:"__typename"`
+
+	Title string `json:"title"`
+
+	StartsAt string `json:"startsAt"`
+
+	EndsAt *string `json:"endsAt"`
+
+	Status DiscountStatus `json:"status"`
+
+	UsageLimit *int `json:"usageLimit"`
+
+	AppliesOncePerCustomer bool `json:"appliesOncePerCustomer"`
+
+	CodesCount *DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesCount `json:"codesCount"`
+
+	Codes DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnection `json:"codes"`
+
+	AppliesOnOneTimePurchase bool `json:"appliesOnOneTimePurchase"`
+
+	AppliesOnSubscription bool `json:"appliesOnSubscription"`
+
+	MaximumShippingPrice *DiscountNodeFieldsDiscountDiscountCodeFreeShippingMaximumShippingPriceMoneyV2 `json:"maximumShippingPrice"`
+
+	DestinationSelection json.RawMessage `json:"destinationSelection"`
+
+	MinimumRequirement json.RawMessage `json:"minimumRequirement"`
+
+	CombinesWith DiscountCombinesWithFields `json:"combinesWith"`
+
+	Context json.RawMessage `json:"context"`
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShipping) __premarshalJSON() (*__premarshalDiscountNodeFieldsDiscountDiscountCodeFreeShipping, error) {
+	var retval __premarshalDiscountNodeFieldsDiscountDiscountCodeFreeShipping
+
+	retval.Typename = v.Typename
+	retval.Title = v.Title
+	retval.StartsAt = v.StartsAt
+	retval.EndsAt = v.EndsAt
+	retval.Status = v.Status
+	retval.UsageLimit = v.UsageLimit
+	retval.AppliesOncePerCustomer = v.AppliesOncePerCustomer
+	retval.CodesCount = v.CodesCount
+	retval.Codes = v.Codes
+	retval.AppliesOnOneTimePurchase = v.AppliesOnOneTimePurchase
+	retval.AppliesOnSubscription = v.AppliesOnSubscription
+	retval.MaximumShippingPrice = v.MaximumShippingPrice
+	{
+
+		dst := &retval.DestinationSelection
+		src := v.DestinationSelection
+		var err error
+		*dst, err = __marshalDiscountDestinationFields(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountNodeFieldsDiscountDiscountCodeFreeShipping.DestinationSelection: %w", err)
+		}
+	}
+	{
+
+		dst := &retval.MinimumRequirement
+		src := v.MinimumRequirement
+		if src != nil {
+			var err error
+			*dst, err = __marshalDiscountMinimumFields(
+				src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal DiscountNodeFieldsDiscountDiscountCodeFreeShipping.MinimumRequirement: %w", err)
+			}
+		}
+	}
+	retval.CombinesWith = v.CombinesWith
+	{
+
+		dst := &retval.Context
+		src := v.Context
+		var err error
+		*dst, err = __marshalDiscountContextFields(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal DiscountNodeFieldsDiscountDiscountCodeFreeShipping.Context: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesCount includes the requested fields of the GraphQL type Count.
+// The GraphQL type's documentation follows.
+//
+// A numeric count with precision information indicating whether the count is exact or an estimate.
+type DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesCount struct {
+	// The count of elements.
+	Count int `json:"count"`
+}
+
+// GetCount returns DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesCount.Count, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesCount) GetCount() int { return v.Count }
+
+// DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnection includes the requested fields of the GraphQL type DiscountRedeemCodeConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple DiscountRedeemCodes.
+type DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnection struct {
+	// A list of nodes that are contained in DiscountRedeemCodeEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode `json:"nodes"`
+}
+
+// GetNodes returns DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnection) GetNodes() []DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode {
+	return v.Nodes
+}
+
+// DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode includes the requested fields of the GraphQL type DiscountRedeemCode.
+// The GraphQL type's documentation follows.
+//
+// A code that a customer can use at checkout to receive a discount. For example, a customer can use the redeem code 'SUMMER20' at checkout to receive a 20% discount on their entire order.
+type DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode struct {
+	// The code that a customer can use at checkout to receive a discount.
+	Code string `json:"code"`
+}
+
+// GetCode returns DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode.Code, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShippingCodesDiscountRedeemCodeConnectionNodesDiscountRedeemCode) GetCode() string {
+	return v.Code
+}
+
+// DiscountNodeFieldsDiscountDiscountCodeFreeShippingMaximumShippingPriceMoneyV2 includes the requested fields of the GraphQL type MoneyV2.
+// The GraphQL type's documentation follows.
+//
+// A precise monetary value and its associated currency. Combines a decimal amount with a three-letter currency code to express prices, costs, and other financial values throughout the API. For example, 12.99 USD.
+type DiscountNodeFieldsDiscountDiscountCodeFreeShippingMaximumShippingPriceMoneyV2 struct {
+	// A monetary value in decimal format, allowing for precise representation of cents or fractional
+	// currency. For example, 12.99.
+	Amount string `json:"amount"`
+}
+
+// GetAmount returns DiscountNodeFieldsDiscountDiscountCodeFreeShippingMaximumShippingPriceMoneyV2.Amount, and is useful for accessing the field via an interface.
+func (v *DiscountNodeFieldsDiscountDiscountCodeFreeShippingMaximumShippingPriceMoneyV2) GetAmount() string {
+	return v.Amount
+}
+
 // The input fields for the quantity of items discounted and the discount value.
 type DiscountOnQuantityInput struct {
 	// The quantity of items that are discounted.
-	Quantity *string `json:"quantity"`
+	Quantity *string `json:"quantity,omitempty"`
 	// The percentage value of the discount.
-	Effect *DiscountEffectInput `json:"effect"`
+	Effect *DiscountEffectInput `json:"effect,omitempty"`
 }
 
 // GetQuantity returns DiscountOnQuantityInput.Quantity, and is useful for accessing the field via an interface.
@@ -11827,6 +14040,22 @@ func (v *DiscountProductsInput) GetProductVariantsToAdd() []string { return v.Pr
 // GetProductVariantsToRemove returns DiscountProductsInput.ProductVariantsToRemove, and is useful for accessing the field via an interface.
 func (v *DiscountProductsInput) GetProductVariantsToRemove() []string {
 	return v.ProductVariantsToRemove
+}
+
+// The input fields for the destinations where the free shipping discount will be applied.
+type DiscountShippingDestinationSelectionInput struct {
+	// Whether the discount code applies to all countries.
+	All *bool `json:"all,omitempty"`
+	// A list of countries where the discount code will apply.
+	Countries *DiscountCountriesInput `json:"countries,omitempty"`
+}
+
+// GetAll returns DiscountShippingDestinationSelectionInput.All, and is useful for accessing the field via an interface.
+func (v *DiscountShippingDestinationSelectionInput) GetAll() *bool { return v.All }
+
+// GetCountries returns DiscountShippingDestinationSelectionInput.Countries, and is useful for accessing the field via an interface.
+func (v *DiscountShippingDestinationSelectionInput) GetCountries() *DiscountCountriesInput {
+	return v.Countries
 }
 
 // The status of the discount that describes its availability,
@@ -13282,6 +15511,115 @@ func (v *GetBlogBlog) __premarshalJSON() (*__premarshalGetBlogBlog, error) {
 	return &retval, nil
 }
 
+// GetBlogMetafieldsBlog includes the requested fields of the GraphQL type Blog.
+// The GraphQL type's documentation follows.
+//
+// A blog for publishing articles in the online store. Stores can have multiple blogs to organize content by topic or purpose.
+//
+// Each blog contains articles with their associated comments, tags, and metadata. The comment policy controls whether readers can post comments and whether moderation is required. Blogs use customizable URL handles and can apply alternate templates for specialized layouts.
+type GetBlogMetafieldsBlog struct {
+	// A list of [custom fields](https://shopify.dev/docs/apps/build/custom-data)
+	// that a merchant associates with a Shopify resource.
+	Metafields GetBlogMetafieldsBlogMetafieldsMetafieldConnection `json:"metafields"`
+}
+
+// GetMetafields returns GetBlogMetafieldsBlog.Metafields, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlog) GetMetafields() GetBlogMetafieldsBlogMetafieldsMetafieldConnection {
+	return v.Metafields
+}
+
+// GetBlogMetafieldsBlogMetafieldsMetafieldConnection includes the requested fields of the GraphQL type MetafieldConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Metafields.
+type GetBlogMetafieldsBlogMetafieldsMetafieldConnection struct {
+	// A list of nodes that are contained in MetafieldEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetBlogMetafieldsBlogMetafieldsMetafieldConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnection) GetNodes() []GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetBlogMetafieldsBlogMetafieldsMetafieldConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnection) GetPageInfo() GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin-graphql/latest/interfaces/HasMetafields).
+// Some examples of the data that metafields enable you to store are specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a value along with type information for that value.
+type GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield struct {
+	// The container for a group of metafields that the metafield is associated with.
+	Namespace string `json:"namespace"`
+	// The unique identifier for the metafield within its namespace.
+	Key string `json:"key"`
+	// The type of data that's stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type string `json:"type"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield) GetNamespace() string {
+	return v.Namespace
+}
+
+// GetKey returns GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield.Key, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield) GetKey() string {
+	return v.Key
+}
+
+// GetType returns GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield.Type, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield) GetType() string {
+	return v.Type
+}
+
+// GetValue returns GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnectionNodesMetafield) GetValue() string {
+	return v.Value
+}
+
+// GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsBlogMetafieldsMetafieldConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetBlogMetafieldsResponse is returned by GetBlogMetafields on success.
+type GetBlogMetafieldsResponse struct {
+	// Returns a `Blog` resource by ID.
+	Blog *GetBlogMetafieldsBlog `json:"blog"`
+}
+
+// GetBlog returns GetBlogMetafieldsResponse.Blog, and is useful for accessing the field via an interface.
+func (v *GetBlogMetafieldsResponse) GetBlog() *GetBlogMetafieldsBlog { return v.Blog }
+
 // GetBlogResponse is returned by GetBlog on success.
 type GetBlogResponse struct {
 	// Returns a `Blog` resource by ID.
@@ -13686,6 +16024,153 @@ func (v *GetCollectionCollection) __premarshalJSON() (*__premarshalGetCollection
 	retval.Sources = v.CollectionFields.Sources
 	retval.ResourcePublicationsV2 = v.CollectionFields.PublicationsOfPublishableCollection.ResourcePublicationsV2
 	return &retval, nil
+}
+
+// GetCollectionMetafieldsCollection includes the requested fields of the GraphQL type Collection.
+// The GraphQL type's documentation follows.
+//
+// The `Collection` object represents a group of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that merchants can organize to make their stores easier to browse and help customers find related products.
+// Collections serve as the primary way to categorize and display products across
+// [online stores](https://shopify.dev/docs/apps/build/online-store),
+// [sales channels](https://shopify.dev/docs/apps/build/sales-channels), and marketing campaigns.
+//
+// The `Collection` object provides information to:
+//
+// - Organize products by category, season, or promotion.
+// - Automate product grouping using rules (for example, by tag, type, or price).
+// - Configure product sorting and display order (for example, alphabetical, best-selling, price, or manual).
+// - Manage collection visibility and publication across sales channels.
+// - Add rich descriptions, images, and metadata to enhance discovery.
+//
+// > Note:
+// > Collections are unpublished by default. To make them available to customers,
+// use the [`publishablePublish`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/publishablePublish)
+// mutation after creation.
+//
+// Collections can be displayed in a store with Shopify's theme system through [Liquid templates](https://shopify.dev/docs/storefronts/themes/architecture/templates/collection)
+// and can be customized with [template suffixes](https://shopify.dev/docs/storefronts/themes/architecture/templates/alternate-templates)
+// for unique layouts. They also support advanced features like translated content, resource feedback,
+// and contextual publication for location-based catalogs.
+//
+// Learn about [using metafields with collection conditions](https://shopify.dev/docs/apps/build/custom-data/metafields/use-metafield-capabilities).
+type GetCollectionMetafieldsCollection struct {
+	// A list of [custom fields](https://shopify.dev/docs/apps/build/custom-data)
+	// that a merchant associates with a Shopify resource.
+	Metafields GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection `json:"metafields"`
+}
+
+// GetMetafields returns GetCollectionMetafieldsCollection.Metafields, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollection) GetMetafields() GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection {
+	return v.Metafields
+}
+
+// GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection includes the requested fields of the GraphQL type MetafieldConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Metafields.
+type GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection struct {
+	// A list of nodes that are contained in MetafieldEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection) GetNodes() []GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnection) GetPageInfo() GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin-graphql/latest/interfaces/HasMetafields).
+// Some examples of the data that metafields enable you to store are specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a value along with type information for that value.
+type GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield struct {
+	// The container for a group of metafields that the metafield is associated with.
+	Namespace string `json:"namespace"`
+	// The unique identifier for the metafield within its namespace.
+	Key string `json:"key"`
+	// The type of data that's stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type string `json:"type"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield) GetNamespace() string {
+	return v.Namespace
+}
+
+// GetKey returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield.Key, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield) GetKey() string {
+	return v.Key
+}
+
+// GetType returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield.Type, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield) GetType() string {
+	return v.Type
+}
+
+// GetValue returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionNodesMetafield) GetValue() string {
+	return v.Value
+}
+
+// GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsCollectionMetafieldsMetafieldConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetCollectionMetafieldsResponse is returned by GetCollectionMetafields on success.
+type GetCollectionMetafieldsResponse struct {
+	// Retrieves a [collection](https://shopify.dev/docs/api/admin-graphql/latest/objects/Collection) by its ID.
+	// A collection represents a grouping of [products](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+	// that merchants can display and sell as a group in their [online store](https://shopify.dev/docs/apps/build/online-store) and
+	// other [sales channels](https://shopify.dev/docs/apps/build/sales-channels).
+	//
+	// Use the `collection` query when you need to:
+	//
+	// - Manage collection publishing across sales channels
+	// - Access collection metadata and SEO information
+	// - Work with collection conditions and product relationships
+	//
+	// A collection determines which products it includes through conditions that automatically include
+	// products that match, and through manual selections of individual products. Each collection has
+	// associated metadata including title, description, handle, image, and
+	// [metafields](https://shopify.dev/docs/apps/build/custom-data/metafields).
+	Collection *GetCollectionMetafieldsCollection `json:"collection"`
+}
+
+// GetCollection returns GetCollectionMetafieldsResponse.Collection, and is useful for accessing the field via an interface.
+func (v *GetCollectionMetafieldsResponse) GetCollection() *GetCollectionMetafieldsCollection {
+	return v.Collection
 }
 
 // GetCollectionPublicationsCollection includes the requested fields of the GraphQL type Collection.
@@ -16645,6 +19130,115 @@ type GetMetaobjectResponse struct {
 // GetMetaobject returns GetMetaobjectResponse.Metaobject, and is useful for accessing the field via an interface.
 func (v *GetMetaobjectResponse) GetMetaobject() *GetMetaobjectMetaobject { return v.Metaobject }
 
+// GetPageMetafieldsPage includes the requested fields of the GraphQL type Page.
+// The GraphQL type's documentation follows.
+//
+// A standalone content page in the online store. Pages display HTML-formatted content for informational pages like "About Us", contact information, or shipping policies.
+//
+// Each page has a unique handle for URL routing and supports custom template suffixes for specialized layouts. Pages can be published or hidden, and include creation and update timestamps.
+type GetPageMetafieldsPage struct {
+	// A list of [custom fields](https://shopify.dev/docs/apps/build/custom-data)
+	// that a merchant associates with a Shopify resource.
+	Metafields GetPageMetafieldsPageMetafieldsMetafieldConnection `json:"metafields"`
+}
+
+// GetMetafields returns GetPageMetafieldsPage.Metafields, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPage) GetMetafields() GetPageMetafieldsPageMetafieldsMetafieldConnection {
+	return v.Metafields
+}
+
+// GetPageMetafieldsPageMetafieldsMetafieldConnection includes the requested fields of the GraphQL type MetafieldConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Metafields.
+type GetPageMetafieldsPageMetafieldsMetafieldConnection struct {
+	// A list of nodes that are contained in MetafieldEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetPageMetafieldsPageMetafieldsMetafieldConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnection) GetNodes() []GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetPageMetafieldsPageMetafieldsMetafieldConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnection) GetPageInfo() GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin-graphql/latest/interfaces/HasMetafields).
+// Some examples of the data that metafields enable you to store are specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a value along with type information for that value.
+type GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield struct {
+	// The container for a group of metafields that the metafield is associated with.
+	Namespace string `json:"namespace"`
+	// The unique identifier for the metafield within its namespace.
+	Key string `json:"key"`
+	// The type of data that's stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type string `json:"type"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield) GetNamespace() string {
+	return v.Namespace
+}
+
+// GetKey returns GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield.Key, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield) GetKey() string {
+	return v.Key
+}
+
+// GetType returns GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield.Type, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield) GetType() string {
+	return v.Type
+}
+
+// GetValue returns GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnectionNodesMetafield) GetValue() string {
+	return v.Value
+}
+
+// GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsPageMetafieldsMetafieldConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetPageMetafieldsResponse is returned by GetPageMetafields on success.
+type GetPageMetafieldsResponse struct {
+	// Returns a `Page` resource by ID.
+	Page *GetPageMetafieldsPage `json:"page"`
+}
+
+// GetPage returns GetPageMetafieldsResponse.Page, and is useful for accessing the field via an interface.
+func (v *GetPageMetafieldsResponse) GetPage() *GetPageMetafieldsPage { return v.Page }
+
 // GetPagePage includes the requested fields of the GraphQL type Page.
 // The GraphQL type's documentation follows.
 //
@@ -17963,6 +20557,121 @@ func (v *GetSegmentSegment) __premarshalJSON() (*__premarshalGetSegmentSegment, 
 	return &retval, nil
 }
 
+// GetShopMetafieldsResponse is returned by GetShopMetafields on success.
+type GetShopMetafieldsResponse struct {
+	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
+	// business and store management settings for the shop.
+	Shop GetShopMetafieldsShop `json:"shop"`
+}
+
+// GetShop returns GetShopMetafieldsResponse.Shop, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsResponse) GetShop() GetShopMetafieldsShop { return v.Shop }
+
+// GetShopMetafieldsShop includes the requested fields of the GraphQL type Shop.
+// The GraphQL type's documentation follows.
+//
+// The central configuration and settings hub for a Shopify store. Access business information, operational preferences, feature availability, and store-wide settings that control how the shop operates.
+//
+// Includes core business details like the shop name, contact emails, billing address, and currency settings. The shop configuration determines customer account requirements, available sales channels, enabled features, payment settings, and policy documents. Also provides access to shop-level resources such as staff members, fulfillment services, navigation settings, and storefront access tokens.
+type GetShopMetafieldsShop struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+	// A list of [custom fields](https://shopify.dev/docs/apps/build/custom-data)
+	// that a merchant associates with a Shopify resource.
+	Metafields GetShopMetafieldsShopMetafieldsMetafieldConnection `json:"metafields"`
+}
+
+// GetId returns GetShopMetafieldsShop.Id, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShop) GetId() string { return v.Id }
+
+// GetMetafields returns GetShopMetafieldsShop.Metafields, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShop) GetMetafields() GetShopMetafieldsShopMetafieldsMetafieldConnection {
+	return v.Metafields
+}
+
+// GetShopMetafieldsShopMetafieldsMetafieldConnection includes the requested fields of the GraphQL type MetafieldConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Metafields.
+type GetShopMetafieldsShopMetafieldsMetafieldConnection struct {
+	// A list of nodes that are contained in MetafieldEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetShopMetafieldsShopMetafieldsMetafieldConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnection) GetNodes() []GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetShopMetafieldsShopMetafieldsMetafieldConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnection) GetPageInfo() GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin-graphql/latest/interfaces/HasMetafields).
+// Some examples of the data that metafields enable you to store are specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a value along with type information for that value.
+type GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield struct {
+	// The container for a group of metafields that the metafield is associated with.
+	Namespace string `json:"namespace"`
+	// The unique identifier for the metafield within its namespace.
+	Key string `json:"key"`
+	// The type of data that's stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type string `json:"type"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield) GetNamespace() string {
+	return v.Namespace
+}
+
+// GetKey returns GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield.Key, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield) GetKey() string {
+	return v.Key
+}
+
+// GetType returns GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield.Type, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield) GetType() string {
+	return v.Type
+}
+
+// GetValue returns GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnectionNodesMetafield) GetValue() string {
+	return v.Value
+}
+
+// GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetShopMetafieldsShopMetafieldsMetafieldConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
 // GetShopResponse is returned by GetShop on success.
 type GetShopResponse struct {
 	// Returns the Shop resource corresponding to the access token used in the request. The Shop resource contains
@@ -18047,6 +20756,156 @@ type GetShopShopPrimaryDomain struct {
 
 // GetHost returns GetShopShopPrimaryDomain.Host, and is useful for accessing the field via an interface.
 func (v *GetShopShopPrimaryDomain) GetHost() string { return v.Host }
+
+// GetVariantMetafieldsProductVariant includes the requested fields of the GraphQL type ProductVariant.
+// The GraphQL type's documentation follows.
+//
+// The `ProductVariant` object represents a version of a
+// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product)
+// that comes in more than one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+// such as size or color. For example, if a merchant sells t-shirts with options for size and color, then a small,
+// blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+//
+// Use the `ProductVariant` object to manage the full lifecycle and configuration of a product's variants. Common
+// use cases for using the `ProductVariant` object include:
+//
+// - Tracking inventory for each variant
+// - Setting unique prices for each variant
+// - Assigning barcodes and SKUs to connect variants to fulfillment services
+// - Attaching variant-specific images and media
+// - Setting delivery and tax requirements
+// - Supporting product bundles, subscriptions, and selling plans
+//
+// A `ProductVariant` is associated with a parent
+// [`Product`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) object.
+// `ProductVariant` serves as the central link between a product's merchandising configuration, inventory,
+// pricing, fulfillment, and sales channels within the GraphQL Admin API schema. Each variant
+// can reference other GraphQL types such as:
+//
+// - [`InventoryItem`](https://shopify.dev/docs/api/admin-graphql/latest/objects/InventoryItem): Used for inventory tracking
+// - [`Image`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Image): Used for variant-specific images
+// - [`SellingPlanGroup`](https://shopify.dev/docs/api/admin-graphql/latest/objects/SellingPlanGroup): Used for subscriptions and selling plans
+//
+// Learn more about [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+type GetVariantMetafieldsProductVariant struct {
+	// A list of [custom fields](https://shopify.dev/docs/apps/build/custom-data)
+	// that a merchant associates with a Shopify resource.
+	Metafields GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection `json:"metafields"`
+}
+
+// GetMetafields returns GetVariantMetafieldsProductVariant.Metafields, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariant) GetMetafields() GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection {
+	return v.Metafields
+}
+
+// GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection includes the requested fields of the GraphQL type MetafieldConnection.
+// The GraphQL type's documentation follows.
+//
+// An auto-generated type for paginating through multiple Metafields.
+type GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection struct {
+	// A list of nodes that are contained in MetafieldEdge. You can fetch data about an individual node, or you can follow the edges to fetch data about a collection of related nodes. At each node, you specify the fields that you want to retrieve.
+	Nodes []GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield `json:"nodes"`
+	// An object that’s used to retrieve [cursor information](https://shopify.dev/api/usage/pagination-graphql) about the current page.
+	PageInfo GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo `json:"pageInfo"`
+}
+
+// GetNodes returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection.Nodes, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection) GetNodes() []GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield {
+	return v.Nodes
+}
+
+// GetPageInfo returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection.PageInfo, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnection) GetPageInfo() GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo {
+	return v.PageInfo
+}
+
+// GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield includes the requested fields of the GraphQL type Metafield.
+// The GraphQL type's documentation follows.
+//
+// Metafields enable you to attach additional information to a Shopify resource, such as a [Product](https://shopify.dev/api/admin-graphql/latest/objects/product) or a [Collection](https://shopify.dev/api/admin-graphql/latest/objects/collection).
+// For more information about where you can attach metafields refer to [HasMetafields](https://shopify.dev/api/admin-graphql/latest/interfaces/HasMetafields).
+// Some examples of the data that metafields enable you to store are specifications, size charts, downloadable documents, release dates, images, or part numbers.
+// Metafields are identified by an owner resource, namespace, and key. and store a value along with type information for that value.
+type GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield struct {
+	// The container for a group of metafields that the metafield is associated with.
+	Namespace string `json:"namespace"`
+	// The unique identifier for the metafield within its namespace.
+	Key string `json:"key"`
+	// The type of data that's stored in the metafield.
+	// Refer to the list of [supported types](https://shopify.dev/apps/metafields/types).
+	Type string `json:"type"`
+	// The data stored in the metafield. Always stored as a string, regardless of the metafield's type.
+	Value string `json:"value"`
+}
+
+// GetNamespace returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield.Namespace, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield) GetNamespace() string {
+	return v.Namespace
+}
+
+// GetKey returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield.Key, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield) GetKey() string {
+	return v.Key
+}
+
+// GetType returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield.Type, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield) GetType() string {
+	return v.Type
+}
+
+// GetValue returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield.Value, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionNodesMetafield) GetValue() string {
+	return v.Value
+}
+
+// GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo includes the requested fields of the GraphQL type PageInfo.
+// The GraphQL type's documentation follows.
+//
+// Returns information about pagination in a connection, in accordance with the
+// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
+// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
+type GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo struct {
+	// Whether there are more pages to fetch following the current page.
+	HasNextPage bool `json:"hasNextPage"`
+	// The cursor corresponding to the last node in edges.
+	EndCursor *string `json:"endCursor"`
+}
+
+// GetHasNextPage returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo.HasNextPage, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo) GetHasNextPage() bool {
+	return v.HasNextPage
+}
+
+// GetEndCursor returns GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo.EndCursor, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsProductVariantMetafieldsMetafieldConnectionPageInfo) GetEndCursor() *string {
+	return v.EndCursor
+}
+
+// GetVariantMetafieldsResponse is returned by GetVariantMetafields on success.
+type GetVariantMetafieldsResponse struct {
+	// Retrieves a [product variant](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductVariant) by its ID.
+	//
+	// A product variant is a specific version of a
+	// [product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product) that comes in more than
+	// one [option](https://shopify.dev/docs/api/admin-graphql/latest/objects/ProductOption),
+	// such as size or color. For example, if a merchant sells t-shirts with options for size and color,
+	// then a small, blue t-shirt would be one product variant and a large, blue t-shirt would be another.
+	//
+	// Use the `productVariant` query when you need to:
+	//
+	// - Access essential product variant data (for example, title, price, image, and metafields).
+	// - Build product detail pages and manage inventory.
+	// - Handle international sales with localized pricing and content.
+	// - Manage product variants that are part of a bundle or selling plan.
+	//
+	// Learn more about working with [Shopify's product model](https://shopify.dev/docs/apps/build/graphql/migrate/new-product-model/product-model-components).
+	ProductVariant *GetVariantMetafieldsProductVariant `json:"productVariant"`
+}
+
+// GetProductVariant returns GetVariantMetafieldsResponse.ProductVariant, and is useful for accessing the field via an interface.
+func (v *GetVariantMetafieldsResponse) GetProductVariant() *GetVariantMetafieldsProductVariant {
+	return v.ProductVariant
+}
 
 // GetWebPresenceResponse is returned by GetWebPresence on success.
 type GetWebPresenceResponse struct {
@@ -30144,6 +33003,123 @@ func (v *UpdateDiscountAutomaticBasicResponse) GetDiscountAutomaticBasicUpdate()
 	return v.DiscountAutomaticBasicUpdate
 }
 
+// UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayload includes the requested fields of the GraphQL type DiscountAutomaticBxgyUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountAutomaticBxgyUpdate` mutation.
+type UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayload struct {
+	// The automatic discount that was updated.
+	AutomaticDiscountNode *UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode `json:"automaticDiscountNode"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetAutomaticDiscountNode returns UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayload.AutomaticDiscountNode, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayload) GetAutomaticDiscountNode() *UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode {
+	return v.AutomaticDiscountNode
+}
+
+// GetUserErrors returns UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode includes the requested fields of the GraphQL type DiscountAutomaticNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticNode` object enables you to manage [automatic discounts](https://help.shopify.com/manual/discounts/discount-types#automatic-discounts) that are applied when an order meets specific criteria. You can create amount off, free shipping, or buy X get Y automatic discounts. For example, you can offer customers a free shipping discount that applies when conditions are met. Or you can offer customers a buy X get Y discount that's automatically applied when customers spend a specified amount of money, or a specified quantity of products.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode.Id, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode) GetId() string {
+	return v.Id
+}
+
+// UpdateDiscountAutomaticBxgyResponse is returned by UpdateDiscountAutomaticBxgy on success.
+type UpdateDiscountAutomaticBxgyResponse struct {
+	// Updates an existing
+	// [buy X get Y discount (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+	// that's automatically applied on a cart and at checkout.
+	//
+	// > Note:
+	// > To update code discounts, use the
+	// [`discountCodeBxgyUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountCodeBxgyUpdate)
+	// mutation instead.
+	DiscountAutomaticBxgyUpdate *UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayload `json:"discountAutomaticBxgyUpdate"`
+}
+
+// GetDiscountAutomaticBxgyUpdate returns UpdateDiscountAutomaticBxgyResponse.DiscountAutomaticBxgyUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountAutomaticBxgyResponse) GetDiscountAutomaticBxgyUpdate() *UpdateDiscountAutomaticBxgyDiscountAutomaticBxgyUpdateDiscountAutomaticBxgyUpdatePayload {
+	return v.DiscountAutomaticBxgyUpdate
+}
+
+// UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayload includes the requested fields of the GraphQL type DiscountAutomaticFreeShippingUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountAutomaticFreeShippingUpdate` mutation.
+type UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayload struct {
+	// The automatic discount that was updated.
+	AutomaticDiscountNode *UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode `json:"automaticDiscountNode"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetAutomaticDiscountNode returns UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayload.AutomaticDiscountNode, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayload) GetAutomaticDiscountNode() *UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode {
+	return v.AutomaticDiscountNode
+}
+
+// GetUserErrors returns UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode includes the requested fields of the GraphQL type DiscountAutomaticNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountAutomaticNode` object enables you to manage [automatic discounts](https://help.shopify.com/manual/discounts/discount-types#automatic-discounts) that are applied when an order meets specific criteria. You can create amount off, free shipping, or buy X get Y automatic discounts. For example, you can offer customers a free shipping discount that applies when conditions are met. Or you can offer customers a buy X get Y discount that's automatically applied when customers spend a specified amount of money, or a specified quantity of products.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode.Id, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayloadAutomaticDiscountNodeDiscountAutomaticNode) GetId() string {
+	return v.Id
+}
+
+// UpdateDiscountAutomaticFreeShippingResponse is returned by UpdateDiscountAutomaticFreeShipping on success.
+type UpdateDiscountAutomaticFreeShippingResponse struct {
+	// Updates existing automatic free shipping discounts, allowing merchants to modify promotion criteria, shipping destinations, and eligibility requirements without recreating the entire discount structure.
+	//
+	// For example, extending a holiday free shipping promotion to include additional countries, adjusting the minimum order value threshold, or expanding customer eligibility to include new segments.
+	//
+	// Use `DiscountAutomaticFreeShippingUpdate` to:
+	// - Modify shipping discount thresholds and criteria
+	// - Expand or restrict geographic availability
+	// - Update customer targeting and eligibility rules
+	// - Adjust promotion timing and activation periods
+	//
+	// Changes take effect immediately for new orders, while the mutation validates all modifications and reports any configuration conflicts through user errors.
+	//
+	// Learn more about [managing automatic discounts](https://shopify.dev/docs/api/admin-graphql/latest/objects/DiscountAutomaticFreeShipping).
+	DiscountAutomaticFreeShippingUpdate *UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayload `json:"discountAutomaticFreeShippingUpdate"`
+}
+
+// GetDiscountAutomaticFreeShippingUpdate returns UpdateDiscountAutomaticFreeShippingResponse.DiscountAutomaticFreeShippingUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountAutomaticFreeShippingResponse) GetDiscountAutomaticFreeShippingUpdate() *UpdateDiscountAutomaticFreeShippingDiscountAutomaticFreeShippingUpdateDiscountAutomaticFreeShippingUpdatePayload {
+	return v.DiscountAutomaticFreeShippingUpdate
+}
+
 // UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayload includes the requested fields of the GraphQL type DiscountCodeBasicUpdatePayload.
 // The GraphQL type's documentation follows.
 //
@@ -30194,6 +33170,114 @@ type UpdateDiscountCodeBasicResponse struct {
 // GetDiscountCodeBasicUpdate returns UpdateDiscountCodeBasicResponse.DiscountCodeBasicUpdate, and is useful for accessing the field via an interface.
 func (v *UpdateDiscountCodeBasicResponse) GetDiscountCodeBasicUpdate() *UpdateDiscountCodeBasicDiscountCodeBasicUpdateDiscountCodeBasicUpdatePayload {
 	return v.DiscountCodeBasicUpdate
+}
+
+// UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayload includes the requested fields of the GraphQL type DiscountCodeBxgyUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountCodeBxgyUpdate` mutation.
+type UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayload struct {
+	// The code discount that was updated.
+	CodeDiscountNode *UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayloadCodeDiscountNodeDiscountCodeNode `json:"codeDiscountNode"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetCodeDiscountNode returns UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayload.CodeDiscountNode, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayload) GetCodeDiscountNode() *UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayloadCodeDiscountNodeDiscountCodeNode {
+	return v.CodeDiscountNode
+}
+
+// GetUserErrors returns UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayloadCodeDiscountNodeDiscountCodeNode includes the requested fields of the GraphQL type DiscountCodeNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeNode` object enables you to manage [code discounts](https://help.shopify.com/manual/discounts/discount-types#discount-codes) that are applied when customers enter a code at checkout. For example, you can offer discounts where customers have to enter a code to redeem an amount off discount on products, variants, or collections in a store. Or, you can offer discounts where customers have to enter a code to get free shipping. Merchants can create and share discount codes individually with customers.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayloadCodeDiscountNodeDiscountCodeNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayloadCodeDiscountNodeDiscountCodeNode.Id, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayloadCodeDiscountNodeDiscountCodeNode) GetId() string {
+	return v.Id
+}
+
+// UpdateDiscountCodeBxgyResponse is returned by UpdateDiscountCodeBxgy on success.
+type UpdateDiscountCodeBxgyResponse struct {
+	// Updates a
+	// [buy X get Y discount (BXGY)](https://help.shopify.com/manual/discounts/discount-types/buy-x-get-y)
+	// that's applied on a cart and at checkout when a customer enters a code.
+	//
+	// > Note:
+	// > To update discounts that are automatically applied on a cart and at checkout, use the
+	// [`discountAutomaticBxgyUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountAutomaticBxgyUpdate)
+	// mutation.
+	DiscountCodeBxgyUpdate *UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayload `json:"discountCodeBxgyUpdate"`
+}
+
+// GetDiscountCodeBxgyUpdate returns UpdateDiscountCodeBxgyResponse.DiscountCodeBxgyUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountCodeBxgyResponse) GetDiscountCodeBxgyUpdate() *UpdateDiscountCodeBxgyDiscountCodeBxgyUpdateDiscountCodeBxgyUpdatePayload {
+	return v.DiscountCodeBxgyUpdate
+}
+
+// UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayload includes the requested fields of the GraphQL type DiscountCodeFreeShippingUpdatePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `discountCodeFreeShippingUpdate` mutation.
+type UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayload struct {
+	// The discount code that was updated.
+	CodeDiscountNode *UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayloadCodeDiscountNodeDiscountCodeNode `json:"codeDiscountNode"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []DiscountUserErrorFields `json:"userErrors"`
+}
+
+// GetCodeDiscountNode returns UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayload.CodeDiscountNode, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayload) GetCodeDiscountNode() *UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayloadCodeDiscountNodeDiscountCodeNode {
+	return v.CodeDiscountNode
+}
+
+// GetUserErrors returns UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayload) GetUserErrors() []DiscountUserErrorFields {
+	return v.UserErrors
+}
+
+// UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayloadCodeDiscountNodeDiscountCodeNode includes the requested fields of the GraphQL type DiscountCodeNode.
+// The GraphQL type's documentation follows.
+//
+// The `DiscountCodeNode` object enables you to manage [code discounts](https://help.shopify.com/manual/discounts/discount-types#discount-codes) that are applied when customers enter a code at checkout. For example, you can offer discounts where customers have to enter a code to redeem an amount off discount on products, variants, or collections in a store. Or, you can offer discounts where customers have to enter a code to get free shipping. Merchants can create and share discount codes individually with customers.
+//
+// Learn more about working with [Shopify's discount model](https://shopify.dev/docs/apps/build/discounts),
+// including related queries, mutations, limitations, and considerations.
+type UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayloadCodeDiscountNodeDiscountCodeNode struct {
+	// A globally-unique ID.
+	Id string `json:"id"`
+}
+
+// GetId returns UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayloadCodeDiscountNodeDiscountCodeNode.Id, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayloadCodeDiscountNodeDiscountCodeNode) GetId() string {
+	return v.Id
+}
+
+// UpdateDiscountCodeFreeShippingResponse is returned by UpdateDiscountCodeFreeShipping on success.
+type UpdateDiscountCodeFreeShippingResponse struct {
+	// Updates a [free shipping discount](https://help.shopify.com/manual/discounts/discount-types/free-shipping) that's applied on a cart and at checkout when a customer enters a code.
+	//
+	// > Note:
+	// > To update a free shipping discount that's automatically applied on a cart and at checkout, use the [`discountAutomaticFreeShippingUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/discountAutomaticFreeShippingUpdate) mutation.
+	DiscountCodeFreeShippingUpdate *UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayload `json:"discountCodeFreeShippingUpdate"`
+}
+
+// GetDiscountCodeFreeShippingUpdate returns UpdateDiscountCodeFreeShippingResponse.DiscountCodeFreeShippingUpdate, and is useful for accessing the field via an interface.
+func (v *UpdateDiscountCodeFreeShippingResponse) GetDiscountCodeFreeShippingUpdate() *UpdateDiscountCodeFreeShippingDiscountCodeFreeShippingUpdateDiscountCodeFreeShippingUpdatePayload {
+	return v.DiscountCodeFreeShippingUpdate
 }
 
 // UpdateFileFileUpdateFileUpdatePayload includes the requested fields of the GraphQL type FileUpdatePayload.
@@ -32378,6 +35462,24 @@ type __CreateDiscountAutomaticBasicInput struct {
 // GetInput returns __CreateDiscountAutomaticBasicInput.Input, and is useful for accessing the field via an interface.
 func (v *__CreateDiscountAutomaticBasicInput) GetInput() DiscountAutomaticBasicInput { return v.Input }
 
+// __CreateDiscountAutomaticBxgyInput is used internally by genqlient
+type __CreateDiscountAutomaticBxgyInput struct {
+	Input DiscountAutomaticBxgyInput `json:"input"`
+}
+
+// GetInput returns __CreateDiscountAutomaticBxgyInput.Input, and is useful for accessing the field via an interface.
+func (v *__CreateDiscountAutomaticBxgyInput) GetInput() DiscountAutomaticBxgyInput { return v.Input }
+
+// __CreateDiscountAutomaticFreeShippingInput is used internally by genqlient
+type __CreateDiscountAutomaticFreeShippingInput struct {
+	Input DiscountAutomaticFreeShippingInput `json:"input"`
+}
+
+// GetInput returns __CreateDiscountAutomaticFreeShippingInput.Input, and is useful for accessing the field via an interface.
+func (v *__CreateDiscountAutomaticFreeShippingInput) GetInput() DiscountAutomaticFreeShippingInput {
+	return v.Input
+}
+
 // __CreateDiscountCodeBasicInput is used internally by genqlient
 type __CreateDiscountCodeBasicInput struct {
 	Input DiscountCodeBasicInput `json:"input"`
@@ -32385,6 +35487,24 @@ type __CreateDiscountCodeBasicInput struct {
 
 // GetInput returns __CreateDiscountCodeBasicInput.Input, and is useful for accessing the field via an interface.
 func (v *__CreateDiscountCodeBasicInput) GetInput() DiscountCodeBasicInput { return v.Input }
+
+// __CreateDiscountCodeBxgyInput is used internally by genqlient
+type __CreateDiscountCodeBxgyInput struct {
+	Input DiscountCodeBxgyInput `json:"input"`
+}
+
+// GetInput returns __CreateDiscountCodeBxgyInput.Input, and is useful for accessing the field via an interface.
+func (v *__CreateDiscountCodeBxgyInput) GetInput() DiscountCodeBxgyInput { return v.Input }
+
+// __CreateDiscountCodeFreeShippingInput is used internally by genqlient
+type __CreateDiscountCodeFreeShippingInput struct {
+	Input DiscountCodeFreeShippingInput `json:"input"`
+}
+
+// GetInput returns __CreateDiscountCodeFreeShippingInput.Input, and is useful for accessing the field via an interface.
+func (v *__CreateDiscountCodeFreeShippingInput) GetInput() DiscountCodeFreeShippingInput {
+	return v.Input
+}
 
 // __CreateFileInput is used internally by genqlient
 type __CreateFileInput struct {
@@ -32726,6 +35846,18 @@ type __GetBlogInput struct {
 // GetId returns __GetBlogInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetBlogInput) GetId() string { return v.Id }
 
+// __GetBlogMetafieldsInput is used internally by genqlient
+type __GetBlogMetafieldsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetBlogMetafieldsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetBlogMetafieldsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetBlogMetafieldsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetBlogMetafieldsInput) GetAfter() *string { return v.After }
+
 // __GetCheckoutAndAccountsConfigurationInput is used internally by genqlient
 type __GetCheckoutAndAccountsConfigurationInput struct {
 	Id string `json:"id"`
@@ -32749,6 +35881,18 @@ type __GetCollectionInput struct {
 
 // GetId returns __GetCollectionInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetCollectionInput) GetId() string { return v.Id }
+
+// __GetCollectionMetafieldsInput is used internally by genqlient
+type __GetCollectionMetafieldsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetCollectionMetafieldsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetCollectionMetafieldsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetCollectionMetafieldsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetCollectionMetafieldsInput) GetAfter() *string { return v.After }
 
 // __GetCollectionPublicationsInput is used internally by genqlient
 type __GetCollectionPublicationsInput struct {
@@ -32932,6 +36076,18 @@ type __GetPageInput struct {
 // GetId returns __GetPageInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetPageInput) GetId() string { return v.Id }
 
+// __GetPageMetafieldsInput is used internally by genqlient
+type __GetPageMetafieldsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetPageMetafieldsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetPageMetafieldsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetPageMetafieldsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetPageMetafieldsInput) GetAfter() *string { return v.After }
+
 // __GetProductByHandleInput is used internally by genqlient
 type __GetProductByHandleInput struct {
 	Handle string `json:"handle"`
@@ -33003,6 +36159,26 @@ type __GetSegmentInput struct {
 
 // GetId returns __GetSegmentInput.Id, and is useful for accessing the field via an interface.
 func (v *__GetSegmentInput) GetId() string { return v.Id }
+
+// __GetShopMetafieldsInput is used internally by genqlient
+type __GetShopMetafieldsInput struct {
+	After *string `json:"after"`
+}
+
+// GetAfter returns __GetShopMetafieldsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetShopMetafieldsInput) GetAfter() *string { return v.After }
+
+// __GetVariantMetafieldsInput is used internally by genqlient
+type __GetVariantMetafieldsInput struct {
+	Id    string  `json:"id"`
+	After *string `json:"after"`
+}
+
+// GetId returns __GetVariantMetafieldsInput.Id, and is useful for accessing the field via an interface.
+func (v *__GetVariantMetafieldsInput) GetId() string { return v.Id }
+
+// GetAfter returns __GetVariantMetafieldsInput.After, and is useful for accessing the field via an interface.
+func (v *__GetVariantMetafieldsInput) GetAfter() *string { return v.After }
 
 // __GetWebPresenceInput is used internally by genqlient
 type __GetWebPresenceInput struct {
@@ -33290,6 +36466,32 @@ func (v *__UpdateDiscountAutomaticBasicInput) GetId() string { return v.Id }
 // GetInput returns __UpdateDiscountAutomaticBasicInput.Input, and is useful for accessing the field via an interface.
 func (v *__UpdateDiscountAutomaticBasicInput) GetInput() DiscountAutomaticBasicInput { return v.Input }
 
+// __UpdateDiscountAutomaticBxgyInput is used internally by genqlient
+type __UpdateDiscountAutomaticBxgyInput struct {
+	Id    string                     `json:"id"`
+	Input DiscountAutomaticBxgyInput `json:"input"`
+}
+
+// GetId returns __UpdateDiscountAutomaticBxgyInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateDiscountAutomaticBxgyInput) GetId() string { return v.Id }
+
+// GetInput returns __UpdateDiscountAutomaticBxgyInput.Input, and is useful for accessing the field via an interface.
+func (v *__UpdateDiscountAutomaticBxgyInput) GetInput() DiscountAutomaticBxgyInput { return v.Input }
+
+// __UpdateDiscountAutomaticFreeShippingInput is used internally by genqlient
+type __UpdateDiscountAutomaticFreeShippingInput struct {
+	Id    string                             `json:"id"`
+	Input DiscountAutomaticFreeShippingInput `json:"input"`
+}
+
+// GetId returns __UpdateDiscountAutomaticFreeShippingInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateDiscountAutomaticFreeShippingInput) GetId() string { return v.Id }
+
+// GetInput returns __UpdateDiscountAutomaticFreeShippingInput.Input, and is useful for accessing the field via an interface.
+func (v *__UpdateDiscountAutomaticFreeShippingInput) GetInput() DiscountAutomaticFreeShippingInput {
+	return v.Input
+}
+
 // __UpdateDiscountCodeBasicInput is used internally by genqlient
 type __UpdateDiscountCodeBasicInput struct {
 	Id    string                 `json:"id"`
@@ -33301,6 +36503,32 @@ func (v *__UpdateDiscountCodeBasicInput) GetId() string { return v.Id }
 
 // GetInput returns __UpdateDiscountCodeBasicInput.Input, and is useful for accessing the field via an interface.
 func (v *__UpdateDiscountCodeBasicInput) GetInput() DiscountCodeBasicInput { return v.Input }
+
+// __UpdateDiscountCodeBxgyInput is used internally by genqlient
+type __UpdateDiscountCodeBxgyInput struct {
+	Id    string                `json:"id"`
+	Input DiscountCodeBxgyInput `json:"input"`
+}
+
+// GetId returns __UpdateDiscountCodeBxgyInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateDiscountCodeBxgyInput) GetId() string { return v.Id }
+
+// GetInput returns __UpdateDiscountCodeBxgyInput.Input, and is useful for accessing the field via an interface.
+func (v *__UpdateDiscountCodeBxgyInput) GetInput() DiscountCodeBxgyInput { return v.Input }
+
+// __UpdateDiscountCodeFreeShippingInput is used internally by genqlient
+type __UpdateDiscountCodeFreeShippingInput struct {
+	Id    string                        `json:"id"`
+	Input DiscountCodeFreeShippingInput `json:"input"`
+}
+
+// GetId returns __UpdateDiscountCodeFreeShippingInput.Id, and is useful for accessing the field via an interface.
+func (v *__UpdateDiscountCodeFreeShippingInput) GetId() string { return v.Id }
+
+// GetInput returns __UpdateDiscountCodeFreeShippingInput.Input, and is useful for accessing the field via an interface.
+func (v *__UpdateDiscountCodeFreeShippingInput) GetInput() DiscountCodeFreeShippingInput {
+	return v.Input
+}
 
 // __UpdateFileInput is used internally by genqlient
 type __UpdateFileInput struct {
@@ -33658,7 +36886,7 @@ fragment BlogFields on Blog {
 }
 `
 
-// metafields is never sent: metafield values are a roadmap type.
+// metafields are never sent here: they go through metafieldsSet (resource model 9v).
 func CreateBlog(
 	ctx_ context.Context,
 	client_ graphql.Client,
@@ -33949,6 +37177,96 @@ func CreateDiscountAutomaticBasic(
 	return data_, err_
 }
 
+// The mutation executed by CreateDiscountAutomaticBxgy.
+const CreateDiscountAutomaticBxgy_Operation = `
+mutation CreateDiscountAutomaticBxgy ($input: DiscountAutomaticBxgyInput!) {
+	discountAutomaticBxgyCreate(automaticBxgyDiscount: $input) {
+		automaticDiscountNode {
+			id
+		}
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+func CreateDiscountAutomaticBxgy(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input DiscountAutomaticBxgyInput,
+) (data_ *CreateDiscountAutomaticBxgyResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateDiscountAutomaticBxgy",
+		Query:  CreateDiscountAutomaticBxgy_Operation,
+		Variables: &__CreateDiscountAutomaticBxgyInput{
+			Input: input,
+		},
+	}
+
+	data_ = &CreateDiscountAutomaticBxgyResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateDiscountAutomaticFreeShipping.
+const CreateDiscountAutomaticFreeShipping_Operation = `
+mutation CreateDiscountAutomaticFreeShipping ($input: DiscountAutomaticFreeShippingInput!) {
+	discountAutomaticFreeShippingCreate(freeShippingAutomaticDiscount: $input) {
+		automaticDiscountNode {
+			id
+		}
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+func CreateDiscountAutomaticFreeShipping(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input DiscountAutomaticFreeShippingInput,
+) (data_ *CreateDiscountAutomaticFreeShippingResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateDiscountAutomaticFreeShipping",
+		Query:  CreateDiscountAutomaticFreeShipping_Operation,
+		Variables: &__CreateDiscountAutomaticFreeShippingInput{
+			Input: input,
+		},
+	}
+
+	data_ = &CreateDiscountAutomaticFreeShippingResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by CreateDiscountCodeBasic.
 const CreateDiscountCodeBasic_Operation = `
 mutation CreateDiscountCodeBasic ($input: DiscountCodeBasicInput!) {
@@ -33970,6 +37288,7 @@ fragment DiscountUserErrorFields on DiscountUserError {
 `
 
 // Omitted keys stay unchanged, so optional fields are omitempty; the subtotal and quantity values are not, since null clears them.
+// Shared with buy X get Y, which reaches these types first through basic.
 func CreateDiscountCodeBasic(
 	ctx_ context.Context,
 	client_ graphql.Client,
@@ -33984,6 +37303,98 @@ func CreateDiscountCodeBasic(
 	}
 
 	data_ = &CreateDiscountCodeBasicResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateDiscountCodeBxgy.
+const CreateDiscountCodeBxgy_Operation = `
+mutation CreateDiscountCodeBxgy ($input: DiscountCodeBxgyInput!) {
+	discountCodeBxgyCreate(bxgyCodeDiscount: $input) {
+		codeDiscountNode {
+			id
+		}
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+// The buys value is not omitempty: switching quantity to amount needs the other one as an explicit null (§9p).
+func CreateDiscountCodeBxgy(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input DiscountCodeBxgyInput,
+) (data_ *CreateDiscountCodeBxgyResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateDiscountCodeBxgy",
+		Query:  CreateDiscountCodeBxgy_Operation,
+		Variables: &__CreateDiscountCodeBxgyInput{
+			Input: input,
+		},
+	}
+
+	data_ = &CreateDiscountCodeBxgyResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by CreateDiscountCodeFreeShipping.
+const CreateDiscountCodeFreeShipping_Operation = `
+mutation CreateDiscountCodeFreeShipping ($input: DiscountCodeFreeShippingInput!) {
+	discountCodeFreeShippingCreate(freeShippingCodeDiscount: $input) {
+		codeDiscountNode {
+			id
+		}
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+// Omitted keys stay unchanged, so every optional field is omitempty; an unset attribute is never sent.
+func CreateDiscountCodeFreeShipping(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	input DiscountCodeFreeShippingInput,
+) (data_ *CreateDiscountCodeFreeShippingResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "CreateDiscountCodeFreeShipping",
+		Query:  CreateDiscountCodeFreeShipping_Operation,
+		Variables: &__CreateDiscountCodeFreeShippingInput{
+			Input: input,
+		},
+	}
+
+	data_ = &CreateDiscountCodeFreeShippingResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -34442,7 +37853,7 @@ fragment PageFields on Page {
 }
 `
 
-// publishDate and metafields are never sent: scheduled publishing fights isPublished, metafield values are a roadmap type.
+// publishDate is never sent (scheduled publishing fights isPublished) and metafields go through metafieldsSet, not the input.
 func CreatePage(
 	ctx_ context.Context,
 	client_ graphql.Client,
@@ -35811,6 +39222,54 @@ func GetBlogArticlesCount(
 	}
 
 	data_ = &GetBlogArticlesCountResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetBlogMetafields.
+const GetBlogMetafields_Operation = `
+query GetBlogMetafields ($id: ID!, $after: String) {
+	blog(id: $id) {
+		metafields(first: 250, after: $after) {
+			nodes {
+				namespace
+				key
+				type
+				value
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// Pages a blog's metafields.
+func GetBlogMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetBlogMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetBlogMetafields",
+		Query:  GetBlogMetafields_Operation,
+		Variables: &__GetBlogMetafieldsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetBlogMetafieldsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -37532,6 +40991,53 @@ func GetCollectionByHandle(
 	return data_, err_
 }
 
+// The query executed by GetCollectionMetafields.
+const GetCollectionMetafields_Operation = `
+query GetCollectionMetafields ($id: ID!, $after: String) {
+	collection(id: $id) {
+		metafields(first: 250, after: $after) {
+			nodes {
+				namespace
+				key
+				type
+				value
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+func GetCollectionMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetCollectionMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetCollectionMetafields",
+		Query:  GetCollectionMetafields_Operation,
+		Variables: &__GetCollectionMetafieldsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetCollectionMetafieldsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetCollectionPublications.
 const GetCollectionPublications_Operation = `
 query GetCollectionPublications ($id: ID!, $after: String) {
@@ -37890,18 +41396,118 @@ fragment DiscountNodeFields on DiscountNode {
 		}
 		... on DiscountCodeBxgy {
 			title
+			startsAt
+			endsAt
+			status
+			usageLimit
+			appliesOncePerCustomer
+			codesCount {
+				count
+			}
+			codes(first: 1) {
+				nodes {
+					code
+				}
+			}
+			usesPerOrderLimit
+			customerBuys {
+				... DiscountCustomerBuysFields
+			}
+			customerGets {
+				... DiscountCustomerGetsFields
+			}
+			combinesWith {
+				... DiscountCombinesWithFields
+			}
+			context {
+				__typename
+				... DiscountContextFields
+			}
 		}
 		... on DiscountCodeFreeShipping {
 			title
+			startsAt
+			endsAt
+			status
+			usageLimit
+			appliesOncePerCustomer
+			codesCount {
+				count
+			}
+			codes(first: 1) {
+				nodes {
+					code
+				}
+			}
+			appliesOnOneTimePurchase
+			appliesOnSubscription
+			maximumShippingPrice {
+				amount
+			}
+			destinationSelection {
+				__typename
+				... DiscountDestinationFields
+			}
+			minimumRequirement {
+				__typename
+				... DiscountMinimumFields
+			}
+			combinesWith {
+				... DiscountCombinesWithFields
+			}
+			context {
+				__typename
+				... DiscountContextFields
+			}
 		}
 		... on DiscountCodeApp {
 			title
 		}
 		... on DiscountAutomaticBxgy {
 			title
+			startsAt
+			endsAt
+			status
+			usesPerOrderLimit
+			customerBuys {
+				... DiscountCustomerBuysFields
+			}
+			customerGets {
+				... DiscountCustomerGetsFields
+			}
+			combinesWith {
+				... DiscountCombinesWithFields
+			}
+			context {
+				__typename
+				... DiscountContextFields
+			}
 		}
 		... on DiscountAutomaticFreeShipping {
 			title
+			startsAt
+			endsAt
+			status
+			appliesOnOneTimePurchase
+			appliesOnSubscription
+			maximumShippingPrice {
+				amount
+			}
+			destinationSelection {
+				__typename
+				... DiscountDestinationFields
+			}
+			minimumRequirement {
+				__typename
+				... DiscountMinimumFields
+			}
+			combinesWith {
+				... DiscountCombinesWithFields
+			}
+			context {
+				__typename
+				... DiscountContextFields
+			}
 		}
 		... on DiscountAutomaticApp {
 			title
@@ -37946,6 +41552,22 @@ fragment DiscountCustomerGetsFields on DiscountCustomerGets {
 			}
 			appliesOnEachItem
 		}
+		... on DiscountOnQuantity {
+			quantity {
+				quantity
+			}
+			effect {
+				__typename
+				... on DiscountPercentage {
+					percentage
+				}
+				... on DiscountAmount {
+					amount {
+						amount
+					}
+				}
+			}
+		}
 	}
 	items {
 		__typename
@@ -37961,6 +41583,30 @@ fragment DiscountMinimumFields on DiscountMinimumRequirement {
 	}
 	... on DiscountMinimumQuantity {
 		greaterThanOrEqualToQuantity
+	}
+}
+fragment DiscountCustomerBuysFields on DiscountCustomerBuys {
+	value {
+		__typename
+		... on DiscountQuantity {
+			quantity
+		}
+		... on DiscountPurchaseAmount {
+			amount
+		}
+	}
+	items {
+		__typename
+		... DiscountItemsFields
+	}
+}
+fragment DiscountDestinationFields on DiscountShippingDestinationSelection {
+	__typename
+	... on DiscountCountries {
+		countries
+	}
+	... on DiscountCountryAll {
+		allCountries
 	}
 }
 fragment DiscountItemsFields on DiscountItems {
@@ -38884,6 +42530,54 @@ func GetPage(
 	return data_, err_
 }
 
+// The query executed by GetPageMetafields.
+const GetPageMetafields_Operation = `
+query GetPageMetafields ($id: ID!, $after: String) {
+	page(id: $id) {
+		metafields(first: 250, after: $after) {
+			nodes {
+				namespace
+				key
+				type
+				value
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// Pages a page's metafields.
+func GetPageMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetPageMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetPageMetafields",
+		Query:  GetPageMetafields_Operation,
+		Variables: &__GetPageMetafieldsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetPageMetafieldsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The query executed by GetPrivacySettings.
 const GetPrivacySettings_Operation = `
 query GetPrivacySettings {
@@ -39476,6 +43170,101 @@ func GetShop(
 	}
 
 	data_ = &GetShopResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetShopMetafields.
+const GetShopMetafields_Operation = `
+query GetShopMetafields ($after: String) {
+	shop {
+		id
+		metafields(first: 250, after: $after) {
+			nodes {
+				namespace
+				key
+				type
+				value
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// Pages the shop's own metafields; the shop ID comes in the same call because it is the owner ID for writes.
+func GetShopMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	after *string,
+) (data_ *GetShopMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetShopMetafields",
+		Query:  GetShopMetafields_Operation,
+		Variables: &__GetShopMetafieldsInput{
+			After: after,
+		},
+	}
+
+	data_ = &GetShopMetafieldsResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The query executed by GetVariantMetafields.
+const GetVariantMetafields_Operation = `
+query GetVariantMetafields ($id: ID!, $after: String) {
+	productVariant(id: $id) {
+		metafields(first: 250, after: $after) {
+			nodes {
+				namespace
+				key
+				type
+				value
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}
+`
+
+// Variants get their own query: metafields inside the product query would blow its cost limit (§9k.1, §9v).
+func GetVariantMetafields(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	after *string,
+) (data_ *GetVariantMetafieldsResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "GetVariantMetafields",
+		Query:  GetVariantMetafields_Operation,
+		Variables: &__GetVariantMetafieldsInput{
+			Id:    id,
+			After: after,
+		},
+	}
+
+	data_ = &GetVariantMetafieldsResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -41294,18 +45083,118 @@ fragment DiscountNodeFields on DiscountNode {
 		}
 		... on DiscountCodeBxgy {
 			title
+			startsAt
+			endsAt
+			status
+			usageLimit
+			appliesOncePerCustomer
+			codesCount {
+				count
+			}
+			codes(first: 1) {
+				nodes {
+					code
+				}
+			}
+			usesPerOrderLimit
+			customerBuys {
+				... DiscountCustomerBuysFields
+			}
+			customerGets {
+				... DiscountCustomerGetsFields
+			}
+			combinesWith {
+				... DiscountCombinesWithFields
+			}
+			context {
+				__typename
+				... DiscountContextFields
+			}
 		}
 		... on DiscountCodeFreeShipping {
 			title
+			startsAt
+			endsAt
+			status
+			usageLimit
+			appliesOncePerCustomer
+			codesCount {
+				count
+			}
+			codes(first: 1) {
+				nodes {
+					code
+				}
+			}
+			appliesOnOneTimePurchase
+			appliesOnSubscription
+			maximumShippingPrice {
+				amount
+			}
+			destinationSelection {
+				__typename
+				... DiscountDestinationFields
+			}
+			minimumRequirement {
+				__typename
+				... DiscountMinimumFields
+			}
+			combinesWith {
+				... DiscountCombinesWithFields
+			}
+			context {
+				__typename
+				... DiscountContextFields
+			}
 		}
 		... on DiscountCodeApp {
 			title
 		}
 		... on DiscountAutomaticBxgy {
 			title
+			startsAt
+			endsAt
+			status
+			usesPerOrderLimit
+			customerBuys {
+				... DiscountCustomerBuysFields
+			}
+			customerGets {
+				... DiscountCustomerGetsFields
+			}
+			combinesWith {
+				... DiscountCombinesWithFields
+			}
+			context {
+				__typename
+				... DiscountContextFields
+			}
 		}
 		... on DiscountAutomaticFreeShipping {
 			title
+			startsAt
+			endsAt
+			status
+			appliesOnOneTimePurchase
+			appliesOnSubscription
+			maximumShippingPrice {
+				amount
+			}
+			destinationSelection {
+				__typename
+				... DiscountDestinationFields
+			}
+			minimumRequirement {
+				__typename
+				... DiscountMinimumFields
+			}
+			combinesWith {
+				... DiscountCombinesWithFields
+			}
+			context {
+				__typename
+				... DiscountContextFields
+			}
 		}
 		... on DiscountAutomaticApp {
 			title
@@ -41350,6 +45239,22 @@ fragment DiscountCustomerGetsFields on DiscountCustomerGets {
 			}
 			appliesOnEachItem
 		}
+		... on DiscountOnQuantity {
+			quantity {
+				quantity
+			}
+			effect {
+				__typename
+				... on DiscountPercentage {
+					percentage
+				}
+				... on DiscountAmount {
+					amount {
+						amount
+					}
+				}
+			}
+		}
 	}
 	items {
 		__typename
@@ -41365,6 +45270,30 @@ fragment DiscountMinimumFields on DiscountMinimumRequirement {
 	}
 	... on DiscountMinimumQuantity {
 		greaterThanOrEqualToQuantity
+	}
+}
+fragment DiscountCustomerBuysFields on DiscountCustomerBuys {
+	value {
+		__typename
+		... on DiscountQuantity {
+			quantity
+		}
+		... on DiscountPurchaseAmount {
+			amount
+		}
+	}
+	items {
+		__typename
+		... DiscountItemsFields
+	}
+}
+fragment DiscountDestinationFields on DiscountShippingDestinationSelection {
+	__typename
+	... on DiscountCountries {
+		countries
+	}
+	... on DiscountCountryAll {
+		allCountries
 	}
 }
 fragment DiscountItemsFields on DiscountItems {
@@ -44327,6 +48256,100 @@ func UpdateDiscountAutomaticBasic(
 	return data_, err_
 }
 
+// The mutation executed by UpdateDiscountAutomaticBxgy.
+const UpdateDiscountAutomaticBxgy_Operation = `
+mutation UpdateDiscountAutomaticBxgy ($id: ID!, $input: DiscountAutomaticBxgyInput!) {
+	discountAutomaticBxgyUpdate(id: $id, automaticBxgyDiscount: $input) {
+		automaticDiscountNode {
+			id
+		}
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+func UpdateDiscountAutomaticBxgy(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input DiscountAutomaticBxgyInput,
+) (data_ *UpdateDiscountAutomaticBxgyResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateDiscountAutomaticBxgy",
+		Query:  UpdateDiscountAutomaticBxgy_Operation,
+		Variables: &__UpdateDiscountAutomaticBxgyInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &UpdateDiscountAutomaticBxgyResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateDiscountAutomaticFreeShipping.
+const UpdateDiscountAutomaticFreeShipping_Operation = `
+mutation UpdateDiscountAutomaticFreeShipping ($id: ID!, $input: DiscountAutomaticFreeShippingInput!) {
+	discountAutomaticFreeShippingUpdate(id: $id, freeShippingAutomaticDiscount: $input) {
+		automaticDiscountNode {
+			id
+		}
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+func UpdateDiscountAutomaticFreeShipping(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input DiscountAutomaticFreeShippingInput,
+) (data_ *UpdateDiscountAutomaticFreeShippingResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateDiscountAutomaticFreeShipping",
+		Query:  UpdateDiscountAutomaticFreeShipping_Operation,
+		Variables: &__UpdateDiscountAutomaticFreeShippingInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &UpdateDiscountAutomaticFreeShippingResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
 // The mutation executed by UpdateDiscountCodeBasic.
 const UpdateDiscountCodeBasic_Operation = `
 mutation UpdateDiscountCodeBasic ($id: ID!, $input: DiscountCodeBasicInput!) {
@@ -44363,6 +48386,100 @@ func UpdateDiscountCodeBasic(
 	}
 
 	data_ = &UpdateDiscountCodeBasicResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateDiscountCodeBxgy.
+const UpdateDiscountCodeBxgy_Operation = `
+mutation UpdateDiscountCodeBxgy ($id: ID!, $input: DiscountCodeBxgyInput!) {
+	discountCodeBxgyUpdate(id: $id, bxgyCodeDiscount: $input) {
+		codeDiscountNode {
+			id
+		}
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+func UpdateDiscountCodeBxgy(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input DiscountCodeBxgyInput,
+) (data_ *UpdateDiscountCodeBxgyResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateDiscountCodeBxgy",
+		Query:  UpdateDiscountCodeBxgy_Operation,
+		Variables: &__UpdateDiscountCodeBxgyInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &UpdateDiscountCodeBxgyResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by UpdateDiscountCodeFreeShipping.
+const UpdateDiscountCodeFreeShipping_Operation = `
+mutation UpdateDiscountCodeFreeShipping ($id: ID!, $input: DiscountCodeFreeShippingInput!) {
+	discountCodeFreeShippingUpdate(id: $id, freeShippingCodeDiscount: $input) {
+		codeDiscountNode {
+			id
+		}
+		userErrors {
+			... DiscountUserErrorFields
+		}
+	}
+}
+fragment DiscountUserErrorFields on DiscountUserError {
+	field
+	message
+	code
+	extraInfo
+}
+`
+
+func UpdateDiscountCodeFreeShipping(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	id string,
+	input DiscountCodeFreeShippingInput,
+) (data_ *UpdateDiscountCodeFreeShippingResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "UpdateDiscountCodeFreeShipping",
+		Query:  UpdateDiscountCodeFreeShipping_Operation,
+		Variables: &__UpdateDiscountCodeFreeShippingInput{
+			Id:    id,
+			Input: input,
+		},
+	}
+
+	data_ = &UpdateDiscountCodeFreeShippingResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(

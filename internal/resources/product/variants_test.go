@@ -3,6 +3,7 @@ package product
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/client"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/metafields"
 )
 
 type liveOption struct {
@@ -69,6 +71,7 @@ func cfgVariant(c combo, set func(*variantModel)) variantModel {
 		ID:           types.StringNull(), InventoryItemID: types.StringNull(), Price: types.StringNull(), CompareAtPrice: types.StringNull(),
 		SKU: types.StringNull(), Barcodes: types.ListNull(barcodeType), InventoryPolicy: types.StringNull(), Taxable: types.BoolNull(),
 		Tracked: types.BoolNull(), RequiresShipping: types.BoolNull(), Weight: types.ObjectNull(weightAttrTypes),
+		Metafields: metafields.Null(),
 	}
 	vals := map[string]attr.Value{}
 	for k, val := range c {
@@ -279,14 +282,14 @@ func TestBuildInputLinkedOptionCoreOnly(t *testing.T) {
 
 func TestListModelLinkedOption(t *testing.T) {
 	ctx := context.Background()
-	m, d := listModel(ctx, linkedSizeSM(), nil)
+	m, d := listModel(ctx, linkedSizeSM(), nil, nil)
 	if d.HasError() {
 		t.Fatal(d)
 	}
 	if !m.Options.IsNull() || !m.Variants.IsNull() || m.Handle.ValueString() != "h" {
 		t.Errorf("linked product listed with options %s, variants %s, handle %s; want options and variants null", m.Options, m.Variants, m.Handle)
 	}
-	m, _ = listModel(ctx, sizeSM(), nil)
+	m, _ = listModel(ctx, sizeSM(), nil, nil)
 	if m.Options.IsNull() || m.Variants.IsNull() {
 		t.Errorf("unlinked product listed without options or variants")
 	}
@@ -307,5 +310,60 @@ func TestCarryForward(t *testing.T) {
 	got = carryForward(cfg, unknownVariant)
 	if !got.ID.IsUnknown() || !got.SKU.IsUnknown() || !got.Weight.IsUnknown() || got.Price.ValueString() != "11" {
 		t.Errorf("new variant = %+v, want unknowns except the configured price", got)
+	}
+}
+
+func TestFillVariantMetafields(t *testing.T) {
+	ctx := context.Background()
+	managed, d := metafields.ToValue(ctx, map[string]metafields.Entry{"custom.n": {Type: "number_integer", Value: "007"}, "custom.gone": {Type: "single_line_text_field", Value: "x"}}, false)
+	if d.HasError() {
+		t.Fatal(d)
+	}
+	p := sizeSM()
+	vs := []variantModel{
+		cfgVariant(combo{"Size": "S"}, func(v *variantModel) {
+			v.ID, v.Metafields = types.StringValue("gid://shopify/ProductVariant/1"), managed
+		}),
+		cfgVariant(combo{"Size": "M"}, func(v *variantModel) { v.ID = types.StringValue("gid://shopify/ProductVariant/2") }),
+	}
+	live := map[string][]metafields.Live{
+		"gid://shopify/ProductVariant/1": {{Namespace: "custom", Key: "n", Type: "number_integer", Value: "7"}, {Namespace: "custom", Key: "other", Type: "single_line_text_field", Value: "o"}},
+		"gid://shopify/ProductVariant/2": {{Namespace: "custom", Key: "other", Type: "single_line_text_field", Value: "o"}, {Namespace: "app--1--x", Key: "k", Type: "single_line_text_field", Value: "a"}},
+	}
+	var asked []string
+	lookup := func(id string) ([]metafields.Live, error) {
+		asked = append(asked, id)
+		if _, ok := live[id]; !ok {
+			return nil, fmt.Errorf("unexpected variant %s", id)
+		}
+		return live[id], nil
+	}
+	run := func(importing bool) []variantModel {
+		l, d := types.ListValueFrom(ctx, variantType, vs)
+		if d.HasError() {
+			t.Fatal(d)
+		}
+		m := &model{Variants: l}
+		asked = nil
+		if d := fillVariantMetafields(ctx, m, p, importing, lookup); d.HasError() {
+			t.Fatal(d)
+		}
+		var out []variantModel
+		m.Variants.ElementsAs(ctx, &out, false)
+		return out
+	}
+	got := run(false)
+	e, _ := metafields.FromValue(ctx, got[0].Metafields)
+	if len(asked) != 1 || !got[1].Metafields.IsNull() || e["custom.n"].Value != "007" || e["custom.gone"].Value != "" || len(e) != 2 {
+		t.Errorf("read: asked %v, S %v, M %s; want only S asked, its written 007 kept, the missing key empty, M null", asked, e, got[1].Metafields)
+	}
+	got = run(true)
+	e, _ = metafields.FromValue(ctx, got[1].Metafields)
+	if len(asked) != 2 || len(e) != 1 {
+		t.Errorf("import: asked %v, M %v; want both variants, only the non-app key", asked, e)
+	}
+	p = linkedSizeSM()
+	if run(true); len(asked) != 0 {
+		t.Errorf("linked option: asked %v, want no variant metafield reads", asked)
 	}
 }

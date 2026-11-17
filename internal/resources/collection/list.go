@@ -36,7 +36,7 @@ func (r *ListResource) ListResourceConfigSchema(ctx context.Context, req list.Li
 func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *list.ListResultsStream) {
 	stream.Results = func(push func(list.ListResult) bool) {
 		err := patterns.Paginate(ctx, req.Limit, listPage(ctx, r.client), func(c *liveCollection) bool {
-			return push(listResult(ctx, req, c))
+			return push(listResult(ctx, req, r.client, c))
 		})
 		if err != nil {
 			var diags diag.Diagnostics
@@ -64,7 +64,7 @@ func listPage(ctx context.Context, c *client.Client) func(after *string) ([]*liv
 }
 
 // listResult fills the resource as an import would; provider-only attributes get their schema defaults.
-func listResult(ctx context.Context, req list.ListRequest, c *liveCollection) list.ListResult {
+func listResult(ctx context.Context, req list.ListRequest, cl *client.Client, c *liveCollection) list.ListResult {
 	res := req.NewListResult(ctx)
 	res.DisplayName = fmt.Sprintf("%s (%s)", c.Title, c.Handle)
 	res.Diagnostics.Append(res.Identity.Set(ctx, patterns.IDIdentity{ID: types.StringValue(c.Id)})...)
@@ -73,6 +73,7 @@ func listResult(ctx context.Context, req list.ListRequest, c *liveCollection) li
 		d, unsupported := setFromAPI(ctx, &m, c, nil, nil, true)
 		m.PublicationIDs = publishing.NullIfEmpty(m.PublicationIDs)
 		res.Diagnostics.Append(d...)
+		res.Diagnostics.Append(readMetafields(ctx, cl, &m, c.Id, true)...)
 		if unsupported != nil {
 			res.Diagnostics.AddWarning(fmt.Sprintf("Membership of %s is not managed", c.Handle), unsupportedDetail(unsupported))
 		}

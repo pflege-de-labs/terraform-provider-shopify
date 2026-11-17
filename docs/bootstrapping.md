@@ -36,6 +36,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 |---|---|---|---|
 | none | `shopify_shop` data source | ✅ | |
 | `write_products` | `shopify_metafield_definition` resource and data source (owner types `PRODUCT`, `PRODUCTVARIANT`, `COLLECTION`), catalogs, price lists, selling plan groups; products and collections | ✅ definitions (`PRODUCT`), `shopify_product` (core fields, options, variants, publishing, media, `metafields` ⚠ whether `write_products` alone suffices for `metafieldsSet` on a product; every scope is granted on the dev store, so it can't tell), `shopify_collection` (with publishing), data source `shopify_product` (by SKU, `read_products` suffices), rest planned | definitions good; products, collections volatile |
+| (none documented) | `shopify_shop_metafields` (values of `SHOP` metafields) ⚠ TODO(verify): which scope `metafieldsSet` needs for the shop; every scope is granted on the dev store, so it can't tell | ✅ | volatile |
 | `write_metaobject_definitions` | `shopify_metaobject_definition` resource and data source, `shopify_standard_metaobject_definition` | ✅ | good |
 | `write_online_store_navigation` | `shopify_menu`, URL redirects | ✅ menus, redirects planned | menus good; redirects volatile |
 | `write_locations` | `shopify_location` | ✅ | good |
@@ -55,7 +56,7 @@ Scope names from [Shopify's access scope list](https://shopify.dev/docs/api/usag
 | `write_companies` | metafield definitions for `COMPANY`, `COMPANY_LOCATION` ⚠ (B2B stores only; optional, drop it from both app configs if the store doesn't use B2B) | ✅ | good |
 | `write_orders`, `write_draft_orders` | metafield definitions for `ORDER`, `DRAFTORDER` ⚠ | ✅ | good |
 | `write_content` | `shopify_page`, `shopify_blog`; articles; their metafield definitions ⚠ | ✅ pages, blogs, the rest planned | blogs good (settings only); pages, articles volatile (content) |
-| `write_discounts` | `shopify_discount_basic`; free shipping and buy X get Y discounts; metafield definitions for `DISCOUNT` ⚠ (definitions ✅; segment and market contexts were read with every scope granted, so whether they also need `read_customers` / `read_markets` is untested) | ✅ basic, the rest planned | volatile (promotions) |
+| `write_discounts` | `shopify_discount_basic`, `shopify_discount_free_shipping`, `shopify_discount_bxgy`; metafield definitions for `DISCOUNT` ⚠ (definitions ✅; segment and market contexts were read with every scope granted, so whether they also need `read_customers` / `read_markets` is untested) | ✅ basic, free shipping, buy X get Y | volatile (promotions) |
 | `read_metaobjects` (or `write_metaobjects`) | `shopify_metaobject` data source (entries by type and handle, for referencing) | ✅ data source | good (read-only) |
 | `write_metaobjects` | `shopify_metaobject` resource (entries of any type, standard ones included) | ✅ | volatile (content) |
 | `write_files` | `shopify_file` (URL sources; uploads of local files planned) | ✅ | volatile (content) |

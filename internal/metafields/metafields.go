@@ -107,6 +107,11 @@ func Plan(want, have map[string]Entry) (set, del []string) {
 // ErrorPath maps a userError of metafieldsSet to the key at its position in the call; keys are the call's keys in order.
 // Shopify names the position in field ("metafields", "<i>", …) and leaves elementIndex null (checked), so both are read.
 func ErrorPath(keys []string, field []string, elementIndex *int) (path.Path, bool) {
+	return ErrorPathAt(path.Root("metafields"), keys, field, elementIndex)
+}
+
+// ErrorPathAt is ErrorPath for an attribute that isn't at the root, such as a variant's.
+func ErrorPathAt(base path.Path, keys []string, field []string, elementIndex *int) (path.Path, bool) {
 	if len(field) == 0 || field[0] != "metafields" {
 		return path.Empty(), false
 	}
@@ -119,13 +124,18 @@ func ErrorPath(keys []string, field []string, elementIndex *int) (path.Path, boo
 		}
 	}
 	if i < 0 || i >= len(keys) {
-		return path.Root("metafields"), true
+		return base, true
 	}
-	return path.Root("metafields").AtMapKey(keys[i]), true
+	return base.AtMapKey(keys[i]), true
 }
 
 // Apply writes the keys of want that differ from have: values through metafieldsSet, "" through metafieldsDelete.
 func Apply(ctx context.Context, c *client.Client, ownerID string, want, have map[string]Entry) diag.Diagnostics {
+	return ApplyAt(ctx, c, path.Root("metafields"), ownerID, want, have)
+}
+
+// ApplyAt is Apply for an attribute that isn't at the root, so errors point at it.
+func ApplyAt(ctx context.Context, c *client.Client, base path.Path, ownerID string, want, have map[string]Entry) diag.Diagnostics {
 	var diags diag.Diagnostics
 	set, del := Plan(want, have)
 	for keys := range slices.Chunk(set, maxPerCall) {
@@ -133,7 +143,7 @@ func Apply(ctx context.Context, c *client.Client, ownerID string, want, have map
 		for i, k := range keys {
 			ns, key, err := SplitKey(k)
 			if err != nil {
-				diags.AddAttributeError(path.Root("metafields").AtMapKey(k), "Invalid metafield key", err.Error())
+				diags.AddAttributeError(base.AtMapKey(k), "Invalid metafield key", err.Error())
 				return diags
 			}
 			typ := want[k].Type
@@ -149,7 +159,7 @@ func Apply(ctx context.Context, c *client.Client, ownerID string, want, have map
 			if x, ok := e.(interface{ GetElementIndex() *int }); ok {
 				idx = x.GetElementIndex()
 			}
-			return ErrorPath(keys, e.GetField(), idx)
+			return ErrorPathAt(base, keys, e.GetField(), idx)
 		})...)
 		if diags.HasError() {
 			return diags
@@ -166,7 +176,7 @@ func Apply(ctx context.Context, c *client.Client, ownerID string, want, have map
 			diags.AddError("Failed to delete metafields", err.Error())
 			return diags
 		}
-		diags.Append(client.UserErrorDiagsWith("Failed to delete metafields", res.MetafieldsDelete.UserErrors, func([]string) (path.Path, bool) { return path.Root("metafields"), true })...)
+		diags.Append(client.UserErrorDiagsWith("Failed to delete metafields", res.MetafieldsDelete.UserErrors, func([]string) (path.Path, bool) { return base, true })...)
 		if diags.HasError() {
 			return diags
 		}
@@ -187,6 +197,9 @@ type object struct {
 }
 
 var objectType = types.ObjectType{AttrTypes: map[string]attr.Type{"type": types.StringType, "value": types.StringType}}
+
+// MapType is the attribute's type, for owners that nest it in an object type.
+var MapType = types.MapType{ElemType: objectType}
 
 // Null is the unmanaged value of the attribute.
 func Null() types.Map { return types.MapNull(objectType) }

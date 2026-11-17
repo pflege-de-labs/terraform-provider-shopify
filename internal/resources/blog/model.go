@@ -15,6 +15,7 @@ type model struct {
 	TemplateSuffix    types.String `tfsdk:"template_suffix"`
 	AdoptExisting     types.Bool   `tfsdk:"adopt_existing"`
 	AllowDataDeletion types.Bool   `tfsdk:"allow_data_deletion"`
+	Metafields        types.Map    `tfsdk:"metafields"`
 }
 
 func commentPolicy(v types.String) *client.CommentPolicy {

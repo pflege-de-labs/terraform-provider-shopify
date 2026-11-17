@@ -47,6 +47,7 @@ import (
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/privacysettings"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/product"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/shoplocale"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/shopmetafields"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/shoppolicy"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/standardmetaobjectdefinition"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/webpresence"
@@ -198,6 +199,7 @@ func (p *ShopifyProvider) Resources(ctx context.Context) []func() resource.Resou
 		shoplocale.NewResource,
 		privacysettings.NewPrivacySettings,
 		privacysettings.NewConsentPolicy,
+		shopmetafields.New,
 		shoppolicy.NewResource,
 		standardmetaobjectdefinition.NewResource,
 		product.NewResource,
@@ -208,6 +210,8 @@ func (p *ShopifyProvider) Resources(ctx context.Context) []func() resource.Resou
 		webpresence.NewResource,
 		checkoutandaccountsconfiguration.NewResource,
 		discount.NewBasicResource,
+		discount.NewFreeShippingResource,
+		discount.NewBxgyResource,
 		customersegment.NewResource,
 	}
 }
@@ -224,6 +228,7 @@ func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListR
 		shoplocale.NewListResource,
 		privacysettings.NewPrivacySettingsList,
 		privacysettings.NewConsentPolicyList,
+		shopmetafields.NewList,
 		shoppolicy.NewListResource,
 		standardmetaobjectdefinition.NewListResource,
 		product.NewListResource,
@@ -234,6 +239,8 @@ func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListR
 		webpresence.NewListResource,
 		checkoutandaccountsconfiguration.NewListResource,
 		discount.NewBasicListResource,
+		discount.NewFreeShippingListResource,
+		discount.NewBxgyListResource,
 		customersegment.NewListResource,
 	}
 }

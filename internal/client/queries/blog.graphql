@@ -50,7 +50,7 @@ query ListBlogs(
   }
 }
 
-# metafields is never sent: metafield values are a roadmap type.
+# metafields are never sent here: they go through metafieldsSet (resource model 9v).
 # @genqlient(for: "BlogCreateInput.handle", omitempty: true)
 # @genqlient(for: "BlogCreateInput.commentPolicy", omitempty: true)
 # @genqlient(for: "BlogCreateInput.templateSuffix", omitempty: true)

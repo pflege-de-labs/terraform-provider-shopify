@@ -37,7 +37,7 @@ func (r *ListResource) ListResourceConfigSchema(ctx context.Context, req list.Li
 func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *list.ListResultsStream) {
 	stream.Results = func(push func(list.ListResult) bool) {
 		err := patterns.Paginate(ctx, req.Limit, listPage(ctx, r.client), func(p listed) bool {
-			return push(listResult(ctx, req, &p.ProductFields, p.metafields))
+			return push(listResult(ctx, req, &p.ProductFields, p.metafields, p.variantMetafields))
 		})
 		if err != nil {
 			var diags diag.Diagnostics
@@ -51,6 +51,8 @@ func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *l
 type listed struct {
 	client.ProductFields
 	metafields []metafields.Live
+	// variantMetafields are by variant GID, read per variant for the same reason.
+	variantMetafields map[string][]metafields.Live
 }
 
 func listPage(ctx context.Context, c *client.Client) func(after *string) ([]listed, *string, error) {
@@ -70,18 +72,27 @@ func listPage(ctx context.Context, c *client.Client) func(after *string) ([]list
 			if nodes[i].metafields, err = metafields.List(ctx, metafieldPage(ctx, c, n.Id)); err != nil {
 				return nil, nil, err
 			}
+			if linkedOptionError(&nodes[i].ProductFields) != nil {
+				continue
+			}
+			nodes[i].variantMetafields = map[string][]metafields.Live{}
+			for _, v := range nodes[i].Variants.Nodes {
+				if nodes[i].variantMetafields[v.Id], err = metafields.List(ctx, variantMetafieldPage(ctx, c, v.Id)); err != nil {
+					return nil, nil, err
+				}
+			}
 		}
 		return nodes, patterns.NextCursor(conn.PageInfo.HasNextPage, conn.PageInfo.EndCursor), nil
 	}
 }
 
 // listResult fills the resource as Read would; provider-only attributes get their schema defaults.
-func listResult(ctx context.Context, req list.ListRequest, p *client.ProductFields, mf []metafields.Live) list.ListResult {
+func listResult(ctx context.Context, req list.ListRequest, p *client.ProductFields, mf []metafields.Live, vmf map[string][]metafields.Live) list.ListResult {
 	res := req.NewListResult(ctx)
 	res.DisplayName = displayName(p)
 	res.Diagnostics.Append(res.Identity.Set(ctx, patterns.IDIdentity{ID: types.StringValue(p.Id)})...)
 	if req.IncludeResource {
-		m, d := listModel(ctx, p, mf)
+		m, d := listModel(ctx, p, mf, vmf)
 		res.Diagnostics.Append(d...)
 		res.Diagnostics.Append(res.Resource.Set(ctx, &m)...)
 	}
@@ -89,12 +100,13 @@ func listResult(ctx context.Context, req list.ListRequest, p *client.ProductFiel
 }
 
 // listModel is what Read would set, minus options and variants of a product with a linked option, which can't be managed.
-func listModel(ctx context.Context, p *client.ProductFields, mf []metafields.Live) (model, diag.Diagnostics) {
+func listModel(ctx context.Context, p *client.ProductFields, mf []metafields.Live, vmf map[string][]metafields.Live) (model, diag.Diagnostics) {
 	m := model{AdoptExisting: types.BoolValue(false), AllowDataDeletion: types.BoolValue(false)}
 	diags := setFromAPI(ctx, &m, p, nil)
 	var d diag.Diagnostics
 	m.Metafields, d = metafields.ToValue(ctx, metafields.Read(nil, mf), true)
 	diags.Append(d...)
+	diags.Append(fillVariantMetafields(ctx, &m, p, true, func(id string) ([]metafields.Live, error) { return vmf[id], nil })...)
 	m.PublicationIDs = publishing.NullIfEmpty(m.PublicationIDs)
 	if len(m.MediaIDs.Elements()) == 0 {
 		m.MediaIDs = types.ListNull(types.StringType)

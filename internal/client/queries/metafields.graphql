@@ -19,6 +19,89 @@ query GetProductMetafields(
   }
 }
 
+query GetCollectionMetafields(
+  $id: ID!
+  $after: String
+) {
+  collection(id: $id) {
+    metafields(first: 250, after: $after) {
+      nodes {
+        namespace
+        key
+        type
+        value
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+# Pages a page's metafields.
+query GetPageMetafields(
+  $id: ID!
+  $after: String
+) {
+  page(id: $id) {
+    metafields(first: 250, after: $after) {
+      nodes {
+        namespace
+        key
+        type
+        value
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+# Pages a blog's metafields.
+query GetBlogMetafields(
+  $id: ID!
+  $after: String
+) {
+  blog(id: $id) {
+    metafields(first: 250, after: $after) {
+      nodes {
+        namespace
+        key
+        type
+        value
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+# Variants get their own query: metafields inside the product query would blow its cost limit (§9k.1, §9v).
+query GetVariantMetafields(
+  $id: ID!
+  $after: String
+) {
+  productVariant(id: $id) {
+    metafields(first: 250, after: $after) {
+      nodes {
+        namespace
+        key
+        type
+        value
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
 # An explicit null compareDigest means "only create": the update of an existing metafield fails with a stale-digest error.
 # @genqlient(for: "MetafieldsSetInput.compareDigest", omitempty: true)
 mutation SetMetafields(
@@ -44,6 +127,27 @@ mutation DeleteMetafields(
     userErrors {
       field
       message
+    }
+  }
+}
+
+# Pages the shop's own metafields; the shop ID comes in the same call because it is the owner ID for writes.
+query GetShopMetafields(
+  $after: String
+) {
+  shop {
+    id
+    metafields(first: 250, after: $after) {
+      nodes {
+        namespace
+        key
+        type
+        value
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 }
