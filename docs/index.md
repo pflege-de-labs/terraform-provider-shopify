@@ -51,7 +51,7 @@ The app needs the Admin API access scopes for the resource types you use. Grant 
 | Scope | Used by |
 |---|---|
 | `write_products` | `shopify_product`, `shopify_collection`, `shopify_metafield_definition` |
-| `write_metaobject_definitions` | `shopify_metaobject_definition` |
+| `write_metaobject_definitions` | `shopify_metaobject_definition`, `shopify_standard_metaobject_definition` |
 | `write_online_store_navigation` | `shopify_menu` |
 | `write_locations` | `shopify_location` |
 | `write_markets` | `shopify_market`, `shopify_web_presence` |

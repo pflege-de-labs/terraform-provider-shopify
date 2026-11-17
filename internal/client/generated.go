@@ -4803,6 +4803,11 @@ func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitio
 	return v.MetaobjectDefinitionFields.Type
 }
 
+// GetStandardTemplate returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition.StandardTemplate, and is useful for accessing the field via an interface.
+func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) GetStandardTemplate() *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate {
+	return v.MetaobjectDefinitionFields.StandardTemplate
+}
+
 // GetName returns CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition.Name, and is useful for accessing the field via an interface.
 func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitionCreatePayloadMetaobjectDefinition) GetName() string {
 	return v.MetaobjectDefinitionFields.Name
@@ -4863,6 +4868,8 @@ type __premarshalCreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectD
 
 	Type string `json:"type"`
 
+	StandardTemplate *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate `json:"standardTemplate"`
+
 	Name string `json:"name"`
 
 	Description *string `json:"description"`
@@ -4889,6 +4896,7 @@ func (v *CreateMetaobjectDefinitionMetaobjectDefinitionCreateMetaobjectDefinitio
 
 	retval.Id = v.MetaobjectDefinitionFields.Id
 	retval.Type = v.MetaobjectDefinitionFields.Type
+	retval.StandardTemplate = v.MetaobjectDefinitionFields.StandardTemplate
 	retval.Name = v.MetaobjectDefinitionFields.Name
 	retval.Description = v.MetaobjectDefinitionFields.Description
 	retval.DisplayNameKey = v.MetaobjectDefinitionFields.DisplayNameKey
@@ -12050,6 +12058,182 @@ func (v *EnableShopLocaleShopLocaleEnableShopLocaleEnablePayloadUserErrorsUserEr
 	return v.Message
 }
 
+// EnableStandardMetaobjectDefinitionResponse is returned by EnableStandardMetaobjectDefinition on success.
+type EnableStandardMetaobjectDefinitionResponse struct {
+	// Enables the specified standard metaobject definition from its template.
+	StandardMetaobjectDefinitionEnable *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayload `json:"standardMetaobjectDefinitionEnable"`
+}
+
+// GetStandardMetaobjectDefinitionEnable returns EnableStandardMetaobjectDefinitionResponse.StandardMetaobjectDefinitionEnable, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionResponse) GetStandardMetaobjectDefinitionEnable() *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayload {
+	return v.StandardMetaobjectDefinitionEnable
+}
+
+// EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayload includes the requested fields of the GraphQL type StandardMetaobjectDefinitionEnablePayload.
+// The GraphQL type's documentation follows.
+//
+// Return type for `standardMetaobjectDefinitionEnable` mutation.
+type EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayload struct {
+	// The metaobject definition that was enabled using the standard template.
+	MetaobjectDefinition *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition `json:"metaobjectDefinition"`
+	// The list of errors that occurred from executing the mutation.
+	UserErrors []EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadUserErrorsMetaobjectUserError `json:"userErrors"`
+}
+
+// GetMetaobjectDefinition returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayload.MetaobjectDefinition, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayload) GetMetaobjectDefinition() *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition {
+	return v.MetaobjectDefinition
+}
+
+// GetUserErrors returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayload.UserErrors, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayload) GetUserErrors() []EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadUserErrorsMetaobjectUserError {
+	return v.UserErrors
+}
+
+// EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition includes the requested fields of the GraphQL type MetaobjectDefinition.
+// The GraphQL type's documentation follows.
+//
+// Defines the structure and configuration for a custom data type in Shopify. Each definition specifies the fields, validation rules, and capabilities that apply to all [`Metaobject`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Metaobject) entries created from it.
+//
+// The definition includes field definitions that determine what data to store, access controls for [the Shopify admin](https://shopify.dev/docs/apps/build/custom-data/permissions#admin-permissions) and [Storefront](https://shopify.dev/docs/apps/build/custom-data/permissions#storefront-permissions) APIs, and capabilities such as publishability and translatability. You can track which [`App`](https://shopify.dev/docs/api/admin-graphql/latest/objects/App) or [`StaffMember`](https://shopify.dev/docs/api/admin-graphql/latest/objects/StaffMember) created the definition and optionally base it on a [`StandardMetaobjectDefinitionTemplate`](https://shopify.dev/docs/api/admin-graphql/latest/objects/StandardMetaobjectDefinitionTemplate).
+type EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition struct {
+	MetaobjectDefinitionFields `json:"-"`
+}
+
+// GetId returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition.Id, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition) GetId() string {
+	return v.MetaobjectDefinitionFields.Id
+}
+
+// GetType returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition.Type, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition) GetType() string {
+	return v.MetaobjectDefinitionFields.Type
+}
+
+// GetStandardTemplate returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition.StandardTemplate, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition) GetStandardTemplate() *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate {
+	return v.MetaobjectDefinitionFields.StandardTemplate
+}
+
+// GetName returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition.Name, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition) GetName() string {
+	return v.MetaobjectDefinitionFields.Name
+}
+
+// GetDescription returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition.Description, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition) GetDescription() *string {
+	return v.MetaobjectDefinitionFields.Description
+}
+
+// GetDisplayNameKey returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition.DisplayNameKey, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition) GetDisplayNameKey() *string {
+	return v.MetaobjectDefinitionFields.DisplayNameKey
+}
+
+// GetAccess returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition.Access, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition) GetAccess() MetaobjectDefinitionFieldsAccessMetaobjectAccess {
+	return v.MetaobjectDefinitionFields.Access
+}
+
+// GetCapabilities returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition.Capabilities, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition) GetCapabilities() MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities {
+	return v.MetaobjectDefinitionFields.Capabilities
+}
+
+// GetFieldDefinitions returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition.FieldDefinitions, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition) GetFieldDefinitions() []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition {
+	return v.MetaobjectDefinitionFields.FieldDefinitions
+}
+
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(
+		b, &v.MetaobjectDefinitionFields)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+type __premarshalEnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition struct {
+	Id string `json:"id"`
+
+	Type string `json:"type"`
+
+	StandardTemplate *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate `json:"standardTemplate"`
+
+	Name string `json:"name"`
+
+	Description *string `json:"description"`
+
+	DisplayNameKey *string `json:"displayNameKey"`
+
+	Access MetaobjectDefinitionFieldsAccessMetaobjectAccess `json:"access"`
+
+	Capabilities MetaobjectDefinitionFieldsCapabilitiesMetaobjectCapabilities `json:"capabilities"`
+
+	FieldDefinitions []MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinition `json:"fieldDefinitions"`
+}
+
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition) __premarshalJSON() (*__premarshalEnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition, error) {
+	var retval __premarshalEnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadMetaobjectDefinition
+
+	retval.Id = v.MetaobjectDefinitionFields.Id
+	retval.Type = v.MetaobjectDefinitionFields.Type
+	retval.StandardTemplate = v.MetaobjectDefinitionFields.StandardTemplate
+	retval.Name = v.MetaobjectDefinitionFields.Name
+	retval.Description = v.MetaobjectDefinitionFields.Description
+	retval.DisplayNameKey = v.MetaobjectDefinitionFields.DisplayNameKey
+	retval.Access = v.MetaobjectDefinitionFields.Access
+	retval.Capabilities = v.MetaobjectDefinitionFields.Capabilities
+	retval.FieldDefinitions = v.MetaobjectDefinitionFields.FieldDefinitions
+	return &retval, nil
+}
+
+// EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadUserErrorsMetaobjectUserError includes the requested fields of the GraphQL type MetaobjectUserError.
+// The GraphQL type's documentation follows.
+//
+// Defines errors encountered while managing metaobject resources.
+type EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadUserErrorsMetaobjectUserError struct {
+	// The path to the input field that caused the error.
+	Field []string `json:"field"`
+	// The error message.
+	Message string `json:"message"`
+}
+
+// GetField returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadUserErrorsMetaobjectUserError.Field, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadUserErrorsMetaobjectUserError) GetField() []string {
+	return v.Field
+}
+
+// GetMessage returns EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadUserErrorsMetaobjectUserError.Message, and is useful for accessing the field via an interface.
+func (v *EnableStandardMetaobjectDefinitionStandardMetaobjectDefinitionEnableStandardMetaobjectDefinitionEnablePayloadUserErrorsMetaobjectUserError) GetMessage() string {
+	return v.Message
+}
+
 // The possible content types for a file object.
 type FileContentType string
 
@@ -15792,6 +15976,11 @@ func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefini
 	return v.MetaobjectDefinitionFields.Type
 }
 
+// GetStandardTemplate returns GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition.StandardTemplate, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) GetStandardTemplate() *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate {
+	return v.MetaobjectDefinitionFields.StandardTemplate
+}
+
 // GetName returns GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition.Name, and is useful for accessing the field via an interface.
 func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefinition) GetName() string {
 	return v.MetaobjectDefinitionFields.Name
@@ -15852,6 +16041,8 @@ type __premarshalGetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobje
 
 	Type string `json:"type"`
 
+	StandardTemplate *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate `json:"standardTemplate"`
+
 	Name string `json:"name"`
 
 	Description *string `json:"description"`
@@ -15878,6 +16069,7 @@ func (v *GetMetaobjectDefinitionByTypeMetaobjectDefinitionByTypeMetaobjectDefini
 
 	retval.Id = v.MetaobjectDefinitionFields.Id
 	retval.Type = v.MetaobjectDefinitionFields.Type
+	retval.StandardTemplate = v.MetaobjectDefinitionFields.StandardTemplate
 	retval.Name = v.MetaobjectDefinitionFields.Name
 	retval.Description = v.MetaobjectDefinitionFields.Description
 	retval.DisplayNameKey = v.MetaobjectDefinitionFields.DisplayNameKey
@@ -15916,6 +16108,11 @@ func (v *GetMetaobjectDefinitionMetaobjectDefinition) GetId() string {
 // GetType returns GetMetaobjectDefinitionMetaobjectDefinition.Type, and is useful for accessing the field via an interface.
 func (v *GetMetaobjectDefinitionMetaobjectDefinition) GetType() string {
 	return v.MetaobjectDefinitionFields.Type
+}
+
+// GetStandardTemplate returns GetMetaobjectDefinitionMetaobjectDefinition.StandardTemplate, and is useful for accessing the field via an interface.
+func (v *GetMetaobjectDefinitionMetaobjectDefinition) GetStandardTemplate() *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate {
+	return v.MetaobjectDefinitionFields.StandardTemplate
 }
 
 // GetName returns GetMetaobjectDefinitionMetaobjectDefinition.Name, and is useful for accessing the field via an interface.
@@ -15978,6 +16175,8 @@ type __premarshalGetMetaobjectDefinitionMetaobjectDefinition struct {
 
 	Type string `json:"type"`
 
+	StandardTemplate *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate `json:"standardTemplate"`
+
 	Name string `json:"name"`
 
 	Description *string `json:"description"`
@@ -16004,6 +16203,7 @@ func (v *GetMetaobjectDefinitionMetaobjectDefinition) __premarshalJSON() (*__pre
 
 	retval.Id = v.MetaobjectDefinitionFields.Id
 	retval.Type = v.MetaobjectDefinitionFields.Type
+	retval.StandardTemplate = v.MetaobjectDefinitionFields.StandardTemplate
 	retval.Name = v.MetaobjectDefinitionFields.Name
 	retval.Description = v.MetaobjectDefinitionFields.Description
 	retval.DisplayNameKey = v.MetaobjectDefinitionFields.DisplayNameKey
@@ -23587,6 +23787,8 @@ type MetaobjectDefinitionFields struct {
 	Id string `json:"id"`
 	// The type of the object definition. Defines the namespace of associated metafields.
 	Type string `json:"type"`
+	// The standard metaobject template associated with the definition.
+	StandardTemplate *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate `json:"standardTemplate"`
 	// The human-readable name.
 	Name string `json:"name"`
 	// The administrative description.
@@ -23606,6 +23808,11 @@ func (v *MetaobjectDefinitionFields) GetId() string { return v.Id }
 
 // GetType returns MetaobjectDefinitionFields.Type, and is useful for accessing the field via an interface.
 func (v *MetaobjectDefinitionFields) GetType() string { return v.Type }
+
+// GetStandardTemplate returns MetaobjectDefinitionFields.StandardTemplate, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFields) GetStandardTemplate() *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate {
+	return v.StandardTemplate
+}
 
 // GetName returns MetaobjectDefinitionFields.Name, and is useful for accessing the field via an interface.
 func (v *MetaobjectDefinitionFields) GetName() string { return v.Name }
@@ -23819,6 +24026,20 @@ func (v *MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionVali
 // GetValue returns MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionValidationsMetafieldDefinitionValidation.Value, and is useful for accessing the field via an interface.
 func (v *MetaobjectDefinitionFieldsFieldDefinitionsMetaobjectFieldDefinitionValidationsMetafieldDefinitionValidation) GetValue() *string {
 	return v.Value
+}
+
+// MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate includes the requested fields of the GraphQL type StandardMetaobjectDefinitionTemplate.
+// The GraphQL type's documentation follows.
+//
+// Standard metaobject definition templates provide preset configurations to create metaobject definitions.
+type MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate struct {
+	// The namespace owned by the definition after the definition has been enabled.
+	Type string `json:"type"`
+}
+
+// GetType returns MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate.Type, and is useful for accessing the field via an interface.
+func (v *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate) GetType() string {
+	return v.Type
 }
 
 // The input fields for updating a metaobject definition.
@@ -29746,6 +29967,11 @@ func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitio
 	return v.MetaobjectDefinitionFields.Type
 }
 
+// GetStandardTemplate returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition.StandardTemplate, and is useful for accessing the field via an interface.
+func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) GetStandardTemplate() *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate {
+	return v.MetaobjectDefinitionFields.StandardTemplate
+}
+
 // GetName returns UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition.Name, and is useful for accessing the field via an interface.
 func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitionUpdatePayloadMetaobjectDefinition) GetName() string {
 	return v.MetaobjectDefinitionFields.Name
@@ -29806,6 +30032,8 @@ type __premarshalUpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectD
 
 	Type string `json:"type"`
 
+	StandardTemplate *MetaobjectDefinitionFieldsStandardTemplateStandardMetaobjectDefinitionTemplate `json:"standardTemplate"`
+
 	Name string `json:"name"`
 
 	Description *string `json:"description"`
@@ -29832,6 +30060,7 @@ func (v *UpdateMetaobjectDefinitionMetaobjectDefinitionUpdateMetaobjectDefinitio
 
 	retval.Id = v.MetaobjectDefinitionFields.Id
 	retval.Type = v.MetaobjectDefinitionFields.Type
+	retval.StandardTemplate = v.MetaobjectDefinitionFields.StandardTemplate
 	retval.Name = v.MetaobjectDefinitionFields.Name
 	retval.Description = v.MetaobjectDefinitionFields.Description
 	retval.DisplayNameKey = v.MetaobjectDefinitionFields.DisplayNameKey
@@ -31363,6 +31592,16 @@ type __EnableShopLocaleInput struct {
 
 // GetLocale returns __EnableShopLocaleInput.Locale, and is useful for accessing the field via an interface.
 func (v *__EnableShopLocaleInput) GetLocale() string { return v.Locale }
+
+// __EnableStandardMetaobjectDefinitionInput is used internally by genqlient
+type __EnableStandardMetaobjectDefinitionInput struct {
+	DefinitionType string `json:"definitionType"`
+}
+
+// GetDefinitionType returns __EnableStandardMetaobjectDefinitionInput.DefinitionType, and is useful for accessing the field via an interface.
+func (v *__EnableStandardMetaobjectDefinitionInput) GetDefinitionType() string {
+	return v.DefinitionType
+}
 
 // __FindBlogsInput is used internally by genqlient
 type __FindBlogsInput struct {
@@ -32981,6 +33220,9 @@ mutation CreateMetaobjectDefinition ($definition: MetaobjectDefinitionCreateInpu
 fragment MetaobjectDefinitionFields on MetaobjectDefinition {
 	id
 	type
+	standardTemplate {
+		type
+	}
 	name
 	description
 	displayNameKey
@@ -34015,6 +34257,85 @@ func EnableShopLocale(
 	}
 
 	data_ = &EnableShopLocaleResponse{}
+	resp_ := &graphql.Response{Data: data_}
+
+	err_ = client_.MakeRequest(
+		ctx_,
+		req_,
+		resp_,
+	)
+
+	return data_, err_
+}
+
+// The mutation executed by EnableStandardMetaobjectDefinition.
+const EnableStandardMetaobjectDefinition_Operation = `
+mutation EnableStandardMetaobjectDefinition ($definitionType: String!) {
+	standardMetaobjectDefinitionEnable(type: $definitionType) {
+		metaobjectDefinition {
+			... MetaobjectDefinitionFields
+		}
+		userErrors {
+			field
+			message
+		}
+	}
+}
+fragment MetaobjectDefinitionFields on MetaobjectDefinition {
+	id
+	type
+	standardTemplate {
+		type
+	}
+	name
+	description
+	displayNameKey
+	access {
+		admin
+		storefront
+		customerAccount
+	}
+	capabilities {
+		publishable {
+			enabled
+		}
+		translatable {
+			enabled
+		}
+		renderable {
+			enabled
+		}
+	}
+	fieldDefinitions {
+		key
+		name
+		description
+		required
+		type {
+			name
+		}
+		validations {
+			name
+			value
+		}
+	}
+}
+`
+
+func EnableStandardMetaobjectDefinition(
+	ctx_ context.Context,
+	client_ graphql.Client,
+	definitionType string,
+) (data_ *EnableStandardMetaobjectDefinitionResponse, err_ error) {
+	req_ := &graphql.Request{
+		OpName: "EnableStandardMetaobjectDefinition",
+		Query:  EnableStandardMetaobjectDefinition_Operation,
+		Variables: &__EnableStandardMetaobjectDefinitionInput{
+			DefinitionType: definitionType,
+		},
+	}
+
+	data_ = &EnableStandardMetaobjectDefinitionResponse{}
 	resp_ := &graphql.Response{Data: data_}
 
 	err_ = client_.MakeRequest(
@@ -37102,6 +37423,9 @@ query GetMetaobjectDefinition ($id: ID!) {
 fragment MetaobjectDefinitionFields on MetaobjectDefinition {
 	id
 	type
+	standardTemplate {
+		type
+	}
 	name
 	description
 	displayNameKey
@@ -37172,6 +37496,9 @@ query GetMetaobjectDefinitionByType ($definitionType: String!) {
 fragment MetaobjectDefinitionFields on MetaobjectDefinition {
 	id
 	type
+	standardTemplate {
+		type
+	}
 	name
 	description
 	displayNameKey
@@ -40128,6 +40455,9 @@ query ListMetaobjectDefinitions ($after: String) {
 fragment MetaobjectDefinitionFields on MetaobjectDefinition {
 	id
 	type
+	standardTemplate {
+		type
+	}
 	name
 	description
 	displayNameKey
@@ -42906,6 +43236,9 @@ mutation UpdateMetaobjectDefinition ($id: ID!, $definition: MetaobjectDefinition
 fragment MetaobjectDefinitionFields on MetaobjectDefinition {
 	id
 	type
+	standardTemplate {
+		type
+	}
 	name
 	description
 	displayNameKey

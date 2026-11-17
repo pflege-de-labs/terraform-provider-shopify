@@ -1,6 +1,9 @@
 fragment MetaobjectDefinitionFields on MetaobjectDefinition {
   id
   type
+  standardTemplate {
+    type
+  }
   name
   description
   displayNameKey
@@ -148,6 +151,20 @@ query ListMetaobjectDefinitions($after: String) {
     pageInfo {
       hasNextPage
       endCursor
+    }
+  }
+}
+
+mutation EnableStandardMetaobjectDefinition(
+  $definitionType: String!
+) {
+  standardMetaobjectDefinitionEnable(type: $definitionType) {
+    metaobjectDefinition {
+      ...MetaobjectDefinitionFields
+    }
+    userErrors {
+      field
+      message
     }
   }
 }

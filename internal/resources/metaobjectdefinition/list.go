@@ -25,7 +25,7 @@ type ListResource struct {
 
 func (r *ListResource) ListResourceConfigSchema(ctx context.Context, req list.ListResourceSchemaRequest, resp *list.ListResourceSchemaResponse) {
 	resp.Schema = listschema.Schema{
-		MarkdownDescription: "Lists all metaobject definitions of the store.",
+		MarkdownDescription: "Lists the metaobject definitions of the store, except Shopify's standard definitions (`shopify--…` types): `shopify_standard_metaobject_definition` lists those.",
 	}
 }
 
@@ -39,8 +39,12 @@ func (r *ListResource) List(ctx context.Context, req list.ListRequest, stream *l
 			conn := res.MetaobjectDefinitions
 			return conn.Nodes, patterns.NextCursor(conn.PageInfo.HasNextPage, conn.PageInfo.EndCursor), nil
 		}
-		err := patterns.Paginate(ctx, req.Limit, page, func(d client.MetaobjectDefinitionFields) bool {
-			return push(listResult(ctx, req, &d))
+		// Standard definitions belong to shopify_standard_metaobject_definition (D7).
+		err := patterns.PaginateCounting(ctx, req.Limit, page, func(d client.MetaobjectDefinitionFields) (bool, bool) {
+			if d.StandardTemplate != nil {
+				return false, true
+			}
+			return true, push(listResult(ctx, req, &d))
 		})
 		if err != nil {
 			var diags diag.Diagnostics

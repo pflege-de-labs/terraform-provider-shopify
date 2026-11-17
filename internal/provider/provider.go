@@ -46,6 +46,7 @@ import (
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/product"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/shoplocale"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/shoppolicy"
+	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/standardmetaobjectdefinition"
 	"github.com/pflege-de-labs/terraform-provider-shopify/internal/resources/webpresence"
 )
 
@@ -195,6 +196,7 @@ func (p *ShopifyProvider) Resources(ctx context.Context) []func() resource.Resou
 		privacysettings.NewPrivacySettings,
 		privacysettings.NewConsentPolicy,
 		shoppolicy.NewResource,
+		standardmetaobjectdefinition.NewResource,
 		product.NewResource,
 		collection.NewResource,
 		blog.NewResource,
@@ -219,6 +221,7 @@ func (p *ShopifyProvider) ListResources(ctx context.Context) []func() list.ListR
 		privacysettings.NewPrivacySettingsList,
 		privacysettings.NewConsentPolicyList,
 		shoppolicy.NewListResource,
+		standardmetaobjectdefinition.NewListResource,
 		product.NewListResource,
 		collection.NewListResource,
 		blog.NewListResource,
