@@ -3,7 +3,9 @@
 FEATURES:
 
 * **New Resource:** `shopify_standard_metaobject_definition`
+* **New Resource:** `shopify_metaobject`
 * **New List Resource:** `shopify_standard_metaobject_definition`
+* **New List Resource:** `shopify_metaobject`
 
 ENHANCEMENTS:
 
