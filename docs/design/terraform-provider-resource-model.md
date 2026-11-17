@@ -1894,6 +1894,32 @@ resource "shopify_product" "x" {
 
 **Tests.** Unit: key split and validator, `ValueEqual` (moved), read merge for import, prior and missing keys, set and delete diff, 25-chunking, userErrors index to path. Acceptance (`internal/resources/product`): create, update, delete with `""`, drop a key, unmanaged edit (empty plan), managed edit (drift), invalid value, import by key and the generated config, list, and a `metaobject_reference` to a `shopify_metaobject` in the same config.
 
+**Shop as an owner (#63).** The shop has no resource to hang the attribute on, so it gets its own singleton, `shopify_shop_metafields` (§9w). Same attribute, same rules.
+
+---
+
+## 9w. Resource: `shopify_shop_metafields`
+
+Decision 2026-11-17 (#63). The metafield values owned by the shop (`ownerType` `SHOP`), through the shared `internal/metafields` package and the §9v rules (managed keys only, `""` deletes, app namespaces and the SEO keys skipped, reformatted values keep their written form).
+
+```hcl
+resource "shopify_shop_metafields" "this" {
+  metafields = {
+    "custom.tagline" = { type = "single_line_text_field", value = "Made in Germany" }
+  }
+}
+```
+
+- **Pattern A, one per store.** `id` = shop GID (`shop { id }`), also the owner ID for `metafieldsSet`. Create adopts the shop and writes the configured keys; there is no `adopt_existing` (the shop always exists) and no `allow_data_deletion` (a metafield value isn't a definition). Delete removes from state only, with the `WarnRemovedFromStateOnly` warning: the values stay in Shopify.
+- **`metafields` is Required.** An empty resource would manage nothing. Import and the list fill it with every non-skipped key; a shop without any gives `{}` (not null, unlike the owners of §9v), so generated config is `metafields = {}`, which plans as import-only.
+- **Import** follows `shopify_privacy_settings`: `terraform import shopify_shop_metafields.this default`, or an import block with identity `id` = shop GID. Resource identity has `id`; Read re-adopts nothing by natural key because there is none.
+- **Read** pages `shop { metafields(first: 250) }` (`GetShopMetafields`; requested cost 14 and actual 14 on the dev store with no values). State null means import: take every key. State set: only the managed ones.
+- **List:** exactly one result, the shop, with its metafields, so `terraform query -generate-config-out` copies them.
+- **Dev store probe (2026-11-17).** The dev store's shop had no metafields at all (no `shopify.*` or `checkoutblocks.*` here, which §9g saw only with app credentials), so no Shopify-owned SHOP metafield needing an import filter was found. Import takes everything outside app namespaces and the SEO keys; if Shopify-owned read-only SHOP metafields turn up on another store, filter them in `internal/resources/shopmetafields`, not in the shared rules. TODO(verify): that.
+- **Scope.** Not documented for SHOP; assumed to need none beyond the app's own access (TODO(verify): every scope is granted on the dev store). See `docs/bootstrapping.md`.
+- **Fit: volatile** (apps write shop metafields too); only listed keys are managed.
+- **Tests.** Acceptance: create, "007" kept as written, unmanaged edit (empty plan), managed edit (drift, restore), `""` deletes, destroy keeps the values, import by key and by identity with generated config, list. Each test has its own namespace and deletes its keys, since destroy keeps them.
+
 ---
 
 ---
